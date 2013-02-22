@@ -27,4 +27,6 @@ extern const char *get_font_name();
 extern const char *get_fox_console_font_name();
 }
 
+extern int initialize_fonts();
+
 #endif

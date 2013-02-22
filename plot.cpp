@@ -1,4 +1,5 @@
 #include "plot.h"
+#include "colors.h"
 
 static double compute_scale(const agg::trans_affine& m)
 {

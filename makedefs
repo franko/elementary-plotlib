@@ -1,0 +1,47 @@
+##############################################################################
+# Makefile definitions and common commands
+#
+# Setup of C definitions based on makeconfig options
+#
+# Suitable for POSIX platforms (Linux, *BSD, OSX etc.).
+# Note: the configurable options are in makeconfig.
+#
+# Copyright (C) 2009-2010 Francesco Abbate. See Copyright Notice in gsl-shell.c
+##############################################################################
+
+DEBUG = yes
+
+AR= ar rcu
+RANLIB= ranlib
+
+CC = gcc
+CXX = g++
+
+ifeq ($(HOST_SYS),Darwin)
+  LINK_EXE = $(CXX) $(LDFLAGS)
+else
+  LINK_EXE = $(CC) $(LDFLAGS)
+endif
+
+ifeq ($(strip $(DEBUG)), yes)
+  CFLAGS = -g -Wall
+  CXXFLAGS = -g -Wall
+else
+  # on windows do not use -fomit-frame-pointer
+  CFLAGS = -O3 -fno-stack-protector -fomit-frame-pointer -ffast-math -Wall
+  CXXFLAGS = -Os -fno-exceptions -fno-stack-protector -ffast-math -fno-rtti -Wall
+endif
+
+DEFS += -D_REENTRANT
+
+ifeq ($(strip $(DEBUG)), yes)
+  DEFS += -DGSL_SHELL_DEBUG
+endif
+
+ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
+  DEFS += -DDISABLE_GAMMA_CORR
+endif
+
+ifeq ($(strip $(DISABLE_SUBPIXEL_LCD)), yes)
+  DEFS += -DDISABLE_SUBPIXEL_AA
+endif

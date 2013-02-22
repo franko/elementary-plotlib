@@ -36,6 +36,8 @@ public:
         m_list.add(p);
     }
 
+    T* at(unsigned k) const { return m_list[k]; }
+
     T* operator [] (unsigned k) const {
         return m_list[k];
     }

@@ -7,10 +7,11 @@
 
 #include "image_buf.h"
 #include "window_part.h"
+#include "graph_mutex.h"
 #include "sg_object.h"
-#include "lua-plot-cpp.h"
 #include "canvas.h"
 #include "rect.h"
+#include "plot.h"
 
 typedef plot sg_plot;
 
@@ -26,18 +27,13 @@ struct plot_ref {
     bool have_save_img;
 };
 
-struct graph_mutex {
-    static void lock()   { AGG_LOCK();   }
-    static void unlock() { AGG_UNLOCK(); }
-};
-
 class window_surface
 {
 public:
     enum { image_pixel_width = 3 };
     typedef image_gen<image_pixel_width, true> image;
 
-    window_surface(display_window* window, const char* split);
+    window_surface(display_window* window, graph_mutex& mutex, const char* split);
     ~window_surface();
 
     int attach(sg_plot* p, const char* slot_str);
@@ -95,6 +91,7 @@ private:
     agg::pod_bvector<plot_ref> m_plots;
     display_window* m_window;
     canvas* m_canvas;
+    graph_mutex& m_mutex;
 };
 
 #endif

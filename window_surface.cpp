@@ -3,10 +3,10 @@
 #include "util/agg_color_conv_rgb8.h"
 
 #include "fatal.h"
-#include "lua-graph.h"
+#include "colors.h"
 
-window_surface::window_surface(display_window* win, const char* split_str):
-m_img(), m_save_img(), m_window(win), m_canvas(0)
+window_surface::window_surface(display_window* win, graph_mutex& mutex, const char* split_str):
+m_img(), m_save_img(), m_window(win), m_canvas(0), m_mutex(mutex)
 {
     split(split_str ? split_str : ".");
 }
@@ -53,9 +53,9 @@ void window_surface::render(plot_ref& ref, const agg::rect_i& r)
     m_canvas->clear_box(r);
     if (ref.plot)
     {
-        graph_mutex::lock();
+        m_mutex.lock();
         ref.plot->draw(*m_canvas, r, &ref.inf);
-        graph_mutex::unlock();
+        m_mutex.unlock();
     }
 }
 
@@ -73,9 +73,9 @@ window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
     const agg::trans_affine m = affine_matrix(box);
     opt_rect<double> r;
 
-    graph_mutex::lock();
+    m_mutex.lock();
     ref.plot->draw_queue(*m_canvas, m, ref.inf, r);
-    graph_mutex::unlock();
+    m_mutex.unlock();
 
     opt_rect<int> ri;
     if (r.is_defined())
