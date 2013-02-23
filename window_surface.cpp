@@ -100,7 +100,7 @@ window_surface::render_drawing_queue(unsigned index)
     return render_drawing_queue(ref, area);
 }
 
-int window_surface::attach(sg_plot* p, const char* slot_str)
+int window_surface::attach(graphics::plot* p, const char* slot_str)
 {
     int index = m_part.get_slot_index(slot_str);
     if (index >= 0)

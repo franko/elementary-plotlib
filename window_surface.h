@@ -13,8 +13,6 @@
 #include "rect.h"
 #include "plot.h"
 
-typedef plot sg_plot;
-
 struct display_window {
     virtual void update_region(const agg::rect_i& r) = 0;
 };
@@ -22,7 +20,7 @@ struct display_window {
 struct plot_ref {
     plot_ref(): plot(NULL), have_save_img(false) {}
 
-    sg_plot* plot;
+    graphics::plot* plot;
     plot_render_info inf;
     bool have_save_img;
 };
@@ -36,7 +34,7 @@ public:
     window_surface(display_window* window, graph_mutex& mutex, const char* split);
     ~window_surface();
 
-    int attach(sg_plot* p, const char* slot_str);
+    int attach(graphics::plot* p, const char* slot_str);
     void split(const char* split_str);
 
     bool canvas_size_match(unsigned ww, unsigned hh)
@@ -57,7 +55,7 @@ public:
 
     void draw_all();
 
-    sg_plot* plot(unsigned index) const { return m_plots[index].plot; }
+    graphics::plot* plot(unsigned index) const { return m_plots[index].plot; }
 
     agg::rect_i get_plot_area(unsigned index) const;
     agg::rect_i get_plot_area(unsigned index, int width, int height) const;

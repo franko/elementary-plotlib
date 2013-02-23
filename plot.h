@@ -122,6 +122,7 @@ struct plot_item {
     };
 };
 
+namespace graphics {
 
 class plot {
 
@@ -544,5 +545,7 @@ void plot::draw_queue(Canvas& _canvas, const agg::trans_affine& canvas_mtx, cons
 
     canvas.reset_clipping();
 }
+
+} /* namespace graphics */
 
 #endif

@@ -1,6 +1,8 @@
 #include "plot.h"
 #include "colors.h"
 
+namespace graphics {
+
 static double compute_scale(const agg::trans_affine& m)
 {
     return m.scale() / 480.0;
@@ -724,3 +726,5 @@ int plot::current_layer_index()
 {
     return m_layers.size();
 }
+
+} /* namespace graphics */

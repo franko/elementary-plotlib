@@ -28,7 +28,7 @@ int main()
     window_surface surf(&win, mutex, "h..");
     win.attach(&surf);
 
-    plot p(true);
+    graphics::plot p(true);
     agg::rect_d lim(0.0, -1.0, 10.0, 1.0);
     p.set_limits(lim);
 
