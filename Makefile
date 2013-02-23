@@ -21,8 +21,8 @@
 include makedefs
 
 C_SRC_FILES = str.c
-CXX_SRC_FILES = agg_font_freetype.cpp font_lookup.cpp fonts.cpp fatal.cpp \
-	gamma.cpp utils.cpp canvas_svg.cpp markers.cpp text.cpp \
+CXX_SRC_FILES = agg_font_freetype.cpp render_config.cpp fatal.cpp \
+	utils.cpp canvas_svg.cpp markers.cpp text.cpp \
 	window_part.cpp draw_svg.cpp plot.cpp units.cpp window_surface.cpp \
 	printf_check.cpp colors.cpp main-test.cpp
 
@@ -38,7 +38,7 @@ CXXCOMPILE = $(CXX) $(CXXFLAGS) $(DEFS) $(INCLUDES)
 PROJECT_OBJ_FILES = $(C_SRC_FILES:%.c=%.o)
 PROJECT_OBJ_FILES += $(CXX_SRC_FILES:%.cpp=%.o)
 
-DEP_FILES := $(C_SRC_FILES:%.c=.deps/%.P)
+DEP_FILES := $(C_SRC_FILES:%.c=.deps/%.P) $(CXX_SRC_FILES:%.cpp=.deps/%.P)
 
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 LIBS_MAGIC := $(shell mkdir .libs > /dev/null 2>&1 || :)

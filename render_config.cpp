@@ -1,16 +1,34 @@
 #ifdef WIN32
-
 #include <windows.h>
 #include <shlobj.h>
 #include <sys/stat.h>
+#else
+#include <sys/stat.h>
+#endif
 
 #include "render_config.h"
+#include "fatal.h"
 
+#ifndef DISABLE_GAMMA_CORR
+graphics::gamma_type graphics::gamma(1.5);
+#endif
+// Original values for the subpixel color filter. These are quite conservative
+// to avoid color fringes.
+// agg::lcd_distribution_lut graphics::subpixel_lut(3./9., 2./9., 1./9.);
+
+// Slightly more agressive values with more weight to primary channel.
+// Some people may notice colorer fringes but fonts looks sharper.
+agg::lcd_distribution_lut graphics::subpixel_lut(0.448, 0.184, 0.092);
+
+agg::font_engine_freetype_int32 global_font_eng;
+agg::font_cache_manager<agg::font_engine_freetype_int32> global_font_man(global_font_eng);
+
+#ifdef WIN32
 const char *ttf_names[] = {"calibri.ttf", "arial.ttf", 0};
 const char *console_font_names[] = {"consolas", "lucida console", "fixedsys", 0};
 const char *console_font_filenames[] = {"consola.ttf", "lucon.ttf", "cvgafix.fon", 0};
 
-const char *gslshell::get_font_name()
+const char *graphics::get_font_name()
 {
     static TCHAR pf[MAX_PATH + 32];
     SHGetFolderPath(0, CSIDL_FONTS, NULL, 0, pf);
@@ -29,7 +47,7 @@ const char *gslshell::get_font_name()
     return 0;
 }
 
-const char* gslshell::get_fox_console_font_name()
+const char* graphics::get_fox_console_font_name()
 {
     static TCHAR pf[MAX_PATH + 32];
     SHGetFolderPath(0, CSIDL_FONTS, NULL, 0, pf);
@@ -50,10 +68,6 @@ const char* gslshell::get_fox_console_font_name()
 
 #else
 
-#include <sys/stat.h>
-
-#include "render_config.h"
-
 #ifdef DARWIN_MACOSX
 const char *ttf_names[] = {"Arial.ttf", "Trebuchet MS.ttf", "Courier New.ttf", 0};
 #define TTF_SYSTEM_DIR "/Library/Fonts/"
@@ -64,7 +78,7 @@ const char *ttf_names[] = {"ubuntu-font-family/Ubuntu-R.ttf", "freefont/FreeSans
 #define CONSOLE_FONT_NAME "monospace"
 #endif
 
-const char *gslshell::get_font_name()
+const char *graphics::get_font_name()
 {
     const char* ttf_dir = TTF_SYSTEM_DIR;
     unsigned len = strlen(ttf_dir);
@@ -83,9 +97,31 @@ const char *gslshell::get_font_name()
     return 0;
 }
 
-const char* gslshell::get_fox_console_font_name()
+const char* graphics::get_fox_console_font_name()
 {
     return CONSOLE_FONT_NAME;
 }
 
 #endif
+
+int graphics::initialize_fonts()
+{
+    const char* font_name = graphics::get_font_name();
+    if (!font_name)
+        fatal_exception("cannot find a suitable truetype font");
+    agg::glyph_rendering gren = agg::glyph_ren_outline;
+    if (!global_font_eng.load_font(font_name, 0, gren))
+        fatal_exception("cannot load truetype font");
+    global_font_eng.hinting(true);
+    return 0;
+}
+
+agg::font_engine_freetype_int32& graphics::font_engine()
+{
+    return global_font_eng;
+}
+
+agg::font_cache_manager<agg::font_engine_freetype_int32>& graphics::font_manager()
+{
+    return global_font_man;
+}

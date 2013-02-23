@@ -20,7 +20,7 @@ private:
 
 int main()
 {
-    initialize_fonts();
+    graphics::initialize_fonts();
 
     dummy_window win;
     graph_mutex_simple mutex;

@@ -46,7 +46,7 @@ class text_label
 public:
     text_label(const char* text, double size):
         m_text_buf(text), m_font_height(size), m_font_width(size),
-        m_font_eng(gslshell::font_engine()), m_font_man(gslshell::font_manager()),
+        m_font_eng(graphics::font_engine()), m_font_man(graphics::font_manager()),
         m_model_mtx(&identity_matrix),
         m_text_curve(m_font_man.path_adaptor()), m_text_trans(m_text_curve, m_text_mtx)
     {
