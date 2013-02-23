@@ -5,7 +5,9 @@
 #include "fatal.h"
 #include "colors.h"
 
-window_surface::window_surface(display_window* win, graph_mutex& mutex, const char* split_str):
+namespace graphics {
+
+window_surface::window_surface(display_window* win, mutex& mutex, const char* split_str):
 m_img(), m_save_img(), m_window(win), m_canvas(0), m_mutex(mutex)
 {
     split(split_str ? split_str : ".");
@@ -51,10 +53,10 @@ void window_surface::draw_image_buffer()
 void window_surface::render(plot_ref& ref, const agg::rect_i& r)
 {
     m_canvas->clear_box(r);
-    if (ref.plot)
+    if (ref.plot_ptr)
     {
         m_mutex.lock();
-        ref.plot->draw(*m_canvas, r, &ref.inf);
+        ref.plot_ptr->draw(*m_canvas, r, &ref.inf);
         m_mutex.unlock();
     }
 }
@@ -74,7 +76,7 @@ window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
     opt_rect<double> r;
 
     m_mutex.lock();
-    ref.plot->draw_queue(*m_canvas, m, ref.inf, r);
+    ref.plot_ptr->draw_queue(*m_canvas, m, ref.inf, r);
     m_mutex.unlock();
 
     opt_rect<int> ri;
@@ -93,18 +95,18 @@ window_surface::render_drawing_queue(unsigned index)
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
 
-    if (unlikely(!ref.plot))
+    if (unlikely(!ref.plot_ptr))
         fatal_exception("call to plot_draw_queue for undefined plot");
 
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
     return render_drawing_queue(ref, area);
 }
 
-int window_surface::attach(graphics::plot* p, const char* slot_str)
+int window_surface::attach(plot* p, const char* slot_str)
 {
     int index = m_part.get_slot_index(slot_str);
     if (index >= 0)
-        m_plots[index].plot = p;
+        m_plots[index].plot_ptr = p;
     return index;
 }
 
@@ -143,7 +145,7 @@ agg::rect_i window_surface::get_plot_area(unsigned index, int width, int height)
 
 void window_surface::slot_refresh(unsigned index)
 {
-    bool redraw = plot(index)->need_redraw();
+    bool redraw = get_plot(index)->need_redraw();
     if (redraw)
     {
         render(index);
@@ -153,7 +155,7 @@ void window_surface::slot_refresh(unsigned index)
     agg::rect_i area = get_plot_area(index);
     if (redraw)
     {
-        m_window->update_region(area);
+        m_window->update_region(m_img, area);
     }
     else
     {
@@ -163,7 +165,7 @@ void window_surface::slot_refresh(unsigned index)
             const agg::rect_i& ri = r.rect();
             agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
             r_pad.clip(area);
-            m_window->update_region(r_pad);
+            m_window->update_region(m_img, r_pad);
         }
     }
 }
@@ -174,7 +176,7 @@ window_surface::slot_update(unsigned index)
     render(index);
     render_drawing_queue(index);
     agg::rect_i area = get_plot_area(index);
-    m_window->update_region(area);
+    m_window->update_region(m_img, area);
 }
 
 void
@@ -183,7 +185,7 @@ window_surface::draw_all()
     for (unsigned k = 0; k < m_plots.size(); k++)
         render(k);
     const agg::rect_i r(0, 0, get_width(), get_height());
-    m_window->update_region(r);
+    m_window->update_region(m_img, r);
 }
 
 void
@@ -205,3 +207,5 @@ window_surface::restore_slot_image(unsigned index)
         save_plot_image(index);
     }
 }
+
+} /* namespace graphics */

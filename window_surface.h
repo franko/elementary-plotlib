@@ -13,14 +13,19 @@
 #include "rect.h"
 #include "plot.h"
 
+namespace graphics {
+
+enum { image_pixel_width = 3 };
+typedef image_gen<image_pixel_width, true> image;
+
 struct display_window {
-    virtual void update_region(const agg::rect_i& r) = 0;
+    virtual void update_region(image& img, const agg::rect_i& r) = 0;
 };
 
 struct plot_ref {
-    plot_ref(): plot(NULL), have_save_img(false) {}
+    plot_ref(): plot_ptr(NULL), have_save_img(false) {}
 
-    graphics::plot* plot;
+    plot* plot_ptr;
     plot_render_info inf;
     bool have_save_img;
 };
@@ -28,13 +33,10 @@ struct plot_ref {
 class window_surface
 {
 public:
-    enum { image_pixel_width = 3 };
-    typedef image_gen<image_pixel_width, true> image;
-
-    window_surface(display_window* window, graph_mutex& mutex, const char* split);
+    window_surface(display_window* window, mutex& mutex, const char* split);
     ~window_surface();
 
-    int attach(graphics::plot* p, const char* slot_str);
+    int attach(plot* p, const char* slot_str);
     void split(const char* split_str);
 
     bool canvas_size_match(unsigned ww, unsigned hh)
@@ -55,7 +57,7 @@ public:
 
     void draw_all();
 
-    graphics::plot* plot(unsigned index) const { return m_plots[index].plot; }
+    plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
     agg::rect_i get_plot_area(unsigned index) const;
     agg::rect_i get_plot_area(unsigned index, int width, int height) const;
@@ -80,7 +82,7 @@ private:
 
     bool plot_is_defined(unsigned index) const
     {
-        return (m_plots[index].plot != NULL);
+        return (m_plots[index].plot_ptr != NULL);
     }
 
     image m_img;
@@ -89,7 +91,9 @@ private:
     agg::pod_bvector<plot_ref> m_plots;
     display_window* m_window;
     canvas* m_canvas;
-    graph_mutex& m_mutex;
+    mutex& m_mutex;
 };
+
+} /* namespace graphics */
 
 #endif

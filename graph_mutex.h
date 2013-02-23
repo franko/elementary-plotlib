@@ -3,14 +3,16 @@
 
 #include <pthread.h>
 
-struct graph_mutex {
+namespace graphics {
+
+struct mutex {
     virtual void lock() = 0;
     virtual void unlock() = 0;
 };
 
-class graph_mutex_simple : public graph_mutex {
+class global_mutex : public mutex {
 public:
-    graph_mutex_simple()
+    global_mutex()
     {
         pthread_mutex_init(&m_mutex, NULL);
     }
@@ -21,5 +23,7 @@ public:
 private:
     pthread_mutex_t m_mutex;
 };
+
+}
 
 #endif
