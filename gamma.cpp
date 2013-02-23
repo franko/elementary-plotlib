@@ -1,4 +1,4 @@
-#include "agg-pixfmt-config.h"
+#include "render_config.h"
 
 #ifndef DISABLE_GAMMA_CORR
 gslshell::gamma_type gslshell::gamma(1.5);

@@ -1,7 +1,7 @@
 #ifndef AGGPLOT_PIXEL_FMT_H
 #define AGGPLOT_PIXEL_FMT_H
 
-#include "agg-pixfmt-config.h"
+#include "render_config.h"
 
 #include "agg_pixfmt_rgb.h"
 

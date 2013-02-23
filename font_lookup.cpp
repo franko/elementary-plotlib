@@ -4,7 +4,7 @@
 #include <shlobj.h>
 #include <sys/stat.h>
 
-#include "agg-pixfmt-config.h"
+#include "render_config.h"
 
 const char *ttf_names[] = {"calibri.ttf", "arial.ttf", 0};
 const char *console_font_names[] = {"consolas", "lucida console", "fixedsys", 0};
@@ -52,7 +52,7 @@ const char* gslshell::get_fox_console_font_name()
 
 #include <sys/stat.h>
 
-#include "agg-pixfmt-config.h"
+#include "render_config.h"
 
 #ifdef DARWIN_MACOSX
 const char *ttf_names[] = {"Arial.ttf", "Trebuchet MS.ttf", "Courier New.ttf", 0};

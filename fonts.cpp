@@ -1,5 +1,5 @@
 
-#include "agg-pixfmt-config.h"
+#include "render_config.h"
 #include "fatal.h"
 
 agg::font_engine_freetype_int32 global_font_eng;
