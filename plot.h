@@ -122,7 +122,6 @@ struct plot_item {
     };
 };
 
-typedef manage_owner RM;
 
 class plot {
 

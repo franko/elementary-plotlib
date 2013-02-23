@@ -30,7 +30,7 @@ void plot::add(sg_object* vs, agg::rgba8& color, bool outline)
     item d(vs, color, outline);
     list<item> *new_node = new list<item>(d);
     m_drawing_queue = list<item>::push_back(m_drawing_queue, new_node);
-    RM::acquire(vs);
+    manage_owner::acquire(vs);
 }
 
 void plot::push_drawing_queue()
@@ -50,7 +50,7 @@ void plot::clear_drawing_queue()
     while (m_drawing_queue)
     {
         item& d = m_drawing_queue->content();
-        RM::dispose(d.vs);
+        manage_owner::dispose(d.vs);
         m_drawing_queue = list<item>::pop(m_drawing_queue);
     }
 }
@@ -672,7 +672,7 @@ void plot::layer_dispose_elements(plot::item_list* layer)
     unsigned n = layer->size();
     for (unsigned k = 0; k < n; k++)
     {
-        RM::dispose(layer->at(k).vs);
+        manage_owner::dispose(layer->at(k).vs);
     }
 }
 
