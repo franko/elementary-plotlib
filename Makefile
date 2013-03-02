@@ -28,7 +28,7 @@ CXX_SRC_FILES = agg_font_freetype.cpp render_config.cpp fatal.cpp \
 
 TARGETS = main-test
 
-INCLUDES = -I/usr/include/freetype2 -I/usr/include/agg2
+INCLUDES = -I/usr/include/freetype2 -I/usr/include/agg2 -I/usr/include/X11
 LIBS += -lfreetype -lagg -lm -lsupc++
 
 COMPILE = $(CC) $(CFLAGS) $(DEFS) $(INCLUDES)
