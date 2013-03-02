@@ -1,13 +1,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "fatal.h"
 
 void
-fatal_exception(const char* msg)
+fatal_exception(const char* msg, ...)
 {
-  fputs(msg, stderr);
-  fputs("\n", stderr);
-  abort();
+    va_list ap;
+    va_start(ap, msg);
+    vfprintf(stderr, msg, ap);
+    fputs("\n", stderr);
+    va_end(ap);
+    abort();
 }
