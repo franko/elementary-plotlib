@@ -11,20 +11,13 @@ struct x_connection {
     int                  depth;
     Visual*              visual;
 
-    x_connection() : display(0), m_busy(false) {};
+    x_connection() : display(0) {};
     ~x_connection() {
         this->close();
     };
 
     bool init();
     void close();
-
-    void busy(bool s) {
-        m_busy = s;
-    };
-
-private:
-    bool m_busy;
 };
 
 #endif

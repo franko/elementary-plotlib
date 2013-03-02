@@ -18,7 +18,7 @@ bool x_connection::init()
 
 void x_connection::close()
 {
-    if (display && !m_busy)
+    if (display)
     {
         XCloseDisplay(display);
         display = 0;
