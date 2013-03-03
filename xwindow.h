@@ -5,6 +5,12 @@
 
 #include "x_connection.h"
 #include "strpp.h"
+#include "pthreadpp.h"
+
+struct render_target {
+    virtual void resize(unsigned width, unsigned height) = 0;
+    virtual void draw() = 0;
+};
 
 class xwindow {
 public:
@@ -33,14 +39,16 @@ public:
         xevent_mask = ExposureMask | StructureNotifyMask,
     };
 
-    xwindow(agg::pix_format_e format, bool flip_y);
+    xwindow(render_target& tgt, agg::pix_format_e format, bool flip_y);
 
     bool init(unsigned width, unsigned height, unsigned flags);
-    void close_connections();
-    void caption(str& s);
+    void run();
 
-    virtual void on_init();
-    virtual void on_resize(unsigned width, unsigned height);
+    void close_connections();
+    void caption(const str& s);
+    void wait_map_notify();
+    void free_x_resources();
+    void resize(unsigned width, unsigned height);
 
 private:
     unsigned             m_window_flags;
@@ -52,6 +60,9 @@ private:
     unsigned             m_bpp;
     unsigned             m_sys_bpp;
 
+    unsigned             m_width;
+    unsigned             m_height;
+
     Window               m_window;
     GC                   m_gc;
     XSetWindowAttributes m_window_attributes;
@@ -62,6 +73,9 @@ private:
     x_connection         m_draw_conn;
 
     str                  m_caption;
+    pthread::mutex       m_mutex;
+
+    render_target&       m_target;
 };
 
 #endif

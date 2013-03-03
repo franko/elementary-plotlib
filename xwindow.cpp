@@ -4,16 +4,18 @@
 #include "xwindow.h"
 #include "fatal.h"
 
-xwindow::xwindow(agg::pix_format_e format, bool flip_y):
+xwindow::xwindow(render_target& tgt, agg::pix_format_e format, bool flip_y):
     m_format(format),
     m_sys_format(agg::pix_format_undefined),
     m_byte_order(LSBFirst),
     m_flip_y(flip_y),
     m_sys_bpp(0),
+    m_width(0), m_height(0),
     m_window(0),
     m_gc(0),
     m_close_atom(0),
-    m_wm_protocols_atom(0)
+    m_wm_protocols_atom(0),
+    m_target(tgt)
 {
     switch(m_format)
     {
@@ -46,6 +48,15 @@ void xwindow::close_connections()
 {
     m_draw_conn.close();
     m_main_conn.close();
+}
+
+void xwindow::caption(const str& text)
+{
+    // Fixed by Enno Fennema (in original AGG library)
+    const char *capt = text.cstr();
+    Display *d = m_main_conn.display;
+    XStoreName(d, m_window, capt);
+    XSetIconName(d, m_window, capt);
 }
 
 bool xwindow::init(unsigned width, unsigned height, unsigned flags)
@@ -181,9 +192,6 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 
     caption(m_caption);
 
-    on_init();
-//    on_resize(width, height);
-
     XSizeHints *hints = XAllocSizeHints();
     if(hints)
     {
@@ -214,5 +222,79 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     m_wm_protocols_atom = XInternAtom(xc->display, "WM_PROTOCOLS", true);
     XSetWMProtocols(xc->display, m_window, &m_close_atom, 1);
 
+    wait_map_notify();
+    resize(width, height);
+
     return true;
+}
+
+void xwindow::wait_map_notify()
+{
+    x_connection *xc = &this->m_main_conn;
+    XFlush(xc->display);
+    XEvent ev;
+    do
+    {
+        XNextEvent(xc->display, &ev);
+    }
+    while (ev.type != MapNotify);
+}
+
+void xwindow::free_x_resources()
+{
+    XFreeGC(m_main_conn.display, m_gc);
+    close_connections();
+}
+
+void xwindow::resize(unsigned width, unsigned height)
+{
+    m_target.resize(width, height);
+    m_width = width;
+    m_height = height;
+}
+
+void xwindow::run()
+{
+    x_connection *xc = &this->m_main_conn;
+
+    bool quit = false;
+
+    while (!quit)
+    {
+        XEvent ev;
+
+        m_mutex.unlock();
+        XNextEvent(xc->display, &ev);
+        m_mutex.lock();
+
+        switch(ev.type)
+        {
+        case ConfigureNotify:
+        {
+            unsigned width  = ev.xconfigure.width;
+            unsigned height = ev.xconfigure.height;
+            if (width != m_width || height != m_height)
+                resize(width, height);
+        }
+        break;
+
+        case Expose:
+            /* if count is > 0 then ignore the event because
+               other expose event will follow */
+            if (ev.xexpose.count == 0)
+            {
+                m_target.draw();
+                XFlush(xc->display);
+                XSync(xc->display, false);
+                break;
+            }
+
+        case ClientMessage:
+            if (ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom))
+            {
+                quit = true;
+            }
+            break;
+        }
+    }
 }
