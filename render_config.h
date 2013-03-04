@@ -13,10 +13,6 @@ typedef aggplus::pixel_format_rgb24 pixel_format;
 
 const bool flip_y = true;
 
-extern unsigned      bpp;
-extern agg::pix_format_e  sys_pixel_format;
-extern unsigned      sys_bpp;
-
 extern gamma_type gamma;
 extern agg::lcd_distribution_lut subpixel_lut;
 
