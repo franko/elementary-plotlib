@@ -1,7 +1,7 @@
 #ifndef RENDER_CONFIG_H
 #define RENDER_CONFIG_H
 
-#include "platform/agg_platform_support.h"
+#include "aggplus_pixel_format.h"
 #include "agg_gamma_lut.h"
 #include "agg_pixfmt_rgb24_lcd.h"
 #include "agg_font_freetype.h"
@@ -9,8 +9,8 @@
 namespace graphics
 {
 typedef agg::gamma_lut<agg::int8u, agg::int16u, 8, 12> gamma_type;
+typedef aggplus::pixel_format_rgb24 pixel_format;
 
-const agg::pix_format_e pixel_format = agg::pix_format_rgb24;
 const bool flip_y = true;
 
 extern unsigned      bpp;

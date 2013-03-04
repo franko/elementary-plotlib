@@ -15,8 +15,7 @@
 
 namespace graphics {
 
-enum { image_pixel_width = 3 };
-typedef image_gen<image_pixel_width, true> image;
+typedef image_gen<graphics::pixel_format, graphics::flip_y> image;
 
 struct display_window {
     virtual void update_region(image& img, const agg::rect_i& r) = 0;

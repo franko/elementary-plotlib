@@ -8,7 +8,7 @@
 #include "agg_rendering_buffer.h"
 #include "rendering_buffer_utils.h"
 
-template <unsigned PixelSize, bool FlipY>
+template <class PixelFormat, bool FlipY>
 struct image_gen : agg::rendering_buffer
 {
     image_gen() { }
@@ -56,10 +56,10 @@ struct image_gen : agg::rendering_buffer
     static void copy_region(image_gen& dest_img, const image_gen& src_img, const agg::rect_i r)
     {
         rendering_buffer_ro src;
-        rendering_buffer_get_const_view(src, src_img, r, PixelSize);
+        rendering_buffer_get_const_view(src, src_img, r, PixelFormat::size);
 
         agg::rendering_buffer dest;
-        rendering_buffer_get_view(dest, dest_img, r, PixelSize);
+        rendering_buffer_get_view(dest, dest_img, r, PixelFormat::size);
 
         dest.copy_from(src);
     }
@@ -67,10 +67,11 @@ struct image_gen : agg::rendering_buffer
 private:
     bool init(unsigned w, unsigned h)
     {
-        agg::int8u* data = new(std::nothrow) agg::int8u[w * h * PixelSize];
+        const unsigned pixel_size = PixelFormat::size;
+        agg::int8u* data = new(std::nothrow) agg::int8u[w * h * pixel_size];
         if (likely(data))
         {
-            int stride = (FlipY ? - w * PixelSize : w * PixelSize);
+            int stride = (FlipY ? - w * pixel_size : w * pixel_size);
             attach(data, w, h, stride);
         }
         return (data != 0);
