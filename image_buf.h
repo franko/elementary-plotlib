@@ -53,7 +53,7 @@ struct image_gen : agg::rendering_buffer
         return (a.width() == b.width() && a.height() == b.height());
     }
 
-    static void copy_region(image_gen& dest_img, const image_gen& src_img, const agg::rect_i r)
+    static void copy_region(image_gen& dest_img, const image_gen& src_img, const agg::rect_i& r)
     {
         rendering_buffer_ro src;
         rendering_buffer_get_const_view(src, src_img, r, PixelFormat::size);
