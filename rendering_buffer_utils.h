@@ -1,6 +1,9 @@
 #ifndef AGGPLOT_RBUF_UTILS_H
 #define AGGPLOT_RBUF_UTILS_H
 
+#include "agg_rendering_buffer.h"
+#include "platform/agg_platform_support.h"
+
 template<class RenBufDst, class RenBufSrc, class CopyRow>
 void my_color_conv(RenBufDst* dst, const RenBufSrc* src, CopyRow copy_row_functor)
 {
@@ -126,5 +129,7 @@ private:
 };
 
 typedef row_accessor_ro<unsigned char> rendering_buffer_ro;
+
+extern void rendering_buffer_copy(agg::rendering_buffer& dst, agg::pix_format_e dst_format, const agg::rendering_buffer& src, agg::pix_format_e src_format);
 
 #endif
