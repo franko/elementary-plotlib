@@ -54,7 +54,7 @@ int main()
     surf.attach_window(&xwin_display);
 
     graphics::plot p(true);
-    agg::rect_d lim(0.0, -1.0, 10.0, 1.0);
+    agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
     p.set_limits(lim);
 
     draw::path* ln = new draw::path();
@@ -64,8 +64,12 @@ int main()
     l.line_to(0.5, 4.0);
     l.close_polygon();
 
+    trans::scaling* ln_s = new trans::scaling(ln);
+
     agg::rgba8 red(180, 0, 0, 255);
-    p.add(ln, red, true);
+    p.add(ln_s, red, true);
+
+    p.commit_pending_draw();
 
     surf.attach(&p, "1");
 
