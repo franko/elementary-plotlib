@@ -15,10 +15,12 @@
 
 namespace graphics {
 
-typedef image_gen<graphics::pixel_format, graphics::flip_y> image;
+typedef image_gen<pixel_size, flip_y> image;
 
 struct display_window {
     virtual void update_region(image& img, const agg::rect_i& r) = 0;
+    virtual void lock() = 0;
+    virtual void unlock() = 0;
 };
 
 struct plot_ref {
@@ -32,11 +34,13 @@ struct plot_ref {
 class window_surface
 {
 public:
-    window_surface(display_window* window, mutex& mutex, const char* split);
+    window_surface(mutex& mutex, const char* split);
     ~window_surface();
 
     int attach(plot* p, const char* slot_str);
     void split(const char* split_str);
+
+    void attach_window(display_window* win) { m_window = win; }
 
     bool canvas_size_match(unsigned ww, unsigned hh)
     {
@@ -75,8 +79,8 @@ public:
     void restore_slot_image(unsigned index);
 
 private:
+    void update_region_locked(image& img, const agg::rect_i& r);
     void render(plot_ref& ref, const agg::rect_i& r);
-
     opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
 
     bool plot_is_defined(unsigned index) const

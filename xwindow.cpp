@@ -4,11 +4,9 @@
 #include "xwindow.h"
 #include "fatal.h"
 
-xwindow::xwindow(render_target& tgt, agg::pix_format_e format, bool flip_y):
-    m_format(format),
+xwindow::xwindow(render_target& tgt):
     m_sys_format(agg::pix_format_undefined),
     m_byte_order(LSBFirst),
-    m_flip_y(flip_y),
     m_sys_bpp(0),
     m_width(0), m_height(0),
     m_window(0),
@@ -17,7 +15,9 @@ xwindow::xwindow(render_target& tgt, agg::pix_format_e format, bool flip_y):
     m_wm_protocols_atom(0),
     m_target(tgt)
 {
-    switch(m_format)
+    const agg::pix_format_e nat_format = (agg::pix_format_e) graphics::pixel_format;
+
+    switch(nat_format)
     {
     default:
         break;
@@ -118,7 +118,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
         {
             if(r_mask == 0xFF && b_mask == 0xFF0000)
             {
-                switch(m_format)
+                switch(graphics::pixel_format)
                 {
                 case agg::pix_format_rgba32:
                     m_sys_format = agg::pix_format_rgba32;
@@ -142,7 +142,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 
             if(r_mask == 0xFF0000 && b_mask == 0xFF)
             {
-                switch(m_format)
+                switch(graphics::pixel_format)
                 {
                 case agg::pix_format_argb32:
                     m_sys_format = agg::pix_format_argb32;
@@ -224,6 +224,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 
     wait_map_notify();
     resize(width, height);
+    m_target.draw();
 
     return true;
 }
@@ -249,6 +250,8 @@ void xwindow::free_x_resources()
 void xwindow::resize(unsigned width, unsigned height)
 {
     m_target.resize(width, height);
+    m_draw_img = new(std::nothrow) x_image(m_sys_bpp, m_byte_order, width, height, &m_draw_conn);
+
     m_width = width;
     m_height = height;
 }
@@ -274,7 +277,10 @@ void xwindow::run()
             unsigned width  = ev.xconfigure.width;
             unsigned height = ev.xconfigure.height;
             if (width != m_width || height != m_height)
+            {
                 resize(width, height);
+                m_target.draw();
+            }
         }
         break;
 
@@ -297,4 +303,22 @@ void xwindow::run()
             break;
         }
     }
+}
+
+void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
+{
+    unsigned width = r.x2 - r.x1, height = r.y2 - r.y1;
+
+    rendering_buffer_ro src_view;
+    rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
+
+    m_draw_img->x_resize(width, height);
+
+    rendering_buffer_copy(*m_draw_img, m_sys_format, src_view, (agg::pix_format_e) graphics::pixel_format);
+
+    Display *dsp = m_draw_conn.display;
+
+    int x_dst = r.x1, y_dst = (graphics::flip_y ? src_img.height() - (r.y1 + height) : r.y1);
+    XPutImage(dsp, m_window, m_gc, m_draw_img->ximage(),
+              0, 0, x_dst, y_dst, width, height);
 }

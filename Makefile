@@ -22,14 +22,14 @@ include makedefs
 
 C_SRC_FILES = str.c
 CXX_SRC_FILES = agg_font_freetype.cpp render_config.cpp fatal.cpp \
-	utils.cpp rendering_buffer_utils.cpp canvas_svg.cpp markers.cpp text.cpp \
+	utils.cpp canvas_svg.cpp markers.cpp text.cpp \
 	window_part.cpp draw_svg.cpp plot.cpp units.cpp window_surface.cpp \
-	printf_check.cpp colors.cpp main-test.cpp
+	printf_check.cpp colors.cpp x_connection.cpp xwindow.cpp test-xwindow.cpp
 
-TARGETS = main-test
+TARGETS = test-xwindow
 
 INCLUDES = -I/usr/include/freetype2 -I/usr/include/agg2 -I/usr/include/X11
-LIBS += -lfreetype -lagg -lm -lsupc++
+LIBS += -lfreetype -lagg -lm -lsupc++ -lX11
 
 COMPILE = $(CC) $(CFLAGS) $(DEFS) $(INCLUDES)
 
@@ -45,7 +45,7 @@ LIBS_MAGIC := $(shell mkdir .libs > /dev/null 2>&1 || :)
 
 all: $(TARGETS)
 
-main-test: $(PROJECT_OBJ_FILES)
+test-xwindow: $(PROJECT_OBJ_FILES)
 	@echo Linking $@
 	$(LINK_EXE) -o $@ $(PROJECT_OBJ_FILES) $(LIBS)
 

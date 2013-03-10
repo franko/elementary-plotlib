@@ -7,8 +7,8 @@
 
 namespace graphics {
 
-window_surface::window_surface(display_window* win, mutex& mutex, const char* split_str):
-m_img(), m_save_img(), m_window(win), m_canvas(0), m_mutex(mutex)
+window_surface::window_surface(mutex& mutex, const char* split_str):
+m_img(), m_save_img(), m_window(0), m_canvas(0), m_mutex(mutex)
 {
     split(split_str ? split_str : ".");
 }
@@ -42,6 +42,13 @@ bool window_surface::resize(unsigned ww, unsigned hh)
         return (m_canvas != NULL);
     }
     return false;
+}
+
+void window_surface::update_region_locked(image& img, const agg::rect_i& r)
+{
+    m_window->lock();
+    m_window->update_region(img, r);
+    m_window->unlock();
 }
 
 void window_surface::draw_image_buffer()
@@ -155,7 +162,7 @@ void window_surface::slot_refresh(unsigned index)
     agg::rect_i area = get_plot_area(index);
     if (redraw)
     {
-        m_window->update_region(m_img, area);
+        update_region_locked(m_img, area);
     }
     else
     {
@@ -165,7 +172,7 @@ void window_surface::slot_refresh(unsigned index)
             const agg::rect_i& ri = r.rect();
             agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
             r_pad.clip(area);
-            m_window->update_region(m_img, r_pad);
+            update_region_locked(m_img, r_pad);
         }
     }
 }
@@ -176,7 +183,7 @@ window_surface::slot_update(unsigned index)
     render(index);
     render_drawing_queue(index);
     agg::rect_i area = get_plot_area(index);
-    m_window->update_region(m_img, area);
+    update_region_locked(m_img, area);
 }
 
 void
@@ -185,7 +192,7 @@ window_surface::draw_all()
     for (unsigned k = 0; k < m_plots.size(); k++)
         render(k);
     const agg::rect_i r(0, 0, get_width(), get_height());
-    m_window->update_region(m_img, r);
+    update_region_locked(m_img, r);
 }
 
 void

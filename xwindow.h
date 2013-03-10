@@ -4,8 +4,10 @@
 #include "platform/agg_platform_support.h"
 
 #include "x_connection.h"
+#include "x_image.h"
 #include "strpp.h"
 #include "pthreadpp.h"
+#include "window_surface.h"
 
 struct render_target {
     virtual void resize(unsigned width, unsigned height) = 0;
@@ -39,7 +41,7 @@ public:
         xevent_mask = ExposureMask | StructureNotifyMask,
     };
 
-    xwindow(render_target& tgt, agg::pix_format_e format, bool flip_y);
+    xwindow(render_target& tgt);
 
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
@@ -49,14 +51,16 @@ public:
     void wait_map_notify();
     void free_x_resources();
     void resize(unsigned width, unsigned height);
+    void update_region(graphics::image& src_img, const agg::rect_i& r);
+
+    void lock()   { m_mutex.lock();   }
+    void unlock() { m_mutex.unlock(); }
 
 private:
     unsigned             m_window_flags;
 
-    agg::pix_format_e    m_format;
     agg::pix_format_e    m_sys_format;
     int                  m_byte_order;
-    bool                 m_flip_y;
     unsigned             m_bpp;
     unsigned             m_sys_bpp;
 
@@ -71,6 +75,8 @@ private:
 
     x_connection         m_main_conn;
     x_connection         m_draw_conn;
+
+    x_image*             m_draw_img;
 
     str                  m_caption;
     pthread::mutex       m_mutex;
