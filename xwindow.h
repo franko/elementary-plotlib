@@ -45,42 +45,37 @@ public:
 
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
+    void close();
 
-    void close_connections();
-    void caption(const str& s);
-    void wait_map_notify();
-    void free_x_resources();
-    void resize(unsigned width, unsigned height);
     void update_region(graphics::image& src_img, const agg::rect_i& r);
 
     void lock()   { m_mutex.lock();   }
     void unlock() { m_mutex.unlock(); }
 
 private:
-    unsigned             m_window_flags;
+    void close_connections();
+    void caption(const str& s);
+    void wait_map_notify();
+    void free_x_resources();
+    void resize(unsigned width, unsigned height);
 
+    unsigned             m_window_flags;
     agg::pix_format_e    m_sys_format;
     int                  m_byte_order;
     unsigned             m_bpp;
     unsigned             m_sys_bpp;
-
     unsigned             m_width;
     unsigned             m_height;
-
     Window               m_window;
     GC                   m_gc;
     XSetWindowAttributes m_window_attributes;
     Atom                 m_close_atom;
     Atom                 m_wm_protocols_atom;
-
     x_connection         m_main_conn;
     x_connection         m_draw_conn;
-
     x_image*             m_draw_img;
-
     str                  m_caption;
     pthread::mutex       m_mutex;
-
     render_target&       m_target;
 };
 

@@ -1,8 +1,12 @@
+// DEBUG: to be removed / used just to have sleep()
+#include <unistd.h>
+
 #include "xwindow.h"
 #include "window_surface.h"
 #include "graph_mutex.h"
 #include "plot.h"
 #include "path.h"
+#include "pthreadpp.h"
 
 class xwindow_display : public graphics::display_window {
 public:
@@ -40,6 +44,17 @@ private:
     graphics::window_surface& m_surface;
 };
 
+struct xwindow_thread : public pthread::thread {
+    xwindow_thread(xwindow& win): m_window(win) {}
+    virtual void run() {
+        m_window.init(640, 480, xwindow::window_resize);
+        m_window.run();
+        m_window.close();
+    }
+private:
+    xwindow& m_window;
+};
+
 int main()
 {
     graphics::initialize_fonts();
@@ -73,8 +88,12 @@ int main()
 
     surf.attach(&p, "1");
 
-    xwin.init(640, 480, xwindow::window_resize);
-    xwin.run();
+    xwindow_thread thread(xwin);
+
+    for (;;) {
+        fprintf(stderr, "sleeping...\n");
+        sleep(2);
+    }
 
     return 0;
 }

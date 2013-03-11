@@ -47,7 +47,7 @@ all: $(TARGETS)
 
 test-xwindow: $(PROJECT_OBJ_FILES)
 	@echo Linking $@
-	$(LINK_EXE) -o $@ $(PROJECT_OBJ_FILES) $(LIBS)
+	$(LINK_EXE) -o $@ $(PROJECT_OBJ_FILES) -pthread $(LIBS)
 
 .PHONY: clean all
 

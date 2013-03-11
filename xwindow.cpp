@@ -50,6 +50,12 @@ void xwindow::close_connections()
     m_main_conn.close();
 }
 
+void xwindow::free_x_resources()
+{
+    delete m_draw_img;
+    XFreeGC(m_main_conn.display, m_gc);
+}
+
 void xwindow::caption(const str& text)
 {
     // Fixed by Enno Fennema (in original AGG library)
@@ -241,12 +247,6 @@ void xwindow::wait_map_notify()
     while (ev.type != MapNotify);
 }
 
-void xwindow::free_x_resources()
-{
-    XFreeGC(m_main_conn.display, m_gc);
-    close_connections();
-}
-
 void xwindow::resize(unsigned width, unsigned height)
 {
     m_target.resize(width, height);
@@ -303,6 +303,12 @@ void xwindow::run()
         }
         m_mutex.unlock();
     }
+}
+
+void xwindow::close()
+{
+    free_x_resources();
+    close_connections();
 }
 
 void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)

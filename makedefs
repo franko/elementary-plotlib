@@ -32,6 +32,9 @@ else
   CXXFLAGS = -Os -fno-exceptions -fno-stack-protector -ffast-math -fno-rtti -Wall
 endif
 
+CFLAGS += -pthread
+CXXFLAGS += -pthread
+
 DEFS += -D_REENTRANT
 
 ifeq ($(strip $(DEBUG)), yes)
