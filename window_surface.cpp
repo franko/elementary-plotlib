@@ -192,7 +192,7 @@ window_surface::draw_all()
     for (unsigned k = 0; k < m_plots.size(); k++)
         render(k);
     const agg::rect_i r(0, 0, get_width(), get_height());
-    update_region_locked(m_img, r);
+    m_window->update_region(m_img, r);
 }
 
 void

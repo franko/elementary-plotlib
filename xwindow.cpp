@@ -266,10 +266,9 @@ void xwindow::run()
     {
         XEvent ev;
 
-        m_mutex.unlock();
         XNextEvent(xc->display, &ev);
-        m_mutex.lock();
 
+        m_mutex.lock();
         switch(ev.type)
         {
         case ConfigureNotify:
@@ -302,6 +301,7 @@ void xwindow::run()
             }
             break;
         }
+        m_mutex.unlock();
     }
 }
 
