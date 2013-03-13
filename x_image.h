@@ -50,11 +50,12 @@ public:
     {
         /* The following resize the rendering buffer using the same
            buffer memory. We assume that the size can only shrink. */
-        attach(buf(), w, h, stride());
+        unsigned row_size = w * m_pixel_size;
+        attach(buf(), w, h, flip_y ? -row_size : row_size);
 
         m_img->width  = w;
         m_img->height = h;
-        m_img->bytes_per_line = w * m_pixel_size;
+        m_img->bytes_per_line = row_size;
     }
 
     XImage* ximage() {

@@ -58,7 +58,8 @@ public:
     void render(unsigned index);
     opt_rect<int> render_drawing_queue(unsigned index);
 
-    void draw_all();
+    void render_all();
+    void draw_request();
 
     plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 

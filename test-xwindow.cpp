@@ -35,9 +35,14 @@ public:
         m_surface.resize(width, height);
     }
 
+    virtual void render()
+    {
+        m_surface.render_all();
+    }
+
     virtual void draw()
     {
-        m_surface.draw_all();
+        m_surface.draw_request();
     }
 
 private:
@@ -86,9 +91,26 @@ int main()
 
     p.commit_pending_draw();
 
-    surf.attach(&p, "1");
+    int index = surf.attach(&p, "1");
 
     xwindow_thread thread(xwin);
+
+    sleep(4);
+
+    draw::path* ln2 = new draw::path();
+    agg::path_storage& l2 = ln2->self();
+    l2.move_to(0.8, 1.0);
+    l2.line_to(0.8, 7.0);
+    l2.line_to(0.3, 4.0);
+    l2.close_polygon();
+
+    trans::scaling* ln2_s = new trans::scaling(ln2);
+
+    agg::rgba8 blue(0, 0, 180, 255);
+    p.add(ln2_s, blue, true);
+
+    surf.slot_refresh(index);
+    p.commit_pending_draw();
 
     for (;;) {
         fprintf(stderr, "sleeping...\n");

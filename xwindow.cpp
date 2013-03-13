@@ -230,7 +230,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 
     wait_map_notify();
     resize(width, height);
-    m_target.draw();
+    m_target.render();
 
     return true;
 }
@@ -278,7 +278,7 @@ void xwindow::run()
             if (width != m_width || height != m_height)
             {
                 resize(width, height);
-                m_target.draw();
+                m_target.render();
             }
         }
         break;
@@ -313,7 +313,7 @@ void xwindow::close()
 
 void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
 {
-    unsigned width = r.x2 - r.x1, height = r.y2 - r.y1;
+    const unsigned width = r.x2 - r.x1, height = r.y2 - r.y1;
 
     rendering_buffer_ro src_view;
     rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
@@ -324,7 +324,7 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
 
     Display *dsp = m_draw_conn.display;
 
-    int x_dst = r.x1, y_dst = (graphics::flip_y ? src_img.height() - (r.y1 + height) : r.y1);
+    int x_dst = r.x1, y_dst = (graphics::flip_y ? src_img.height() -r.y2 : r.y1);
     XPutImage(dsp, m_window, m_gc, m_draw_img->ximage(),
               0, 0, x_dst, y_dst, width, height);
 }

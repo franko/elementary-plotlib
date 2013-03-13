@@ -187,10 +187,15 @@ window_surface::slot_update(unsigned index)
 }
 
 void
-window_surface::draw_all()
+window_surface::render_all()
 {
     for (unsigned k = 0; k < m_plots.size(); k++)
         render(k);
+}
+
+void
+window_surface::draw_request()
+{
     const agg::rect_i r(0, 0, get_width(), get_height());
     m_window->update_region(m_img, r);
 }
