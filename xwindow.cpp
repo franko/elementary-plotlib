@@ -289,8 +289,6 @@ void xwindow::run()
             if (ev.xexpose.count == 0)
             {
                 m_target.draw();
-                XFlush(xc->display);
-                XSync(xc->display, false);
                 break;
             }
 
