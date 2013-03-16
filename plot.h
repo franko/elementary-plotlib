@@ -55,13 +55,11 @@ public:
     virtual void draw(sg_object& vs, agg::rgba8 c) {
         m_canvas->draw(vs, c);
     }
-    virtual void draw_outline(sg_object& vs, agg::rgba8 c) {
-        m_canvas->draw_outline(vs, c);
-    }
 
     virtual void clip_box(const agg::rect_base<int>& clip) {
         m_canvas->clip_box(clip);
     }
+
     virtual void reset_clipping() {
         m_canvas->reset_clipping();
     }

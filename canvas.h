@@ -178,25 +178,12 @@ public:
         this->color(c);
         this->render_scanlines(this->ras, this->sl);
     }
-
-    void draw_outline(sg_object& vs, agg::rgba8 c)
-    {
-        agg::conv_stroke<sg_object> line(vs);
-        line.width(line_width / 100.0);
-        line.line_cap(agg::round_cap);
-        this->add_path(this->ras, line);
-        this->color(c);
-        this->render_scanlines(this->ras, this->sl);
-    }
 };
 
 struct virtual_canvas {
     virtual void draw(sg_object& vs, agg::rgba8 c) = 0;
-    virtual void draw_outline(sg_object& vs, agg::rgba8 c) = 0;
-
     virtual void clip_box(const agg::rect_base<int>& clip) = 0;
     virtual void reset_clipping() = 0;
-
     virtual ~virtual_canvas() { }
 };
 
