@@ -56,16 +56,16 @@ struct sg_element {
     template <class Canvas>
     agg::rect_d draw(Canvas& canvas, const agg::trans_affine& m)
     {
+        obj->apply_transform(m, 1.0);
         agg::rect_d bb(0.0, 0.0, -1.0, -1.0);
         const bool has_stroke = (stroke_width > 0.0 && color_is_defined(stroke_color));
-        trans::scaling_a trobj(obj, m);
         if (color_is_defined(fill_color)) {
-            canvas.draw(trobj, fill_color);
+            canvas.draw(*obj, fill_color);
             if (!has_stroke)
-                agg::bounding_rect_single(trobj, 0, &bb.x1, &bb.y1, &bb.x2, &bb.y2);
+                agg::bounding_rect_single(*obj, 0, &bb.x1, &bb.y1, &bb.x2, &bb.y2);
         }
         if (has_stroke) {
-            trans::stroke_a stobj(&trobj);
+            trans::stroke_a stobj(obj);
             stobj.self().width(double(stroke_width));
             stobj.self().line_cap(agg::round_cap);
             canvas.draw(stobj, stroke_color);
