@@ -170,7 +170,7 @@ class sg_object_scaling : public sg_object
     agg::conv_transform<sg_object> m_trans;
 
 public:
-    sg_object_scaling(sg_object* src, agg::trans_affine& mtx=identity_matrix):
+    sg_object_scaling(sg_object* src, const agg::trans_affine& mtx=identity_matrix):
         m_source(src), m_trans(*m_source, mtx)
     {
         ResourceManager::acquire(m_source);
