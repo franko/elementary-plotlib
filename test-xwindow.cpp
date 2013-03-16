@@ -84,10 +84,13 @@ int main()
     l.line_to(0.5, 4.0);
     l.close_polygon();
 
-    trans::scaling* ln_s = new trans::scaling(ln);
-
+    agg::rgba8 none(0,0,0,0);
     agg::rgba8 red(180, 0, 0, 255);
-    p.add(ln_s, red, true);
+    agg::rgba8 blue(0, 0, 180, 255);
+    agg::rgba8 yellow(245, 254, 0, 255);
+
+    sg_element lne(ln, yellow, red, 2.5);
+    p.add(lne);
 
     p.commit_pending_draw();
 
@@ -104,10 +107,8 @@ int main()
     l2.line_to(0.3, 4.0);
     l2.close_polygon();
 
-    trans::scaling* ln2_s = new trans::scaling(ln2);
-
-    agg::rgba8 blue(0, 0, 180, 255);
-    p.add(ln2_s, blue, true);
+    sg_element ln2e(ln2, none, blue, 2.5);
+    p.add(ln2e);
 
     surf.slot_refresh(index);
     p.commit_pending_draw();

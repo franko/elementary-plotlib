@@ -27,12 +27,11 @@ void plot::commit_pending_draw()
     m_changes_pending.clear();
 }
 
-void plot::add(sg_object* vs, agg::rgba8& color, bool outline)
+void plot::add(const sg_element& elem)
 {
-    item d(vs, color, outline);
-    list<item> *new_node = new list<item>(d);
+    list<item> *new_node = new list<item>(elem);
     m_drawing_queue = list<item>::push_back(m_drawing_queue, new_node);
-    manage_owner::acquire(vs);
+    manage_owner::acquire(elem.obj);
 }
 
 void plot::push_drawing_queue()
@@ -52,7 +51,7 @@ void plot::clear_drawing_queue()
     while (m_drawing_queue)
     {
         item& d = m_drawing_queue->content();
-        manage_owner::dispose(d.vs);
+        manage_owner::dispose(d.obj);
         m_drawing_queue = list<item>::pop(m_drawing_queue);
     }
 }
@@ -81,17 +80,6 @@ void plot::draw_simple(canvas_type& canvas, plot_layout& layout, const agg::rect
     draw_axis(canvas, layout, clip);
     draw_elements(canvas, layout);
 };
-
-void plot::draw_element(item& c, canvas_type& canvas, const agg::trans_affine& m)
-{
-    sg_object& vs = c.content();
-    vs.apply_transform(m, 1.0);
-
-    if (c.outline)
-        canvas.draw_outline(vs, c.color);
-    else
-        canvas.draw(vs, c.color);
-}
 
 agg::trans_affine plot::get_model_matrix(const plot_layout& layout)
 {
@@ -674,7 +662,7 @@ void plot::layer_dispose_elements(plot::item_list* layer)
     unsigned n = layer->size();
     for (unsigned k = 0; k < n; k++)
     {
-        manage_owner::dispose(layer->at(k).vs);
+        manage_owner::dispose(layer->at(k).obj);
     }
 }
 

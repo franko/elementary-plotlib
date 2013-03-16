@@ -33,7 +33,7 @@
 #include "trans.h"
 #include "text.h"
 #include "categories.h"
-#include "sg_object.h"
+#include "sg_element.h"
 #include "factor_labels.h"
 
 #include "agg_array.h"
@@ -106,22 +106,6 @@ struct plot_render_info {
     agg::trans_affine active_area;
 };
 
-struct plot_item {
-    sg_object* vs;
-    agg::rgba8 color;
-    bool outline;
-
-    plot_item() : vs(0) {};
-
-    plot_item(sg_object* vs, agg::rgba8& c, bool as_outline):
-        vs(vs), color(c), outline(as_outline)
-    {};
-
-    sg_object& content() {
-        return *vs;
-    };
-};
-
 namespace graphics {
 
 class plot {
@@ -152,7 +136,7 @@ protected:
         return base_size * cscale;
     }
 
-    typedef plot_item item;
+    typedef sg_element item;
 
     class item_list : public agg::pod_bvector<item>
     {
@@ -162,9 +146,11 @@ protected:
         const opt_rect<double>& bounding_box() const {
             return m_bbox;
         }
+
         void set_bounding_box(const agg::rect_base<double>& r) {
             m_bbox.set(r);
         }
+
         void clear_bounding_box() {
             m_bbox.clear();
         }
@@ -312,7 +298,7 @@ public:
         m_xaxis_hol = hol;
     }
 
-    virtual void add(sg_object* vs, agg::rgba8& color, bool outline);
+    virtual void add(const sg_element& el);
     virtual void before_draw() { }
 
     void get_bounding_rect(agg::rect_base<double>& bb)
@@ -442,7 +428,11 @@ protected:
                              agg::path_storage& mark, agg::path_storage& ln);
 
     void draw_elements(canvas_type &canvas, const plot_layout& layout);
-    void draw_element(item& c, canvas_type &canvas, const agg::trans_affine& m);
+
+    agg::rect_d draw_element(item& c, canvas_type &canvas, const agg::trans_affine& m) {
+        return c.draw(canvas, m);
+    }
+
     void draw_axis(canvas_type& can, plot_layout& layout, const agg::rect_i* clip = 0);
 
     void draw_legends(canvas_type& canvas, const plot_layout& layout);
@@ -527,22 +517,16 @@ void plot::draw_queue(Canvas& _canvas, const agg::trans_affine& canvas_mtx, cons
     {
         item& d = c->content();
         agg::trans_affine m = get_model_matrix(layout);
-        draw_element(d, canvas, m);
-
-        agg::rect_base<double> ebb;
-        bool not_empty = agg::bounding_rect_single(d.content(), 0, &ebb.x1, &ebb.y1, &ebb.x2, &ebb.y2);
-
-        if (not_empty)
+        agg::rect_d ebb = draw_element(d, canvas, m);
+        if (ebb.is_valid()) {
             bb.add<rect_union>(ebb);
+        }
     }
-
     m_changes_accu.add<rect_union>(bb);
 
-    if (m_changes_pending.is_defined())
-    {
+    if (m_changes_pending.is_defined()) {
         bb.add<rect_union>(m_changes_pending);
     }
-
     canvas.reset_clipping();
 }
 
