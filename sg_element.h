@@ -54,24 +54,30 @@ struct sg_element {
     agg::pod_bvector<sg_property> property;
 
     template <class Canvas>
-    agg::rect_d draw(Canvas& canvas, const agg::trans_affine& m)
+    void draw(Canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb = 0)
     {
         obj->apply_transform(m, 1.0);
-        agg::rect_d bb(0.0, 0.0, -1.0, -1.0);
+        const bool has_fill = (color_is_defined(fill_color));
         const bool has_stroke = (stroke_width > 0.0 && color_is_defined(stroke_color));
-        if (color_is_defined(fill_color)) {
+        if (has_fill) {
             canvas.draw(*obj, fill_color);
-            if (!has_stroke)
-                agg::bounding_rect_single(*obj, 0, &bb.x1, &bb.y1, &bb.x2, &bb.y2);
+            if (bb && !has_stroke) {
+                agg::bounding_rect_single(*obj, 0, &bb->x1, &bb->y1, &bb->x2, &bb->y2);
+            }
         }
         if (has_stroke) {
             trans::stroke_a stobj(obj);
             stobj.self().width(double(stroke_width));
             stobj.self().line_cap(agg::round_cap);
             canvas.draw(stobj, stroke_color);
-            agg::bounding_rect_single(stobj, 0, &bb.x1, &bb.y1, &bb.x2, &bb.y2);
+            if (bb) {
+                agg::bounding_rect_single(stobj, 0, &bb->x1, &bb->y1, &bb->x2, &bb->y2);
+            }
         }
-        return bb;
+        if (bb && !has_fill && !has_stroke) {
+            bb->x1 = 0.0;
+            bb->x2 = -1.0;
+        }
     }
 };
 

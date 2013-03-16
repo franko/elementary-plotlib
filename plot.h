@@ -427,8 +427,8 @@ protected:
 
     void draw_elements(canvas_type &canvas, const plot_layout& layout);
 
-    agg::rect_d draw_element(item& c, canvas_type &canvas, const agg::trans_affine& m) {
-        return c.draw(canvas, m);
+    void draw_element(item& c, canvas_type &canvas, const agg::trans_affine& m) {
+        c.draw(canvas, m);
     }
 
     void draw_axis(canvas_type& can, plot_layout& layout, const agg::rect_i* clip = 0);
@@ -515,7 +515,8 @@ void plot::draw_queue(Canvas& _canvas, const agg::trans_affine& canvas_mtx, cons
     {
         item& d = c->content();
         agg::trans_affine m = get_model_matrix(layout);
-        agg::rect_d ebb = draw_element(d, canvas, m);
+        agg::rect_d ebb;
+        d.draw(canvas, m, &ebb);
         if (ebb.is_valid()) {
             bb.add<rect_union>(ebb);
         }
