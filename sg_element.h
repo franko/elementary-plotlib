@@ -81,4 +81,22 @@ struct sg_element {
     }
 };
 
+class sg_composite {
+public:
+    sg_composite() {}
+    void add(const sg_element& e) { m_elements.add(e); }
+
+    template <class Canvas>
+    void draw(Canvas& canvas, const agg::trans_affine& m)
+    {
+        unsigned n = m_elements.size();
+        for (unsigned i = 0; i < n; i++) {
+            sg_element& e = m_elements[i];
+            e.draw(canvas, m);
+        }
+    }
+private:
+    agg::pod_bvector<sg_element> m_elements;
+};
+
 #endif
