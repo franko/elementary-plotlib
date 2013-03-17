@@ -199,48 +199,4 @@ public:
     }
 };
 
-template <class ResourceManager>
-class sg_object_ref : public sg_object {
-public:
-    sg_object_ref(sg_object* src) : m_source(src)
-    {
-        ResourceManager::acquire(this->m_source);
-    }
-
-    virtual ~sg_object_ref() {
-        ResourceManager::dispose(this->m_source);
-    }
-
-    virtual void rewind(unsigned path_id) {
-        this->m_source->rewind(path_id);
-    }
-
-    virtual unsigned vertex(double* x, double* y) {
-        return this->m_source->vertex(x, y);
-    }
-
-    virtual void apply_transform(const agg::trans_affine& m, double as) {
-        this->m_source->apply_transform(m, as);
-    }
-
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) {
-        this->m_source->bounding_box(x1, y1, x2, y2);
-    }
-
-    virtual str write_svg(int id, agg::rgba8 c, double h) {
-        return this->m_source->write_svg(id, c, h);
-    }
-
-    virtual svg_property_list* svg_path(str& s, double h) {
-        return this->m_source->svg_path(s, h);
-    }
-
-    virtual bool affine_compose(agg::trans_affine& m) {
-        return this->m_source->affine_compose(m);
-    }
-
-private:
-    sg_object* m_source;
-};
-
 #endif
