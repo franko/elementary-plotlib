@@ -76,6 +76,8 @@ int main()
     graphics::plot p(true);
     agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
     p.set_limits(lim);
+    p.set_axis_labels_angle(graphics::plot::x_axis, 3.141592 / 4);
+    p.enable_label_format(graphics::plot::x_axis, "%.6f");
 
     draw::path ln;
     agg::path_storage& l = ln.self();
@@ -98,6 +100,7 @@ int main()
     int index = surf.attach(&p, "1");
 
     xwindow_thread thread(xwin);
+    thread.start();
 
     sleep(4);
 

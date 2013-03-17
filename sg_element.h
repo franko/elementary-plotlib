@@ -7,6 +7,7 @@
 #include "agg_conv_stroke.h"
 
 #include "sg_object.h"
+#include "colors.h"
 
 enum sg_property_e {
     prop_stroke_color,
@@ -35,8 +36,7 @@ struct sg_property {
     } value;
 };
 
-static bool color_is_defined(agg::rgba8 c)
-{
+inline static bool color_is_defined(agg::rgba8 c) {
     return (c.a > 0);
 }
 
@@ -84,7 +84,32 @@ struct sg_element {
 class sg_composite {
 public:
     sg_composite() {}
-    void add(const sg_element& e) { m_elements.add(e); }
+
+    ~sg_composite() {
+        unsigned n = m_elements.size();
+        for (unsigned i = 0; i < n; i++) {
+            delete m_elements[i].obj;
+        }
+    }
+
+    void add(const sg_element& e) {
+        m_elements.add(e);
+    }
+
+    void add(sg_object* obj, agg::rgba8 fill_color, agg::rgba8 stroke_color, float stroke_width) {
+        const sg_element e(obj, fill_color, stroke_color, stroke_width);
+        m_elements.add(e);
+    }
+
+    void add_fill(sg_object* obj, agg::rgba8 fill_color) {
+        const sg_element e(obj, fill_color, colors::zero(), 0.0);
+        m_elements.add(e);
+    }
+
+    void add_stroke(sg_object* obj, agg::rgba8 color, float line_width) {
+        const sg_element e(obj, colors::zero(), color, line_width);
+        m_elements.add(e);
+    }
 
     template <class Canvas>
     void draw(Canvas& canvas, const agg::trans_affine& m)

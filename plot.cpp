@@ -1,23 +1,14 @@
 #include "plot.h"
 #include "colors.h"
+#include "path.h"
+#include "plot_style.h"
+#include "axis_simple.h"
 
 namespace graphics {
 
 static double compute_scale(const agg::trans_affine& m)
 {
     return m.scale() / 480.0;
-}
-
-static double
-std_line_width(double scale, double w = 1.0)
-{
-#if 0
-    const double dsf = M_LN10;
-    double ls = log(scale) / dsf;
-    return exp(round(ls) * dsf) * w * 1.5;
-#else
-    return w * 1.5;
-#endif
 }
 
 void plot::commit_pending_draw()
@@ -176,70 +167,16 @@ void plot::draw_grid(const axis_e dir, const units& u,
 }
 
 
-double plot::draw_axis_m(axis_e dir, units& u,
-                             const agg::trans_affine& user_mtx,
-                             ptr_list<draw::text>& labels, double scale,
-                             agg::path_storage& mark, agg::path_storage& ln)
+sg_composite plot::draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, double& label_size, const double scale)
 {
-    const double ppad = double(axis_label_prop_space) / 1000.0;
-    const double text_label_size = get_default_font_size(text_axis_labels, scale);
-    const double eps = 1.0e-3;
-
-    // used to store the bounding box of text labels
-    opt_rect<double> bb;
-    agg::rect_base<double> r;
-
-    bool isx = (dir == x_axis);
-
     const axis& ax = get_axis(dir);
-    double hj = ax.labels_hjustif(), vj = ax.labels_vjustif();
-    double langle = ax.labels_angle();
-
-    category_map::iterator clabels(ax.categories);
-    units_iterator ulabels(u, ax.format_tag, ax.label_format());
-
-    label_iterator* ilabels = (ax.use_categories ? (label_iterator*) &clabels : (label_iterator*) &ulabels);
-
-    double uq;
-    const char* text;
-    while (ilabels->next(uq, text))
-    {
-        double x = (isx ? uq : 0.0), y = (isx ? 0.0 : uq);
-        user_mtx.transform(&x, &y);
-
-        double q = (isx ? x : y);
-
-        if (q < -eps || q > 1.0 + eps)
-            continue;
-
-        draw::text* label = new draw::text(text, text_label_size, hj, vj);
-
-        label->set_point(isx ? q : -ppad, isx ? -ppad : q);
-        label->angle(langle);
-
-        agg::bounding_rect_single(*label, 0, &r.x1, &r.y1, &r.x2, &r.y2);
-        bb.add<rect_union>(r);
-
-        labels.add(label);
-
-        mark.move_to(isx ? q :  0.0 , isx ?  0.0  : q);
-        mark.line_to(isx ? q : -0.01, isx ? -0.01 : q);
+    if (ax.use_categories) {
+        category_map::iterator clabels(ax.categories);
+        return draw_axis_simple(ax, dir, clabels, user_mtx, label_size, scale);
+    } else {
+        units_iterator ulabels(u, ax.format_tag, ax.label_format());
+        return draw_axis_simple(ax, dir, ulabels, user_mtx, label_size, scale);
     }
-
-    this->draw_grid(dir, u, user_mtx, ln);
-
-    double label_size;
-    if (bb.is_defined())
-    {
-        const agg::rect_base<double>& br = bb.rect();
-        label_size = (isx ? br.y2 - br.y1 : br.x2 - br.x1);
-    }
-    else
-    {
-        label_size = 0.0;
-    }
-
-    return label_size;
 }
 
 double plot::draw_xaxis_factors(units& u,
@@ -476,32 +413,26 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     box.line_to(1.0, 0.0);
     box.close_polygon();
 
-    agg::path_storage x_mark;
-    sg_object_gen<agg::conv_transform<agg::path_storage> > x_mark_tr(x_mark, m);
-    trans::stroke_a x_mark_stroke(&x_mark_tr);
-
-    agg::path_storage y_mark;
-    sg_object_gen<agg::conv_transform<agg::path_storage> > y_mark_tr(y_mark, m);
-    trans::stroke_a y_mark_stroke(&y_mark_tr);
-
+#if 0
     agg::path_storage ln;
     sg_object_gen<agg::conv_transform<agg::path_storage> > ln_tr(ln, m);
     trans::dash_a lndash(&ln_tr);
     trans::stroke_a lns(&lndash);
+#endif
 
     const double label_text_size = get_default_font_size(text_axis_title, scale);
     const double plpad = double(axis_label_prop_space) / 1000.0;
     const double ptpad = double(axis_title_prop_space) / 1000.0;
 
-    ptr_list<draw::text> xlabels, ylabels;
+//    ptr_list<draw::text> xlabels, ylabels;
 
-    double dy_label = 0;
-    if (this->m_xaxis_hol)
-        dy_label = draw_xaxis_factors(m_ux, m_trans, xlabels, this->m_xaxis_hol, scale, x_mark, ln);
-    else
-        dy_label = draw_axis_m(x_axis, m_ux, m_trans, xlabels, scale, x_mark, ln);
-
-    double dx_label = draw_axis_m(y_axis, m_uy, m_trans, ylabels, scale, y_mark, ln);
+   // double dy_label = 0;
+//    if (this->m_xaxis_hol)
+//        dy_label = draw_xaxis_factors(m_ux, m_trans, xlabels, this->m_xaxis_hol, scale, x_mark, ln);
+//    else
+    double dx_label, dy_label;
+    sg_composite x_axis_comp = draw_axis_m(x_axis, m_ux, m_trans, dy_label, scale);
+    sg_composite y_axis_comp = draw_axis_m(y_axis, m_uy, m_trans, dx_label, scale);
 
     double ppad_left = plpad, ppad_right = plpad;
     double ppad_bottom = plpad, ppad_top = plpad;
@@ -536,44 +467,22 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     const double aay = y0 + dy_bottom + ppad_bottom * syr;
     layout.set_plot_active_area(sxr, syr, aax, aay);
 
-    agg::trans_affine m_xlabels;
-    if (this->m_xaxis_hol)
-    {
-        m_xlabels.sx = m.sx;
-        m_xlabels.tx = m.tx;
-        m_xlabels.ty = m.ty;
+    const agg::trans_affine x_axis_mat(m.sx, 0.0, 0.0, 1.0,  m.tx, m.ty);
+    const agg::trans_affine y_axis_mat(1.0,  0.0, 0.0, m.sy, m.tx, m.ty);
 
-        x_mark_tr.self().transformer(m_xlabels);
-    }
-    else
-    {
-        m_xlabels = m;
-    }
+    x_axis_comp.draw(canvas, x_axis_mat);
+    y_axis_comp.draw(canvas, y_axis_mat);
 
-    for (unsigned j = 0; j < xlabels.size(); j++)
-    {
-        draw::text* label = xlabels[j];
-        label->apply_transform(m_xlabels, 1.0);
-        canvas.draw(*label, colors::black());
-    }
+    // lndash.add_dash(7.0, 3.0);
 
-    for (unsigned j = 0; j < ylabels.size(); j++)
-    {
-        draw::text* label = ylabels[j];
-        label->apply_transform(m, 1.0);
-        canvas.draw(*label, colors::black());
-    }
+    // lns.width(std_line_width(scale, 0.15));
+    // canvas.draw(lns, colors::black());
 
-    lndash.add_dash(7.0, 3.0);
+    // x_mark_stroke.width(std_line_width(scale, 0.75));
+    // canvas.draw(x_mark_stroke, colors::black());
 
-    lns.width(std_line_width(scale, 0.15));
-    canvas.draw(lns, colors::black());
-
-    x_mark_stroke.width(std_line_width(scale, 0.75));
-    canvas.draw(x_mark_stroke, colors::black());
-
-    y_mark_stroke.width(std_line_width(scale, 0.75));
-    canvas.draw(y_mark_stroke, colors::black());
+    // y_mark_stroke.width(std_line_width(scale, 0.75));
+    // canvas.draw(y_mark_stroke, colors::black());
 
     boxvs.width(std_line_width(scale, 0.75));
     canvas.draw(boxvs, colors::black());
