@@ -416,9 +416,7 @@ protected:
                    const agg::trans_affine& user_mtx,
                    agg::path_storage& ln);
 
-    double draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx,
-                       ptr_list<draw::text>& labels, double scale,
-                       agg::path_storage& mark, agg::path_storage& ln);
+    double draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, sg_composite& group, const double scale);
 
     double draw_xaxis_factors(units& u, const agg::trans_affine& user_mtx,
                              ptr_list<draw::text>& labels,
