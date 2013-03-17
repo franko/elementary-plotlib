@@ -6,10 +6,18 @@
 
 namespace colors {
 
-extern agg::rgba8 white;
-extern agg::rgba8 black;
+inline static agg::rgba8 black() {
+    return agg::rgba8(0,0,0);
+}
 
-extern agg::rgba8 cdefault;
+inline static agg::rgba8 white() {
+    return agg::rgba8(255,255,255);
+}
+
+inline static agg::rgba8 zero() {
+    return agg::rgba8(0,0,0,0);
+}
+
 };
 
 #endif

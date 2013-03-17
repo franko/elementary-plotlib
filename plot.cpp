@@ -432,7 +432,7 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
         draw::text title(m_title.cstr(), layout.title_font_size, 0.5, 0.0);
         title.set_point(pos.x, pos.y);
         title.apply_transform(identity_matrix, 1.0);
-        canvas.draw(title, colors::black);
+        canvas.draw(title, colors::black());
     }
 
     for (int k = 0; k < 4; k++)
@@ -554,29 +554,29 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     {
         draw::text* label = xlabels[j];
         label->apply_transform(m_xlabels, 1.0);
-        canvas.draw(*label, colors::black);
+        canvas.draw(*label, colors::black());
     }
 
     for (unsigned j = 0; j < ylabels.size(); j++)
     {
         draw::text* label = ylabels[j];
         label->apply_transform(m, 1.0);
-        canvas.draw(*label, colors::black);
+        canvas.draw(*label, colors::black());
     }
 
     lndash.add_dash(7.0, 3.0);
 
     lns.width(std_line_width(scale, 0.15));
-    canvas.draw(lns, colors::black);
+    canvas.draw(lns, colors::black());
 
     x_mark_stroke.width(std_line_width(scale, 0.75));
-    canvas.draw(x_mark_stroke, colors::black);
+    canvas.draw(x_mark_stroke, colors::black());
 
     y_mark_stroke.width(std_line_width(scale, 0.75));
-    canvas.draw(y_mark_stroke, colors::black);
+    canvas.draw(y_mark_stroke, colors::black());
 
     boxvs.width(std_line_width(scale, 0.75));
-    canvas.draw(boxvs, colors::black);
+    canvas.draw(boxvs, colors::black());
 
     if (!str_is_null(&m_x_axis.title))
     {
@@ -588,7 +588,7 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
         xlabel.set_point(labx, laby);
         xlabel.apply_transform(identity_matrix, 1.0);
 
-        canvas.draw(xlabel, colors::black);
+        canvas.draw(xlabel, colors::black());
     }
 
     if (!str_is_null(&m_y_axis.title))
@@ -602,7 +602,7 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
         ylabel.angle(M_PI/2.0);
         ylabel.apply_transform(identity_matrix, 1.0);
 
-        canvas.draw(ylabel, colors::black);
+        canvas.draw(ylabel, colors::black());
     }
 
     if (clip)

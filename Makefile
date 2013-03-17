@@ -24,7 +24,7 @@ C_SRC_FILES = str.c
 CXX_SRC_FILES = agg_font_freetype.cpp render_config.cpp fatal.cpp \
 	utils.cpp canvas_svg.cpp markers.cpp text.cpp \
 	window_part.cpp draw_svg.cpp plot.cpp units.cpp window_surface.cpp \
-	printf_check.cpp colors.cpp x_connection.cpp xwindow.cpp test-xwindow.cpp
+	printf_check.cpp x_connection.cpp xwindow.cpp test-xwindow.cpp
 
 TARGETS = test-xwindow
 
