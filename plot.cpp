@@ -482,14 +482,6 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
 
     sg_composite x_axis_comp, y_axis_comp;
 #if 0
-    agg::path_storage x_mark;
-    sg_object_gen<agg::conv_transform<agg::path_storage> > x_mark_tr(x_mark, m);
-    trans::stroke_a x_mark_stroke(&x_mark_tr);
-
-    agg::path_storage y_mark;
-    sg_object_gen<agg::conv_transform<agg::path_storage> > y_mark_tr(y_mark, m);
-    trans::stroke_a y_mark_stroke(&y_mark_tr);
-
     agg::path_storage ln;
     sg_object_gen<agg::conv_transform<agg::path_storage> > ln_tr(ln, m);
     trans::dash_a lndash(&ln_tr);
