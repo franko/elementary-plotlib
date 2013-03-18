@@ -100,6 +100,7 @@ int main()
     int index = surf.attach(&p, "1");
 
     xwindow_thread thread(xwin);
+    thread.start();
 
     sleep(4);
 

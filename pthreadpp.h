@@ -70,7 +70,9 @@ private:
    Idea taken from the FOX toolkit, FXThread class */
 class thread {
 public:
-    thread() {
+    thread() { }
+
+    void start() {
         pthread_attr_t attr[1];
         pthread_t thread[1];
         pthread_attr_init(attr);
