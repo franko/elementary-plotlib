@@ -1,3 +1,8 @@
+#include "plot.h"
+#include "plot_style.h"
+#include "units.h"
+#include "rect.h"
+#include "path.h"
 
 namespace graphics {
 
@@ -62,6 +67,8 @@ sg_composite draw_axis_simple(const plot::axis& ax, plot::axis_e dir,
     }
 
     screen_size += lab_space;
+
+    return group;
 }
 
 }

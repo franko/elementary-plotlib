@@ -118,22 +118,6 @@ class plot {
     };
 
 protected:
-    enum text_class_e { text_axis_title, text_axis_labels, text_plot_title };
-
-    double get_default_font_size(text_class_e tc, double scale)
-    {
-        double base_size;
-        if (tc == text_axis_title)
-            base_size = 15.0;
-        else if (tc == text_axis_labels)
-            base_size = 14.0;
-        else /* text_axis_title */
-            base_size = 18.0;
-
-        const double cscale = max(scale, 0.75);
-        return base_size * cscale;
-    }
-
     typedef sg_element item;
 
     class item_list : public agg::pod_bvector<item>
@@ -416,7 +400,7 @@ protected:
                    const agg::trans_affine& user_mtx,
                    agg::path_storage& ln);
 
-    double draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, sg_composite& group, const double scale);
+    sg_composite draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, double& screen_size, const double scale);
 
     double draw_xaxis_factors(units& u, const agg::trans_affine& user_mtx,
                              ptr_list<draw::text>& labels,

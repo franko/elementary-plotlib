@@ -1,24 +1,14 @@
 #include "plot.h"
 #include "colors.h"
 #include "path.h"
+#include "plot_style.h"
+#include "axis_simple.h"
 
 namespace graphics {
 
 static double compute_scale(const agg::trans_affine& m)
 {
     return m.scale() / 480.0;
-}
-
-static double
-std_line_width(double scale, double w = 1.0)
-{
-#if 0
-    const double dsf = M_LN10;
-    double ls = log(scale) / dsf;
-    return exp(round(ls) * dsf) * w * 1.5;
-#else
-    return w * 1.5;
-#endif
 }
 
 void plot::commit_pending_draw()
@@ -177,73 +167,16 @@ void plot::draw_grid(const axis_e dir, const units& u,
 }
 
 
-double plot::draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, sg_composite& group, const double scale)
+sg_composite plot::draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, double& label_size, const double scale)
 {
-    const double text_label_size = get_default_font_size(text_axis_labels, scale);
-    const double eps = 1.0e-3;
-    const double lab_space = 10, mark_len = 5;
-
-    // used to store the bounding box of text labels
-    opt_rect<double> bb;
-    agg::rect_d r;
-
-    bool isx = (dir == x_axis);
-
     const axis& ax = get_axis(dir);
-    double hj = ax.labels_hjustif(), vj = ax.labels_vjustif();
-    double langle = ax.labels_angle();
-
-    category_map::iterator clabels(ax.categories);
-    units_iterator ulabels(u, ax.format_tag, ax.label_format());
-
-    label_iterator* ilabels = (ax.use_categories ? (label_iterator*) &clabels : (label_iterator*) &ulabels);
-
-    draw::path* marks_obj = new draw::path();
-    trans::scaling* marks = new trans::scaling(marks_obj);
-    agg::path_storage& marks_path = marks_obj->self();
-
-    group.add_stroke(marks, colors::black(), std_line_width(scale, 1.0));
-
-    double uq;
-    const char* text;
-    while (ilabels->next(uq, text))
-    {
-        double x = (isx ? uq : 0.0), y = (isx ? 0.0 : uq);
-        user_mtx.transform(&x, &y);
-
-        double q = (isx ? x : y);
-
-        if (q < -eps || q > 1.0 + eps)
-            continue;
-
-        draw::text* label = new draw::text(text, text_label_size, hj, vj);
-
-        label->set_point(isx ? q : -lab_space, isx ? -lab_space : q);
-        label->angle(langle);
-
-        agg::bounding_rect_single(*label, 0, &r.x1, &r.y1, &r.x2, &r.y2);
-        bb.add<rect_union>(r);
-
-        group.add_fill(label, colors::black());
-
-        marks_path.move_to(isx ? q :  0.0 , isx ?  0.0  : q);
-        marks_path.line_to(isx ? q : -mark_len, isx ? -mark_len : q);
+    if (ax.use_categories) {
+        category_map::iterator clabels(ax.categories);
+        return draw_axis_simple(ax, dir, clabels, user_mtx, label_size, scale);
+    } else {
+        units_iterator ulabels(u, ax.format_tag, ax.label_format());
+        return draw_axis_simple(ax, dir, ulabels, user_mtx, label_size, scale);
     }
-
-    // this->draw_grid(dir, u, user_mtx, ln);
-
-    double label_size;
-    if (bb.is_defined())
-    {
-        const agg::rect_d& br = bb.rect();
-        label_size = (isx ? br.y2 - br.y1 : br.x2 - br.x1);
-    }
-    else
-    {
-        label_size = 0.0;
-    }
-
-    return label_size + lab_space;
 }
 
 double plot::draw_xaxis_factors(units& u,
@@ -480,7 +413,6 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     box.line_to(1.0, 0.0);
     box.close_polygon();
 
-    sg_composite x_axis_comp, y_axis_comp;
 #if 0
     agg::path_storage ln;
     sg_object_gen<agg::conv_transform<agg::path_storage> > ln_tr(ln, m);
@@ -498,9 +430,9 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
 //    if (this->m_xaxis_hol)
 //        dy_label = draw_xaxis_factors(m_ux, m_trans, xlabels, this->m_xaxis_hol, scale, x_mark, ln);
 //    else
-    double dy_label = draw_axis_m(x_axis, m_ux, m_trans, x_axis_comp, scale);
-
-    double dx_label = draw_axis_m(y_axis, m_uy, m_trans, y_axis_comp, scale);
+    double dx_label, dy_label;
+    sg_composite x_axis_comp = draw_axis_m(x_axis, m_ux, m_trans, dy_label, scale);
+    sg_composite y_axis_comp = draw_axis_m(y_axis, m_uy, m_trans, dx_label, scale);
 
     double ppad_left = plpad, ppad_right = plpad;
     double ppad_bottom = plpad, ppad_top = plpad;
