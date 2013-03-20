@@ -34,17 +34,26 @@ private:
     int m_inf, m_sup; // expressed in the base of (m_major * 10^order)
     int nb_decimals;
 
-    void init(double min, double max, double spacefact);
-
 public:
     enum { label_format_max_size = 16 };
     enum format_e { format_int, format_float, format_invalid };
 
-    units(): m_major(1), order(0), dmajor(1), m_inf(0), m_sup(1), nb_decimals(0) {};
-    units (double min, double max, double spacefact = 4.0)
+    units() { clear(); }
+    units(double min, double max, double spacefact = 4.0)
     {
-        init(min, max, spacefact);
-    };
+        set(min, max, spacefact);
+    }
+
+    void clear() {
+        m_major = 1;
+        order = 0;
+        dmajor = 1;
+        m_inf = 0;
+        m_sup = 1;
+        nb_decimals = 0;
+    }
+
+    void set(double min, double max, double spacefact = 4.0);
 
     int begin() const {
         return m_inf;
@@ -53,7 +62,7 @@ public:
         return m_sup;
     };
 
-    void limits(int &start, int &fin, double &step)
+    void limits(int &start, int &fin, double &step) const
     {
         start = m_inf;
         fin = m_sup;

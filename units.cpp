@@ -25,7 +25,7 @@
 #include "units.h"
 #include "printf_check.h"
 
-void units::init(double yinf, double ysup, double spacefact)
+void units::set(double yinf, double ysup, double spacefact)
 {
     double del;
 

@@ -8,6 +8,7 @@
 
 #include "sg_object.h"
 #include "colors.h"
+#include "trans.h"
 
 enum sg_property_e {
     prop_stroke_color,

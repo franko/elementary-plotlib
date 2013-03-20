@@ -1,14 +1,14 @@
-#include "plot.h"
+#include "plot_axis.h"
 #include "plot_style.h"
-#include "units.h"
 #include "rect.h"
 #include "path.h"
+#include "trans.h"
+#include "text.h"
 
 namespace graphics {
 
-sg_composite draw_axis_simple(const plot::axis& ax, plot::axis_e dir,
-    label_iterator& labels, const agg::trans_affine& user_mtx, double& screen_size,
-    const double scale)
+sg_composite axis::draw_with_labels(label_iterator& labels,
+    const agg::trans_affine& m, double& screen_size, const double scale)
 {
     sg_composite group;
 
@@ -20,9 +20,9 @@ sg_composite draw_axis_simple(const plot::axis& ax, plot::axis_e dir,
     opt_rect<double> bb;
     agg::rect_d r;
 
-    const bool isx = (dir == plot::x_axis);
-    const double hj = ax.labels_hjustif(), vj = ax.labels_vjustif();
-    const double langle = ax.labels_angle();
+    const bool isx = (dir == x_axis);
+    const double hj = labels_hjustif(), vj = labels_vjustif();
+    const double langle = labels_angle();
 
     draw::path* marks_obj = new draw::path();
     trans::scaling* marks = new trans::scaling(marks_obj);
@@ -35,7 +35,7 @@ sg_composite draw_axis_simple(const plot::axis& ax, plot::axis_e dir,
     while (labels.next(uq, text))
     {
         double x = (isx ? uq : 0.0), y = (isx ? 0.0 : uq);
-        user_mtx.transform(&x, &y);
+        m.transform(&x, &y);
 
         double q = (isx ? x : y);
 
