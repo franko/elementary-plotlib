@@ -2,7 +2,6 @@
 #include "colors.h"
 #include "path.h"
 #include "plot_style.h"
-#include "axis_simple.h"
 
 namespace graphics {
 
@@ -108,38 +107,12 @@ void plot::draw_elements(canvas_type& canvas, const plot_layout& layout)
 
 void plot::compute_user_trans()
 {
-    agg::rect_base<double> r;
-
-    if (m_use_units && m_pad_units)
-    {
-        int ixi, ixs, iyi, iys;
-        double xd, yd;
-        m_ux.limits(ixi, ixs, xd);
-        r.x1 = ixi * xd;
-        r.x2 = ixs * xd;
-
-        m_uy.limits(iyi, iys, yd);
-        r.y1 = iyi * yd;
-        r.y2 = iys * yd;
-    }
-    else
-    {
-        r = m_rect.is_defined() ? m_rect.rect() : agg::rect_base<double>(0.0, 0.0, 1.0, 1.0);
-    }
-
-    if (m_xaxis_hol)
-    {
-        for (unsigned k = 0; k < m_xaxis_hol->size(); k++)
-        {
-            factor_labels* f = m_xaxis_hol->at(k);
-            double x1 = f->mark(0), x2 = f->mark(f->labels_number());
-            if (k == 0 || x1 < r.x1) r.x1 = x1;
-            if (k == 0 || x2 > r.x2) r.x2 = x2;
-        }
-    }
-
-    double dx = r.x2 - r.x1, dy = r.y2 - r.y1;
-    double fx = (dx == 0 ? 1.0 : 1/dx), fy = (dy == 0 ? 1.0 : 1/dy);
+    agg::rect_d rin = m_rect.is_defined() ? m_rect.rect() : agg::rect_d(0, 0, 1, 1);
+    agg::rect_d r;
+    m_x_axis.get_limits(rin.x1, rin.x2, r.x1, r.x2);
+    m_y_axis.get_limits(rin.y1, rin.y2, r.y1, r.y2);
+    const double dx = r.x2 - r.x1, dy = r.y2 - r.y1;
+    const double fx = (dx == 0 ? 1.0 : 1/dx), fy = (dy == 0 ? 1.0 : 1/dy);
     this->m_trans = agg::trans_affine(fx, 0.0, 0.0, fy, -r.x1 * fx, -r.y1 * fy);
 }
 
@@ -163,19 +136,6 @@ void plot::draw_grid(const axis_e dir, const units& u,
             ln.move_to(isx ? q : 0.0, isx ? 0.0 : q);
             ln.line_to(isx ? q : 1.0, isx ? 1.0 : q);
         }
-    }
-}
-
-
-sg_composite plot::draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, double& label_size, const double scale)
-{
-    const axis& ax = get_axis(dir);
-    if (ax.use_categories) {
-        category_map::iterator clabels(ax.categories);
-        return draw_axis_simple(ax, dir, clabels, user_mtx, label_size, scale);
-    } else {
-        units_iterator ulabels(u, ax.format_tag, ax.label_format());
-        return draw_axis_simple(ax, dir, ulabels, user_mtx, label_size, scale);
     }
 }
 
@@ -390,13 +350,7 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
 // to the actual plotting are matrix.
 void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i* clip)
 {
-    if (!m_use_units)
-    {
-        layout.plot_active_area = layout.plot_area;
-        return;
-    }
-
-    double scale = compute_scale(layout.plot_area);
+    const double scale = compute_scale(layout.plot_area);
 
     if (clip)
         canvas.clip_box(*clip);
@@ -424,15 +378,13 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     const double plpad = double(axis_label_prop_space) / 1000.0;
     const double ptpad = double(axis_title_prop_space) / 1000.0;
 
-//    ptr_list<draw::text> xlabels, ylabels;
-
    // double dy_label = 0;
 //    if (this->m_xaxis_hol)
 //        dy_label = draw_xaxis_factors(m_ux, m_trans, xlabels, this->m_xaxis_hol, scale, x_mark, ln);
 //    else
     double dx_label, dy_label;
-    sg_composite x_axis_comp = draw_axis_m(x_axis, m_ux, m_trans, dy_label, scale);
-    sg_composite y_axis_comp = draw_axis_m(y_axis, m_uy, m_trans, dx_label, scale);
+    sg_composite x_axis_comp = m_x_axis.draw(m_trans, dy_label, scale);
+    sg_composite y_axis_comp = m_y_axis.draw(m_trans, dx_label, scale);
 
     double ppad_left = plpad, ppad_right = plpad;
     double ppad_bottom = plpad, ppad_top = plpad;
@@ -525,11 +477,12 @@ void plot::set_axis_labels_angle(axis_e axis_dir, double angle)
     compute_user_trans();
 }
 
-void plot::set_units(bool use_units)
+void plot::set_units(bool _use_units)
 {
-    if (m_use_units != use_units)
+    if (use_units() != _use_units)
     {
-        m_use_units = use_units;
+        m_x_axis.active = _use_units;
+        m_y_axis.active = _use_units;
         m_need_redraw = true;
         compute_user_trans();
     }
@@ -537,16 +490,18 @@ void plot::set_units(bool use_units)
 
 void plot::update_units()
 {
+    units& ux = m_x_axis.u;
+    units& uy = m_y_axis.u;
     if (m_rect.is_defined())
     {
         const rect_base<double>& r = m_rect.rect();
-        m_ux = units(r.x1, r.x2);
-        m_uy = units(r.y1, r.y2);
+        ux.set(r.x1, r.x2);
+        uy.set(r.y1, r.y2);
     }
     else
     {
-        m_ux = units();
-        m_uy = units();
+        ux.clear();
+        uy.clear();
     }
 
     compute_user_trans();

@@ -32,9 +32,8 @@
 #include "canvas_svg.h"
 #include "trans.h"
 #include "text.h"
-#include "categories.h"
 #include "sg_element.h"
-#include "factor_labels.h"
+#include "plot_axis.h"
 
 #include "agg_array.h"
 #include "agg_bounding_rect.h"
@@ -145,70 +144,12 @@ public:
     typedef list<item> iterator;
     typedef virtual_canvas canvas_type;
 
-    enum axis_e { x_axis, y_axis };
     enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
-
-    struct axis {
-        str title;
-        axis_e dir;
-        bool use_categories;
-        category_map categories;
-        units::format_e format_tag;
-
-        axis(axis_e _dir, const char* _title = 0):
-            title(_title ? _title : ""), dir(_dir), use_categories(false),
-            format_tag(units::format_invalid),
-            m_labels_angle(0.0),
-            m_labels_hjustif(_dir == x_axis ? 0.5 : 1.0),
-            m_labels_vjustif(_dir == x_axis ? 1.0 : 0.5)
-        { }
-
-        const char* label_format() const
-        {
-            return (format_tag == units::format_invalid ? 0 : m_label_format);
-        }
-
-        void set_label_format(units::format_e tag, const char* fmt)
-        {
-            format_tag = tag;
-            memcpy(m_label_format, fmt, strlen(fmt) + 1);
-        }
-
-        void clear_label_format() {
-            format_tag = units::format_invalid;
-        }
-
-        void set_labels_angle(double angle)
-        {
-            double a = (dir == x_axis ? -angle + M_PI/2 : -angle);
-            double c = cos(a), s = sin(a);
-            m_labels_hjustif = round(c + 1.0) / 2.0;
-            m_labels_vjustif = round(s + 1.0) / 2.0;
-            m_labels_angle = angle;
-        }
-
-        double labels_angle()   const {
-            return m_labels_angle;
-        }
-        double labels_hjustif() const {
-            return m_labels_hjustif;
-        }
-        double labels_vjustif() const {
-            return m_labels_vjustif;
-        }
-
-    private:
-        double m_labels_angle;
-        double m_labels_hjustif, m_labels_vjustif;
-        char m_label_format[units::label_format_max_size];
-    };
 
     plot(bool use_units = true) :
         m_drawing_queue(0), m_clip_flag(true),
-        m_need_redraw(true), m_rect(),
-        m_use_units(use_units), m_pad_units(false), m_title(),
-        m_sync_mode(true), m_x_axis(x_axis), m_y_axis(y_axis),
-        m_xaxis_hol(0)
+        m_need_redraw(true), m_sync_mode(true),
+        m_x_axis(x_axis, use_units), m_y_axis(y_axis, use_units)
     {
         m_layers.add(&m_root_layer);
         compute_user_trans();
@@ -225,8 +166,6 @@ public:
             if (k > 0)
                 delete layer;
         }
-
-        delete m_xaxis_hol;
     };
 
     str& title() {
@@ -264,20 +203,18 @@ public:
     }
 
     void set_units(bool use_units);
+
     bool use_units() const {
-        return m_use_units;
+        return m_x_axis.active;
     };
 
     void update_units();
     void set_limits(const agg::rect_d& r);
     void unset_limits();
 
-    ptr_list<factor_labels>* get_xaxis_hol() { return m_xaxis_hol; }
-
-    void set_xaxis_hol(ptr_list<factor_labels>* hol)
+    void set_xaxis_comp_labels(ptr_list<factor_labels>* labels)
     {
-        delete m_xaxis_hol;
-        m_xaxis_hol = hol;
+        m_x_axis.set_comp_labels(labels);
     }
 
     virtual void add(const sg_element& el);
@@ -348,16 +285,17 @@ public:
 
     void pad_mode(bool req)
     {
-        if (req != m_pad_units)
+        axis& ax = m_x_axis;
+        if (req != ax.pad_units)
         {
-            m_pad_units = req;
+            ax.pad_units = req;
             m_need_redraw = true;
             compute_user_trans();
         }
     };
 
     bool pad_mode() const {
-        return m_pad_units;
+        return m_x_axis.pad_units;
     }
 
     bool enable_label_format(axis_e dir, const char* fmt)
@@ -461,14 +399,9 @@ protected:
     opt_rect<double> m_changes_accu;
     opt_rect<double> m_changes_pending;
 
-    bool m_use_units;
-    units m_ux, m_uy;
-
 private:
     item_list m_root_layer;
     agg::pod_auto_vector<item_list*, max_layers> m_layers;
-
-    bool m_pad_units;
 
     str m_title;
 
@@ -476,8 +409,6 @@ private:
 
     axis m_x_axis, m_y_axis;
     plot* m_legend[4];
-
-    ptr_list<factor_labels>* m_xaxis_hol;
 };
 
 template <class Canvas>
