@@ -338,13 +338,6 @@ protected:
                    const agg::trans_affine& user_mtx,
                    agg::path_storage& ln);
 
-    sg_composite draw_axis_m(axis_e dir, units& u, const agg::trans_affine& user_mtx, double& screen_size, const double scale);
-
-    double draw_xaxis_factors(units& u, const agg::trans_affine& user_mtx,
-                             ptr_list<draw::text>& labels,
-                             ptr_list<factor_labels>* f_labels, double scale,
-                             agg::path_storage& mark, agg::path_storage& ln);
-
     void draw_elements(canvas_type &canvas, const plot_layout& layout);
 
     void draw_element(item& c, canvas_type &canvas, const agg::trans_affine& m) {

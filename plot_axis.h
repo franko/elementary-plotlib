@@ -94,7 +94,9 @@ public:
             label_size = 0.0;
             return sg_composite();
         }
-        if (use_categories) {
+        if (m_comp_labels) {
+            draw_comp_labels_axis(m, label_size, scale);
+        } else if (use_categories) {
             category_map::iterator clabels(categories);
             return draw_with_labels(clabels, m, label_size, scale);
         } else {
@@ -107,6 +109,7 @@ protected:
 
     sg_composite draw_with_labels(label_iterator& labels,
         const agg::trans_affine& m, double& screen_size, const double scale);
+    sg_composite draw_comp_labels_axis(const agg::trans_affine& m, double& screen_size, const double scale);
 
 private:
     double m_labels_angle;
