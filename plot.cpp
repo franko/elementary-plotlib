@@ -139,86 +139,6 @@ void plot::draw_grid(const axis_e dir, const units& u,
     }
 }
 
-double plot::draw_xaxis_factors(units& u,
-                             const agg::trans_affine& user_mtx,
-                             ptr_list<draw::text>& labels,
-                             ptr_list<factor_labels>* f_labels, double scale,
-                             agg::path_storage& mark, agg::path_storage& ln)
-{
-    const double text_label_size = get_default_font_size(text_axis_labels, scale);
-
-    const axis& ax = get_axis(x_axis);
-    const double lab_angle = ax.labels_angle();
-
-    const double y_spac_top = 3, y_spac_bot = 3;
-    const int layers_number = f_labels->size();
-    double p_lab = 0;
-    for (int layer = layers_number - 1; layer >= 0; layer--)
-    {
-        factor_labels* factor = f_labels->at(layer);
-
-        if (factor->labels_number() > 256) continue;
-
-        agg::pod_bvector<draw::text*> tlabels;
-        double hmax = 0.0;
-        bool draw_labels =  (factor->labels_number() < 32);
-        if (draw_labels)
-        {
-            for (int k = 0; k < factor->labels_number(); k++)
-            {
-                const char* text = factor->label_text(k);
-                draw::text* label = new draw::text(text, text_label_size, 0.5, 0.5);
-                label->angle(lab_angle);
-
-                double rx1, ry1, rx2, ry2;
-                agg::bounding_rect_single(*label, 0, &rx1, &ry1, &rx2, &ry2);
-                double rh = ry2 - ry1;
-                if (rh > hmax) hmax = rh;
-                tlabels.add(label);
-            }
-        }
-
-        double p_lab_inf = p_lab - (y_spac_top + y_spac_bot + hmax);
-
-        for (int k = 0; k < factor->labels_number(); k++)
-        {
-            double x_lab_a = factor->mark(k);
-            double x_lab_b = factor->mark(k+1);
-
-            double x_a = x_lab_a, y_a = 0.0;
-            user_mtx.transform(&x_a, &y_a);
-            double q_a = x_a;
-
-            double x_lab = (x_lab_a + x_lab_b) / 2, y_lab = 0.0;
-            user_mtx.transform(&x_lab, &y_lab);
-            double q_lab = x_lab;
-
-            mark.move_to(q_a, p_lab);
-            mark.line_to(q_a, p_lab_inf);
-
-            if (draw_labels)
-            {
-                draw::text* label = tlabels[k];
-                label->set_point(q_lab, p_lab_inf + y_spac_bot + hmax/2.0);
-                labels.add(label);
-            }
-        }
-
-        double x_lab = factor->mark(factor->labels_number());
-        double x_a = x_lab, y_a = 0.0;
-        user_mtx.transform(&x_a, &y_a);
-        double q_a = x_a;
-        mark.move_to(q_a, p_lab);
-        mark.line_to(q_a, p_lab_inf);
-
-        p_lab = p_lab_inf;
-    }
-
-    this->draw_grid(x_axis, u, user_mtx, ln);
-
-    return - p_lab;
-}
-
 static inline double approx_text_height(double text_size)
 {
     return text_size * 1.5;
@@ -378,10 +298,6 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     const double plpad = double(axis_label_prop_space) / 1000.0;
     const double ptpad = double(axis_title_prop_space) / 1000.0;
 
-   // double dy_label = 0;
-//    if (this->m_xaxis_hol)
-//        dy_label = draw_xaxis_factors(m_ux, m_trans, xlabels, this->m_xaxis_hol, scale, x_mark, ln);
-//    else
     double dx_label, dy_label;
     sg_composite x_axis_comp = m_x_axis.draw(m_trans, dy_label, scale);
     sg_composite y_axis_comp = m_y_axis.draw(m_trans, dx_label, scale);
