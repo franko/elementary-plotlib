@@ -99,10 +99,9 @@ public:
         } else if (use_categories) {
             category_map::iterator clabels(categories);
             return draw_with_labels(clabels, m, label_size, scale);
-        } else {
-            units_iterator ulabels(u, format_tag, label_format());
-            return draw_with_labels(ulabels, m, label_size, scale);
         }
+        units_iterator ulabels(u, format_tag, label_format());
+        return draw_with_labels(ulabels, m, label_size, scale);
     }
 
 protected:
