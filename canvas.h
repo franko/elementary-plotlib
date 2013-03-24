@@ -21,21 +21,17 @@ class renderer_gray_aa
 {
 public:
     renderer_gray_aa(agg::rendering_buffer& ren_buf, agg::rgba8 bg_color):
-        m_pixbuf(ren_buf), m_ren_base(m_pixbuf), m_ren_solid(m_ren_base),
+        pixel_buffer(ren_buf), renderer_base(pixel_buffer), m_ren_solid(renderer_base),
         m_bgcol(bg_color)
     { }
 
     typedef Pixel pixfmt_type;
 
-    agg::renderer_base<Pixel>& renderer_base() {
-        return m_ren_base;
-    }
-
     double width()  const {
-        return m_pixbuf.width();
+        return pixel_buffer.width();
     };
     double height() const {
-        return m_pixbuf.height();
+        return pixel_buffer.height();
     };
 
     template <class Rasterizer, class VertexSource>
@@ -49,22 +45,22 @@ public:
     }
 
     void clear(agg::rgba8 c) {
-        m_ren_base.clear(c);
+        renderer_base.clear(c);
     }
 
     void clear_box(const agg::rect_base<int>& r)
     {
         for (int y = r.y1; y < r.y2; y++)
-            m_ren_base.copy_hline (r.x1, y, r.x2, m_bgcol);
+            renderer_base.copy_hline (r.x1, y, r.x2, m_bgcol);
     }
 
     void clip_box(const agg::rect_base<int>& clip)
     {
-        m_ren_base.clip_box_naked(clip.x1, clip.y1, clip.x2, clip.y2);
+        renderer_base.clip_box_naked(clip.x1, clip.y1, clip.x2, clip.y2);
     }
 
     void reset_clipping() {
-        m_ren_base.reset_clipping(true);
+        renderer_base.reset_clipping(true);
     }
 
     template <class Rasterizer, class Scanline>
@@ -72,14 +68,16 @@ public:
     {
         agg::render_scanlines(ras, sl, m_ren_solid);
     }
+
+    Pixel pixel_buffer;
+    agg::renderer_base<Pixel> renderer_base;
+
 private:
-    Pixel m_pixbuf;
-    agg::renderer_base<Pixel> m_ren_base;
     agg::renderer_scanline_aa_solid<agg::renderer_base<Pixel> > m_ren_solid;
     agg::rgba8 m_bgcol;
 };
 
-template <class Pixel>
+template <class Pixel, class PixelNoSub>
 class renderer_subpixel_aa
 {
     enum { subpixel_scale = 3 };
@@ -93,15 +91,12 @@ class renderer_subpixel_aa
 
 public:
     renderer_subpixel_aa(agg::rendering_buffer& ren_buf, agg::rgba8 bg_color):
+        pixel_buffer(ren_buf), renderer_base(pixel_buffer),
         m_pixbuf(ren_buf), m_ren_base(m_pixbuf), m_ren_solid(m_ren_base),
         m_bgcol(bg_color)
     { }
 
     typedef Pixel pixfmt_type;
-
-    agg::renderer_base<pixfmt_type>& renderer_base() {
-        return m_ren_base;
-    }
 
     double width()  const {
         return m_pixbuf.width() / subpixel_scale;
@@ -149,6 +144,9 @@ public:
         agg::render_scanlines(ras, sl, m_ren_solid);
     }
 
+    PixelNoSub pixel_buffer;
+    agg::renderer_base<PixelNoSub> renderer_base;
+
 private:
     pixfmt_type m_pixbuf;
     agg::renderer_base<pixfmt_type> m_ren_base;
@@ -190,7 +188,7 @@ struct virtual_canvas {
 #ifdef DISABLE_SUBPIXEL_AA
 typedef canvas_gen<renderer_gray_aa<pixel_type> > canvas;
 #else
-typedef canvas_gen<renderer_subpixel_aa<pixel_lcd_type> > canvas;
+typedef canvas_gen<renderer_subpixel_aa<pixel_lcd_type, pixel_type> > canvas;
 #endif
 
 #endif
