@@ -55,6 +55,10 @@ public:
         m_canvas->draw(vs, c);
     }
 
+    virtual void draw_outline_noaa(sg_object& vs, agg::rgba8 c) {
+        m_canvas->draw_outline_noaa(vs, c);
+    }
+
     virtual void clip_box(const agg::rect_base<int>& clip) {
         m_canvas->clip_box(clip);
     }
