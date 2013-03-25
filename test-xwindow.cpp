@@ -92,7 +92,7 @@ int main()
     agg::rgba8 yellow(245, 254, 0, 255);
 
     trans::scaling_a* trln = new trans::scaling_a(&ln);
-    sg_element lne(trln, yellow, red, 2.5);
+    sg_element lne(trln, yellow, red, 2.5, ELEMENT_FILL|ELEMENT_STROKE);
     p.add(lne);
 
     p.commit_pending_draw();

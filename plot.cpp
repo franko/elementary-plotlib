@@ -21,7 +21,7 @@ void plot::add(const sg_element& elem)
 {
     list<item> *new_node = new list<item>(elem);
     m_drawing_queue = list<item>::push_back(m_drawing_queue, new_node);
-    manage_owner::acquire(elem.obj);
+    manage_owner::acquire(elem.object());
 }
 
 void plot::push_drawing_queue()
@@ -41,7 +41,7 @@ void plot::clear_drawing_queue()
     while (m_drawing_queue)
     {
         item& d = m_drawing_queue->content();
-        manage_owner::dispose(d.obj);
+        manage_owner::dispose(d.object());
         m_drawing_queue = list<item>::pop(m_drawing_queue);
     }
 }
@@ -277,23 +277,6 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
 
     const agg::trans_affine& m = layout.plot_active_area;
 
-    agg::path_storage box;
-    sg_object_gen<agg::conv_transform<agg::path_storage> > boxtr(box, m);
-    trans::stroke_a boxvs(&boxtr);
-
-    box.move_to(0.0, 0.0);
-    box.line_to(0.0, 1.0);
-    box.line_to(1.0, 1.0);
-    box.line_to(1.0, 0.0);
-    box.close_polygon();
-
-#if 0
-    agg::path_storage ln;
-    sg_object_gen<agg::conv_transform<agg::path_storage> > ln_tr(ln, m);
-    trans::dash_a lndash(&ln_tr);
-    trans::stroke_a lns(&lndash);
-#endif
-
     const double label_text_size = get_default_font_size(text_axis_title, scale);
     const double plpad = double(axis_label_prop_space) / 1000.0;
     const double ptpad = double(axis_title_prop_space) / 1000.0;
@@ -340,20 +323,6 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
 
     x_axis_comp.draw(canvas, x_axis_mat);
     y_axis_comp.draw(canvas, y_axis_mat);
-
-    // lndash.add_dash(7.0, 3.0);
-
-    // lns.width(std_line_width(scale, 0.15));
-    // canvas.draw(lns, colors::black());
-
-    // x_mark_stroke.width(std_line_width(scale, 0.75));
-    // canvas.draw(x_mark_stroke, colors::black());
-
-    // y_mark_stroke.width(std_line_width(scale, 0.75));
-    // canvas.draw(y_mark_stroke, colors::black());
-
-    boxvs.width(std_line_width(scale, 0.75));
-    canvas.draw(boxvs, colors::black());
 
     if (!str_is_null(&m_x_axis.title))
     {
@@ -442,7 +411,7 @@ void plot::layer_dispose_elements(plot::item_list* layer)
     unsigned n = layer->size();
     for (unsigned k = 0; k < n; k++)
     {
-        manage_owner::dispose(layer->at(k).obj);
+        manage_owner::dispose(layer->at(k).object());
     }
 }
 

@@ -28,7 +28,8 @@ sg_composite axis::draw_with_labels(label_iterator& labels,
     trans::scaling* marks = new trans::scaling(marks_obj);
     agg::path_storage& marks_path = marks_obj->self();
 
-    group.add_stroke(marks, colors::black(), std_line_width(scale, 1.0));
+    // std_line_width(scale, 1.0)
+    group.add_stroke(marks, colors::black(), 1.0, ELEMENT_CRISP_RENDER);
 
     double uq;
     const char* text;
@@ -55,6 +56,9 @@ sg_composite axis::draw_with_labels(label_iterator& labels,
         marks_path.move_to(isx ? q :  0.0 , isx ?  0.0  : q);
         marks_path.line_to(isx ? q : -mark_len, isx ? -mark_len : q);
     }
+
+    marks_path.move_to(0.0, 0.0);
+    marks_path.line_to(isx ? 1.0 : 0.0 , isx ?  0.0 : 1.0);
 
     if (bb.is_defined())
     {
@@ -90,7 +94,8 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
     trans::scaling* marks = new trans::scaling(marks_obj);
     agg::path_storage& marks_path = marks_obj->self();
 
-    group.add_stroke(marks, colors::black(), std_line_width(scale, 1.0));
+    // std_line_width(scale, 1.0)
+    group.add_stroke(marks, colors::black(), 1.0, ELEMENT_CRISP_RENDER);
 
     const int layers_number = m_comp_labels->size();
     double p_lab = 0;
