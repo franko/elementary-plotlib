@@ -7,8 +7,8 @@
 
 namespace graphics {
 
-window_surface::window_surface(mutex& mutex, const char* split_str):
-m_img(), m_save_img(), m_window(0), m_canvas(0), m_mutex(mutex)
+window_surface::window_surface(const char* split_str):
+m_img(), m_save_img(), m_window(0), m_canvas(0)
 {
     split(split_str ? split_str : ".");
 }
@@ -62,9 +62,9 @@ void window_surface::render(plot_ref& ref, const agg::rect_i& r)
     m_canvas->clear_box(r);
     if (ref.plot_ptr)
     {
-        m_mutex.lock();
+        drawing_lock();
         ref.plot_ptr->draw(*m_canvas, r, &ref.inf);
-        m_mutex.unlock();
+        drawing_unlock();
     }
 }
 
@@ -82,9 +82,9 @@ window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
     const agg::trans_affine m = affine_matrix(box);
     opt_rect<double> r;
 
-    m_mutex.lock();
+    drawing_lock();
     ref.plot_ptr->draw_queue(*m_canvas, m, ref.inf, r);
-    m_mutex.unlock();
+    drawing_unlock();
 
     opt_rect<int> ri;
     if (r.is_defined())

@@ -3,7 +3,6 @@
 
 #include "xwindow.h"
 #include "window_surface.h"
-#include "graph_mutex.h"
 #include "plot.h"
 #include "path.h"
 #include "pthreadpp.h"
@@ -64,9 +63,7 @@ int main()
 {
     graphics::initialize_fonts();
 
-    // TODO: rename global mutex to something more meaningful
-    graphics::global_mutex mutex;
-    graphics::window_surface surf(mutex, "h..");
+    graphics::window_surface surf("h..");
     window_surface_target surf_target(surf);
 
     xwindow xwin(surf_target);

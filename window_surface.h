@@ -7,7 +7,6 @@
 
 #include "image_buf.h"
 #include "window_part.h"
-#include "graph_mutex.h"
 #include "sg_object.h"
 #include "canvas.h"
 #include "rect.h"
@@ -34,7 +33,7 @@ struct plot_ref {
 class window_surface
 {
 public:
-    window_surface(mutex& mutex, const char* split);
+    window_surface(const char* split);
     ~window_surface();
 
     int attach(plot* p, const char* slot_str);
@@ -80,6 +79,9 @@ public:
     void restore_slot_image(unsigned index);
 
 private:
+    static void drawing_lock()   { drawing_mutex.lock(); }
+    static void drawing_unlock() { drawing_mutex.unlock(); }
+
     void update_region_locked(image& img, const agg::rect_i& r);
     void render(plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
@@ -95,7 +97,6 @@ private:
     agg::pod_bvector<plot_ref> m_plots;
     display_window* m_window;
     canvas* m_canvas;
-    mutex& m_mutex;
 };
 
 } /* namespace graphics */
