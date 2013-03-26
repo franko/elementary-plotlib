@@ -43,6 +43,7 @@ public:
     };
 
     xwindow(render_target& tgt);
+    ~xwindow();
 
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();

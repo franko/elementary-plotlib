@@ -13,6 +13,7 @@ xwindow::xwindow(render_target& tgt):
     m_gc(0),
     m_close_atom(0),
     m_wm_protocols_atom(0),
+    m_draw_img(0),
     m_target(tgt)
 {
     const agg::pix_format_e nat_format = (agg::pix_format_e) graphics::pixel_format;
@@ -44,6 +45,11 @@ xwindow::xwindow(render_target& tgt):
     }
 }
 
+xwindow::~xwindow()
+{
+    delete m_draw_img;
+}
+
 void xwindow::close_connections()
 {
     m_draw_conn.close();
@@ -52,7 +58,6 @@ void xwindow::close_connections()
 
 void xwindow::free_x_resources()
 {
-    delete m_draw_img;
     XFreeGC(m_main_conn.display, m_gc);
 }
 
@@ -250,6 +255,8 @@ void xwindow::wait_map_notify()
 void xwindow::resize(unsigned width, unsigned height)
 {
     m_target.resize(width, height);
+
+    delete m_draw_img;
     m_draw_img = new(std::nothrow) x_image(m_sys_bpp, m_byte_order, width, height, &m_draw_conn);
 
     m_width = width;
