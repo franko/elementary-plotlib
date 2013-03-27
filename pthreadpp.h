@@ -92,6 +92,7 @@ private:
         t->run();
         fprintf(stderr, "terminate.\n");
         pthread_exit(NULL);
+        return NULL;
     }
 };
 
