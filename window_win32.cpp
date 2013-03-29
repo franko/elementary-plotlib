@@ -1,8 +1,104 @@
+#include "fatal.h"
 
 static HINSTANCE g_windows_instance = 0;
 static int g_windows_cmd_show = 0;
 
-LRESULT CALLBACK window_w32::wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+// we use the bgr24 pixel format as the native pixel
+enum { sys_bpp = 24, sys_pixel_size = 3, sys_pixel_format = agg::pix_format_bgr24 };
+
+static void bitmap_info_resize (BITMAPINFO* bmp, unsigned w, unsigned h)
+{
+    if (w == 0) w = 1;
+    if (h == 0) h = 1;
+
+    unsigned bits_per_pixel = bmp->bmiHeader.biBitCount;
+    unsigned row_len = agg::pixel_map::calc_row_len(w, bits_per_pixel);
+
+    bmp->bmiHeader.biWidth  = w;
+    bmp->bmiHeader.biHeight = h;
+    bmp->bmiHeader.biSizeImage = row_len * h;
+}
+/*
+static void pixel_map_attach (agg::pixel_map& pm, agg::rendering_buffer *rbuf, bool flip_y)
+{
+    int stride = pm.stride();
+    rbuf->attach(pm.buf(), pm.width(), pm.height(), flip_y ? stride : -stride);
+}
+*/
+//------------------------------------------------------------------------
+void window_win32::create_pmap(unsigned width, unsigned height, rendering_buffer* rbuf)
+{
+	const unsigned bpp = graphics::pixel_size * 8;
+    m_pmap_window.create(width, height, org_e(bpp));
+    pixel_map_attach(m_pmap_window, rbuf, graphics::flip_y);
+    delete [] (unsigned char*) m_bmp_draw;
+    m_bmp_draw = pixel_map::create_bitmap_info(width, height, org_e(sys_bpp));
+}
+
+//------------------------------------------------------------------------
+void window_win32::display_pmap(HDC dc, const rendering_buffer* src, const agg::rect_i* ri)
+{
+    if(sys_pixel_format == graphics::pixel_format && ri == 0)
+    {
+        m_pmap_window.draw(dc);
+    }
+    else
+    {
+        agg::rect_i r(0, 0, src->width(), src->height());
+        if (ri) {
+            r = agg::intersect_rectangles(r, *ri);
+		}
+        int w = r.x2 - r.x1, h = r.y2 - r.y1;
+
+        bitmap_info_resize(m_bmp_draw, w, h);
+
+        pixel_map pmap;
+        pmap.attach_to_bmp(m_bmp_draw);
+
+        rendering_buffer rbuf_tmp;
+        pixel_map_attach (pmap, &rbuf_tmp, m_flip_y);
+
+        rendering_buffer_ro src_view;
+        rendering_buffer_get_const_view(src_view, *src, r, graphics::bpp / 8);
+
+        if (sys_pixel_format == graphics::pixel_format) {
+            rbuf_tmp.copy_from(src_view);
+        } else {
+            if (sys_pixel_format == agg::pix_format_bgr24 && graphics::format == agg::pix_format_rgb24) {
+                my_color_conv(&rbuf_tmp, &src_view, color_conv_rgb24_to_bgr24());
+            } else {
+            	fatal_exception("unsupported pixel format, system: %d, application: %d", int(sys_pixel_format), int(graphics::pixel_format));
+            }
+        }
+
+        unsigned int wh = m_pmap_window.height();
+        RECT wrect;
+        wrect.left   = r.x1;
+        wrect.right  = r.x2;
+        wrect.bottom = wh - r.y1;
+        wrect.top    = wh - r.y2;
+
+        RECT brect;
+        brect.left   = 0;
+        brect.right  = w;
+        brect.bottom = h;
+        brect.top    = 0;
+
+        pmap.draw(dc, &wrect, &brect);
+    }
+}
+
+void window_win32::resize(unsigned width, unsigned height)
+{
+    m_target.resize(width, height);
+    create_pmap(LOWORD(lParam), HIWORD(lParam), &app->rbuf_window());
+    m_draw_img = new(std::nothrow) x_image(m_sys_bpp, m_byte_order, width, height, &m_draw_conn);
+
+    m_width = width;
+    m_height = height;
+}
+
+LRESULT CALLBACK window_win32::wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     HDC paintDC;
@@ -30,9 +126,7 @@ LRESULT CALLBACK window_w32::wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
         //--------------------------------------------------------------------
     case WM_SIZE:
-        app->m_specific->create_pmap(LOWORD(lParam), HIWORD(lParam),
-                                     &app->rbuf_window());
-
+        win->create_pmap(LOWORD(lParam), HIWORD(lParam), &app->rbuf_window());
         app->trans_affine_resizing(LOWORD(lParam), HIWORD(lParam));
         app->on_resize(LOWORD(lParam), HIWORD(lParam));
         app->force_redraw();
@@ -127,11 +221,11 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 
     ::SetWindowLong(m_hwnd, GWL_USERDATA, (LONG)this);
 
-    resize(width, height);
+    m_specific->create_pmap(width, height, &m_rbuf_window);
+    // resize(width, height);
     m_target.render();
 
 #if 0
-    m_specific->create_pmap(width, height, &m_rbuf_window);
     m_initial_width = width;
     m_initial_height = height;
     on_init();

@@ -33,6 +33,8 @@ private:
     str           m_caption;
 
     HDC           m_current_dc;
+    pixel_map     m_pmap_window;
+    BITMAPINFO*   m_bmp_draw;
 #if 0
     pix_format_e  m_format;
     pix_format_e  m_sys_format;
@@ -40,8 +42,6 @@ private:
     unsigned      m_bpp;
     unsigned      m_sys_bpp;
     HWND          m_hwnd;
-    pixel_map     m_pmap_window;
-    BITMAPINFO*   m_bmp_draw;
     pixel_map     m_pmap_img[platform_support::max_images];
     int           m_cur_x;
     int           m_cur_y;
