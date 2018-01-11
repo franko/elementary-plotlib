@@ -71,7 +71,7 @@ private:
 class thread {
 public:
     thread() { }
-    virtual ~thread() = 0;
+    virtual ~thread() { };
 
     void start() {
         pthread_attr_t attr[1];

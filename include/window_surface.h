@@ -20,7 +20,7 @@ struct display_window {
     virtual void update_region(image& img, const agg::rect_i& r) = 0;
     virtual void lock() = 0;
     virtual void unlock() = 0;
-    virtual ~display_window() = 0;
+    virtual ~display_window() { };
 };
 
 struct plot_ref {
