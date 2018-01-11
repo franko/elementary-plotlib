@@ -1,7 +1,7 @@
-#include <X.h>
-#include <Xutil.h>
+#include <X11/X.h>
+#include <X11/Xutil.h>
 
-#include "xwindow.h"
+#include "xwindow/xwindow.h"
 #include "fatal.h"
 
 xwindow::xwindow(render_target& tgt):

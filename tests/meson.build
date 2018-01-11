@@ -1,5 +1,3 @@
-x11_dep = dependency('libx11')
-
 test_xwindow_src = ['test-xwindow.cpp']
 
 executable('test-xwindow', test_xwindow_src,

@@ -1,4 +1,4 @@
-#include "x_connection.h"
+#include "xwindow/x_connection.h"
 #include "fatal.h"
 
 bool x_connection::init()
