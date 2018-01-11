@@ -3,8 +3,8 @@
 
 #include "platform/agg_platform_support.h"
 
-#include "x_connection.h"
-#include "x_image.h"
+#include "xwindow/x_connection.h"
+#include "xwindow/x_image.h"
 #include "strpp.h"
 #include "pthreadpp.h"
 #include "window_surface.h"

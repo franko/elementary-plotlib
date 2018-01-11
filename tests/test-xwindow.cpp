@@ -1,7 +1,7 @@
 // DEBUG: to be removed / used just to have sleep()
 #include <unistd.h>
 
-#include "xwindow.h"
+#include "xwindow/xwindow.h"
 #include "window_surface.h"
 #include "plot.h"
 #include "path.h"
