@@ -4,9 +4,11 @@
 #include "xwindow/xwindow.h"
 #include "fatal.h"
 
+// m_sys_format, m_byte_order, m_sys_bpp will be set based on XWindow display on "init" method.
 xwindow::xwindow(render_target& tgt):
     m_sys_format(agg::pix_format_undefined),
     m_byte_order(LSBFirst),
+    m_bpp(graphics::pixel_size * 8),
     m_sys_bpp(0),
     m_width(0), m_height(0),
     m_window(0),
@@ -16,33 +18,6 @@ xwindow::xwindow(render_target& tgt):
     m_draw_img(0),
     m_target(tgt)
 {
-    const agg::pix_format_e nat_format = (agg::pix_format_e) graphics::pixel_format;
-
-    switch(nat_format)
-    {
-    default:
-        break;
-    case agg::pix_format_gray8:
-        m_bpp = 8;
-        break;
-
-    case agg::pix_format_rgb565:
-    case agg::pix_format_rgb555:
-        m_bpp = 16;
-        break;
-
-    case agg::pix_format_rgb24:
-    case agg::pix_format_bgr24:
-        m_bpp = 24;
-        break;
-
-    case agg::pix_format_bgra32:
-    case agg::pix_format_abgr32:
-    case agg::pix_format_argb32:
-    case agg::pix_format_rgba32:
-        m_bpp = 32;
-        break;
-    }
 }
 
 xwindow::~xwindow()
