@@ -1,6 +1,8 @@
 #ifndef XWINDOW_XWINDOW_H
 #define XWINDOW_XWINDOW_H
 
+// Used for declarations of window_flag_e and pix_format_e enums.
+// Not used for platform_support class which is not used in this project.
 #include "platform/agg_platform_support.h"
 
 #include "xwindow/x_connection.h"
@@ -8,13 +10,6 @@
 #include "strpp.h"
 #include "pthreadpp.h"
 #include "window_surface.h"
-
-struct render_target {
-    virtual void resize(unsigned width, unsigned height) = 0;
-    virtual void render() = 0;
-    virtual void draw() = 0;
-    virtual ~render_target() { }
-};
 
 class xwindow {
 public:
@@ -43,7 +38,7 @@ public:
         xevent_mask = ExposureMask | StructureNotifyMask,
     };
 
-    xwindow(render_target& tgt);
+    xwindow(graphics::render_target& tgt);
     ~xwindow();
 
     bool init(unsigned width, unsigned height, unsigned flags);
@@ -65,7 +60,6 @@ private:
     unsigned             m_window_flags;
     agg::pix_format_e    m_sys_format;
     int                  m_byte_order;
-    unsigned             m_bpp;
     unsigned             m_sys_bpp;
     unsigned             m_width;
     unsigned             m_height;
@@ -79,7 +73,7 @@ private:
     x_image*             m_draw_img;
     str                  m_caption;
     pthread::mutex       m_mutex;
-    render_target&       m_target;
+    graphics::render_target& m_target;
 };
 
 #endif

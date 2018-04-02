@@ -100,6 +100,13 @@ private:
     canvas* m_canvas;
 };
 
+struct render_target {
+    virtual void resize(unsigned width, unsigned height) = 0;
+    virtual void render() = 0;
+    virtual void draw() = 0;
+    virtual ~render_target() { }
+};
+
 } /* namespace graphics */
 
 #endif

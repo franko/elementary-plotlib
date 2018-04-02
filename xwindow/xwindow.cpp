@@ -5,10 +5,9 @@
 #include "fatal.h"
 
 // m_sys_format, m_byte_order, m_sys_bpp will be set based on XWindow display on "init" method.
-xwindow::xwindow(render_target& tgt):
+xwindow::xwindow(graphics::render_target& tgt):
     m_sys_format(agg::pix_format_undefined),
     m_byte_order(LSBFirst),
-    m_bpp(graphics::pixel_size * 8),
     m_sys_bpp(0),
     m_width(0), m_height(0),
     m_window(0),

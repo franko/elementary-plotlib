@@ -23,7 +23,7 @@ private:
     xwindow& m_xwindow;
 };
 
-class window_surface_target : public render_target {
+class window_surface_target : public graphics::render_target {
 public:
     window_surface_target(graphics::window_surface& surf):
     m_surface(surf)
