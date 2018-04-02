@@ -7,22 +7,6 @@
 #include "path.h"
 #include "pthreadpp.h"
 
-class xwindow_display : public graphics::display_window {
-public:
-    xwindow_display(xwindow& xwin): m_xwindow(xwin) { }
-
-    virtual void update_region(graphics::image& img, const agg::rect_i& r)
-    {
-        m_xwindow.update_region(img, r);
-    }
-
-    virtual void lock()   { m_xwindow.lock();   }
-    virtual void unlock() { m_xwindow.unlock(); }
-
-private:
-    xwindow& m_xwindow;
-};
-
 class window_surface_target : public graphics::render_target {
 public:
     window_surface_target(graphics::window_surface& surf):
@@ -67,8 +51,7 @@ int main()
     window_surface_target surf_target(surf);
 
     xwindow xwin(surf_target);
-    xwindow_display xwin_display(xwin);
-    surf.attach_window(&xwin_display);
+    surf.attach_window(&xwin);
 
     graphics::plot p(true);
     agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);

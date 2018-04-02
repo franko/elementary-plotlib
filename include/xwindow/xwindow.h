@@ -11,7 +11,7 @@
 #include "pthreadpp.h"
 #include "window_surface.h"
 
-class xwindow {
+class xwindow : public graphics::display_window {
 public:
     //----------------------------------------------------------window_flag_e
     // These are flags used in method init(). Not all of them are
@@ -45,10 +45,10 @@ public:
     void run();
     void close();
 
-    void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
 
-    void lock()   { m_mutex.lock();   }
-    void unlock() { m_mutex.unlock(); }
+    virtual void lock()   { m_mutex.lock();   }
+    virtual void unlock() { m_mutex.unlock(); }
 
 private:
     void close_connections();
