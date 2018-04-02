@@ -31,8 +31,14 @@ struct plot_ref {
     bool have_save_img;
 };
 
-class window_surface
-{
+struct render_target {
+    virtual bool resize(unsigned width, unsigned height) = 0;
+    virtual void render() = 0;
+    virtual void draw() = 0;
+    virtual ~render_target() { }
+};
+
+class window_surface : public render_target {
 public:
     window_surface(const char* split);
     ~window_surface();
@@ -47,7 +53,7 @@ public:
         return (m_img.width() == ww && m_img.height() == hh);
     }
 
-    bool resize(unsigned ww, unsigned hh);
+    virtual bool resize(unsigned ww, unsigned hh);
 
     // redraw all the image buffer for the current plots
     void draw_image_buffer();
@@ -55,11 +61,11 @@ public:
     int get_width()  const { return m_img.width(); }
     int get_height() const { return m_img.height(); }
 
-    void render(unsigned index);
+    void render_plot_by_index(unsigned index);
     opt_rect<int> render_drawing_queue(unsigned index);
 
-    void render_all();
-    void draw_request();
+    virtual void render();
+    virtual void draw();
 
     plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
@@ -84,7 +90,7 @@ private:
     static void drawing_unlock() { drawing_mutex.unlock(); }
 
     void update_region_locked(image& img, const agg::rect_i& r);
-    void render(plot_ref& ref, const agg::rect_i& r);
+    void render_by_ref(plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
 
     bool plot_is_defined(unsigned index) const
@@ -98,13 +104,6 @@ private:
     agg::pod_bvector<plot_ref> m_plots;
     display_window* m_window;
     canvas* m_canvas;
-};
-
-struct render_target {
-    virtual void resize(unsigned width, unsigned height) = 0;
-    virtual void render() = 0;
-    virtual void draw() = 0;
-    virtual ~render_target() { }
 };
 
 } /* namespace graphics */

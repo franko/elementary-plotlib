@@ -55,10 +55,10 @@ void window_surface::update_region_locked(image& img, const agg::rect_i& r)
 void window_surface::draw_image_buffer()
 {
     for (unsigned k = 0; k < plot_number(); k++)
-        render(k);
+        render_plot_by_index(k);
 }
 
-void window_surface::render(plot_ref& ref, const agg::rect_i& r)
+void window_surface::render_by_ref(plot_ref& ref, const agg::rect_i& r)
 {
     m_canvas->clear_box(r);
     if (ref.plot_ptr)
@@ -69,12 +69,12 @@ void window_surface::render(plot_ref& ref, const agg::rect_i& r)
     }
 }
 
-void window_surface::render(unsigned index)
+void window_surface::render_plot_by_index(unsigned index)
 {
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    render(ref, area);
+    render_by_ref(ref, area);
 }
 
 opt_rect<int>
@@ -156,7 +156,7 @@ void window_surface::slot_refresh(unsigned index)
     bool redraw = get_plot(index)->need_redraw();
     if (redraw)
     {
-        render(index);
+        render_plot_by_index(index);
     }
 
     opt_rect<int> r = render_drawing_queue(index);
@@ -181,21 +181,21 @@ void window_surface::slot_refresh(unsigned index)
 void
 window_surface::slot_update(unsigned index)
 {
-    render(index);
+    render_plot_by_index(index);
     render_drawing_queue(index);
     agg::rect_i area = get_plot_area(index);
     update_region_locked(m_img, area);
 }
 
 void
-window_surface::render_all()
+window_surface::render()
 {
     for (unsigned k = 0; k < m_plots.size(); k++)
-        render(k);
+        render_plot_by_index(k);
 }
 
 void
-window_surface::draw_request()
+window_surface::draw()
 {
     const agg::rect_i r(0, 0, get_width(), get_height());
     m_window->update_region(m_img, r);
@@ -216,7 +216,7 @@ window_surface::restore_slot_image(unsigned index)
     }
     else
     {
-        render(index);
+        render_plot_by_index(index);
         save_plot_image(index);
     }
 }

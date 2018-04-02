@@ -7,31 +7,6 @@
 #include "path.h"
 #include "pthreadpp.h"
 
-class window_surface_target : public graphics::render_target {
-public:
-    window_surface_target(graphics::window_surface& surf):
-    m_surface(surf)
-    { }
-
-    virtual void resize(unsigned width, unsigned height)
-    {
-        m_surface.resize(width, height);
-    }
-
-    virtual void render()
-    {
-        m_surface.render_all();
-    }
-
-    virtual void draw()
-    {
-        m_surface.draw_request();
-    }
-
-private:
-    graphics::window_surface& m_surface;
-};
-
 struct xwindow_thread : public pthread::thread {
     xwindow_thread(xwindow& win): m_window(win) {}
     virtual void run() {
@@ -48,9 +23,7 @@ int main()
     graphics::initialize_fonts();
 
     graphics::window_surface surf("h..");
-    window_surface_target surf_target(surf);
-
-    xwindow xwin(surf_target);
+    xwindow xwin(surf);
     surf.attach_window(&xwin);
 
     graphics::plot p(true);
