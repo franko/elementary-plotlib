@@ -11,9 +11,9 @@ namespace graphics
 {
 typedef agg::gamma_lut<agg::int8u, agg::int16u, 8, 12> gamma_type;
 
-enum { pixel_format = agg::pix_format_rgb24, pixel_size = 3 };
-
-const bool flip_y = true;
+static constexpr agg::pix_format_e pixel_format = agg::pix_format_rgb24;
+static constexpr int pixel_size = 3, bpp = 24;
+static constexpr bool flip_y = true;
 
 extern gamma_type gamma;
 extern agg::lcd_distribution_lut subpixel_lut;
