@@ -3,13 +3,14 @@
 #include <agg_rendering_buffer.h>
 
 #include "win32/agg_win32_bmp.h"
+#include "strpp.h"
 #include "render_config.h"
 #include "pthreadpp.h"
 #include "window_surface.h"
 
 class window_win32 {
 public:
-    window_win32();
+    window_win32(graphics::render_target& tgt);
     ~window_win32();
 
     bool init(unsigned width, unsigned height, unsigned flags);
@@ -22,12 +23,15 @@ public:
     void unlock() { m_mutex.unlock(); }
 
 private:
-    static constexpr int target_bpp = graphics::bpp;
-    static constexpr bool flip_y = graphics::flip_y;
-
     void create_pmap(unsigned width, unsigned height, agg::rendering_buffer* wnd);
     void display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *rect = 0);
     bool save_pmap(const char* fn, unsigned idx, const rendering_buffer* src);
+
+    void resize(unsigned width, unsigned height);
+
+    LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+    void get_module_instance();
 
     // pix_format_e  m_format;
     pix_format_e  m_sys_format;
@@ -43,16 +47,15 @@ private:
     unsigned      m_input_flags;
     bool          m_redraw_flag;
     HDC           m_current_dc;
-    LARGE_INTEGER m_sw_freq;
-    LARGE_INTEGER m_sw_start;
 
     bool m_is_mapped;
     bool m_is_ready;
 
+    str m_caption;
     pthread::mutex m_mutex;
     graphics::render_target& m_target;
 
-    static void bitmap_info_resize (BITMAPINFO* bmp, unsigned w, unsigned h);
+    static void bitmap_info_resize(BITMAPINFO* bmp, unsigned w, unsigned h);
 
     static HINSTANCE g_windows_instance;
     static int       g_windows_cmd_show;

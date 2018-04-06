@@ -32,4 +32,6 @@ subdir('src')
 if host_machine.system() == 'linux'
     subdir('xwindow')
     subdir('tests')
+else
+    subdir('win32')
 endif
