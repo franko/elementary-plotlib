@@ -23,11 +23,11 @@ public:
     void unlock() { m_mutex.unlock(); }
 
 private:
-    void create_pmap(unsigned width, unsigned height, agg::rendering_buffer* wnd);
+    // void create_pmap(unsigned width, unsigned height, agg::rendering_buffer* wnd);
     void display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *rect = 0);
     bool save_pmap(const char* fn, unsigned idx, const rendering_buffer* src);
 
-    void resize(unsigned width, unsigned height);
+    // void resize(unsigned width, unsigned height);
 
     LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -40,7 +40,7 @@ private:
     unsigned      m_sys_bpp;
     HWND          m_hwnd;
     pixel_map     m_pmap_window;
-    BITMAPINFO*   m_bmp_draw;
+    // BITMAPINFO*   m_bmp_draw; // Used to perform rectangle draw operations.
     pixel_map     m_pmap_img[platform_support::max_images];
     int           m_cur_x;
     int           m_cur_y;

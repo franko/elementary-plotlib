@@ -8,7 +8,7 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
     m_hwnd(0),
-    m_bmp_draw(0),
+    // m_bmp_draw(0),
     m_cur_x(0),
     m_cur_y(0),
     m_input_flags(0),
@@ -22,30 +22,36 @@ window_win32::window_win32(graphics::render_target& tgt) :
 }
 
 window_win32::~window_win32() {
+#if 0
     if (m_bmp_draw) {
         delete [] (unsigned char*) m_bmp_draw;
     }
+#endif
 }
 
 void window_win32::close() {
     ::SendMessage(m_hwnd, WM_CLOSE, 0, 0);
 }
 
+// Attach the pixel_map image buffer to the rendering_buffer.
 static inline void pixel_map_attach (pixel_map& pm, agg::rendering_buffer *rbuf, bool flip_y) {
     int stride = pm.stride();
     rbuf->attach(pm.buf(), pm.width(), pm.height(), flip_y ? stride : -stride);
 }
 
+#if 0
 void window_win32::create_pmap(unsigned width, unsigned height, agg::rendering_buffer* wnd)
 {
     m_pmap_window.create(width, height, org_e(graphics::bpp));
     pixel_map_attach(m_pmap_window, wnd, graphics::flip_y);
-
+#if 0
     if (m_bmp_draw) {
         delete [] (unsigned char*) m_bmp_draw;
     }
     m_bmp_draw = pixel_map::create_bitmap_info(width, height, org_e(m_sys_bpp));
+#endif
 }
+#endif
 
 //------------------------------------------------------------------------
 void window_win32::display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *ri)
@@ -62,10 +68,13 @@ void window_win32::display_pmap(HDC dc, const agg::rendering_buffer* src, const 
 
         int w = r.x2 - r.x1, h = r.y2 - r.y1;
 
-        bitmap_info_resize (m_bmp_draw, w, h);
+        // In a previous version the bmp was stored in the class in m_bmp_draw and
+        // resude by resizing to avoid allocating memory each time.
+        BITMAPINFO *bmp = pixel_map::create_bitmap_info(w, h, org_e(m_sys_bpp));
+        // bitmap_info_resize (m_bmp_draw, w, h);
 
         pixel_map pmap;
-        pmap.attach_to_bmp(m_bmp_draw);
+        pmap.attach_to_bmp(bmp);
 
         rendering_buffer rbuf_tmp;
         pixel_map_attach(pmap, &rbuf_tmp, graphics::flip_y);
@@ -99,6 +108,8 @@ void window_win32::display_pmap(HDC dc, const agg::rendering_buffer* src, const 
         brect.top    = 0;
 
         pmap.draw(dc, &wrect, &brect);
+
+        delete [] (unsigned char*) bmp;
     }
 }
 
@@ -124,6 +135,7 @@ void window_win32::get_module_instance() {
     g_windows_cmd_show = SW_SHOWNORMAL;
 }
 
+#if 0
 void window_win32::resize(unsigned width, unsigned height) {
     m_target.resize(width, height);
 
@@ -133,6 +145,7 @@ void window_win32::resize(unsigned width, unsigned height) {
     // m_width = width;
     // m_height = height;
 }
+#endif
 
 LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT ps;
@@ -147,12 +160,15 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_SIZE:
-        create_pmap(LOWORD(lParam), HIWORD(lParam), &app->rbuf_window());
-        resize(LOWORD(lParam), HIWORD(lParam));
+        const unsigned width = LOWORD(lParam), height = HIWORD(lParam);
+        m_pmap_window.create(width, height, org_e(graphics::bpp));
+        m_target.resize(width, height);
+        // create_pmap(LOWORD(lParam), HIWORD(lParam), &app->rbuf_window());
         m_target.render();
         // app->trans_affine_resizing(LOWORD(lParam), HIWORD(lParam));
         // app->on_resize(LOWORD(lParam), HIWORD(lParam));
         // app->force_redraw();
+        draw_something(); /* FIXME */
         m_is_ready = false;
         break;
 
