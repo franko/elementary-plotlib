@@ -34,4 +34,5 @@ if host_machine.system() == 'linux'
     subdir('tests')
 else
     subdir('win32')
+    subdir('tests')
 endif

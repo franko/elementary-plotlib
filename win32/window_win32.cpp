@@ -4,6 +4,10 @@
 HINSTANCE window_win32::g_windows_instance = 0;
 int       window_win32::g_windows_cmd_show = 0;
 
+#ifndef GWL_USERDATA
+#define GWL_USERDATA (-21)
+#endif
+
 window_win32::window_win32(graphics::render_target& tgt) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
@@ -14,6 +18,8 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_input_flags(0),
     m_redraw_flag(true),
     m_current_dc(0),
+    m_width(0),
+    m_height(0),
     m_is_mapped(false),
     m_is_ready(false),
     m_caption("Graphics Window"),
@@ -56,17 +62,20 @@ void window_win32::create_pmap(unsigned width, unsigned height, agg::rendering_b
 //------------------------------------------------------------------------
 void window_win32::display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *ri)
 {
+#if 0
     if(m_sys_format == graphics::pixel_format && ri == nullptr)
     {
         m_pmap_window.draw(dc);
     }
     else
     {
+#endif
         agg::rect_base<int> r(0, 0, src->width(), src->height());
-        if (ri)
+        if (ri) {
             r = agg::intersect_rectangles(r, *ri);
+        }
 
-        int w = r.x2 - r.x1, h = r.y2 - r.y1;
+        const int w = r.x2 - r.x1, h = r.y2 - r.y1;
 
         // In a previous version the bmp was stored in the class in m_bmp_draw and
         // resude by resizing to avoid allocating memory each time.
@@ -94,7 +103,7 @@ void window_win32::display_pmap(HDC dc, const agg::rendering_buffer* src, const 
             }
         }
 
-        unsigned int wh = m_pmap_window.height();
+        unsigned int wh = m_height;
         RECT wrect;
         wrect.left   = r.x1;
         wrect.right  = r.x2;
@@ -110,14 +119,17 @@ void window_win32::display_pmap(HDC dc, const agg::rendering_buffer* src, const 
         pmap.draw(dc, &wrect, &brect);
 
         delete [] (unsigned char*) bmp;
-    }
+//    }
 }
 
+#if 0
 bool window_win32::save_pmap(const char* fn, unsigned idx, const rendering_buffer* src) {
     pixel_map& img = m_pmap_img[idx];
     return img.save_as_bmp(fn);
 }
+#endif
 
+#if 0
 void window_win32::bitmap_info_resize (BITMAPINFO* bmp, unsigned w, unsigned h) {
     if (w == 0) w = 1;
     if (h == 0) h = 1;
@@ -129,6 +141,7 @@ void window_win32::bitmap_info_resize (BITMAPINFO* bmp, unsigned w, unsigned h) 
     bmp->bmiHeader.biHeight = h;
     bmp->bmiHeader.biSizeImage = row_len * h;
 }
+#endif
 
 void window_win32::get_module_instance() {
     g_windows_instance = GetModuleHandle(nullptr);
@@ -155,20 +168,23 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     m_current_dc = dc;
     LRESULT ret = 0;
 
+    fprintf(stderr, "WINDOW PROC, msg: %d\n", msg); fflush(stderr);
+
     switch(msg) {
     case WM_CREATE:
         break;
 
     case WM_SIZE:
-        const unsigned width = LOWORD(lParam), height = HIWORD(lParam);
-        m_pmap_window.create(width, height, org_e(graphics::bpp));
-        m_target.resize(width, height);
+        m_width = LOWORD(lParam);
+        m_height = HIWORD(lParam);
+        // m_pmap_window.create(width, height, org_e(graphics::bpp));
+        m_target.resize(m_width, m_height);
         // create_pmap(LOWORD(lParam), HIWORD(lParam), &app->rbuf_window());
         m_target.render();
         // app->trans_affine_resizing(LOWORD(lParam), HIWORD(lParam));
         // app->on_resize(LOWORD(lParam), HIWORD(lParam));
         // app->force_redraw();
-        draw_something(); /* FIXME */
+        // draw_something(); /* FIXME */
         m_is_ready = false;
         break;
 
@@ -178,11 +194,11 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_PAINT:
         paintDC = ::BeginPaint(hWnd, &ps);
         m_current_dc = paintDC;
-        if(m_redraw_flag) {
+        if (m_redraw_flag) {
             m_target.draw();
             m_redraw_flag = false;
         }
-        display_pmap(paintDC, &app->rbuf_window());
+        // display_pmap(paintDC, &app->rbuf_window());
         // app->on_post_draw(paintDC);
         m_current_dc = 0;
         ::EndPaint(hWnd, &ps);
@@ -210,11 +226,13 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CALLBACK window_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    void* user_data = reinterpret_cast<void*>(::GetWindowLong(hWnd, GWL_USERDATA));
+    void* user_data = reinterpret_cast<void*>(::GetWindowLongPtr(hWnd, GWL_USERDATA));
     window_win32* app = nullptr;
 
+    // fprintf(stderr, "Hey there, window proc. Userdata: %p\n", user_data); fflush(stderr);
+
     if (user_data) {
-        app = reinterpret_cast<platform_support*>(user_data);
+        app = reinterpret_cast<window_win32 *>(user_data);
     }
 
     if(app == nullptr) {
@@ -234,6 +252,8 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
     if (g_windows_instance == 0) {
         get_module_instance();
     }
+
+    fprintf(stderr, "Windows: init\n"); fflush(stderr);
 
     m_window_flags = flags;
 
@@ -277,10 +297,14 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
                  height + (height - (rct.bottom - rct.top)),
                  FALSE);
 
-    create_pmap(width, height, &m_rbuf_window);
+    // create_pmap(width, height, &m_rbuf_window);
 
-    ::SetWindowLong(m_hwnd, GWL_USERDATA, (LONG)this);
+    ::SetWindowLongPtr(m_hwnd, GWL_USERDATA, (LONG_PTR)this);
     ::ShowWindow(m_hwnd, g_windows_cmd_show);
     ::SetForegroundWindow(m_hwnd);
     return true;
+}
+
+void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
+    fprintf(stderr, "NYI: called update region!\n");
 }
