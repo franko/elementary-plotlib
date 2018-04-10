@@ -14,7 +14,7 @@ public:
     ~window_win32();
 
     bool init(unsigned width, unsigned height, unsigned flags);
-    void run() { }
+    int run();
     void close();
 
     void update_region(graphics::image& src_img, const agg::rect_i& r);

@@ -114,6 +114,7 @@ int main()
 
     for (;;) {
         fprintf(stderr, "sleeping...\n");
+        fflush(stderr);
         Sleep(2 * 1000);
     }
 

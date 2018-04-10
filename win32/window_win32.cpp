@@ -305,6 +305,51 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
     return true;
 }
 
+int window_win32::run() {
+    MSG msg;
+
+    for(;;) {
+//        if(m_wait_mode) {
+        bool status;
+
+        if (m_is_ready) {
+            m_mutex.unlock();
+            status = ::GetMessage(&msg, 0, 0, 0);
+            m_mutex.lock();
+        } else {
+            status = ::GetMessage(&msg, 0, 0, 0);
+        }
+
+        if (!status) {
+            break;
+        }
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+#if 0
+        }
+        else
+        {
+            if(::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+            {
+                ::TranslateMessage(&msg);
+                if(msg.message == WM_QUIT)
+                {
+                    m_specific->m_is_mapped = false;
+                    break;
+                }
+                ::DispatchMessage(&msg);
+            }
+            else
+            {
+                on_idle();
+            }
+        }
+#endif
+    }
+
+    return (int)msg.wParam;
+}
+
 void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
     fprintf(stderr, "NYI: called update region!\n");
 }
