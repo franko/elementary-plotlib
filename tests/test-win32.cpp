@@ -4,47 +4,6 @@
 #include "path.h"
 #include "pthreadpp.h"
 
-class xwindow_display : public graphics::display_window {
-public:
-    xwindow_display(window_win32& xwin): m_xwindow(xwin) { }
-
-    virtual void update_region(graphics::image& img, const agg::rect_i& r)
-    {
-        m_xwindow.update_region(img, r);
-    }
-
-    virtual void lock()   { m_xwindow.lock();   }
-    virtual void unlock() { m_xwindow.unlock(); }
-
-private:
-    window_win32& m_xwindow;
-};
-
-class window_surface_target : public graphics::render_target {
-public:
-    window_surface_target(graphics::window_surface& surf):
-    m_surface(surf)
-    { }
-
-    virtual void resize(unsigned width, unsigned height)
-    {
-        m_surface.resize(width, height);
-    }
-
-    virtual void render()
-    {
-        m_surface.render_all();
-    }
-
-    virtual void draw()
-    {
-        m_surface.draw_request();
-    }
-
-private:
-    graphics::window_surface& m_surface;
-};
-
 struct xwindow_thread : public pthread::thread {
     xwindow_thread(window_win32& win): m_window(win) {}
     virtual void run() {
@@ -61,11 +20,8 @@ int main()
     graphics::initialize_fonts();
 
     graphics::window_surface surf("h..");
-    window_surface_target surf_target(surf);
-
-    window_win32 xwin(surf_target);
-    xwindow_display xwin_display(xwin);
-    surf.attach_window(&xwin_display);
+    window_win32 xwin(surf);
+    surf.attach_window(&xwin);
 
     graphics::plot p(true);
     agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);

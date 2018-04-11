@@ -9,7 +9,7 @@
 #include "window_surface.h"
 #include "window_flags.h"
 
-class window_win32 {
+class window_win32 : public graphics::display_window {
 public:
     window_win32(graphics::render_target& tgt);
     ~window_win32();
@@ -18,10 +18,10 @@ public:
     int run();
     void close();
 
-    void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
 
-    void lock()   { m_mutex.lock();   }
-    void unlock() { m_mutex.unlock(); }
+    virtual void lock()   { m_mutex.lock();   }
+    virtual void unlock() { m_mutex.unlock(); }
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
