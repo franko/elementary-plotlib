@@ -10,7 +10,7 @@
 struct xwindow_thread : public pthread::thread {
     xwindow_thread(xwindow& win): m_window(win) {}
     virtual void run() {
-        m_window.init(640, 480, xwindow::window_resize);
+        m_window.init(640, 480, graphics::window_resize);
         m_window.run();
         m_window.close();
     }

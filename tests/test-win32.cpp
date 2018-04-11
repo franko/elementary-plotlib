@@ -48,7 +48,7 @@ private:
 struct xwindow_thread : public pthread::thread {
     xwindow_thread(window_win32& win): m_window(win) {}
     virtual void run() {
-        m_window.init(640, 480, 0); // FIXME: flags
+        m_window.init(640, 480, graphics::window_resize);
         m_window.run();
         m_window.close();
     }

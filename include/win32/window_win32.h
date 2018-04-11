@@ -7,6 +7,7 @@
 #include "render_config.h"
 #include "pthreadpp.h"
 #include "window_surface.h"
+#include "window_flags.h"
 
 class window_win32 {
 public:
