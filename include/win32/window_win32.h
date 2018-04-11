@@ -34,7 +34,6 @@ private:
     int           m_cur_y;
     unsigned      m_input_flags;
     bool          m_redraw_flag;
-    HDC           m_current_dc;
 
     unsigned m_window_flags;
 

@@ -16,7 +16,6 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_cur_y(0),
     m_input_flags(0),
     m_redraw_flag(true),
-    m_current_dc(0),
     m_is_mapped(false),
     m_is_ready(false),
     m_caption("Graphics Window"),
@@ -96,10 +95,8 @@ void window_win32::get_module_instance() {
 
 LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT ps;
-    HDC paintDC;
 
     HDC dc = ::GetDC(m_hwnd);
-    m_current_dc = dc;
     LRESULT ret = 0;
 
     switch(msg) {
@@ -120,13 +117,10 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_PAINT:
-        paintDC = ::BeginPaint(hWnd, &ps);
-        m_current_dc = paintDC;
         if (m_redraw_flag) {
             m_target.draw();
             m_redraw_flag = false;
         }
-        m_current_dc = 0;
         ::EndPaint(hWnd, &ps);
 
         m_is_mapped = true;
@@ -144,7 +138,6 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         ret = ::DefWindowProc(hWnd, msg, wParam, lParam);
         break;
     }
-    m_current_dc = 0;
     ::ReleaseDC(m_hwnd, dc);
 
     return ret;
