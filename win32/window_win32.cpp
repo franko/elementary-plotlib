@@ -168,7 +168,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     m_current_dc = dc;
     LRESULT ret = 0;
 
-    fprintf(stderr, "WINDOW PROC, msg: %d\n", msg); fflush(stderr);
+    // fprintf(stderr, "WINDOW PROC, msg: %d\n", msg); fflush(stderr);
 
     switch(msg) {
     case WM_CREATE:
@@ -177,7 +177,9 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_SIZE:
         m_width = LOWORD(lParam);
         m_height = HIWORD(lParam);
-        // m_pmap_window.create(width, height, org_e(graphics::bpp));
+        // m_pmap_window.create(m_width, m_height, org_e(m_sys_bpp));
+        fprintf(stderr, "calling resize on render_target %d %d\n", m_width, m_height);
+        fflush(stderr);
         m_target.resize(m_width, m_height);
         // create_pmap(LOWORD(lParam), HIWORD(lParam), &app->rbuf_window());
         m_target.render();
@@ -351,5 +353,12 @@ int window_win32::run() {
 }
 
 void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
-    fprintf(stderr, "NYI: called update region!\n");
+    fprintf(stderr, "update_region: %d %d %d %d\n", r.x1, r.y1, r.x2, r.y2);
+    fflush(stderr);
+
+//    agg::rendering_buffer src_view;
+//    rendering_buffer_get_view(src_view, src_img, r, graphics::image::pixel_size);
+
+    HDC dc = ::GetDC(m_hwnd);
+    display_pmap(dc, &src_img, &r);
 }
