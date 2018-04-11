@@ -33,7 +33,6 @@ private:
     int           m_cur_x;
     int           m_cur_y;
     unsigned      m_input_flags;
-    bool          m_redraw_flag;
 
     unsigned m_window_flags;
 

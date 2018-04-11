@@ -15,7 +15,6 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_cur_x(0),
     m_cur_y(0),
     m_input_flags(0),
-    m_redraw_flag(true),
     m_is_mapped(false),
     m_is_ready(false),
     m_caption("Graphics Window"),
@@ -94,9 +93,6 @@ void window_win32::get_module_instance() {
 }
 
 LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    PAINTSTRUCT ps;
-
-    HDC dc = ::GetDC(m_hwnd);
     LRESULT ret = 0;
 
     switch(msg) {
@@ -116,16 +112,16 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_ERASEBKGND:
         break;
 
-    case WM_PAINT:
-        if (m_redraw_flag) {
-            m_target.draw();
-            m_redraw_flag = false;
-        }
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC paintDC = ::BeginPaint(hWnd, &ps);
+        m_target.draw();
         ::EndPaint(hWnd, &ps);
 
         m_is_mapped = true;
         m_is_ready = true;
         break;
+    }
 
     case WM_COMMAND:
         break;
@@ -138,7 +134,6 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         ret = ::DefWindowProc(hWnd, msg, wParam, lParam);
         break;
     }
-    ::ReleaseDC(m_hwnd, dc);
 
     return ret;
 }
@@ -199,8 +194,6 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
         return false;
     }
 
-    m_redraw_flag = true;
-
     RECT rct;
     ::GetClientRect(m_hwnd, &rct);
 
@@ -247,4 +240,5 @@ void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r)
 
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
+    ::ReleaseDC(m_hwnd, dc);
 }
