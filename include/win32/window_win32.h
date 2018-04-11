@@ -25,28 +25,17 @@ public:
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
-    // void create_pmap(unsigned width, unsigned height, agg::rendering_buffer* wnd);
     void display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *rect = 0);
-    // bool save_pmap(const char* fn, unsigned idx, const rendering_buffer* src);
 
-    // void resize(unsigned width, unsigned height);
-
-    // pix_format_e  m_format;
     pix_format_e  m_sys_format;
-    // bool          m_flip_y;
-    // unsigned      m_bpp;
     unsigned      m_sys_bpp;
     HWND          m_hwnd;
-    // pixel_map     m_pmap_window;
-    // BITMAPINFO*   m_bmp_draw; // Used to perform rectangle draw operations.
-    // pixel_map     m_pmap_img[platform_support::max_images];
     int           m_cur_x;
     int           m_cur_y;
     unsigned      m_input_flags;
     bool          m_redraw_flag;
     HDC           m_current_dc;
 
-    unsigned m_width, m_height;
     unsigned m_window_flags;
 
     bool m_is_mapped;
@@ -55,8 +44,6 @@ private:
     str m_caption;
     pthread::mutex m_mutex;
     graphics::render_target& m_target;
-
-    // static void bitmap_info_resize(BITMAPINFO* bmp, unsigned w, unsigned h);
 
     static void get_module_instance();
 
