@@ -182,10 +182,10 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     {
         if(flags & window_resize)
         {
-            hints->min_width  = window_min_width;
-            hints->min_height = window_min_height;
-            hints->max_width  = window_max_width;
-            hints->max_height = window_max_height;
+            hints->min_width  = graphics::window_min_width;
+            hints->min_height = graphics::window_min_height;
+            hints->max_width  = graphics::window_max_width;
+            hints->max_height = graphics::window_max_height;
         }
         else
         {
