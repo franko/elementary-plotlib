@@ -1,27 +1,16 @@
 #include "win32/window_win32.h"
 #include "window_surface.h"
+#include "window_thread.h"
 #include "plot.h"
 #include "path.h"
-#include "pthreadpp.h"
-
-struct xwindow_thread : public pthread::thread {
-    xwindow_thread(window_win32& win): m_window(win) {}
-    virtual void run() {
-        m_window.init(640, 480, graphics::window_resize);
-        m_window.run();
-        m_window.close();
-    }
-private:
-    window_win32& m_window;
-};
 
 int main()
 {
     graphics::initialize_fonts();
 
     graphics::window_surface surf("h..");
-    window_win32 xwin(surf);
-    surf.attach_window(&xwin);
+    window_win32 win(surf);
+    surf.attach_window(&win);
 
     graphics::plot p(true);
     agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
@@ -49,7 +38,7 @@ int main()
 
     int index = surf.attach(&p, "1");
 
-    xwindow_thread thread(xwin);
+    window_thread<window_win32> thread(win);
     thread.start();
 
     Sleep(4 * 1000);

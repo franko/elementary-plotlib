@@ -3,20 +3,9 @@
 
 #include "xwindow/xwindow.h"
 #include "window_surface.h"
+#include "window_thread.h"
 #include "plot.h"
 #include "path.h"
-#include "pthreadpp.h"
-
-struct xwindow_thread : public pthread::thread {
-    xwindow_thread(xwindow& win): m_window(win) {}
-    virtual void run() {
-        m_window.init(640, 480, graphics::window_resize);
-        m_window.run();
-        m_window.close();
-    }
-private:
-    xwindow& m_window;
-};
 
 int main()
 {
@@ -52,7 +41,7 @@ int main()
 
     int index = surf.attach(&p, "1");
 
-    xwindow_thread thread(xwin);
+    window_thread<xwindow> thread(xwin);
     thread.start();
 
     sleep(4);
