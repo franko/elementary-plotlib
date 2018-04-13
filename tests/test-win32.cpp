@@ -12,7 +12,7 @@ int main()
     window_win32 win(surf);
     surf.attach_window(&win);
 
-    graphics::plot p(true);
+    graphics::plot p(graphics::plot::show_units);
     agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
     p.set_limits(lim);
     p.set_axis_labels_angle(graphics::x_axis, 3.141592 / 4);

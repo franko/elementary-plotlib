@@ -19,6 +19,12 @@ void plot::commit_pending_draw()
 
 void plot::add(const sg_element& elem)
 {
+    if (m_auto_limits && !fit_inside(elem)) {
+        m_bbox_updated = false;
+        m_need_redraw = true;
+        m_enlarged_layer = true;
+    }
+
     list<item> *new_node = new list<item>(elem);
     m_drawing_queue = list<item>::push_back(m_drawing_queue, new_node);
     manage_owner::acquire(elem.object());
@@ -421,15 +427,21 @@ bool plot::push_layer()
         return false;
 
     item_list *new_layer = new(std::nothrow) item_list();
-    if (new_layer)
-    {
+    if (new_layer) {
         before_draw();
         push_drawing_queue();
         m_layers.add(new_layer);
-        return true;
     }
 
-    return false;
+    if (m_auto_limits) {
+        if (m_rect.is_defined()) {
+            parent_layer()->set_bounding_box(m_rect.rect());
+        }
+        m_bbox_updated = true;
+        m_enlarged_layer = false;
+    }
+
+    return (new_layer != nullptr);
 }
 
 bool plot::pop_layer()
@@ -446,7 +458,21 @@ bool plot::pop_layer()
     clear_drawing_queue();
     m_need_redraw = true;
 
+    if (m_auto_limits) {
+        if (m_enlarged_layer)
+            m_bbox_updated = false;
+        m_enlarged_layer = true;
+    }
+
     return true;
+}
+
+void plot::set_opt_limits(const opt_rect<double>& r) {
+    if (r.is_defined()) {
+        set_limits(r.rect());
+    } else {
+        unset_limits();
+    }
 }
 
 void plot::clear_current_layer()
@@ -457,11 +483,81 @@ void plot::clear_current_layer()
     current->clear();
     m_changes_pending = m_changes_accu;
     m_changes_accu.clear();
+
+    if (m_auto_limits) {
+        if (m_enlarged_layer) {
+            item_list* parent = parent_layer();
+            if (parent) {
+                set_opt_limits(parent->bounding_box());
+            } else {
+                unset_limits();
+            }
+        }
+        m_bbox_updated = true;
+        m_enlarged_layer = false;
+    }
 }
 
 int plot::current_layer_index()
 {
     return m_layers.size();
+}
+
+bool plot::fit_inside(const sg_element& elem) const
+{
+    if (!m_bbox_updated || !m_rect.is_defined()) {
+        return false;
+    }
+
+    agg::rect_base<double> r;
+    elem.object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+    const agg::rect_d& bb = m_rect.rect();
+    return bb.hit_test(r.x1, r.y1) && bb.hit_test(r.x2, r.y2);
+}
+
+
+void plot::calc_layer_bounding_box(plot::item_list* layer, opt_rect<double>& rect)
+{
+    for (unsigned j = 0; j < layer->size(); j++) {
+        item& d = (*layer)[j];
+        agg::rect_base<double> r;
+        d.object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+        rect.add<rect_union>(r);
+    }
+}
+
+void plot::calc_bounding_box()
+{
+    opt_rect<double> box;
+    unsigned n = nb_layers();
+    for (unsigned j = 0; j < n-1; j++) {
+        box.add<rect_union>(get_layer(j)->bounding_box());
+    }
+
+    calc_layer_bounding_box(get_layer(n-1), box);
+    for (list<item> *t = m_drawing_queue; t; t = t->next())
+    {
+        const item& d = t->content();
+        agg::rect_d r;
+        d.object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+        box.add<rect_union>(r);
+    }
+
+    m_rect = box;
+}
+
+void plot::check_bounding_box()
+{
+    calc_bounding_box();
+    update_units();
+    m_bbox_updated = true;
+}
+
+void plot::before_draw()
+{
+    if (m_auto_limits && !m_bbox_updated) {
+        check_bounding_box();
+    }
 }
 
 } /* namespace graphics */

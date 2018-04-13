@@ -12,9 +12,8 @@ int main()
     window_win32 win(surf);
     surf.attach_window(&win);
 
-    graphics::plot p(graphics::plot::show_units);
-    agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
-    p.set_limits(lim);
+    graphics::plot p(graphics::plot::show_units | graphics::plot::auto_limits);
+    p.set_clip_mode(false);
 
     draw::path ln;
     agg::path_storage& l = ln.self();
@@ -39,9 +38,7 @@ int main()
     window_thread<window_win32> thread(win);
     thread.start();
 
-    Sleep(2 * 1000);
-
-    p.push_layer();
+    Sleep(4 * 1000);
 
     draw::path ln2;
     agg::path_storage& l2 = ln2.self();
@@ -56,10 +53,6 @@ int main()
 
     surf.slot_refresh(index);
     p.commit_pending_draw();
-
-    Sleep(2 * 1000);
-    p.pop_layer();
-    surf.slot_refresh(index);
 
     for (;;) {
         fprintf(stderr, "sleeping...\n");

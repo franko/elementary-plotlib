@@ -150,10 +150,14 @@ public:
 
     enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
 
-    plot(bool use_units = true) :
+    enum { show_units = 1 << 0, auto_limits = 1 << 1 };
+
+    plot(unsigned flags) :
         m_drawing_queue(0), m_clip_flag(true),
         m_need_redraw(true), m_sync_mode(true),
-        m_x_axis(x_axis, use_units), m_y_axis(y_axis, use_units)
+        m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
+        m_auto_limits(flags & auto_limits),
+        m_bbox_updated(true), m_enlarged_layer(false)
     {
         m_layers.add(&m_root_layer);
         compute_user_trans();
@@ -161,7 +165,7 @@ public:
             m_legend[k] = 0;
     };
 
-    virtual ~plot()
+    ~plot()
     {
         for (unsigned k = 0; k < m_layers.size(); k++)
         {
@@ -221,8 +225,8 @@ public:
         m_x_axis.set_comp_labels(labels);
     }
 
-    virtual void add(const sg_element& el);
-    virtual void before_draw() { }
+    void add(const sg_element& el);
+    void before_draw();
 
     void get_bounding_rect(agg::rect_base<double>& bb)
     {
@@ -256,9 +260,9 @@ public:
             inf->active_area = layout.plot_active_area;
     }
 
-    virtual bool push_layer();
-    virtual bool pop_layer();
-    virtual void clear_current_layer();
+    bool push_layer();
+    bool pop_layer();
+    void clear_current_layer();
 
     /* drawing queue related methods */
     void push_drawing_queue();
@@ -362,7 +366,11 @@ protected:
 
     void compute_user_trans();
 
-    bool fit_inside(sg_object *obj) const;
+    bool fit_inside(const sg_element& elem) const;
+    void check_bounding_box();
+    void calc_layer_bounding_box(item_list* layer, opt_rect<double>& rect);
+    void calc_bounding_box();
+    void set_opt_limits(const opt_rect<double>& r);
 
     void layer_dispose_elements (item_list* layer);
 
@@ -406,6 +414,10 @@ private:
 
     axis m_x_axis, m_y_axis;
     plot* m_legend[4];
+
+    bool m_auto_limits;
+    bool m_bbox_updated;
+    bool m_enlarged_layer;
 };
 
 template <class Canvas>
