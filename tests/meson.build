@@ -1,15 +1,17 @@
 if host_machine.system() == 'linux'
-    test_xwindow_src = ['test-xwindow.cpp']
-
-    executable('test-xwindow', test_xwindow_src,
+    executable('test-xwindow', ['test-xwindow.cpp'],
                include_directories: [libcanvas_include],
                dependencies: [agg_dep, freetype_dep, thread_dep, x11_dep],
                link_with: [libcanvas, libcanvasxwin],
                gui_app: false)
 else
-    test_win32_src = ['test-win32.cpp']
+    executable('test-win32', ['test-win32.cpp'],
+               include_directories: [libcanvas_include],
+               dependencies: [agg_dep, freetype_dep, thread_dep],
+               link_with: [libcanvas, libcanvaswin32],
+               gui_app: false)
 
-    executable('test-win32', test_win32_src,
+    executable('test-win32-pushlayer', ['test-win32-pushlayer.cpp'],
                include_directories: [libcanvas_include],
                dependencies: [agg_dep, freetype_dep, thread_dep],
                link_with: [libcanvas, libcanvaswin32],
