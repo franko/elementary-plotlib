@@ -5,13 +5,20 @@
 #include "window_flags.h"
 
 template <typename Window>
-struct window_thread : public pthread::thread {
+class window_thread : public pthread::thread {
+public:
     window_thread(Window& win): m_window(win) {}
+
+    void start(unsigned width, unsigned height, unsigned flags) {
+        m_window.init(width, height, flags);
+        pthread::thread::start();
+    }
+
     virtual void run() {
-        m_window.init(640, 480, graphics::window_resize);
         m_window.run();
         m_window.close();
     }
+
 private:
     Window& m_window;
 };

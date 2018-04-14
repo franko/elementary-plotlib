@@ -1,19 +1,14 @@
 // DEBUG: to be removed / used just to have sleep()
 #include <unistd.h>
 
-#include "xwindow/xwindow.h"
-#include "window_surface.h"
-#include "window_thread.h"
-#include "plot.h"
+#include "window.h"
 #include "path.h"
 
 int main()
 {
     graphics::initialize_fonts();
 
-    graphics::window_surface surf("h..");
-    xwindow xwin(surf);
-    surf.attach_window(&xwin);
+    graphics::window win("h.");
 
     graphics::plot p(true);
     agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
@@ -39,10 +34,9 @@ int main()
 
     p.commit_pending_draw();
 
-    int index = surf.attach(&p, "1");
+    int index = win.attach(&p, "1");
 
-    window_thread<xwindow> thread(xwin);
-    thread.start();
+    win.start(640, 480, graphics::window_resize);
 
     sleep(4);
 
@@ -57,7 +51,7 @@ int main()
     sg_element ln2e(trln2, none, blue, 2.5);
     p.add(ln2e);
 
-    surf.slot_refresh(index);
+    win.slot_refresh(index);
     p.commit_pending_draw();
 
     for (;;) {
