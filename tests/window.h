@@ -31,10 +31,16 @@ private:
 
 #ifdef WIN32
 #include "win32/window_win32.h"
+
+static void sleep(int s) {
+    Sleep(s * 1000);
+}
+
 namespace graphics {
 typedef window_gen<window_win32> window;
 }
 #else
+#include <unistd.h>
 #include "xwindow/xwindow.h"
 namespace graphics {
 typedef window_gen<xwindow> window;

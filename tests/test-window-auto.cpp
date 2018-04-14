@@ -1,6 +1,3 @@
-// DEBUG: to be removed / used just to have sleep()
-#include <unistd.h>
-
 #include "window.h"
 #include "path.h"
 
@@ -10,11 +7,8 @@ int main()
 
     graphics::window win("h.");
 
-    graphics::plot p(true);
-    agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
-    p.set_limits(lim);
-    p.set_axis_labels_angle(graphics::x_axis, 3.141592 / 4);
-    p.enable_label_format(graphics::x_axis, "%.6f");
+    graphics::plot p(graphics::plot::show_units | graphics::plot::auto_limits);
+    p.set_clip_mode(false);
 
     draw::path ln;
     agg::path_storage& l = ln.self();
@@ -56,6 +50,7 @@ int main()
 
     for (;;) {
         fprintf(stderr, "sleeping...\n");
+        fflush(stderr);
         sleep(2);
     }
 

@@ -1,19 +1,15 @@
-#include "win32/window_win32.h"
-#include "window_surface.h"
-#include "window_thread.h"
-#include "plot.h"
+#include "window.h"
 #include "path.h"
 
 int main()
 {
     graphics::initialize_fonts();
 
-    graphics::window_surface surf("h.");
-    window_win32 win(surf);
-    surf.attach_window(&win);
+    graphics::window win("h.");
 
-    graphics::plot p(graphics::plot::show_units | graphics::plot::auto_limits);
-    p.set_clip_mode(false);
+    graphics::plot p(graphics::plot::show_units);
+    agg::rect_d lim(-1.0, 0.0, 1.0, 10.0);
+    p.set_limits(lim);
 
     draw::path ln;
     agg::path_storage& l = ln.self();
@@ -33,12 +29,13 @@ int main()
 
     p.commit_pending_draw();
 
-    int index = surf.attach(&p, "1");
+    int index = win.attach(&p, "1");
 
-    window_thread<window_win32> thread(win);
-    thread.start();
+    win.start(640, 480, graphics::window_resize);
 
-    Sleep(4 * 1000);
+    sleep(2);
+
+    p.push_layer();
 
     draw::path ln2;
     agg::path_storage& l2 = ln2.self();
@@ -51,13 +48,17 @@ int main()
     sg_element ln2e(trln2, none, blue, 2.5);
     p.add(ln2e);
 
-    surf.slot_refresh(index);
+    win.slot_refresh(index);
     p.commit_pending_draw();
+
+    sleep(2);
+    p.pop_layer();
+    win.slot_refresh(index);
 
     for (;;) {
         fprintf(stderr, "sleeping...\n");
         fflush(stderr);
-        Sleep(2 * 1000);
+        sleep(2);
     }
 
     return 0;
