@@ -16,7 +16,7 @@ debug_build = get_option('buildtype') != 'release'
 
 add_global_arguments('-D_REENTRANT', language : ['c', 'cpp'])
 if debug_build
-    add_global_arguments('-DGSL_SHELL_DEBUG', language : ['c', 'cpp'])
+    add_global_arguments('-DLIBCANVAS_DEBUG', language : ['c', 'cpp'])
 endif
 
 if meson.get_compiler('cpp').get_id() == 'gcc'

@@ -1,4 +1,5 @@
 #include "win32/window_win32.h"
+#include "debug_log.h"
 
 //------------------------------------------------------------------------
 HINSTANCE window_win32::g_windows_instance = 0;
@@ -97,12 +98,12 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch(msg) {
     case WM_CREATE:
+        debug_log("treating WM_CREATE event");
         break;
 
     case WM_SIZE: {
         const unsigned width = LOWORD(lParam), height = HIWORD(lParam);
-        fprintf(stderr, "calling resize on render_target %d %d\n", width, height);
-        fflush(stderr);
+        debug_log("treating WM_SIZE event width: %d height: %d", width, height);
         m_target.resize(width, height);
         m_target.render();
         m_is_ready = false;
@@ -113,11 +114,11 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_PAINT: {
+        debug_log("treating WM_PAINT event");
         PAINTSTRUCT ps;
         HDC paintDC = ::BeginPaint(hWnd, &ps);
         m_target.draw();
         ::EndPaint(hWnd, &ps);
-
         m_is_mapped = true;
         m_is_ready = true;
         break;
@@ -235,9 +236,7 @@ int window_win32::run() {
 }
 
 void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
-    fprintf(stderr, "update_region: %d %d %d %d\n", r.x1, r.y1, r.x2, r.y2);
-    fflush(stderr);
-
+    debug_log("update_region: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
     ::ReleaseDC(m_hwnd, dc);
