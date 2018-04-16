@@ -1,7 +1,7 @@
 #include "window_surface.h"
 #include "graph_mutex.h"
 #include "plot.h"
-#include "path.h"
+#include "sg_path.h"
 
 class dummy_window : public graphics::display_window {
 public:
@@ -26,7 +26,7 @@ int main()
     agg::rect_d lim(0.0, -1.0, 10.0, 1.0);
     p.set_limits(lim);
 
-    draw::path* ln = new draw::path();
+    sg_path* ln = new sg_path();
     agg::path_storage& l = ln->self();
     l.move_to(-0.5, 0.0);
     l.line_to(-0.5, 8.0);

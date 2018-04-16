@@ -6,7 +6,8 @@
 
 #include "markers.h"
 #include "trans.h"
-#include "path.h"
+#include "sg_path.h"
+#include "sg_path.h"
 
 struct symbol_reg {
     const char *name;
@@ -34,7 +35,7 @@ static struct symbol_reg builder_table[NB_SYMBOLS+1] = {
 sg_object *
 build_circle(bool& stroke)
 {
-    draw::ellipse* c = new draw::ellipse();
+    sg_ellipse* c = new sg_ellipse();
     c->self().init(0.0, 0.0, 0.5, 0.5);
     stroke = false;
     return c;
@@ -43,7 +44,7 @@ build_circle(bool& stroke)
 sg_object *
 build_square(bool& stroke)
 {
-    draw::path* p = new draw::path();
+    sg_path* p = new sg_path();
 
     agg::path_storage& square = p->self();
     square.move_to(-0.5, -0.5);
@@ -59,7 +60,7 @@ build_square(bool& stroke)
 sg_object *
 build_triangle(bool& stroke)
 {
-    draw::path* p = new draw::path();
+    sg_path* p = new sg_path();
 
     agg::path_storage& triangle = p->self();
 
@@ -76,7 +77,7 @@ build_triangle(bool& stroke)
 sg_object *
 build_diamond(bool& stroke)
 {
-    draw::path* p = new draw::path();
+    sg_path* p = new sg_path();
 
     agg::path_storage& square = p->self();
     square.move_to(-0.5,  0.0);
@@ -92,7 +93,7 @@ build_diamond(bool& stroke)
 sg_object *
 build_plus(bool& stroke)
 {
-    draw::path* p = new draw::path();
+    sg_path* p = new sg_path();
 
     agg::path_storage& plus = p->self();
     plus.move_to(-0.5,  0.0);
@@ -107,7 +108,7 @@ build_plus(bool& stroke)
 sg_object *
 build_cross(bool& stroke)
 {
-    draw::path* p = new draw::path();
+    sg_path* p = new sg_path();
 
     agg::path_storage& plus = p->self();
     plus.move_to(-0.5, -0.5);

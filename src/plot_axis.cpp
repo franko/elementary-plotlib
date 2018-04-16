@@ -1,7 +1,7 @@
 #include "plot_axis.h"
 #include "plot_style.h"
 #include "rect.h"
-#include "path.h"
+#include "sg_path.h"
 #include "trans.h"
 #include "text.h"
 
@@ -24,7 +24,7 @@ sg_composite axis::draw_with_labels(label_iterator& labels,
     const double hj = labels_hjustif(), vj = labels_vjustif();
     const double langle = labels_angle();
 
-    draw::path* marks_obj = new draw::path();
+    sg_path* marks_obj = new sg_path();
     trans::scaling* marks = new trans::scaling(marks_obj);
     agg::path_storage& marks_path = marks_obj->self();
 
@@ -90,7 +90,7 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
     const double lab_angle = labels_angle();
     const double y_spac_top = 3, y_spac_bot = 3;
 
-    draw::path* marks_obj = new draw::path();
+    sg_path* marks_obj = new sg_path();
     trans::scaling* marks = new trans::scaling(marks_obj);
     agg::path_storage& marks_path = marks_obj->self();
 

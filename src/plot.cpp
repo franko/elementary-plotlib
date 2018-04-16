@@ -1,6 +1,6 @@
 #include "plot.h"
 #include "colors.h"
-#include "path.h"
+#include "sg_path.h"
 #include "plot_style.h"
 
 namespace graphics {
