@@ -31,11 +31,6 @@ private:
     pix_format_e  m_sys_format;
     unsigned      m_sys_bpp;
     HWND          m_hwnd;
-    int           m_cur_x;
-    int           m_cur_y;
-    unsigned      m_input_flags;
-
-    unsigned m_window_flags;
 
     bool m_is_mapped;
     bool m_is_ready;

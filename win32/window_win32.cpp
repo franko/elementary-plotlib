@@ -13,9 +13,6 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
     m_hwnd(0),
-    m_cur_x(0),
-    m_cur_y(0),
-    m_input_flags(0),
     m_is_mapped(false),
     m_is_ready(false),
     m_caption("Graphics Window"),
@@ -166,8 +163,6 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
         get_module_instance();
     }
 
-    m_window_flags = flags;
-
     int wflags = CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
 
     WNDCLASS wc;
@@ -185,7 +180,7 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 
     wflags = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
-    if(m_window_flags & window_resize) {
+    if(flags & window_resize) {
         wflags |= WS_THICKFRAME | WS_MAXIMIZEBOX;
     }
 
