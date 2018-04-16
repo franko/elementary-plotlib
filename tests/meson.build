@@ -21,3 +21,9 @@ executable('test-window-pushlayer', ['test-window-pushlayer.cpp'],
            dependencies: [agg_dep, freetype_dep, thread_dep],
            link_with: [libcanvas, libcanvaswin],
            gui_app: false)
+
+executable('test-window-function', ['test-window-function.cpp'],
+           include_directories: [libcanvas_include],
+           dependencies: [agg_dep, freetype_dep, thread_dep],
+           link_with: [libcanvas, libcanvaswin],
+           gui_app: false)
