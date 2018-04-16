@@ -1,4 +1,5 @@
 #include "window.h"
+#include "debug_log.h"
 #include "path.h"
 
 int main()
@@ -49,8 +50,7 @@ int main()
     p.commit_pending_draw();
 
     for (;;) {
-        fprintf(stderr, "sleeping...\n");
-        fflush(stderr);
+        debug_log("sleeping...");
         sleep(2);
     }
 

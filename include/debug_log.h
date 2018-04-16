@@ -1,6 +1,14 @@
 #ifndef LIBCANVAS_DEBUG_LOG_H
 #define LIBCANVAS_DEBUG_LOG_H
 
+#ifdef WIN32
+static void sleep(int s) {
+    Sleep(s * 1000);
+}
+#else
+#include <unistd.h>
+#endif
+
 #ifdef LIBCANVAS_DEBUG
 #include <cstdio>
 #include <cstdarg>
