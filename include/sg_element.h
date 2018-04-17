@@ -33,6 +33,7 @@ public:
 
     sg_object* object() const { return m_obj; }
     void free_object() { delete m_obj; }
+    void set_object(sg_object* obj) { m_obj = obj; }
 
     template <class Canvas>
     void draw(Canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb = 0)
