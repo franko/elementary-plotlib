@@ -13,8 +13,7 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
     m_hwnd(0),
-    m_is_mapped(false),
-    m_is_ready(false),
+    m_window_status(window_not_started),
     m_caption("Graphics Window"),
     m_target(tgt)
 {
@@ -103,7 +102,6 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         debug_log("treating WM_SIZE event width: %d height: %d", width, height);
         m_target.resize(width, height);
         m_target.render();
-        m_is_ready = false;
         break;
     }
 
@@ -116,8 +114,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         HDC paintDC = ::BeginPaint(hWnd, &ps);
         m_target.draw();
         ::EndPaint(hWnd, &ps);
-        m_is_mapped = true;
-        m_is_ready = true;
+        m_window_status = window_ready;
         break;
     }
 
@@ -125,6 +122,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_DESTROY:
+        m_window_status = window_closed;
         ::PostQuitMessage(0);
         break;
 
@@ -208,17 +206,12 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 
 int window_win32::run() {
     MSG msg;
-
+    m_window_status = window_starting;
+    debug_log("window run");
     for(;;) {
-        bool status;
-
-        if (m_is_ready) {
-            m_mutex.unlock();
-            status = ::GetMessage(&msg, 0, 0, 0);
-            m_mutex.lock();
-        } else {
-            status = ::GetMessage(&msg, 0, 0, 0);
-        }
+        m_mutex.unlock();
+        bool status = ::GetMessage(&msg, 0, 0, 0);
+        m_mutex.lock();
 
         if (!status) {
             break;
@@ -226,7 +219,7 @@ int window_win32::run() {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
     }
-
+    debug_log("window run exit");
     return (int)msg.wParam;
 }
 

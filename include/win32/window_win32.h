@@ -10,6 +10,8 @@
 #include "window_flags.h"
 
 class window_win32 : public graphics::display_window {
+    enum { window_not_started, window_starting, window_ready, window_closed };
+
 public:
     window_win32(graphics::render_target& tgt);
     ~window_win32();
@@ -32,9 +34,7 @@ private:
     unsigned      m_sys_bpp;
     HWND          m_hwnd;
 
-    bool m_is_mapped;
-    bool m_is_ready;
-
+    int m_window_status;
     str m_caption;
     pthread::mutex m_mutex;
     graphics::render_target& m_target;
