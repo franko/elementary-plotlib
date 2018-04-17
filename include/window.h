@@ -7,9 +7,11 @@
 
 template <typename Window>
 static void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
+    window->lock();
     window->init(width, height, flags);
     window->run();
     window->close();
+    window->unlock();
 }
 
 template <typename Window>

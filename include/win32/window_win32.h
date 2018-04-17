@@ -10,8 +10,6 @@
 #include "window_flags.h"
 
 class window_win32 : public graphics::display_window {
-    enum { window_not_started, window_starting, window_ready, window_closed };
-
 public:
     window_win32(graphics::render_target& tgt);
     ~window_win32();
@@ -24,6 +22,7 @@ public:
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
+    virtual int status() { return m_window_status; }
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

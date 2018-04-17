@@ -1,4 +1,5 @@
 #include "window_surface.h"
+#include "window_flags.h"
 
 #include "util/agg_color_conv_rgb8.h"
 
@@ -48,7 +49,9 @@ bool window_surface::resize(unsigned ww, unsigned hh)
 void window_surface::update_region_locked(image& img, const agg::rect_i& r)
 {
     m_window->lock();
-    m_window->update_region(img, r);
+    if (m_window->status() == graphics::window_running) {
+        m_window->update_region(img, r);
+    }
     m_window->unlock();
 }
 
@@ -153,6 +156,8 @@ agg::rect_i window_surface::get_plot_area(unsigned index, int width, int height)
 
 void window_surface::slot_refresh(unsigned index)
 {
+    if (m_canvas == nullptr) return;
+
     bool redraw = get_plot(index)->need_redraw();
     if (redraw)
     {

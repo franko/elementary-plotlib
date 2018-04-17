@@ -13,7 +13,7 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
     m_hwnd(0),
-    m_window_status(window_not_started),
+    m_window_status(graphics::window_not_started),
     m_caption("Graphics Window"),
     m_target(tgt)
 {
@@ -114,7 +114,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         HDC paintDC = ::BeginPaint(hWnd, &ps);
         m_target.draw();
         ::EndPaint(hWnd, &ps);
-        m_window_status = window_ready;
+        m_window_status = graphics::window_running;
         break;
     }
 
@@ -122,7 +122,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_DESTROY:
-        m_window_status = window_closed;
+        m_window_status = graphics::window_closed;
         ::PostQuitMessage(0);
         break;
 
@@ -206,12 +206,17 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 
 int window_win32::run() {
     MSG msg;
-    m_window_status = window_starting;
+    m_window_status = graphics::window_starting;
     debug_log("window run");
     for(;;) {
-        m_mutex.unlock();
-        bool status = ::GetMessage(&msg, 0, 0, 0);
-        m_mutex.lock();
+        bool status;
+        if (m_window_status == graphics::window_running) {
+            m_mutex.unlock();
+            status = ::GetMessage(&msg, 0, 0, 0);
+            m_mutex.lock();
+        } else {
+            status = ::GetMessage(&msg, 0, 0, 0);
+        }
 
         if (!status) {
             break;
