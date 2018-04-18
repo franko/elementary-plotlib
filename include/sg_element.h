@@ -32,8 +32,6 @@ public:
     { }
 
     sg_object* object() const { return m_obj; }
-    void free_object() { delete m_obj; }
-    void set_object(sg_object* obj) { m_obj = obj; }
 
     template <class Canvas>
     void draw(Canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb = 0)
@@ -79,7 +77,7 @@ public:
     ~sg_composite() {
         unsigned n = m_elements.size();
         for (unsigned i = 0; i < n; i++) {
-            m_elements[i].free_object();
+            delete m_elements[i].object();
         }
     }
 
