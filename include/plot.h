@@ -121,12 +121,10 @@ class plot {
     };
 
 protected:
-    typedef sg_element item;
-
-    class item_list : public agg::pod_bvector<item>
+    class item_list : public agg::pod_bvector<sg_element>
     {
     public:
-        item_list(): agg::pod_bvector<item>() { }
+        item_list(): agg::pod_bvector<sg_element>() { }
 
         const opt_rect<double>& bounding_box() const {
             return m_bbox;
@@ -145,7 +143,7 @@ protected:
     };
 
 public:
-    typedef list<item> iterator;
+    typedef list<sg_element> iterator;
     typedef virtual_canvas canvas_type;
 
     enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
@@ -348,7 +346,7 @@ protected:
 
     void draw_elements(canvas_type &canvas, const plot_layout& layout);
 
-    void draw_element(item& c, canvas_type &canvas, const agg::trans_affine& m) {
+    void draw_element(sg_element& c, canvas_type &canvas, const agg::trans_affine& m) {
         c.draw(canvas, m);
     }
 
@@ -392,7 +390,7 @@ protected:
     }
 
     agg::trans_affine m_trans;
-    list<item> *m_drawing_queue;
+    list<sg_element> *m_drawing_queue;
 
     bool m_clip_flag;
 
@@ -435,7 +433,7 @@ void plot::draw_queue(Canvas& _canvas, const agg::trans_affine& canvas_mtx, cons
     iter_type *c0 = m_drawing_queue;
     for (iter_type *c = c0; c != 0; c = c->next())
     {
-        item& d = c->content();
+        sg_element& d = c->content();
         agg::trans_affine m = get_model_matrix(layout);
         agg::rect_d ebb;
         d.draw(canvas, m, &ebb);

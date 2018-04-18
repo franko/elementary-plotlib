@@ -25,30 +25,30 @@ void plot::add(const sg_element& elem)
         m_enlarged_layer = true;
     }
 
-    list<item> *new_node = new list<item>(elem);
-    m_drawing_queue = list<item>::push_back(m_drawing_queue, new_node);
+    list<sg_element> *new_node = new list<sg_element>(elem);
+    m_drawing_queue = list<sg_element>::push_back(m_drawing_queue, new_node);
     manage_owner::acquire(elem.object());
 }
 
 void plot::push_drawing_queue()
 {
     item_list* layer = current_layer();
-    for (list<item> *c = m_drawing_queue; c != 0; c = c->next())
+    for (list<sg_element> *c = m_drawing_queue; c != 0; c = c->next())
     {
         layer->add(c->content());
     }
 
     while (m_drawing_queue)
-        m_drawing_queue = list<item>::pop(m_drawing_queue);
+        m_drawing_queue = list<sg_element>::pop(m_drawing_queue);
 }
 
 void plot::clear_drawing_queue()
 {
     while (m_drawing_queue)
     {
-        item& d = m_drawing_queue->content();
+        sg_element& d = m_drawing_queue->content();
         manage_owner::dispose(d.object());
-        m_drawing_queue = list<item>::pop(m_drawing_queue);
+        m_drawing_queue = list<sg_element>::pop(m_drawing_queue);
     }
 }
 
@@ -519,7 +519,7 @@ bool plot::fit_inside(const sg_element& elem) const
 void plot::calc_layer_bounding_box(plot::item_list* layer, opt_rect<double>& rect)
 {
     for (unsigned j = 0; j < layer->size(); j++) {
-        item& d = (*layer)[j];
+        sg_element& d = (*layer)[j];
         agg::rect_base<double> r;
         d.object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
         rect.add<rect_union>(r);
@@ -535,9 +535,9 @@ void plot::calc_bounding_box()
     }
 
     calc_layer_bounding_box(get_layer(n-1), box);
-    for (list<item> *t = m_drawing_queue; t; t = t->next())
+    for (list<sg_element> *t = m_drawing_queue; t; t = t->next())
     {
-        const item& d = t->content();
+        const sg_element& d = t->content();
         agg::rect_d r;
         d.object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
         box.add<rect_union>(r);
