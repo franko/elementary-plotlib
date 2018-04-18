@@ -7,7 +7,6 @@
 #include "markers.h"
 #include "trans.h"
 #include "sg_path.h"
-#include "sg_path.h"
 
 struct symbol_reg {
     const char *name;
