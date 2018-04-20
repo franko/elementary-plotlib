@@ -9,9 +9,7 @@
 template <typename Window>
 void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
     window->lock();
-    window->init(width, height, flags);
-    window->run();
-    window->close();
+    window->start(width, height, flags);
     window->unlock();
 }
 

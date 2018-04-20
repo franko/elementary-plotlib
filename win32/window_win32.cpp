@@ -245,3 +245,9 @@ void window_win32::send_ready_message() {
 void window_win32::wait_running(std::unique_lock<std::mutex>& lock) {
     m_running.wait(lock, [this] { return this->m_window_status == graphics::window_running; });
 }
+
+void window_win32::start(unsigned width, unsigned height, unsigned flags) {
+    init(width, height, flags);
+    run();
+    close();
+}

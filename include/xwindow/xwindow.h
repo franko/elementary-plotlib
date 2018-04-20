@@ -25,9 +25,7 @@ public:
     xwindow(graphics::render_target& tgt);
     ~xwindow();
 
-    bool init(unsigned width, unsigned height, unsigned flags);
-    void run();
-    void close();
+    void start(unsigned width, unsigned height, unsigned flags);
     void wait_running(std::unique_lock<std::mutex>& lock);
     std::unique_lock<std::mutex> get_lock() { return std::unique_lock<std::mutex>(m_mutex); }
 
@@ -37,7 +35,9 @@ public:
     virtual void unlock() { m_mutex.unlock(); }
 
 private:
-    static void run_window_thread(xwindow *window, unsigned width, unsigned height, unsigned flags);
+    bool init(unsigned width, unsigned height, unsigned flags);
+    void run();
+    void close();
 
     void close_connections();
     void caption(const str& s);

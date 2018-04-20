@@ -318,3 +318,9 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
 void xwindow::wait_running(std::unique_lock<std::mutex>& lock) {
     m_running.wait(lock, [this] { return this->m_window_status == graphics::window_running; });
 }
+
+void xwindow::start(unsigned width, unsigned height, unsigned flags) {
+    init(width, height, flags);
+    run();
+    close();
+}
