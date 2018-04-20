@@ -1,18 +1,7 @@
 #ifndef LIBCANVAS_WINDOW_H
 #define LIBCANVAS_WINDOW_H
 
-#include <thread>
-
 #include "window_surface.h"
-
-template <typename Window>
-static void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
-    window->lock();
-    window->init(width, height, flags);
-    window->run();
-    window->close();
-    window->unlock();
-}
 
 template <typename Window>
 class window_gen {
@@ -30,8 +19,7 @@ public:
     }
 
 	void start(unsigned width, unsigned height, unsigned flags) {
-        std::thread wt(run_window<Window>, &m_window, width, height, flags);
-        wt.detach();
+        m_window.start(width, height, flags);
 	}
 
 private:

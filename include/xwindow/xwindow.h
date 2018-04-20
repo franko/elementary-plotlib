@@ -1,6 +1,10 @@
 #ifndef XWINDOW_XWINDOW_H
 #define XWINDOW_XWINDOW_H
 
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
 // Used for declarations of window_flag_e and pix_format_e enums.
 // Not used for platform_support class which is not used in this project.
 #include "platform/agg_platform_support.h"
@@ -8,7 +12,6 @@
 #include "xwindow/x_connection.h"
 #include "xwindow/x_image.h"
 #include "strpp.h"
-#include "pthreadpp.h"
 #include "window_surface.h"
 #include "window_flags.h"
 
@@ -22,8 +25,7 @@ public:
     xwindow(graphics::render_target& tgt);
     ~xwindow();
 
-    bool init(unsigned width, unsigned height, unsigned flags);
-    void run();
+    void start(unsigned width, unsigned height, unsigned flags);
     void close();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
@@ -32,6 +34,11 @@ public:
     virtual void unlock() { m_mutex.unlock(); }
 
 private:
+    bool init(unsigned width, unsigned height, unsigned flags);
+    void run();
+
+    static void run_window_thread(xwindow *window, unsigned width, unsigned height, unsigned flags);
+
     void close_connections();
     void caption(const str& s);
     void wait_map_notify();
@@ -53,7 +60,9 @@ private:
     x_connection         m_draw_conn;
     x_image*             m_draw_img;
     str                  m_caption;
-    pthread::mutex       m_mutex;
+    int                  m_window_status;
+    std::mutex           m_mutex;
+    std::condition_variable m_running;
     graphics::render_target& m_target;
 };
 

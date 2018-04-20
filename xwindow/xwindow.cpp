@@ -15,6 +15,7 @@ xwindow::xwindow(graphics::render_target& tgt):
     m_close_atom(0),
     m_wm_protocols_atom(0),
     m_draw_img(0),
+    m_window_status(graphics::window_not_started),
     m_target(tgt)
 {
 }
@@ -57,6 +58,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
         return false;
     }
 
+    m_window_status = graphics::window_starting;
     x_connection *xc = &this->m_main_conn;
 
     unsigned long r_mask = xc->visual->red_mask;
@@ -211,6 +213,11 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     resize(width, height);
     m_target.render();
 
+    m_window_status = graphics::window_running;
+    unlock();
+    m_running.notify_one();
+    lock();
+
     return true;
 }
 
@@ -306,4 +313,20 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
     int x_dst = r.x1, y_dst = (graphics::flip_y ? src_img.height() -r.y2 : r.y1);
     XPutImage(dsp, m_window, m_gc, m_draw_img->ximage(),
               0, 0, x_dst, y_dst, width, height);
+}
+
+void xwindow::run_window_thread(xwindow *window, unsigned width, unsigned height, unsigned flags) {
+    window->lock();
+    window->init(width, height, flags);
+    window->run();
+    window->close();
+    window->unlock();
+}
+
+void xwindow::start(unsigned width, unsigned height, unsigned flags) {
+    std::unique_lock<std::mutex> lk(m_mutex);
+    std::thread wt(xwindow::run_window_thread, this, width, height, flags);
+    m_running.wait(lk, [this] { return this->m_window_status == graphics::window_running; });
+    lk.unlock();
+    wt.detach();
 }

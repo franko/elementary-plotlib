@@ -2,6 +2,7 @@
 #include <random>
 
 #include "window.h"
+#include "debug_log.h"
 #include "path.h"
 
 void rotate(const double a, double& x, double& y) {
@@ -41,7 +42,6 @@ int main()
     int index = win.attach(&p, "1");
 
     win.start(640, 640, graphics::window_resize);
-    sleep(1);
 
     std::random_device r;
     std::default_random_engine e1(r());

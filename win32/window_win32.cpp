@@ -115,6 +115,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         m_target.draw();
         ::EndPaint(hWnd, &ps);
         m_window_status = graphics::window_running;
+        send_ready_message();
         break;
     }
 
@@ -233,4 +234,26 @@ void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r)
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
     ::ReleaseDC(m_hwnd, dc);
+}
+
+void window_win32::send_ready_message() {
+    unlock();
+    m_running.notify_one();
+    lock();
+}
+
+void window_win32::run_window(window_win32 *window, unsigned width, unsigned height, unsigned flags) {
+    window->lock();
+    window->init(width, height, flags);
+    window->run();
+    window->close();
+    window->unlock();
+}
+
+void window_win32::start(unsigned width, unsigned height, unsigned flags) {
+    std::unique_lock<std::mutex> lk(m_mutex);
+    std::thread wt(window_win32::run_window, this, width, height, flags);
+    m_running.wait(lk, [this] { return this->m_window_status == graphics::window_running; });
+    lk.unlock();
+    wt.detach();
 }
