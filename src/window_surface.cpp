@@ -9,7 +9,7 @@
 namespace graphics {
 
 window_surface::window_surface(const char* split_str):
-m_img(), m_save_img(), m_window(0), m_canvas(0)
+m_img(), m_save_img(), m_window(nullptr), m_canvas(nullptr)
 {
     split(split_str ? split_str : ".");
 }
