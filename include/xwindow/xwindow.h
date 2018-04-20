@@ -25,8 +25,11 @@ public:
     xwindow(graphics::render_target& tgt);
     ~xwindow();
 
-    void start(unsigned width, unsigned height, unsigned flags);
+    bool init(unsigned width, unsigned height, unsigned flags);
+    void run();
     void close();
+    void wait_running(std::unique_lock<std::mutex>& lock);
+    std::unique_lock<std::mutex> get_lock() { return std::unique_lock<std::mutex>(m_mutex); }
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
 
@@ -34,9 +37,6 @@ public:
     virtual void unlock() { m_mutex.unlock(); }
 
 private:
-    bool init(unsigned width, unsigned height, unsigned flags);
-    void run();
-
     static void run_window_thread(xwindow *window, unsigned width, unsigned height, unsigned flags);
 
     void close_connections();

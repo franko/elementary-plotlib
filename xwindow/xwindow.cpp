@@ -315,18 +315,6 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
               0, 0, x_dst, y_dst, width, height);
 }
 
-void xwindow::run_window_thread(xwindow *window, unsigned width, unsigned height, unsigned flags) {
-    window->lock();
-    window->init(width, height, flags);
-    window->run();
-    window->close();
-    window->unlock();
-}
-
-void xwindow::start(unsigned width, unsigned height, unsigned flags) {
-    std::unique_lock<std::mutex> lk(m_mutex);
-    std::thread wt(xwindow::run_window_thread, this, width, height, flags);
-    m_running.wait(lk, [this] { return this->m_window_status == graphics::window_running; });
-    lk.unlock();
-    wt.detach();
+void xwindow::wait_running(std::unique_lock<std::mutex>& lock) {
+    m_running.wait(lock, [this] { return this->m_window_status == graphics::window_running; });
 }

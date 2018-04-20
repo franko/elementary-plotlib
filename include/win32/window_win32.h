@@ -18,8 +18,11 @@ public:
     window_win32(graphics::render_target& tgt);
     ~window_win32();
 
-    void start(unsigned width, unsigned height, unsigned flags);
+    bool init(unsigned width, unsigned height, unsigned flags);
+    int run();
     void close();
+    void wait_running(std::unique_lock<std::mutex>& lock);
+    std::unique_lock<std::mutex> get_lock() { return std::unique_lock<std::mutex>(m_mutex); }
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
 
@@ -30,9 +33,6 @@ public:
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
-    bool init(unsigned width, unsigned height, unsigned flags);
-    int run();
-
     static void run_window(window_win32 *window, unsigned width, unsigned height, unsigned flags);
 
     void display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *rect = 0);
