@@ -12,7 +12,7 @@ inline void sleep(int s) { Sleep(s * 1000); }
 #include <cstdio>
 #include <cstdarg>
 
-static void debug_log(const char *fmt, ...) {
+inline void debug_log(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     vfprintf(stderr, fmt, args);
@@ -23,7 +23,7 @@ static void debug_log(const char *fmt, ...) {
 
 #else
 
-static void debug_log(const char *fmt, ...) {
+inline void debug_log(const char *fmt, ...) {
 }
 
 #endif
