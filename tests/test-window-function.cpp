@@ -20,8 +20,7 @@ int main()
 {
     graphics::initialize_fonts();
 
-    graphics::window win("h.");
-
+    graphics::window win;
     graphics::plot p(graphics::plot::show_units | graphics::plot::auto_limits);
     p.set_clip_mode(false);
 
@@ -34,7 +33,7 @@ int main()
 
     p.commit_pending_draw();
 
-    int index = win.attach(&p, "1");
+    int index = win.attach(&p, "");
 
     win.start(640, 480, graphics::window_resize);
 

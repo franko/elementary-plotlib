@@ -25,6 +25,10 @@ void start_window(Window *window, unsigned width, unsigned height, unsigned flag
 template <typename Window>
 class window_gen {
 public:
+    window_gen(): m_surface(nullptr), m_window(m_surface) {
+        m_surface.attach_window(&m_window);
+    }
+
 	window_gen(const char *fmt): m_surface(fmt), m_window(m_surface) {
 		m_surface.attach_window(&m_window);
 	}
