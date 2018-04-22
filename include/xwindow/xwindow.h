@@ -33,6 +33,7 @@ public:
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
+    virtual int status() { return m_window_status; }
 
 private:
     bool init(unsigned width, unsigned height, unsigned flags);
