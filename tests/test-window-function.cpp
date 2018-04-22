@@ -31,6 +31,9 @@ int main()
     add_function(p, x0, x1, [](double x) { return std::sin(x) / x; }, blue);
     add_function(p, 0.8, x1, [](double x) { return std::cos(x) / x; }, red);
 
+    p.set_title("Function plot example");
+    p.set_x_axis_title("x variable");
+
     p.commit_pending_draw();
 
     int index = win.attach(&p, "");

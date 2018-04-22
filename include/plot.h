@@ -176,6 +176,19 @@ public:
     str& title() {
         return m_title;
     }
+
+    void set_title(const char *title) {
+        set_string_property(m_title, title);
+    }
+
+    void set_x_axis_title(const char *title) {
+        set_string_property(m_x_axis.title, title);
+    }
+
+    void set_y_axis_title(const char *title) {
+        set_string_property(m_y_axis.title, title);
+    }
+
     str& x_axis_title() {
         return m_x_axis.title;
     }
@@ -370,6 +383,13 @@ protected:
     void set_opt_limits(const opt_rect<double>& r);
 
     void layer_dispose_elements (item_list* layer);
+
+    void set_string_property(str& property, const char *new_value) {
+        if (strcmp(property.cstr(), new_value) != 0) {
+            property = new_value;
+            m_need_redraw = true;
+        }
+    }
 
     unsigned nb_layers() const {
         return m_layers.size();
