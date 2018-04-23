@@ -22,7 +22,7 @@ add_triangle(graphics::plot& p, double x, double y, double size, double angle, a
     rotate(angle, x3, y3);
 
     agg::rgba8 black(0, 0, 0, 255);
-    auto line = new graphics::path(color, black, 1.0, ELEMENT_FILL|ELEMENT_STROKE);
+    auto line = new graphics::path(color, black, 1.0, graphics::property::fill_stroke);
     line->move_to(x + x1, y + y1);
     line->line_to(x + x2, y + y2);
     line->line_to(x + x3, y + y3);

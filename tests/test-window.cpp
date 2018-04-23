@@ -19,7 +19,7 @@ int main()
     agg::rgba8 blue(0, 0, 180, 255);
     agg::rgba8 yellow(245, 254, 0, 255);
 
-    auto line = new graphics::path(yellow, red, 2.5, ELEMENT_FILL|ELEMENT_STROKE);
+    auto line = new graphics::path(yellow, red, 2.5, graphics::property::fill | graphics::property::stroke);
     line->move_to(-0.5, 0.0);
     line->line_to(-0.5, 8.0);
     line->line_to(0.5, 4.0);

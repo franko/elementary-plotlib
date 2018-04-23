@@ -7,7 +7,7 @@
 template <typename Function>
 void add_function(graphics::plot& p, double x0, double x1, Function f, agg::rgba8 color, int n = 512) {
     agg::rgba8 none(0,0,0,0);
-    auto line = new graphics::path(none, color, 1.5, ELEMENT_STROKE);
+    auto line = new graphics::path(none, color, 1.5, graphics::property::stroke);
     line->move_to(x0, f(x0));
     for (int i = 1; i <= n; i++) {
         const double x = x0 + i * (x1 - x0) / n;

@@ -8,7 +8,7 @@ namespace graphics {
 
 class path : public sg_element {
 public:
-    path(agg::rgba8 fc, agg::rgba8 sc, float sw, unsigned flags = ELEMENT_DEFAULT)
+    path(agg::rgba8 fc, agg::rgba8 sc, float sw, unsigned flags = graphics::property::fill_stroke)
     : sg_element(&m_path_scaling, fc, sc, sw, flags), m_path(), m_path_scaling(&m_path) {
     }
 

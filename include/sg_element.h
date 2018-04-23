@@ -14,19 +14,22 @@ inline static bool color_is_defined(agg::rgba8 c) {
     return (c.a > 0);
 }
 
-enum {
-    ELEMENT_FILL         = 1,
-    ELEMENT_STROKE       = 1 << 1,
-    ELEMENT_CRISP_RENDER = 1 << 2,
+namespace graphics { namespace property {
 
-    ELEMENT_DEFAULT = ELEMENT_STROKE,
+enum {
+    fill        = 1,
+    stroke      = 1 << 1,
+    crisp       = 1 << 2,
+    fill_stroke = fill | stroke,
 };
+
+}}
 
 class sg_element {
 public:
     sg_element(): m_obj(0) { }
 
-    sg_element(sg_object* o, agg::rgba8 fc, agg::rgba8 sc, float sw, unsigned flags = ELEMENT_DEFAULT):
+    sg_element(sg_object* o, agg::rgba8 fc, agg::rgba8 sc, float sw, unsigned flags = graphics::property::fill_stroke):
     m_obj(o), m_stroke_color(sc), m_stroke_width(sw), m_fill_color(fc),
     m_flags(flags)
     { }
@@ -37,9 +40,9 @@ public:
     void draw(Canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb = 0)
     {
         m_obj->apply_transform(m, 1.0);
-        const bool has_fill = (m_flags & ELEMENT_FILL);
-        const bool has_stroke = (m_stroke_width > 0.0 && (m_flags & ELEMENT_STROKE));
-        const bool crisp = (m_flags & ELEMENT_CRISP_RENDER);
+        const bool has_fill = (m_flags & graphics::property::fill);
+        const bool has_stroke = (m_stroke_width > 0.0 && (m_flags & graphics::property::stroke));
+        const bool crisp = (m_flags & graphics::property::crisp);
         if (has_fill) {
             canvas.draw(*m_obj, m_fill_color);
         }
@@ -86,17 +89,17 @@ public:
     }
 
     void add(sg_object* obj, agg::rgba8 fill_color, agg::rgba8 stroke_color, float stroke_width, unsigned flags = 0) {
-        const sg_element e(obj, fill_color, stroke_color, stroke_width, ELEMENT_STROKE|ELEMENT_FILL|flags);
+        const sg_element e(obj, fill_color, stroke_color, stroke_width, graphics::property::stroke|graphics::property::fill|flags);
         m_elements.add(e);
     }
 
     void add_fill(sg_object* obj, agg::rgba8 fill_color, unsigned flags = 0) {
-        const sg_element e(obj, fill_color, colors::zero(), 0.0, ELEMENT_FILL|flags);
+        const sg_element e(obj, fill_color, colors::zero(), 0.0, graphics::property::fill|flags);
         m_elements.add(e);
     }
 
     void add_stroke(sg_object* obj, agg::rgba8 color, float line_width, unsigned flags = 0) {
-        const sg_element e(obj, colors::zero(), color, line_width, ELEMENT_STROKE|flags);
+        const sg_element e(obj, colors::zero(), color, line_width, graphics::property::stroke|flags);
         m_elements.add(e);
     }
 
