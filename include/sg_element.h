@@ -50,7 +50,7 @@ public:
             if (crisp) {
                 canvas.draw_outline_noaa(*m_obj, m_stroke_color);
             } else {
-                trans::stroke_a stobj(m_obj);
+                graphics::transform::stroke_a stobj(m_obj);
                 stobj.self().width(double(m_stroke_width));
                 stobj.self().line_cap(agg::round_cap);
                 canvas.draw(stobj, m_stroke_color);

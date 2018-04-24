@@ -26,7 +26,7 @@ public:
 
 private:
     sg_path m_path;
-    trans::scaling_a m_path_scaling;
+    graphics::transform::scaling_a m_path_scaling;
 };
 
 }

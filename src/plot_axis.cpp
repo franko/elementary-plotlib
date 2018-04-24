@@ -25,7 +25,7 @@ sg_composite axis::draw_with_labels(label_iterator& labels,
     const double langle = labels_angle();
 
     sg_path* marks_obj = new sg_path();
-    trans::scaling* marks = new trans::scaling(marks_obj);
+    graphics::transform::scaling* marks = new graphics::transform::scaling(marks_obj);
     agg::path_storage& marks_path = marks_obj->self();
 
     // std_line_width(scale, 1.0)
@@ -91,7 +91,7 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
     const double y_spac_top = 3, y_spac_bot = 3;
 
     sg_path* marks_obj = new sg_path();
-    trans::scaling* marks = new trans::scaling(marks_obj);
+    graphics::transform::scaling* marks = new graphics::transform::scaling(marks_obj);
     agg::path_storage& marks_path = marks_obj->self();
 
     // std_line_width(scale, 1.0)

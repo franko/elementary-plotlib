@@ -17,7 +17,7 @@
 
 #include "my_conv_simple_marker.h"
 
-struct trans {
+namespace graphics { namespace transform {
 
     typedef sg_object_scaling<manage_owner> scaling;
     typedef sg_object_scaling<manage_not_owner> scaling_a;
@@ -253,6 +253,7 @@ struct trans {
             delete m_source;
         }
     };
-};
+
+} }
 
 #endif

@@ -138,10 +138,10 @@ new_marker_symbol (const char *req_name)
     bool stroke;
     sg_object* s = new_marker_symbol_raw(req_name, stroke);
 
-    trans::scaling *ss = new trans::scaling(s);
+    graphics::transform::scaling *ss = new graphics::transform::scaling(s);
     sg_object* sf = ss;
     if (stroke)
-        sf = new trans::stroke(sf);
+        sf = new graphics::transform::stroke(sf);
     return sf;
 }
 
