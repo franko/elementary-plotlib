@@ -107,32 +107,24 @@ namespace graphics { namespace transform {
     };
 
     //------------------------------------------------ affine transform
-    typedef agg::conv_transform<sg_object> trans_type;
-
-    class affine_a :
-        public sg_adapter<trans_type, no_approx_scale> {
-        agg::trans_affine m_matrix;
-        double m_norm;
-
-        typedef sg_adapter<trans_type, no_approx_scale> base_type;
-
+    class affine_a : public sg_adapter<agg::conv_transform<sg_object>, no_approx_scale> {
     public:
-        affine_a(sg_object *src, const agg::trans_affine& mtx) :
-            base_type(src, m_matrix), m_matrix(mtx)
-        {
+        affine_a(sg_object *src, const agg::trans_affine& mtx) : sg_adapter<agg::conv_transform<sg_object>, no_approx_scale>(src, m_matrix), m_matrix(mtx) {
             m_norm = m_matrix.scale();
         }
 
-        virtual void apply_transform(const agg::trans_affine& m, double as)
-        {
+        virtual void apply_transform(const agg::trans_affine& m, double as) {
             this->m_source->apply_transform(m, as * m_norm);
         };
 
-        virtual bool affine_compose(agg::trans_affine& m)
-        {
+        virtual bool affine_compose(agg::trans_affine& m) {
             trans_affine_compose (m_matrix, m);
             return true;
         }
+
+    private:
+        agg::trans_affine m_matrix;
+        double m_norm;
     };
 
     struct affine : affine_a {
