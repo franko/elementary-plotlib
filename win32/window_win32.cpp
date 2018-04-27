@@ -1,3 +1,4 @@
+#include "notify_request.h"
 #include "win32/window_win32.h"
 #include "debug_log.h"
 
@@ -15,6 +16,7 @@ window_win32::window_win32(graphics::render_target& tgt) :
     m_hwnd(0),
     m_window_status(graphics::window_not_started),
     m_caption("Graphics Window"),
+    m_request_pending(nullptr),
     m_target(tgt)
 {
 }
@@ -236,18 +238,31 @@ void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r)
     ::ReleaseDC(m_hwnd, dc);
 }
 
+// Assume we have the window lock.
 void window_win32::send_ready_message() {
-    unlock();
-    m_running.notify_one();
-    lock();
-}
-
-void window_win32::wait_running(std::unique_lock<std::mutex>& lock) {
-    m_running.wait(lock, [this] { return this->m_window_status == graphics::window_running; });
+    if (m_request_pending && m_request_pending->type() == notify_window_start) {
+        m_request_pending->notify();
+        m_request_pending = nullptr;
+    }
 }
 
 void window_win32::start(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
     close();
+}
+
+int window_win32::send_notify_request(notify_request& request) {
+    std::lock_guard<std::mutex> lk(m_mutex);
+    if (m_window_status == graphics::window_running || m_window_status == graphics::window_closed) {
+        return request_not_applicable;
+    }
+    if (m_request_pending) {
+        return request_error_pending;
+    }
+    if (request.type() == notify_window_start) {
+        m_request_pending = &request;
+        return 0;
+    }
+    return request_error_unknown;
 }

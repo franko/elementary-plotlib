@@ -1,10 +1,9 @@
 #ifndef LIBCANVAS_WINDOW_H
 #define LIBCANVAS_WINDOW_H
 
-#include <thread>
-#include <mutex>
-
 #include "window_surface.h"
+#include "notify_request.h"
+#include "debug_log.h"
 
 template <typename Window>
 void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
@@ -15,11 +14,20 @@ void run_window(Window *window, unsigned width, unsigned height, unsigned flags)
 
 template <typename Window>
 void start_window(Window *window, unsigned width, unsigned height, unsigned flags) {
-    auto lock = window->get_lock();
+    window->lock();
     std::thread wt(run_window<Window>, window, width, height, flags);
-    window->wait_running(lock);
-    lock.unlock();
+    window->unlock();
     wt.detach();
+
+    notify_request req{notify_window_start};
+    int retval = window->send_notify_request(req);
+    if (retval == request_success) {
+        req.wait();
+    } else if (retval == request_not_applicable) {
+        debug_log("window already running");
+    } else {
+        debug_log("error sending request: %d", retval);
+    }
 }
 
 template <typename Window>

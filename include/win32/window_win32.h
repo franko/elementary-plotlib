@@ -13,20 +13,22 @@
 #include "window_surface.h"
 #include "window_flags.h"
 
+class notify_request;
+
 class window_win32 : public graphics::display_window {
 public:
     window_win32(graphics::render_target& tgt);
     ~window_win32();
 
     void start(unsigned width, unsigned height, unsigned flags);
-    void wait_running(std::unique_lock<std::mutex>& lock);
-    std::unique_lock<std::mutex> get_lock() { return std::unique_lock<std::mutex>(m_mutex); }
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
     virtual int status() { return m_window_status; }
+
+    virtual int send_notify_request(notify_request& request);
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -45,7 +47,7 @@ private:
     int m_window_status;
     str m_caption;
     std::mutex m_mutex;
-    std::condition_variable m_running; // Used to signal when window is running.
+    notify_request *m_request_pending;
     graphics::render_target& m_target;
 
     static void get_module_instance();
