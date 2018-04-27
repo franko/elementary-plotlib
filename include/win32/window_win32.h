@@ -38,7 +38,7 @@ private:
     void close();
 
     void display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *rect = 0);
-    void send_ready_message();
+    void send_notify(notify_e notify_code);
 
     pix_format_e  m_sys_format;
     unsigned      m_sys_bpp;

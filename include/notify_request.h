@@ -7,6 +7,7 @@
 
 enum notify_e {
     notify_window_start,
+    notify_window_closed,
 };
 
 enum request_error_e {

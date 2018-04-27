@@ -13,21 +13,25 @@ void run_window(Window *window, unsigned width, unsigned height, unsigned flags)
 }
 
 template <typename Window>
+void wait_until_notification(Window *window, notify_e notify_code) {
+    notify_request req{notify_code};
+    int retval = window->send_notify_request(req);
+    if (retval == request_success) {
+        req.wait();
+    } else if (retval == request_not_applicable) {
+        debug_log("request already satisfied");
+    } else {
+        debug_log("error sending request: %d", retval);
+    }
+}
+
+template <typename Window>
 void start_window(Window *window, unsigned width, unsigned height, unsigned flags) {
     window->lock();
     std::thread wt(run_window<Window>, window, width, height, flags);
     window->unlock();
     wt.detach();
-
-    notify_request req{notify_window_start};
-    int retval = window->send_notify_request(req);
-    if (retval == request_success) {
-        req.wait();
-    } else if (retval == request_not_applicable) {
-        debug_log("window already running");
-    } else {
-        debug_log("error sending request: %d", retval);
-    }
+    wait_until_notification(window, notify_window_start);
 }
 
 template <typename Window>
@@ -52,6 +56,10 @@ public:
 	void start(unsigned width, unsigned height, unsigned flags) {
         start_window(&m_window, width, height, flags);
 	}
+
+    void wait() {
+        wait_until_notification(&m_window, notify_window_closed);
+    }
 
 private:
 	graphics::window_surface m_surface;
