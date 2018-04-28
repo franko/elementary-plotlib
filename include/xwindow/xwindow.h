@@ -15,6 +15,8 @@
 #include "window_surface.h"
 #include "window_flags.h"
 
+class notify_request;
+
 class xwindow : public graphics::display_window {
 public:
     enum xevent_mask_e
@@ -26,8 +28,6 @@ public:
     ~xwindow();
 
     void start(unsigned width, unsigned height, unsigned flags);
-    void wait_running(std::unique_lock<std::mutex>& lock);
-    std::unique_lock<std::mutex> get_lock() { return std::unique_lock<std::mutex>(m_mutex); }
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
 
@@ -35,10 +35,14 @@ public:
     virtual void unlock() { m_mutex.unlock(); }
     virtual int status() { return m_window_status; }
 
+    int send_notify_request(notify_request& request);
+
 private:
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
     void close();
+
+    void send_notify(notify_e notify_code);
 
     void close_connections();
     void caption(const str& s);
@@ -63,7 +67,7 @@ private:
     str                  m_caption;
     int                  m_window_status;
     std::mutex           m_mutex;
-    std::condition_variable m_running;
+    notify_request *     m_request_pending;
     graphics::render_target& m_target;
 };
 

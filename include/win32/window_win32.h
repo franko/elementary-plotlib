@@ -28,7 +28,7 @@ public:
     virtual void unlock() { m_mutex.unlock(); }
     virtual int status() { return m_window_status; }
 
-    virtual int send_notify_request(notify_request& request);
+    int send_notify_request(notify_request& request);
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

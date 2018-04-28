@@ -1,6 +1,7 @@
 #include <X11/X.h>
 #include <X11/Xutil.h>
 
+#include "notify_request.h"
 #include "xwindow/xwindow.h"
 #include "fatal.h"
 
@@ -16,6 +17,7 @@ xwindow::xwindow(graphics::render_target& tgt):
     m_wm_protocols_atom(0),
     m_draw_img(0),
     m_window_status(graphics::window_not_started),
+    m_request_pending(nullptr),
     m_target(tgt)
 {
 }
@@ -214,9 +216,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     m_target.render();
 
     m_window_status = graphics::window_running;
-    unlock();
-    m_running.notify_one();
-    lock();
+    send_notify(notify_window_start);
 
     return true;
 }
@@ -295,6 +295,7 @@ void xwindow::close()
 {
     free_x_resources();
     close_connections();
+    send_notify(notify_window_closed);
 }
 
 void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
@@ -315,12 +316,37 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
               0, 0, x_dst, y_dst, width, height);
 }
 
-void xwindow::wait_running(std::unique_lock<std::mutex>& lock) {
-    m_running.wait(lock, [this] { return this->m_window_status == graphics::window_running; });
-}
-
 void xwindow::start(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
     close();
+}
+
+// Assume we have the window lock.
+void xwindow::send_notify(notify_e notify_code) {
+    if (m_request_pending && m_request_pending->type() == notify_code) {
+        m_request_pending->notify();
+        m_request_pending = nullptr;
+    }
+}
+
+int xwindow::send_notify_request(notify_request& request) {
+    std::lock_guard<std::mutex> lk(m_mutex);
+    if (m_request_pending) {
+        return request_error_pending;
+    }
+    if (request.type() == notify_window_start) {
+        if (m_window_status == graphics::window_running || m_window_status == graphics::window_closed) {
+            return request_not_applicable;
+        }
+        m_request_pending = &request;
+        return 0;
+    } else if (request.type() == notify_window_closed) {
+        if (m_window_status == graphics::window_closed) {
+            return request_not_applicable;
+        }
+        m_request_pending = &request;
+        return 0;
+    }
+    return request_error_unknown;
 }
