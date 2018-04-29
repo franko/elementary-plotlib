@@ -12,7 +12,7 @@ void rotate(const double a, double& x, double& y) {
 }
 
 void
-add_triangle(graphics::plot& p, double x, double y, double size, double angle, agg::rgba8 color) {
+add_triangle(graphics::plot& p, double x, double y, double size, double angle, agg::rgba8 fill_color) {
     double x1 = -size / 2, y1 = -size / (2 * std::sqrt(3.0));
     double x2 =  size / 2, y2 = -size / (2 * std::sqrt(3.0));
     double x3 = 0, y3 = size / std::sqrt(3.0);
@@ -22,12 +22,12 @@ add_triangle(graphics::plot& p, double x, double y, double size, double angle, a
     rotate(angle, x3, y3);
 
     agg::rgba8 black(0, 0, 0, 255);
-    auto line = new graphics::path(color, black, 1.0, graphics::property::fill_stroke);
+    auto line = new graphics::path();
     line->move_to(x + x1, y + y1);
     line->line_to(x + x2, y + y2);
     line->line_to(x + x3, y + y3);
     line->close_polygon();
-    p.add(line);
+    p.add(line, black, 1.0, fill_color, graphics::property::fill_stroke);
 }
 
 int main()

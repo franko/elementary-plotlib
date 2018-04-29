@@ -19,12 +19,12 @@ int main()
     agg::rgba8 blue(0, 0, 180, 255);
     agg::rgba8 yellow(245, 254, 0, 255);
 
-    auto line = new graphics::path(yellow, red, 2.5, graphics::property::fill | graphics::property::stroke);
+    auto line = new graphics::path();
     line->move_to(-0.5, 0.0);
     line->line_to(-0.5, 8.0);
     line->line_to(0.5, 4.0);
     line->close_polygon();
-    p.add(line);
+    p.add(line, red, 2.5, yellow, graphics::property::fill | graphics::property::stroke);
 
     p.commit_pending_draw();
 
@@ -34,12 +34,12 @@ int main()
 
     sleep(4);
 
-    auto line2 = new graphics::path(none, blue, 2.5);
+    auto line2 = new graphics::path();
     line2->move_to(0.8, 1.0);
     line2->line_to(0.8, 7.0);
     line2->line_to(0.3, 4.0);
     line2->close_polygon();
-    p.add(line2);
+    p.add(line2, blue, 2.5, none);
 
     win.slot_refresh(index);
     p.commit_pending_draw();

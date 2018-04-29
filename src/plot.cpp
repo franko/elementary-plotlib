@@ -17,16 +17,16 @@ void plot::commit_pending_draw()
     m_changes_pending.clear();
 }
 
-void plot::add(sg_element *elem)
+void plot::add(sg_element elem)
 {
-    if (m_auto_limits && !fit_inside(*elem)) {
+    if (m_auto_limits && !fit_inside(elem)) {
         m_bbox_updated = false;
         m_need_redraw = true;
         m_enlarged_layer = true;
     }
 
-    auto new_node = new list<sg_element *>(elem);
-    m_drawing_queue = list<sg_element *>::push_back(m_drawing_queue, new_node);
+    auto new_node = new list<sg_element>(elem);
+    m_drawing_queue = list<sg_element>::push_back(m_drawing_queue, new_node);
 }
 
 void plot::push_drawing_queue()
@@ -38,16 +38,16 @@ void plot::push_drawing_queue()
     }
 
     while (m_drawing_queue) {
-        m_drawing_queue = list<sg_element *>::pop(m_drawing_queue);
+        m_drawing_queue = list<sg_element>::pop(m_drawing_queue);
     }
 }
 
 void plot::clear_drawing_queue()
 {
     while (m_drawing_queue) {
-        sg_element *d = m_drawing_queue->content();
-        delete d;
-        m_drawing_queue = list<sg_element *>::pop(m_drawing_queue);
+        sg_element& d = m_drawing_queue->content();
+        delete d.object;
+        m_drawing_queue = list<sg_element>::pop(m_drawing_queue);
     }
 }
 
@@ -96,14 +96,13 @@ void plot::draw_elements(canvas_type& canvas, const plot_layout& layout)
 {
     const agg::trans_affine m = get_model_matrix(layout);
 
-    this->clip_plot_area(canvas, layout.plot_active_area);
+    clip_plot_area(canvas, layout.plot_active_area);
 
     for (unsigned k = 0; k < m_layers.size(); k++)
     {
         item_list& layer = *(m_layers[k]);
-        for (unsigned j = 0; j < layer.size(); j++)
-        {
-            draw_element(*layer[j], canvas, m);
+        for (unsigned j = 0; j < layer.size(); j++) {
+            draw_element(layer[j], canvas, m);
         }
     }
 
@@ -415,7 +414,7 @@ void plot::layer_dispose_elements(plot::item_list* layer)
 {
     unsigned n = layer->size();
     for (unsigned k = 0; k < n; k++) {
-        delete layer->at(k);
+        delete layer->at(k).object;
     }
 }
 
@@ -508,7 +507,7 @@ bool plot::fit_inside(const sg_element& elem) const
     }
 
     agg::rect_base<double> r;
-    elem.object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+    elem.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
     const agg::rect_d& bb = m_rect.rect();
     return bb.hit_test(r.x1, r.y1) && bb.hit_test(r.x2, r.y2);
 }
@@ -517,9 +516,9 @@ bool plot::fit_inside(const sg_element& elem) const
 void plot::calc_layer_bounding_box(plot::item_list* layer, opt_rect<double>& rect)
 {
     for (unsigned j = 0; j < layer->size(); j++) {
-        sg_element *d = (*layer)[j];
+        sg_element& d = (*layer)[j];
         agg::rect_base<double> r;
-        d->object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+        d.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
         rect.add<rect_union>(r);
     }
 }
@@ -535,9 +534,9 @@ void plot::calc_bounding_box()
     calc_layer_bounding_box(get_layer(n-1), box);
     for (auto t = m_drawing_queue; t; t = t->next())
     {
-        const sg_element *d = t->content();
+        const sg_element& d = t->content();
         agg::rect_d r;
-        d->object()->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+        d.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
         box.add<rect_union>(r);
     }
 

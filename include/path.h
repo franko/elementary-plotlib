@@ -6,11 +6,9 @@
 
 namespace graphics {
 
-class path : public sg_element {
+class path : public graphics::transform::scaling_a {
 public:
-    path(agg::rgba8 fc, agg::rgba8 sc, float sw, unsigned flags = graphics::property::fill_stroke)
-    : sg_element(&m_path_scaling, fc, sc, sw, flags), m_path(), m_path_scaling(&m_path) {
-    }
+    path() : graphics::transform::scaling_a(&m_path), m_path() { }
 
     void line_to(double x, double y) {
         m_path.self().line_to(x, y);
@@ -26,7 +24,6 @@ public:
 
 private:
     sg_path m_path;
-    graphics::transform::scaling_a m_path_scaling;
 };
 
 }

@@ -121,10 +121,10 @@ class plot {
     };
 
 protected:
-    class item_list : public agg::pod_bvector<sg_element *>
+    class item_list : public agg::pod_bvector<sg_element>
     {
     public:
-        item_list(): agg::pod_bvector<sg_element *>() { }
+        item_list(): agg::pod_bvector<sg_element>() { }
 
         const opt_rect<double>& bounding_box() const {
             return m_bbox;
@@ -235,7 +235,12 @@ public:
         m_x_axis.set_comp_labels(labels);
     }
 
-    void add(sg_element *el);
+    void add(sg_element element);
+
+    void add(sg_object *object, agg::rgba8 stroke_color, float stroke_width, agg::rgba8 fill_color, unsigned flags = graphics::property::fill_stroke) {
+        add(sg_element{object, stroke_color, stroke_width, fill_color, flags});
+    }
+
     void before_draw();
 
     void get_bounding_rect(agg::rect_base<double>& bb)
@@ -409,7 +414,7 @@ protected:
     }
 
     agg::trans_affine m_trans;
-    list<sg_element *> *m_drawing_queue;
+    list<sg_element> *m_drawing_queue;
 
     bool m_clip_flag;
 
@@ -451,10 +456,10 @@ void plot::draw_queue(Canvas& _canvas, const agg::trans_affine& canvas_mtx, cons
     auto c0 = m_drawing_queue;
     for (auto c = c0; c != 0; c = c->next())
     {
-        sg_element *d = c->content();
+        sg_element& d = c->content();
         agg::trans_affine m = get_model_matrix(layout);
         agg::rect_d ebb;
-        d->draw(canvas, m, &ebb);
+        d.draw(canvas, m, &ebb);
         if (ebb.is_valid()) {
             bb.add<rect_union>(ebb);
         }
