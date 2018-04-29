@@ -5,23 +5,19 @@
 #include <mutex>
 #include <condition_variable>
 
-enum notify_e {
-    notify_window_start,
-    notify_window_closed,
-};
-
 enum request_error_e {
     request_success            = 0,
     request_error_pending      = -1,
     request_error_unknown      = -2,
-    request_not_applicable     = -3,
+    request_satisfied          = -3,
 };
 
+template <typename StatusOrderedEnum>
 class notify_request {
 public:
-    notify_request(notify_e req): m_request(req), m_completed(false) { }
+    notify_request(StatusOrderedEnum req): m_request(req), m_completed(false) { }
 
-    notify_e type() const { return m_request; }
+    StatusOrderedEnum type() const { return m_request; }
 
     void notify() {
         m_mutex.lock();
@@ -36,10 +32,10 @@ public:
     }
 
 private:
-    const notify_e m_request;
-    bool m_completed;
+    const StatusOrderedEnum m_request;
     std::mutex m_mutex;
     std::condition_variable m_condition;
+    bool m_completed;
 };
 
 #endif

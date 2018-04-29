@@ -13,9 +13,8 @@
 #include "xwindow/x_image.h"
 #include "strpp.h"
 #include "window_surface.h"
+#include "status_notifier.h"
 #include "window_flags.h"
-
-class notify_request;
 
 class xwindow : public graphics::display_window {
 public:
@@ -33,16 +32,17 @@ public:
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
-    virtual int status() { return m_window_status; }
+    virtual int status() { return m_window_status.value(); }
 
-    int send_notify_request(notify_request& request);
+    int set_notify_request(notify_request<graphics::window_status_e>& request) {
+        std::lock_guard<std::mutex> lk(m_mutex);
+        return m_window_status.set_notify_request(request);
+    }
 
 private:
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
     void close();
-
-    void send_notify(notify_e notify_code);
 
     void close_connections();
     void caption(const str& s);
@@ -65,9 +65,8 @@ private:
     x_connection         m_draw_conn;
     x_image*             m_draw_img;
     str                  m_caption;
-    int                  m_window_status;
     std::mutex           m_mutex;
-    notify_request *     m_request_pending;
+    status_notifier<graphics::window_status_e> m_window_status;
     graphics::render_target& m_target;
 };
 

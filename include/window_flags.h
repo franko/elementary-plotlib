@@ -23,11 +23,11 @@ enum {
     window_max_height = 4096,
 };
 
-enum {
-    window_not_started,
-    window_starting,
-    window_running,
-    window_closed
+enum window_status_e {
+    window_not_started = 0,
+    window_starting    = 1,
+    window_running     = 2,
+    window_closed      = 3,
 };
 
 }

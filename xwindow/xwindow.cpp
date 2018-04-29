@@ -16,8 +16,6 @@ xwindow::xwindow(graphics::render_target& tgt):
     m_close_atom(0),
     m_wm_protocols_atom(0),
     m_draw_img(0),
-    m_window_status(graphics::window_not_started),
-    m_request_pending(nullptr),
     m_target(tgt)
 {
 }
@@ -60,7 +58,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
         return false;
     }
 
-    m_window_status = graphics::window_starting;
+    m_window_status.set(graphics::window_starting);
     x_connection *xc = &this->m_main_conn;
 
     unsigned long r_mask = xc->visual->red_mask;
@@ -215,8 +213,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     resize(width, height);
     m_target.render();
 
-    m_window_status = graphics::window_running;
-    send_notify(notify_window_start);
+    m_window_status.set(graphics::window_running);
 
     return true;
 }
@@ -295,7 +292,7 @@ void xwindow::close()
 {
     free_x_resources();
     close_connections();
-    send_notify(notify_window_closed);
+    m_window_status.set(graphics::window_closed);
 }
 
 void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
@@ -320,33 +317,4 @@ void xwindow::start(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
     close();
-}
-
-// Assume we have the window lock.
-void xwindow::send_notify(notify_e notify_code) {
-    if (m_request_pending && m_request_pending->type() == notify_code) {
-        m_request_pending->notify();
-        m_request_pending = nullptr;
-    }
-}
-
-int xwindow::send_notify_request(notify_request& request) {
-    std::lock_guard<std::mutex> lk(m_mutex);
-    if (m_request_pending) {
-        return request_error_pending;
-    }
-    if (request.type() == notify_window_start) {
-        if (m_window_status == graphics::window_running || m_window_status == graphics::window_closed) {
-            return request_not_applicable;
-        }
-        m_request_pending = &request;
-        return 0;
-    } else if (request.type() == notify_window_closed) {
-        if (m_window_status == graphics::window_closed) {
-            return request_not_applicable;
-        }
-        m_request_pending = &request;
-        return 0;
-    }
-    return request_error_unknown;
 }

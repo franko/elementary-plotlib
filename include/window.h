@@ -3,6 +3,7 @@
 
 #include "window_surface.h"
 #include "notify_request.h"
+#include "window_flags.h"
 #include "debug_log.h"
 
 template <typename Window>
@@ -13,12 +14,12 @@ void run_window(Window *window, unsigned width, unsigned height, unsigned flags)
 }
 
 template <typename Window>
-void wait_until_notification(Window *window, notify_e notify_code) {
-    notify_request req{notify_code};
-    int retval = window->send_notify_request(req);
+void wait_until_notification(Window *window, graphics::window_status_e notify_status) {
+    notify_request<graphics::window_status_e> req{notify_status};
+    int retval = window->set_notify_request(req);
     if (retval == request_success) {
         req.wait();
-    } else if (retval == request_not_applicable) {
+    } else if (retval == request_satisfied) {
         debug_log("request already satisfied");
     } else {
         debug_log("error sending request: %d", retval);
@@ -31,7 +32,7 @@ void start_window(Window *window, unsigned width, unsigned height, unsigned flag
     std::thread wt(run_window<Window>, window, width, height, flags);
     window->unlock();
     wt.detach();
-    wait_until_notification(window, notify_window_start);
+    wait_until_notification(window, graphics::window_running);
 }
 
 template <typename Window>
@@ -58,7 +59,7 @@ public:
 	}
 
     void wait() {
-        wait_until_notification(&m_window, notify_window_closed);
+        wait_until_notification(&m_window, graphics::window_closed);
     }
 
 private:
