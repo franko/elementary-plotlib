@@ -4,6 +4,9 @@
 #include "notify_request.h"
 #include "window_flags.h"
 
+// Keep the status of an object (an ordered enum) and send a notification to
+// a pending requester, if any, when a given status is set.
+// The status enum is supposed to increse with the lifetime of the object.
 template <typename StatusOrderedEnum>
 class status_notifier {
 public:
@@ -15,7 +18,7 @@ public:
     // is waiting for the given code.
     void set(StatusOrderedEnum new_status) {
         m_status = new_status;
-        if (m_request_pending && m_request_pending->type() == new_status) {
+        if (m_request_pending && m_request_pending->value() == new_status) {
             m_request_pending->notify();
             m_request_pending = nullptr;
         }
@@ -25,7 +28,7 @@ public:
         if (m_request_pending) {
             return request_error_pending;
         }
-        if (m_status >= request.type()) {
+        if (m_status >= request.value()) {
             return request_satisfied;
         }
         m_request_pending = &request;

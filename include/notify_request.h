@@ -17,7 +17,7 @@ class notify_request {
 public:
     notify_request(StatusOrderedEnum req): m_request(req), m_completed(false) { }
 
-    StatusOrderedEnum type() const { return m_request; }
+    StatusOrderedEnum value() const { return m_request; }
 
     void notify() {
         m_mutex.lock();
