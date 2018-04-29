@@ -44,10 +44,7 @@ int main()
     win.slot_refresh(index);
     p.commit_pending_draw();
 
-    for (;;) {
-        debug_log("sleeping...");
-        sleep(2);
-    }
+    win.wait();
 
     return 0;
 }

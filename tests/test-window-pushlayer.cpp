@@ -48,10 +48,7 @@ int main()
     p.pop_layer();
     win.slot_refresh(index);
 
-    for (;;) {
-        debug_log("sleeping...");
-        sleep(2);
-    }
+    win.wait();
 
     return 0;
 }

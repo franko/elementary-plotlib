@@ -59,8 +59,11 @@ int main()
             win.slot_refresh(index);
             p.commit_pending_draw();
         }
-        p.pop_layer();
+        if (k+1 < 30) {
+            p.pop_layer();
+        }
     }
+    win.wait();
 
     return 0;
 }
