@@ -29,7 +29,6 @@ int main()
 
     const double x0 = 0.0001, x1 = 8 * 2 *  3.14159265358979323846;
     add_function(p, x0, x1, [](double x) { return std::sin(x) / x; }, blue);
-    add_function(p, 0.8, x1, [](double x) { return std::cos(x) / x; }, red);
 
     p.set_title("Function plot example");
     p.set_x_axis_title("x variable");
@@ -40,8 +39,9 @@ int main()
 
     win.start(640, 480, graphics::window_resize);
 
-    // Not needed.
+    add_function(p, 0.8, x1, [](double x) { return std::cos(x) / x; }, red);
     win.slot_refresh(index);
+    p.commit_pending_draw();
 
     win.wait();
 
