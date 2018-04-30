@@ -22,11 +22,7 @@ add_triangle(graphics::plot& p, double x, double y, double size, double angle, a
     rotate(angle, x3, y3);
 
     agg::rgba8 black(0, 0, 0, 255);
-    auto line = new graphics::path();
-    line->move_to(x + x1, y + y1);
-    line->line_to(x + x2, y + y2);
-    line->line_to(x + x3, y + y3);
-    line->close_polygon();
+    auto line = new graphics::polygon {{x + x1, y + y1}, {x + x2, y + y2}, {x + x3, y + y3}};
     p.add(line, black, 1.0, fill_color, graphics::property::fill_stroke);
 }
 
@@ -37,8 +33,7 @@ int main()
     graphics::window win("h.");
 
     graphics::plot p(graphics::plot::show_units);
-    agg::rect_d lim(0.0, 0.0, 100.0, 100.0);
-    p.set_limits(lim);
+    p.set_limits({0.0, 0.0, 100.0, 100.0});
     int index = win.attach(&p, "1");
 
     win.start(640, 640, graphics::window_resize);
