@@ -28,6 +28,12 @@ executable('test-window-function', ['test-window-function.cpp'],
            link_with: [libcanvas, libcanvaswin],
            gui_app: false)
 
+executable('test-window-markers', ['test-window-markers.cpp'],
+           include_directories: [libcanvas_include],
+           dependencies: [agg_dep, freetype_dep, thread_dep],
+           link_with: [libcanvas, libcanvaswin],
+           gui_app: false)
+
 executable('test-window-anim', ['test-window-anim.cpp'],
            include_directories: [libcanvas_include],
            dependencies: [agg_dep, freetype_dep, thread_dep],
