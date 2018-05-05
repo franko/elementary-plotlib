@@ -17,10 +17,10 @@ inline static bool color_is_defined(agg::rgba8 c) {
 namespace graphics { namespace property {
 
 enum {
-    fill        = 1,
+    fill        = 1 << 0,
     stroke      = 1 << 1,
-    crisp       = 1 << 2,
-    fill_stroke = fill | stroke,
+    outline     = 1 << 2,
+    crisp       = 1 << 3,
 };
 
 }}
@@ -39,16 +39,23 @@ struct sg_element {
         const bool has_fill = (flags & graphics::property::fill);
         const bool has_stroke = (stroke_width > 0.0 && (flags & graphics::property::stroke));
         const bool crisp = (flags & graphics::property::crisp);
+        const bool outline = (flags & graphics::property::outline);
         if (has_fill) {
-            canvas.draw(*object, fill_color);
-        }
-        if (has_stroke) {
             if (crisp) {
-                canvas.draw_outline_noaa(*object, stroke_color);
+                canvas.draw_noaa(*object, fill_color);
             } else {
-                graphics::transform::stroke_a stobj(object);
-                stobj.self().width(double(stroke_width));
-                stobj.self().line_cap(agg::round_cap);
+                canvas.draw(*object, fill_color);
+            }
+        }
+        if (outline) {
+            canvas.draw_outline_noaa(*object, stroke_color);
+        } else if (has_stroke) {
+            graphics::transform::stroke_a stobj(object);
+            stobj.self().width(double(stroke_width));
+            stobj.self().line_cap(agg::round_cap);
+            if (crisp) {
+                canvas.draw_noaa(stobj, stroke_color);
+            } else {
                 canvas.draw(stobj, stroke_color);
             }
         }

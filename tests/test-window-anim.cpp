@@ -23,7 +23,7 @@ add_triangle(graphics::plot& p, double x, double y, double size, double angle, a
 
     agg::rgba8 black(0, 0, 0, 255);
     auto line = new graphics::polygon {{x + x1, y + y1}, {x + x2, y + y2}, {x + x3, y + y3}};
-    p.add(line, black, 1.0, fill_color, graphics::property::fill_stroke);
+    p.add(line, black, 1.0, fill_color, graphics::property::fill|graphics::property::stroke);
 }
 
 int main()

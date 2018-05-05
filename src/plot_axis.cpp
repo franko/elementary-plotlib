@@ -29,7 +29,7 @@ sg_composite axis::draw_with_labels(label_iterator& labels,
     agg::path_storage& marks_path = marks_obj->self();
 
     // std_line_width(scale, 1.0)
-    group.add_stroke(marks, colors::black(), 1.0, graphics::property::crisp);
+    group.add_stroke(marks, colors::black(), 1.0, graphics::property::outline);
 
     double uq;
     const char* text;
@@ -95,7 +95,7 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
     agg::path_storage& marks_path = marks_obj->self();
 
     // std_line_width(scale, 1.0)
-    group.add_stroke(marks, colors::black(), 1.0, graphics::property::crisp);
+    group.add_stroke(marks, colors::black(), 1.0, graphics::property::outline);
 
     const int layers_number = m_comp_labels->size();
     double p_lab = 0;

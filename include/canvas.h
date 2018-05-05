@@ -184,6 +184,16 @@ public:
         this->render_scanlines(this->ras, this->sl);
     }
 
+    void draw_noaa(sg_object& vs, agg::rgba8 c)
+    {
+        agg::renderer_base<PixelNoSub> rb(this->pixel_buffer);
+        agg::renderer_scanline_bin_solid<agg::renderer_base<PixelNoSub>> ren_bin(rb);
+        agg::scanline_bin sl_bin;
+        ren_bin.color(c);
+        this->ras.add_path(vs);
+        agg::render_scanlines(this->ras, sl_bin, ren_bin);
+    }
+
     void draw_outline_noaa(sg_object& vs, agg::rgba8 c)
     {
         m_ren_prim.line_color(c);
@@ -194,6 +204,7 @@ public:
 struct virtual_canvas {
     virtual void draw(sg_object& vs, agg::rgba8 c) = 0;
     virtual void draw_outline_noaa(sg_object& vs, agg::rgba8 c) = 0;
+    virtual void draw_noaa(sg_object& vs, agg::rgba8 c) = 0;
     virtual void clip_box(const agg::rect_base<int>& clip) = 0;
     virtual void reset_clipping() = 0;
     virtual ~virtual_canvas() { }
