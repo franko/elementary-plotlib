@@ -166,15 +166,10 @@ class canvas_gen : public Renderer {
     agg::rasterizer_scanline_aa<> ras;
     agg::scanline_u8 sl;
 
-    typedef agg::renderer_primitives<agg::renderer_base<PixelNoSub> > renderer_prim;
-    renderer_prim m_ren_prim;
-    agg::rasterizer_outline<renderer_prim> m_ras_outline;
-
 public:
     canvas_gen(agg::rendering_buffer& ren_buf, double width, double height,
                agg::rgba8 bgcol):
-        Renderer(ren_buf, bgcol), ras(), sl(),
-        m_ren_prim(Renderer::renderer_base), m_ras_outline(m_ren_prim)
+        Renderer(ren_buf, bgcol), ras(), sl()
     { }
 
     void draw(sg_object& vs, agg::rgba8 c)
@@ -196,8 +191,11 @@ public:
 
     void draw_outline_noaa(sg_object& vs, agg::rgba8 c)
     {
-        m_ren_prim.line_color(c);
-        m_ras_outline.add_path(vs);
+        typedef agg::renderer_primitives<agg::renderer_base<PixelNoSub>> renderer_prim;
+        renderer_prim ren_prim(Renderer::renderer_base);
+        agg::rasterizer_outline<renderer_prim> ras_outline(ren_prim);
+        ren_prim.line_color(c);
+        ras_outline.add_path(vs);
     }
 };
 
