@@ -45,3 +45,9 @@ executable('test-custom-render-pipeline', ['test-custom-render-pipeline.cpp'],
            dependencies: [agg_dep, freetype_dep, thread_dep],
            link_with: [libcanvas, libcanvaswin],
            gui_app: false)
+
+executable('test-window-outline', ['test-window-outline.cpp'],
+           include_directories: [libcanvas_include],
+           dependencies: [agg_dep, freetype_dep, thread_dep],
+           link_with: [libcanvas, libcanvaswin],
+           gui_app: false)
