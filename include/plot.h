@@ -154,8 +154,7 @@ public:
     enum { show_units = 1 << 0, auto_limits = 1 << 1 };
 
     plot(unsigned flags) :
-        m_drawing_queue(0), m_clip_flag(true),
-        m_need_redraw(true), m_sync_mode(true),
+        m_drawing_queue(0), m_clip_flag(true), m_need_redraw(true),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
         m_auto_limits(flags & auto_limits),
         m_bbox_updated(true), m_enlarged_layer(false)
@@ -303,13 +302,6 @@ public:
     template <class Canvas>
     void draw_queue(Canvas& canvas, const agg::trans_affine& m, const plot_render_info& inf, opt_rect<double>& bbox);
 
-    void sync_mode(bool req_mode) {
-        m_sync_mode = req_mode;
-    };
-    bool sync_mode() const {
-        return m_sync_mode;
-    };
-
     void pad_mode(bool req)
     {
         axis& ax = m_x_axis;
@@ -435,8 +427,6 @@ private:
     agg::pod_auto_vector<item_list*, max_layers> m_layers;
 
     str m_title;
-
-    bool m_sync_mode;
 
     axis m_x_axis, m_y_axis;
     plot* m_legend[4];
