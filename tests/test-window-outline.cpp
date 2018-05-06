@@ -38,17 +38,17 @@ int main()
 {
     graphics::initialize_fonts();
 
-    graphics::window win("v(h..)(h..)");
+    graphics::window win("v...");
 
-    auto plot1 = create_function_plot("Plot example (outline)", graphics::property::outline);
-    auto plot2 = create_function_plot("Plot example (antialias)", graphics::property::stroke);
+    auto plot1 = create_function_plot("Plot example (antialias)", graphics::property::stroke);
+    auto plot2 = create_function_plot("Plot example (outline)", graphics::property::outline);
     auto plot3 = create_function_plot("Plot example (aliased)", graphics::property::stroke|graphics::property::crisp);
 
-    win.attach(plot1.get(), "1,1");
-    win.attach(plot2.get(), "2,1");
-    win.attach(plot3.get(), "2,2");
+    win.attach(plot1.get(), "3");
+    win.attach(plot2.get(), "2");
+    win.attach(plot3.get(), "1");
 
-    win.start(2 * 480, 2 * 320, graphics::window_resize);
+    win.start(480, 3 * 320, graphics::window_resize);
     win.wait();
 
     return 0;
