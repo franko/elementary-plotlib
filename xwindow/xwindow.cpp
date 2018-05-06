@@ -16,6 +16,7 @@ xwindow::xwindow(graphics::render_target& tgt):
     m_close_atom(0),
     m_wm_protocols_atom(0),
     m_draw_img(0),
+    m_caption("Graphics Window"),
     m_target(tgt)
 {
 }
