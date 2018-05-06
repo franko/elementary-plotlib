@@ -13,7 +13,6 @@
 
 static const char *svg_header =                                                \
         "<?xml version=\"1.0\" standalone=\"no\"?>\n"                                \
-        "<!-- Created using GSL Shell -->\n"                                        \
         "<svg\n"                                                                \
         "   xmlns=\"http://www.w3.org/2000/svg\"\n"                                \
         "   version=\"1.1\"\n"                                                \
