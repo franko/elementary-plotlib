@@ -13,6 +13,7 @@ find_package(Threads REQUIRED)
 
 if (WIN32)
     set(WINDOW_LIB_DIR win32)
+    add_definitions(-DWIN32)
 else (WIN32)
     set(WINDOW_LIB_DIR xwindow)
 endif (WIN32)
