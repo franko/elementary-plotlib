@@ -31,8 +31,9 @@ libcanvas_include = include_directories('include')
 subdir('src')
 if host_machine.system() == 'linux'
     subdir('xwindow')
-    subdir('tests')
 else
     subdir('win32')
-    subdir('tests')
 endif
+
+subdir('fox')
+subdir('tests')
