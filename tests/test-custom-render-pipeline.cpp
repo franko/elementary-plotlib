@@ -27,7 +27,7 @@
    have it automatically because we are inheriting from
    graphics::transform::scaling_a.
 
-   Note also that weare using object from graphics::transform with the "_a"
+   Note also that we are using object from graphics::transform with the "_a"
    suffix. The objects with "_a" does not attempt to delete the pointer to the
    object they get which is the appropriate thing in this case.
 */
