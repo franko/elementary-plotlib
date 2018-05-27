@@ -58,6 +58,7 @@ int main()
             p.pop_layer();
         }
     }
+    printf("Test completed.\n");
     win.wait();
 
     return 0;

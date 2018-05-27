@@ -46,15 +46,6 @@ bool window_surface::resize(unsigned ww, unsigned hh)
     return false;
 }
 
-void window_surface::update_region_locked(image& img, const agg::rect_i& r)
-{
-    m_window->lock();
-    if (m_window->status() == graphics::window_running) {
-        m_window->update_region(img, r);
-    }
-    m_window->unlock();
-}
-
 void window_surface::draw_image_buffer()
 {
     for (unsigned k = 0; k < plot_number(); k++)
@@ -168,7 +159,7 @@ void window_surface::slot_refresh(unsigned index)
     agg::rect_i area = get_plot_area(index);
     if (redraw)
     {
-        update_region_locked(m_img, area);
+        update_region_request(m_img, area);
     }
     else
     {
@@ -178,7 +169,7 @@ void window_surface::slot_refresh(unsigned index)
             const agg::rect_i& ri = r.rect();
             agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
             r_pad.clip(area);
-            update_region_locked(m_img, r_pad);
+            update_region_request(m_img, r_pad);
         }
     }
 }
@@ -189,7 +180,7 @@ window_surface::slot_update(unsigned index)
     render_plot_by_index(index);
     render_drawing_queue(index);
     agg::rect_i area = get_plot_area(index);
-    update_region_locked(m_img, area);
+    update_region_request(m_img, area);
 }
 
 void

@@ -16,6 +16,17 @@
 #include "status_notifier.h"
 #include "window_flags.h"
 
+// Used to send un update_region request from the caller thread to the
+// window's thread. Includes condition variable to wait for the request
+// to be treated.
+struct update_region_info {
+    graphics::image *img;
+    agg::rect_i r;
+    std::mutex mutex;
+    std::condition_variable condition;
+    bool completed;
+};
+
 class xwindow : public graphics::display_window {
 public:
     enum xevent_mask_e
@@ -29,6 +40,7 @@ public:
     void start(unsigned width, unsigned height, unsigned flags);
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
@@ -44,6 +56,7 @@ private:
     void run();
     void close();
 
+    void send_update_region_event();
     void close_connections();
     void caption(const str& s);
     void wait_map_notify();
@@ -61,13 +74,16 @@ private:
     XSetWindowAttributes m_window_attributes;
     Atom                 m_close_atom;
     Atom                 m_wm_protocols_atom;
-    x_connection         m_main_conn;
-    x_connection         m_draw_conn;
+    Atom                 m_update_region_atom;
+    x_connection         m_connection;
     x_image*             m_draw_img;
     str                  m_caption;
     std::mutex           m_mutex;
+    update_region_info   m_update_region;
     status_notifier<graphics::window_status_e> m_window_status;
     graphics::render_target& m_target;
+
+    static bool need_initialize;
 };
 
 #endif

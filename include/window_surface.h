@@ -18,6 +18,7 @@ typedef image_gen<pixel_size, flip_y> image;
 
 struct display_window {
     virtual void update_region(image& img, const agg::rect_i& r) = 0;
+    virtual void update_region_request(image& img, const agg::rect_i& r) = 0;
     virtual void lock() = 0;
     virtual void unlock() = 0;
     virtual int status() = 0;
@@ -86,11 +87,14 @@ public:
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
 
+    void update_region_request(image& img, const agg::rect_i& r) {
+        m_window->update_region_request(img, r);
+    }
+
 private:
     static void drawing_lock()   { drawing_mutex.lock(); }
     static void drawing_unlock() { drawing_mutex.unlock(); }
 
-    void update_region_locked(image& img, const agg::rect_i& r);
     void render_by_ref(plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
 

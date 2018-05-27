@@ -3,7 +3,10 @@
 
 #include "notify_request.h"
 #include "xwindow/xwindow.h"
+#include "debug_log.h"
 #include "fatal.h"
+
+bool xwindow::need_initialize = true;
 
 // m_sys_format, m_byte_order, m_sys_bpp will be set based on XWindow display on "init" method.
 xwindow::xwindow(graphics::render_target& tgt):
@@ -15,6 +18,7 @@ xwindow::xwindow(graphics::render_target& tgt):
     m_gc(0),
     m_close_atom(0),
     m_wm_protocols_atom(0),
+    m_update_region_atom(0),
     m_draw_img(0),
     m_caption("Graphics Window"),
     m_target(tgt)
@@ -28,39 +32,37 @@ xwindow::~xwindow()
 
 void xwindow::close_connections()
 {
-    m_draw_conn.close();
-    m_main_conn.close();
+    m_connection.close();
 }
 
 void xwindow::free_x_resources()
 {
-    XFreeGC(m_main_conn.display, m_gc);
+    XFreeGC(m_connection.display, m_gc);
 }
 
 void xwindow::caption(const str& text)
 {
     // Fixed by Enno Fennema (in original AGG library)
     const char *capt = text.cstr();
-    Display *d = m_main_conn.display;
+    Display *d = m_connection.display;
     XStoreName(d, m_window, capt);
     XSetIconName(d, m_window, capt);
 }
 
 bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 {
-    m_window_flags = flags;
-
-    if (unlikely(!m_main_conn.init()))
-        return false;
-
-    if (unlikely(!m_draw_conn.init()))
-    {
-        close_connections();
-        return false;
+    if (need_initialize) {
+        XInitThreads();
+        need_initialize = false;
     }
 
+    m_window_flags = flags;
+
+    if (unlikely(!m_connection.init()))
+        return false;
+
     m_window_status.set(graphics::window_starting);
-    x_connection *xc = &this->m_main_conn;
+    x_connection *xc = &this->m_connection;
 
     unsigned long r_mask = xc->visual->red_mask;
     unsigned long g_mask = xc->visual->green_mask;
@@ -206,8 +208,9 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     XMapWindow(xc->display, m_window);
     XSelectInput(xc->display, m_window, xevent_mask);
 
-    m_close_atom = XInternAtom(xc->display, "WM_DELETE_WINDOW", false);
-    m_wm_protocols_atom = XInternAtom(xc->display, "WM_PROTOCOLS", true);
+    m_close_atom = XInternAtom(xc->display, "WM_DELETE_WINDOW", False);
+    m_wm_protocols_atom = XInternAtom(xc->display, "WM_PROTOCOLS", True);
+    m_update_region_atom = XInternAtom(xc->display, "UPDATE_REGION_REQUEST", False);
     XSetWMProtocols(xc->display, m_window, &m_close_atom, 1);
 
     wait_map_notify();
@@ -221,7 +224,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 
 void xwindow::wait_map_notify()
 {
-    x_connection *xc = &this->m_main_conn;
+    x_connection *xc = &this->m_connection;
     XFlush(xc->display);
     XEvent ev;
     do
@@ -236,7 +239,7 @@ void xwindow::resize(unsigned width, unsigned height)
     m_target.resize(width, height);
 
     delete m_draw_img;
-    m_draw_img = new(std::nothrow) x_image(m_sys_bpp, m_byte_order, width, height, &m_draw_conn);
+    m_draw_img = new(std::nothrow) x_image(m_sys_bpp, m_byte_order, width, height, &m_connection);
 
     m_width = width;
     m_height = height;
@@ -244,7 +247,8 @@ void xwindow::resize(unsigned width, unsigned height)
 
 void xwindow::run()
 {
-    x_connection *xc = &this->m_main_conn;
+
+    x_connection *xc = &this->m_connection;
 
     bool quit = false;
 
@@ -280,9 +284,14 @@ void xwindow::run()
             }
 
         case ClientMessage:
-            if (ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom))
-            {
+            if (ev.xclient.message_type == m_wm_protocols_atom && ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom)) {
                 quit = true;
+            } else if (ev.xclient.message_type == m_update_region_atom) {
+                update_region(*m_update_region.img, m_update_region.r);
+                m_update_region.mutex.lock();
+                m_update_region.completed = true;
+                m_update_region.mutex.unlock();
+                m_update_region.condition.notify_one();
             }
             break;
         }
@@ -307,7 +316,7 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
 
     rendering_buffer_copy(*m_draw_img, m_sys_format, src_view, (agg::pix_format_e) graphics::pixel_format);
 
-    Display *dsp = m_draw_conn.display;
+    Display *dsp = m_connection.display;
 
     int x_dst = r.x1, y_dst = (graphics::flip_y ? src_img.height() -r.y2 : r.y1);
     XPutImage(dsp, m_window, m_gc, m_draw_img->ximage(),
@@ -318,4 +327,33 @@ void xwindow::start(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
     close();
+}
+
+void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
+    m_update_region.img = &img;
+    m_update_region.r = r;
+    m_update_region.completed = false;
+    send_update_region_event();
+    std::unique_lock<std::mutex> lk(m_update_region.mutex);
+    if (!m_update_region.completed) {
+        m_update_region.condition.wait(lk, [this] { return this->m_update_region.completed; });
+    }
+    m_update_region.img = nullptr;
+}
+
+void xwindow::send_update_region_event() {
+    XClientMessageEvent event;
+    event.type = ClientMessage;
+    event.display = m_connection.display;
+    event.send_event = True;
+    event.message_type = m_update_region_atom;
+    event.format = 8;
+    Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
+    if (status == BadValue) {
+        debug_log("custom event, got BadValue");
+    } else if (status == BadWindow) {
+        debug_log("custom event, got BadWindow");
+    } else {
+        XFlush(m_connection.display);
+    }
 }
