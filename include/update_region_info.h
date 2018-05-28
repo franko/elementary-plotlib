@@ -14,19 +14,28 @@
 struct update_region_info {
     graphics::image *img;
     agg::rect_i r;
-    std::mutex mutex;
-    std::condition_variable condition;
-    bool completed;
 
     update_region_info(): img(nullptr) { }
 
     void prepare(graphics::image& img_, agg::rect_i r_) {
         img = &img_;
         r = r_;
-        completed = false;
     }
 
     void clear() {
         img = nullptr;
+    }
+};
+
+struct update_region_notify {
+    std::mutex mutex;
+    std::condition_variable condition;
+    bool completed;
+
+    void notify() {
+        mutex.lock();
+        completed = true;
+        mutex.unlock();
+        condition.notify_one();
     }
 };

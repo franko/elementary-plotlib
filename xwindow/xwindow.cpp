@@ -286,12 +286,9 @@ void xwindow::run()
         case ClientMessage:
             if (ev.xclient.message_type == m_wm_protocols_atom && ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom)) {
                 quit = true;
-            } else if (ev.xclient.message_type == m_update_region_atom) {
+            } else if (ev.xclient.message_type == m_update_region_atom && m_update_region.img) {
                 update_region(*m_update_region.img, m_update_region.r);
-                m_update_region.mutex.lock();
-                m_update_region.completed = true;
-                m_update_region.mutex.unlock();
-                m_update_region.condition.notify_one();
+                m_update_notify.notify();
             }
             break;
         }
@@ -331,10 +328,11 @@ void xwindow::start(unsigned width, unsigned height, unsigned flags) {
 
 void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
     m_update_region.prepare(img, r);
+    m_update_notify.completed = false;
     send_update_region_event();
-    std::unique_lock<std::mutex> lk(m_update_region.mutex);
-    if (!m_update_region.completed) {
-        m_update_region.condition.wait(lk, [this] { return this->m_update_region.completed; });
+    std::unique_lock<std::mutex> lk(m_update_notify.mutex);
+    if (!m_update_notify.completed) {
+        m_update_notify.condition.wait(lk, [this] { return this->m_update_notify.completed; });
     }
     m_update_region.clear();
 }
