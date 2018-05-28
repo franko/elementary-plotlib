@@ -13,6 +13,7 @@
 #include "window_surface.h"
 #include "status_notifier.h"
 #include "window_flags.h"
+#include "update_region_info.h"
 
 class window_win32 : public graphics::display_window {
 public:
@@ -22,6 +23,7 @@ public:
     void start(unsigned width, unsigned height, unsigned flags);
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
@@ -35,6 +37,8 @@ public:
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
+    enum { WM_LIBCANVAS_UPD_REGION = WM_USER };
+
     bool init(unsigned width, unsigned height, unsigned flags);
     int run();
     void close();
@@ -47,6 +51,7 @@ private:
 
     str m_caption;
     std::mutex m_mutex;
+    update_region_info m_update_region;
     status_notifier<graphics::window_status_e> m_window_status;
     graphics::render_target& m_target;
 

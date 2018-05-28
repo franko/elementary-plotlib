@@ -330,15 +330,13 @@ void xwindow::start(unsigned width, unsigned height, unsigned flags) {
 }
 
 void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
-    m_update_region.img = &img;
-    m_update_region.r = r;
-    m_update_region.completed = false;
+    m_update_region.prepare(img, r);
     send_update_region_event();
     std::unique_lock<std::mutex> lk(m_update_region.mutex);
     if (!m_update_region.completed) {
         m_update_region.condition.wait(lk, [this] { return this->m_update_region.completed; });
     }
-    m_update_region.img = nullptr;
+    m_update_region.clear();
 }
 
 void xwindow::send_update_region_event() {
