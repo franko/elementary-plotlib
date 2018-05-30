@@ -330,10 +330,7 @@ void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) 
     m_update_region.prepare(img, r);
     m_update_notify.completed = false;
     send_update_region_event();
-    std::unique_lock<std::mutex> lk(m_update_notify.mutex);
-    if (!m_update_notify.completed) {
-        m_update_notify.condition.wait(lk, [this] { return this->m_update_notify.completed; });
-    }
+    m_update_notify.wait();
     m_update_region.clear();
 }
 

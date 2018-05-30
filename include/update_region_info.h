@@ -38,4 +38,11 @@ struct update_region_notify {
         mutex.unlock();
         condition.notify_one();
     }
+
+    void wait() {
+        std::unique_lock<std::mutex> lk(mutex);
+        if (!completed) {
+            condition.wait(lk, [this] { return this->completed; });
+        }
+    }
 };

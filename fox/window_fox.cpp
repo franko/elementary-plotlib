@@ -1,32 +1,28 @@
 #include "fox/window_fox.h"
 #include "fox/PlotCanvas.h"
+#include "debug_log.h"
 
-window_fox::window_fox(graphics::render_target& tgt, FXCanvas *canvas):
+window_fox::window_fox(graphics::render_target& tgt, PlotCanvas *canvas):
     m_fx_canvas(canvas), m_target(tgt)
 {
+    m_fx_canvas->bind(this);
+    m_gui_signal = new FXGUISignal(app(), m_fx_canvas, PlotCanvas::ID_UPDATE_REGION, nullptr);
 }
 
-void window_fox::start(unsigned width, unsigned height, unsigned flags) {
-#if 0
-    const char *dummy_argv[1] = {"app"};
-    m_window_status.set(graphics::window_starting);
-    FXApp app("libcanvas", "libcanvas");
-    app.init(1, dummy_argv);
-#endif
-    main_window = new FXMainWindow(&g_app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    m_canvas = new PlotCanvas(m_main_window, nullptr, 0, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-    app.create();
-    m_window_status.set(graphics::window_running);
-    app.run();
-    m_window_status.set(graphics::window_closed);
-    m_fx_canvas = nullptr;
-    // m_main_window = nullptr;
+window_fox::~window_fox() {
+    delete m_gui_signal;
+}
+
+FXApp *window_fox::app() {
+    return m_fx_canvas->getApp();
 }
 
 void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     const unsigned fximage_pixel_size = 4; // 32 bit RGBA format.
     const bool fximage_flipy = true;
     const int width = r.x2 - r.x1, height = r.y2 - r.y1;
+
+    debug_log("update_region: %d %d", width, height);
 
     /* Create a rendering_buffer and the underlying memory buffer to
        store a FXColor array. */
@@ -38,8 +34,15 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     rendering_buffer_copy(fxcolor_image, agg::pix_format_rgba32, src_view, (agg::pix_format_e) graphics::pixel_format);
 
     FXColor *fxcolor_buf = (FXColor *) fxcolor_image.buf();
-    FXImage img(getApp(), fxcolor_buf, 0, width, height);
+    FXImage img(app(), fxcolor_buf, IMAGE_KEEP, width, height);
 
-    FXDCWindow dc(m_canvas);
+    FXDCWindow dc(m_fx_canvas);
     dc.drawImage(&img, r.x1, r.y1);
+}
+
+void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
+    m_update_region.prepare(img, r);
+    m_gui_signal->signal();
+    m_update_notify.wait();
+    m_update_region.clear();
 }
