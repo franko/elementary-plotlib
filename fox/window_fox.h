@@ -5,14 +5,18 @@
 #include "status_notifier.h"
 #include "window_flags.h"
 
+class FXCanvas;
+class FXApp;
+
 class window_fox : public graphics::display_window {
 public:
-    window_fox(graphics::render_target& tgt);
-    ~window_fox();
+    window_fox(graphics::render_target& tgt, FXCanvas *canvas);
+    ~window_fox() { }
 
     void start(unsigned width, unsigned height, unsigned flags);
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
 
     virtual void lock()   { m_mutex.lock();   }
     virtual void unlock() { m_mutex.unlock(); }
@@ -24,9 +28,12 @@ public:
     }
 
 private:
-    FXMainWindow *m_main_window;
-    FXCanvas *m_canvas;
+    FXCanvas *m_fx_canvas;
+    update_region_info   m_update_region;
+    update_region_notify m_update_notify;
     std::mutex m_mutex;
     status_notifier<graphics::window_status_e> m_window_status;
     graphics::render_target& m_target;
+
+    static FXApp *g_app;
 };

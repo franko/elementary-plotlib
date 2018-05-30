@@ -1,27 +1,26 @@
 #include "fox/window_fox.h"
 #include "fox/PlotCanvas.h"
 
-window_fox::window_fox(graphics::render_target& tgt) :
-    m_main_window(nullptr), m_canvas(nullptr), m_target(tgt)
+window_fox::window_fox(graphics::render_target& tgt, FXCanvas *canvas):
+    m_fx_canvas(canvas), m_target(tgt)
 {
 }
 
-window_fox::~window_fox() {
-}
-
 void window_fox::start(unsigned width, unsigned height, unsigned flags) {
+#if 0
     const char *dummy_argv[1] = {"app"};
     m_window_status.set(graphics::window_starting);
     FXApp app("libcanvas", "libcanvas");
     app.init(1, dummy_argv);
-    m_main_window = new FXMainWindow(&app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
+#endif
+    main_window = new FXMainWindow(&g_app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
     m_canvas = new PlotCanvas(m_main_window, nullptr, 0, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
     app.create();
     m_window_status.set(graphics::window_running);
     app.run();
     m_window_status.set(graphics::window_closed);
-    m_canvas = nullptr;
-    m_main_window = nullptr;
+    m_fx_canvas = nullptr;
+    // m_main_window = nullptr;
 }
 
 void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
