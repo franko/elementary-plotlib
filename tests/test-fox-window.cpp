@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto canvas = new PlotCanvas(main_window, nullptr, PlotCanvas::ID_CANVAS, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-    canvas->setTarget(canvas);
+    auto canvas = new PlotCanvas(main_window, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+    // canvas->setTarget(canvas);
 
     graphics::window_surface surface(nullptr);
     window_fox win(surface, canvas);

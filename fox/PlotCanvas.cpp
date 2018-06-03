@@ -6,28 +6,28 @@
 #include "rendering_buffer_utils.h"
 
 FXDEFMAP(PlotCanvas) PlotCanvasMap[] = {
-    FXMAPFUNC(SEL_PAINT,   PlotCanvas::ID_CANVAS,        PlotCanvas::onPaint),
+    FXMAPFUNC(SEL_PAINT,   0,                            PlotCanvas::onPaint),
     FXMAPFUNC(SEL_IO_READ, PlotCanvas::ID_UPDATE_REGION, PlotCanvas::onUpdateRegion),
     FXMAPFUNC(SEL_MAP,     0,                            PlotCanvas::onMap),
 };
 
-FXIMPLEMENT(PlotCanvas,FXCanvas,PlotCanvasMap,ARRAYNUMBER(PlotCanvasMap))
+FXIMPLEMENT(PlotCanvas,FXWindow,PlotCanvasMap,ARRAYNUMBER(PlotCanvasMap))
 
 void PlotCanvas::position(FXint x, FXint y, FXint w, FXint h) {
     debug_log("PlotCanvas::position: %d %d", w, h);
     m_window->on_resize(w, h);
-    FXCanvas::position(x, y, w, h);
+    FXWindow::position(x, y, w, h);
 }
 
 void PlotCanvas::create() {
     m_window->set_window_status(graphics::window_starting);
-    FXCanvas::create();
+    FXWindow::create();
 }
 
 void PlotCanvas::destroy() {
     debug_log("PlotCanvas: destroy event");
     m_window->set_window_status(graphics::window_closed);
-    FXCanvas::destroy();
+    FXWindow::destroy();
 }
 
 long PlotCanvas::onUpdateRegion(FXObject *, FXSelector, void *) {

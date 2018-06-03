@@ -3,10 +3,10 @@
 #include "debug_log.h"
 
 window_fox::window_fox(graphics::render_target& tgt, PlotCanvas *canvas):
-    m_fx_canvas(canvas), m_target(tgt)
+    m_plot_canvas(canvas), m_target(tgt)
 {
-    m_fx_canvas->bind(this);
-    m_gui_signal = new FXGUISignal(app(), m_fx_canvas, PlotCanvas::ID_UPDATE_REGION, nullptr);
+    m_plot_canvas->bind(this);
+    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, PlotCanvas::ID_UPDATE_REGION, nullptr);
 }
 
 window_fox::~window_fox() {
@@ -14,7 +14,7 @@ window_fox::~window_fox() {
 }
 
 FXApp *window_fox::app() {
-    return m_fx_canvas->getApp();
+    return m_plot_canvas->getApp();
 }
 
 void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
@@ -37,7 +37,7 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     FXImage img(app(), fxcolor_buf, IMAGE_KEEP, width, height);
     img.create();
 
-    FXDCWindow dc(m_fx_canvas);
+    FXDCWindow dc(m_plot_canvas);
     dc.drawImage(&img, r.x1, r.y1);
 }
 

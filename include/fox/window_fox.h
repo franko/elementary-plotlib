@@ -53,7 +53,7 @@ public:
 private:
     FXApp *app();
 
-    PlotCanvas *m_fx_canvas;
+    PlotCanvas *m_plot_canvas;
     FXGUISignal *m_gui_signal;
     update_region_info   m_update_region;
     update_region_notify m_update_notify;

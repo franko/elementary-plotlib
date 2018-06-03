@@ -4,13 +4,16 @@
 
 class window_fox;
 
-class PlotCanvas : public FXCanvas {
+class PlotCanvas : public FXWindow {
     FXDECLARE(PlotCanvas)
 protected:
-    PlotCanvas() {}
+    PlotCanvas() { }
+private:
+    PlotCanvas(const PlotCanvas&);
+    PlotCanvas &operator=(const PlotCanvas&);
 public:
-    PlotCanvas(FXComposite* p, FXObject* tgt=nullptr, FXSelector sel=0, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0) :
-        FXCanvas(p, tgt, sel, opts, x, y, w, h)
+    PlotCanvas(FXComposite* p, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0) :
+        FXWindow(p, opts, x, y, w, h)
     { }
 
     ~PlotCanvas() { }
@@ -26,8 +29,8 @@ public:
     long onMap          (FXObject *, FXSelector, void *);
 
     enum {
-        ID_CANVAS = FXCanvas::ID_LAST,
-        ID_UPDATE_REGION,
+        // ID_CANVAS = FXWindow::ID_LAST,
+        ID_UPDATE_REGION = FXWindow::ID_LAST,
         ID_LAST
     };
 
