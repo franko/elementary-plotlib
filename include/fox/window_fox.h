@@ -7,6 +7,7 @@
 #include "status_notifier.h"
 #include "window_flags.h"
 #include "update_region_info.h"
+#include "debug_log.h"
 
 class PlotCanvas;
 
@@ -33,7 +34,20 @@ public:
     }
 
     void draw(FXEvent *ev) {
+        debug_log("window_fox: calling draw on target");
         m_target.draw();
+    }
+
+    void on_resize(FXint w, FXint h) {
+        if (w <= 0 || h <= 0) return;
+        debug_log("window_fox: calling resize on target %d %d", w, h);
+        m_target.resize(unsigned(w), unsigned(h));
+        debug_log("window_fox: calling render on target");
+        m_target.render();
+    }
+
+    void set_window_status(graphics::window_status_e win_status) {
+        m_window_status.set(win_status);
     }
 
 private:

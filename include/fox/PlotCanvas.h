@@ -15,10 +15,15 @@ public:
 
     ~PlotCanvas() { }
 
+    void position(FXint x, FXint y, FXint w, FXint h) override;
+    void create() override;
+    void destroy() override;
+
     void bind(window_fox *w) { m_window = w; }
 
     long onUpdateRegion (FXObject *, FXSelector, void *);
     long onPaint        (FXObject *, FXSelector, void *);
+    long onMap          (FXObject *, FXSelector, void *);
 
     enum {
         ID_CANVAS = FXCanvas::ID_LAST,

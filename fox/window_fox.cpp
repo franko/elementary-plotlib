@@ -35,6 +35,7 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
 
     FXColor *fxcolor_buf = (FXColor *) fxcolor_image.buf();
     FXImage img(app(), fxcolor_buf, IMAGE_KEEP, width, height);
+    img.create();
 
     FXDCWindow dc(m_fx_canvas);
     dc.drawImage(&img, r.x1, r.y1);

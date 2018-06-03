@@ -17,17 +17,20 @@ void add_function(graphics::plot& p, double x0, double x1, Function f, agg::rgba
 
 void run_fox(FXApp *app, FXMainWindow *win) {
     app->create();
-    win->show();
+    win->show(PLACEMENT_SCREEN);
     app->run();
+    debug_log("thread terminating...");
+    delete app;
+    debug_log("app terminated...");
 }
 
 int main(int argc, char *argv[]) {
     graphics::initialize_fonts();
 
-    FXApp app("libcanvas", "libcanvas");
-    app.init(argc, argv);
+    auto app = new FXApp("libcanvas", "libcanvas");
+    app->init(argc, argv);
 
-    auto main_window = new FXMainWindow(&app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
+    auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
     auto canvas = new PlotCanvas(main_window, nullptr, PlotCanvas::ID_CANVAS, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
     canvas->setTarget(canvas);
 
@@ -50,7 +53,7 @@ int main(int argc, char *argv[]) {
 
     surface.attach(&p, "");
 
-    std::thread wt(run_fox, &app, main_window);
+    std::thread wt(run_fox, app, main_window);
     wt.detach();
 
     notify_request<graphics::window_status_e> req{graphics::window_closed};
