@@ -5,7 +5,6 @@
 window_fox::window_fox(graphics::render_target& tgt, GraphicsWindow *canvas):
     m_plot_canvas(canvas), m_target(tgt)
 {
-    m_plot_canvas->bind(this);
     m_gui_signal = new FXGUISignal(app(), m_plot_canvas, GraphicsWindow::ID_UPDATE_REGION, nullptr);
 }
 

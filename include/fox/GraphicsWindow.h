@@ -2,12 +2,12 @@
 
 #include <fx.h>
 
-class window_fox;
+#include "fox/window_fox.h"
 
 class GraphicsWindow : public FXWindow {
     FXDECLARE(GraphicsWindow)
 protected:
-    GraphicsWindow() { }
+    GraphicsWindow(): m_surface(nullptr), m_window(m_surface, this) { }
 private:
     GraphicsWindow(const GraphicsWindow&);
     GraphicsWindow &operator=(const GraphicsWindow&);
@@ -16,10 +16,24 @@ public:
 
     ~GraphicsWindow();
 
+    int attach(graphics::plot* p, const char* slot_str) {
+        return m_surface.attach(p, slot_str);
+    }
+
+    void slot_refresh(unsigned index) {
+        m_surface.slot_refresh(index);
+    }
+
+    void wait() {
+        notify_request<graphics::window_status_e> req{graphics::window_closed};
+        int retval = m_window.set_notify_request(req);
+        if (retval == request_success) {
+            req.wait();
+        }
+    }
+
     void position(FXint x, FXint y, FXint w, FXint h) override;
     void create() override;
-
-    void bind(window_fox *w) { m_window = w; }
 
     long onUpdateRegion (FXObject *, FXSelector, void *);
     long onPaint        (FXObject *, FXSelector, void *);
@@ -31,5 +45,6 @@ public:
     };
 
 private:
-    window_fox *m_window;
+    graphics::window_surface m_surface;
+    window_fox m_window;
 };

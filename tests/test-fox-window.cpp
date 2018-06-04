@@ -33,11 +33,7 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto canvas = new GraphicsWindow(main_window, LAYOUT_FILL_X|LAYOUT_FILL_Y);
-
-    graphics::window_surface surface(nullptr);
-    window_fox win(surface, canvas);
-    surface.attach_window(&win);
+    auto window = new GraphicsWindow(main_window, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     graphics::plot p(graphics::plot::show_units | graphics::plot::auto_limits);
     p.set_clip_mode(false);
@@ -52,15 +48,11 @@ int main(int argc, char *argv[]) {
 
     p.commit_pending_draw();
 
-    surface.attach(&p, "");
+    window->attach(&p, "");
 
     std::thread wt(run_fox, app, main_window);
     wt.detach();
+    window->wait();
 
-    notify_request<graphics::window_status_e> req{graphics::window_closed};
-    int retval = win.set_notify_request(req);
-    if (retval == request_success) {
-        req.wait();
-    }
     return 0;
 }
