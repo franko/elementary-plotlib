@@ -1,12 +1,12 @@
 #include "fox/window_fox.h"
-#include "fox/PlotCanvas.h"
+#include "fox/GraphicsWindow.h"
 #include "debug_log.h"
 
-window_fox::window_fox(graphics::render_target& tgt, PlotCanvas *canvas):
+window_fox::window_fox(graphics::render_target& tgt, GraphicsWindow *canvas):
     m_plot_canvas(canvas), m_target(tgt)
 {
     m_plot_canvas->bind(this);
-    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, PlotCanvas::ID_UPDATE_REGION, nullptr);
+    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, GraphicsWindow::ID_UPDATE_REGION, nullptr);
 }
 
 window_fox::~window_fox() {

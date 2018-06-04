@@ -1,7 +1,7 @@
 #include <cmath>
 
 #include "fox/window_fox.h"
-#include "fox/PlotCanvas.h"
+#include "fox/GraphicsWindow.h"
 #include "debug_log.h"
 #include "path.h"
 
@@ -33,8 +33,7 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto canvas = new PlotCanvas(main_window, FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-    // canvas->setTarget(canvas);
+    auto canvas = new GraphicsWindow(main_window, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     graphics::window_surface surface(nullptr);
     window_fox win(surface, canvas);

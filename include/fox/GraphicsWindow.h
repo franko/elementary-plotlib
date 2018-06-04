@@ -4,17 +4,17 @@
 
 class window_fox;
 
-class PlotCanvas : public FXWindow {
-    FXDECLARE(PlotCanvas)
+class GraphicsWindow : public FXWindow {
+    FXDECLARE(GraphicsWindow)
 protected:
-    PlotCanvas() { }
+    GraphicsWindow() { }
 private:
-    PlotCanvas(const PlotCanvas&);
-    PlotCanvas &operator=(const PlotCanvas&);
+    GraphicsWindow(const GraphicsWindow&);
+    GraphicsWindow &operator=(const GraphicsWindow&);
 public:
-    PlotCanvas(FXComposite* p, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    GraphicsWindow(FXComposite* p, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
-    ~PlotCanvas();
+    ~GraphicsWindow();
 
     void position(FXint x, FXint y, FXint w, FXint h) override;
     void create() override;
