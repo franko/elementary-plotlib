@@ -1,4 +1,4 @@
-project('libcavas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
+project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
 
 # ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
 #  DEFS += -DDISABLE_GAMMA_CORR
