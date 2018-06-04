@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "fox/window_fox.h"
 #include "fox/PlotCanvas.h"
 #include "debug_log.h"
