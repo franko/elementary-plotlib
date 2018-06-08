@@ -48,6 +48,7 @@ long GraphicsWindow::onPaint(FXObject *, FXSelector, void *ptr) {
 
 long GraphicsWindow::onMap(FXObject *, FXSelector, void *) {
     debug_log("GraphicsWindow: map event");
+    m_window.set_thread_id();
     m_window.set_window_status(graphics::window_running);
     return 1;
 }

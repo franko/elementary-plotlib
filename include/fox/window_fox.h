@@ -28,6 +28,10 @@ public:
         return m_window_status.set_notify_request(request);
     }
 
+    void set_thread_id() {
+        m_window_thread_id = std::this_thread::get_id();
+    }
+
     void call_update_region() {
         update_region(*m_update_region.img, m_update_region.r);
         m_update_notify.notify();
@@ -57,6 +61,7 @@ private:
     FXGUISignal *m_gui_signal;
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
+    std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.
     std::mutex m_mutex;
     status_notifier<graphics::window_status_e> m_window_status;
     graphics::render_target& m_target;
