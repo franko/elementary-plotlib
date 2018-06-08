@@ -60,7 +60,7 @@ struct sg_element {
             }
         }
         if (bb) {
-            if (has_fill || has_stroke) {
+            if (has_fill || has_stroke || outline) {
                 agg::bounding_rect_single(*object, 0, &bb->x1, &bb->y1, &bb->x2, &bb->y2);
             } else {
                 bb->x1 =  0.0;
