@@ -39,7 +39,7 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     img.create();
 
     FXDCWindow dc(m_plot_canvas);
-    dc.drawImage(&img, r.x1, r.y1);
+    dc.drawImage(&img, r.x1, m_plot_canvas->getHeight() - r.y2);
 }
 
 void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
