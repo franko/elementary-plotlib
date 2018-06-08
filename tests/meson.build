@@ -63,3 +63,10 @@ executable('test-fox-window', ['test-fox-window.cpp'],
            dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
            link_with: [libcanvas, libcanvasfoxwin],
            gui_app: false)
+
+executable('test-fox-window-2', ['test-fox-window-2.cpp'],
+           include_directories: [libcanvas_include],
+           dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
+           link_with: [libcanvas, libcanvasfoxwin],
+           gui_app: false)
+
