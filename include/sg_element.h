@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_SG_ELEMENT_H
-#define GRAPHICS_SG_ELEMENT_H
+#pragma once
 
 #include "agg_color_rgba.h"
 #include "agg_array.h"
@@ -112,5 +111,3 @@ public:
 private:
     agg::pod_bvector<sg_element> m_elements;
 };
-
-#endif

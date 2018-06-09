@@ -1,5 +1,4 @@
-#ifndef LIBCANVAS_WINDOW_H
-#define LIBCANVAS_WINDOW_H
+#pragma once
 
 #include "window_surface.h"
 #include "notify_request.h"
@@ -77,6 +76,4 @@ typedef window_gen<window_win32> window;
 namespace graphics {
 typedef window_gen<xwindow> window;
 }
-#endif
-
 #endif

@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_UTILS_H
-#define AGGPLOT_UTILS_H
+#pragma once
 
 #include "agg_trans_affine.h"
 #include "agg_array.h"
@@ -70,5 +69,3 @@ extern void   trans_affine_compose  (agg::trans_affine& a,
 extern agg::trans_affine affine_matrix(const agg::rect_i& r);
 
 extern agg::trans_affine identity_matrix;
-
-#endif

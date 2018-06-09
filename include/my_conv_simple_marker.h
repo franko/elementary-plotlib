@@ -1,5 +1,4 @@
-#ifndef MY_CONV_SIMPLE_MARKER_H
-#define MY_CONV_SIMPLE_MARKER_H
+#pragma once
 
 #include "agg_basics.h"
 #include "agg_trans_affine.h"
@@ -99,5 +98,3 @@ unsigned conv_simple_marker<MarkerLocator, MarkerShapes>::vertex(double* x, doub
     return cmd;
 }
 }
-
-#endif

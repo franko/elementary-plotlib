@@ -24,8 +24,7 @@
 
 // Modified for GSL Shell by Francesco Abbate, 2012.
 
-#ifndef AGG_PIXFMT_RGB24_LCD_INCLUDED
-#define AGG_PIXFMT_RGB24_LCD_INCLUDED
+#pragma once
 
 #include <string.h>
 #include <stdlib.h>
@@ -241,6 +240,3 @@ private:
 
 
 }
-
-#endif
-

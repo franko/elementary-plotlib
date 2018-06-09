@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_RESOURCE_MANAGER_H
-#define AGGPLOT_RESOURCE_MANAGER_H
+#pragma once
 
 class manage_owner {
 public:
@@ -20,5 +19,3 @@ public:
     template <class T>
     static void dispose(T* p) { };
 };
-
-#endif

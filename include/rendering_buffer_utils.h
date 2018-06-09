@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_RBUF_UTILS_H
-#define AGGPLOT_RBUF_UTILS_H
+#pragma once
 
 #include "agg_rendering_buffer.h"
 #include "platform/agg_platform_support.h"
@@ -339,5 +338,3 @@ void rendering_buffer_copy(RenBufA& dst, agg::pix_format_e dst_format, const Ren
     }
 
 }
-
-#endif

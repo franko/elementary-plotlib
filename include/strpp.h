@@ -1,5 +1,4 @@
-#ifndef STRPP_H
-#define STRPP_H
+#pragma once
 
 #include "str.h"
 
@@ -54,5 +53,3 @@ public:
     return s;
   }
 };
-
-#endif

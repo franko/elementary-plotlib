@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_SG_PATH_H
-#define AGGPLOT_SG_PATH_H
+#pragma once
 
 #include "sg_object.h"
 
@@ -8,5 +7,3 @@
 
 typedef sg_object_gen<agg::path_storage, no_approx_scale> sg_path;
 typedef sg_object_gen<agg::ellipse, approx_scale> sg_ellipse;
-
-#endif

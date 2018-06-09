@@ -18,8 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef AGGPLOT_PLOT_H
-#define AGGPLOT_PLOT_H
+#pragma once
 
 #include <new>
 
@@ -467,5 +466,3 @@ void plot::draw_queue(Canvas& _canvas, const agg::trans_affine& canvas_mtx, cons
 }
 
 } /* namespace graphics */
-
-#endif

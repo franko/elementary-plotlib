@@ -22,9 +22,7 @@
 // MA 02110-1301, USA.
 //----------------------------------------------------------------------------
 
-#ifndef AGG_WIN32_BMP_INCLUDED
-#define AGG_WIN32_BMP_INCLUDED
-
+#pragma once
 
 #include <windows.h>
 #include <stdio.h>
@@ -118,6 +116,3 @@ namespace agg
     };
 
 }
-
-
-#endif

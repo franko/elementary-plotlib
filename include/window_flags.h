@@ -1,5 +1,4 @@
-#ifndef WINDOW_FLAGS_H
-#define WINDOW_FLAGS_H
+#pragma once
 
 namespace graphics {
 
@@ -31,5 +30,3 @@ enum window_status_e {
 };
 
 }
-
-#endif

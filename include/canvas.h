@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_CANVAS_H
-#define AGGPLOT_CANVAS_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -212,6 +211,4 @@ struct virtual_canvas {
 typedef canvas_gen<renderer_gray_aa<pixel_type>, pixel_type> canvas;
 #else
 typedef canvas_gen<renderer_subpixel_aa<pixel_lcd_type, pixel_type>, pixel_type> canvas;
-#endif
-
 #endif

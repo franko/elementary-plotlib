@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_PLOT_STYLE_H
-#define GRAPHICS_PLOT_STYLE_H
+#pragma once
 
 enum text_class_e { text_axis_title, text_axis_labels, text_plot_title };
 
@@ -16,5 +15,3 @@ inline double std_line_width(double scale, double w = 1.0)
 {
     return w * 1.5;
 }
-
-#endif

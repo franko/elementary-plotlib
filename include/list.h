@@ -1,5 +1,4 @@
-#ifndef CPP_LIST_H
-#define CPP_LIST_H
+#pragma once
 
 template <class T>
 class list {
@@ -54,5 +53,3 @@ public:
 
   list* next() { return m_next; };
 };
-
-#endif

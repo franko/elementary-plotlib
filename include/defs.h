@@ -18,8 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef DEFS_H
-#define DEFS_H
+#pragma once
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -49,5 +48,3 @@ typedef int bool;
 
 #define likely(x)	__builtin_expect(!!(x), 1)
 #define unlikely(x)	__builtin_expect(!!(x), 0)
-
-#endif

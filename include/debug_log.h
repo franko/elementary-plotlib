@@ -1,5 +1,4 @@
-#ifndef LIBCANVAS_DEBUG_LOG_H
-#define LIBCANVAS_DEBUG_LOG_H
+#pragma once
 
 #ifdef WIN32
 #include <windows.h>
@@ -25,7 +24,5 @@ inline void debug_log(const char *fmt, ...) {
 
 inline void debug_log(const char *fmt, ...) {
 }
-
-#endif
 
 #endif

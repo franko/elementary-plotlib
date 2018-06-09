@@ -1,5 +1,4 @@
-#ifndef FOXGUI_WINDOW_SURFACE_H
-#define FOXGUI_WINDOW_SURFACE_H
+#pragma once
 
 #include <agg_basics.h>
 #include <agg_rendering_buffer.h>
@@ -112,5 +111,3 @@ private:
 };
 
 } /* namespace graphics */
-
-#endif

@@ -18,8 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef AGGPLOT_UNITS_H
-#define AGGPLOT_UNITS_H
+#pragma once
 
 struct label_iterator {
     virtual bool next(double& val, const char*& text) = 0;
@@ -111,5 +110,3 @@ private:
     units::format_e m_fmt_tag;
     const char* m_fmt;
 };
-
-#endif

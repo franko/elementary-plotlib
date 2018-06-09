@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_TEXT_LABEL_H
-#define AGGPLOT_TEXT_LABEL_H
+#pragma once
 
 #include "agg_trans_affine.h"
 #include "agg_conv_transform.h"
@@ -169,5 +168,3 @@ private:
         m_font_eng.width(m_font_width * scale_x);
     }
 };
-
-#endif

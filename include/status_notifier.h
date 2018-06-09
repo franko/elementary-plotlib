@@ -1,5 +1,4 @@
-#ifndef LIBCANVAS_STATUS_NOTIFIER_H
-#define LIBCANVAS_STATUS_NOTIFIER_H
+#pragma once
 
 #include "notify_request.h"
 #include "window_flags.h"
@@ -39,5 +38,3 @@ private:
     StatusOrderedEnum m_status;
     notify_request<StatusOrderedEnum> *m_request_pending;
 };
-
-#endif

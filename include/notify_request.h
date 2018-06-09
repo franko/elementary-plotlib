@@ -1,5 +1,4 @@
-#ifndef LIBCANVAS_NOTIFY_REQUEST_H
-#define LIBCANVAS_NOTIFY_REQUEST_H
+#pragma once
 
 #include <thread>
 #include <mutex>
@@ -37,5 +36,3 @@ private:
     std::condition_variable m_condition;
     bool m_completed;
 };
-
-#endif

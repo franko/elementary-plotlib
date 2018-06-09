@@ -18,8 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef STR_H
-#define STR_H
+#pragma once
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -72,5 +71,3 @@ extern void     str_vprintf       (str_t d, const char *fmt, int append,
 extern void     str_pad           (str_t d, int len, char sep);
 
 __END_DECLS
-
-#endif

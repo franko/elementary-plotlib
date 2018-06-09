@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_PIXEL_FMT_H
-#define AGGPLOT_PIXEL_FMT_H
+#pragma once
 
 #include "render_config.h"
 
@@ -41,6 +40,4 @@ typedef pixel_lcd pixel_lcd_type;
 #else
 typedef pixel_gamma pixel_type;
 typedef pixel_gamma_lcd pixel_lcd_type;
-#endif
-
 #endif

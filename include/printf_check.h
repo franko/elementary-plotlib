@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_PRINTF_CHECK_H
-#define AGGPLOT_PRINTF_CHECK_H
+#pragma once
 
 enum arg_type_e {
     argument_int,
@@ -7,5 +6,3 @@ enum arg_type_e {
 };
 
 extern int check_printf_argument(const char *label, const char*& tail, arg_type_e& arg_type);
-
-#endif

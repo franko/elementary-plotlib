@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_PATH_H
-#define AGGPLOT_PATH_H
+#pragma once
 
 #include <initializer_list>
 #include <utility>
@@ -73,5 +72,3 @@ private:
 };
 
 }
-
-#endif

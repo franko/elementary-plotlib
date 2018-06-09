@@ -1,5 +1,4 @@
-#ifndef CANVAS_SVG_H
-#define CANVAS_SVG_H
+#pragma once
 
 #include <stdio.h>
 
@@ -93,5 +92,3 @@ private:
 
 template <> void canvas_svg::draw<sg_object>(sg_object& vs, agg::rgba8 c);
 template <> void canvas_svg::draw_outline<sg_object>(sg_object& vs, agg::rgba8 c);
-
-#endif

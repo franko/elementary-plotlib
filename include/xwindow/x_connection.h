@@ -1,5 +1,4 @@
-#ifndef XWINDOW_X_CONNECTION_H
-#define XWINDOW_X_CONNECTION_H
+#pragma once
 
 #include <X11/Xlib.h>
 
@@ -19,5 +18,3 @@ struct x_connection {
     bool init();
     void close();
 };
-
-#endif

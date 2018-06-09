@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_TRANS_H
-#define AGGPLOT_TRANS_H
+#pragma once
 
 #include "sg_object.h"
 #include "markers.h"
@@ -247,5 +246,3 @@ namespace graphics { namespace transform {
     };
 
 } }
-
-#endif

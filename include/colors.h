@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_COLORS_H
-#define AGGPLOT_COLORS_H
+#pragma once
 
 #include "defs.h"
 #include "agg_color_rgba.h"
@@ -19,5 +18,3 @@ inline static agg::rgba8 zero() {
 }
 
 };
-
-#endif

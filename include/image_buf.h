@@ -1,5 +1,4 @@
-#ifndef FOXGUI_IMAGE_BUF_H
-#define FOXGUI_IMAGE_BUF_H
+#pragma once
 
 #include <new>
 
@@ -84,5 +83,3 @@ private:
         delete[] data;
     }
 };
-
-#endif

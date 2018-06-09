@@ -16,9 +16,7 @@
 // See implementation agg_font_freetype.cpp
 //
 //----------------------------------------------------------------------------
-
-#ifndef AGG_FONT_FREETYPE_INCLUDED
-#define AGG_FONT_FREETYPE_INCLUDED
+#pragma once
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -224,5 +222,3 @@ public:
 
 
 }
-
-#endif

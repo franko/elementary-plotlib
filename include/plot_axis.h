@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_PLOT_AXIS_H
-#define GRAPHICS_PLOT_AXIS_H
+#pragma once
 
 #include "units.h"
 #include "strpp.h"
@@ -118,4 +117,3 @@ private:
 };
 
 }
-#endif

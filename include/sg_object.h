@@ -18,8 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef AGGPLOT_SG_OBJECT_H
-#define AGGPLOT_SG_OBJECT_H
+#pragma once
 
 #include "agg_trans_affine.h"
 #include "agg_bounding_rect.h"
@@ -199,5 +198,3 @@ public:
         agg::bounding_rect_single (*m_source, 0, x1, y1, x2, y2);
     }
 };
-
-#endif

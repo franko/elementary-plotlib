@@ -1,5 +1,4 @@
-#ifndef RENDER_CONFIG_H
-#define RENDER_CONFIG_H
+#pragma once
 
 #include <mutex>
 
@@ -28,5 +27,3 @@ extern const char *get_fox_console_font_name();
 
 extern int initialize_fonts();
 }
-
-#endif

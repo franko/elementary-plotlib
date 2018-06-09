@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_RECT_H
-#define AGGPLOT_RECT_H
+#pragma once
 
 #include <assert.h>
 #include "agg_basics.h"
@@ -82,5 +81,3 @@ agg::rect_base<T> rect_of_slot_matrix (const agg::trans_affine& mtx)
     T dx = T(mtx.sx + mtx.tx), dy = T(mtx.sy + mtx.ty);
     return agg::rect_base<T>(T(mtx.tx), T(mtx.ty), dx, dy);
 }
-
-#endif

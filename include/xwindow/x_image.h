@@ -1,5 +1,4 @@
-#ifndef X_IMAGE_BUF_H
-#define X_IMAGE_BUF_H
+#pragma once
 
 #include <new>
 
@@ -83,5 +82,3 @@ private:
     unsigned m_pixel_size;
     XImage* m_img;
 };
-
-#endif

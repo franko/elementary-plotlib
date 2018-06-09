@@ -1,5 +1,4 @@
-#ifndef XWINDOW_XWINDOW_H
-#define XWINDOW_XWINDOW_H
+#pragma once
 
 #include <thread>
 #include <mutex>
@@ -76,5 +75,3 @@ private:
 
     static bool need_initialize;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_CATEGORIES_H
-#define AGGPLOT_CATEGORIES_H
+#pragma once
 
 #include "strpp.h"
 #include "units.h"
@@ -42,5 +41,3 @@ public:
         add(new item(v, name));
     }
 };
-
-#endif

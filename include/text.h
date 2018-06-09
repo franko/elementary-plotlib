@@ -1,5 +1,4 @@
-#ifndef AGGPLOT_TEXT_H
-#define AGGPLOT_TEXT_H
+#pragma once
 
 #include "agg_trans_affine.h"
 
@@ -84,5 +83,3 @@ public:
     virtual str write_svg(int id, agg::rgba8 c, double h);
 };
 }
-
-#endif
