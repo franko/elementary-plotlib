@@ -6,7 +6,7 @@
 
 #include "text.h"
 
-namespace draw {
+namespace graphics {
 
 void
 text::apply_transform(const agg::trans_affine& m, double as)

@@ -247,7 +247,7 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
     if (!str_is_null(&m_title))
     {
         const plot_layout::point& pos = layout.title_pos;
-        draw::text title(m_title.cstr(), layout.title_font_size, 0.5, 0.0);
+        graphics::text title(m_title.cstr(), layout.title_font_size, 0.5, 0.0);
         title.set_point(pos.x, pos.y);
         title.apply_transform(identity_matrix, 1.0);
         canvas.draw(title, colors::black());
@@ -331,7 +331,7 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
         double laby = y0;
 
         const char* text = m_x_axis.title.cstr();
-        draw::text xlabel(text, label_text_size, 0.5, 0.0);
+        graphics::text xlabel(text, label_text_size, 0.5, 0.0);
         xlabel.set_point(labx, laby);
         xlabel.apply_transform(identity_matrix, 1.0);
 
@@ -344,7 +344,7 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
         double laby = m.sy * 0.5 + m.ty;
 
         const char* text = m_y_axis.title.cstr();
-        draw::text ylabel(text, label_text_size, 0.5, 1.0);
+        graphics::text ylabel(text, label_text_size, 0.5, 1.0);
         ylabel.set_point(labx, laby);
         ylabel.angle(M_PI/2.0);
         ylabel.apply_transform(identity_matrix, 1.0);

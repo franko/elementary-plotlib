@@ -5,7 +5,7 @@
 #include "sg_object.h"
 #include "text_label.h"
 
-namespace draw {
+namespace graphics {
 
 class text : public sg_object
 {

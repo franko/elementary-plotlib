@@ -27,10 +27,10 @@ graphics::plot *create_legend() {
     p->set_clip_mode(false);
     p->add(new graphics::path {{0.0, -3.0}, {3.0, -3.0}}, blue, 1.5, none, graphics::property::stroke);
     p->add(new graphics::path {{0.0, +3.0}, {3.0, +3.0}}, red,  1.5, none, graphics::property::stroke);
-    auto text1 = new draw::text {"sin(x) / x", 14.0, 0.0, 0.3};
+    auto text1 = new graphics::text {"sin(x) / x", 14.0, 0.0, 0.3};
     text1->set_point(4.0, -3.0);
     p->add(text1, black, 1.0, black, graphics::property::fill);
-    auto text2 = new draw::text {"cos(x) / x", 14.0, 0.0, 0.3};
+    auto text2 = new graphics::text {"cos(x) / x", 14.0, 0.0, 0.3};
     text2->set_point(4.0, +3.0);
     p->add(text2, black, 1.0, black, graphics::property::fill);
     p->commit_pending_draw();

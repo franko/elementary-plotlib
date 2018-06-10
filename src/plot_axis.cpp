@@ -43,7 +43,7 @@ sg_composite axis::draw_with_labels(label_iterator& labels,
         if (q < -eps || q > 1.0 + eps)
             continue;
 
-        draw::text* label = new draw::text(text, text_label_size, hj, vj);
+        graphics::text* label = new graphics::text(text, text_label_size, hj, vj);
 
         label->set_point(isx ? q : -lab_space, isx ? -lab_space : q);
         label->angle(langle);
@@ -104,7 +104,7 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
         factor_labels* factor = m_comp_labels->at(layer);
         if (factor->labels_number() > 256) continue;
 
-        agg::pod_bvector<draw::text*> tlabels;
+        agg::pod_bvector<graphics::text*> tlabels;
         double hmax = 0.0;
         const bool draw_labels = (factor->labels_number() < 32);
         if (draw_labels)
@@ -112,7 +112,7 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
             for (int k = 0; k < factor->labels_number(); k++)
             {
                 const char* text = factor->label_text(k);
-                draw::text* label = new draw::text(text, text_label_size, 0.5, 0.5);
+                graphics::text* label = new graphics::text(text, text_label_size, 0.5, 0.5);
                 label->angle(lab_angle);
 
                 double rx1, ry1, rx2, ry2;
@@ -139,7 +139,7 @@ sg_composite axis::draw_comp_labels_axis(const agg::trans_affine& m, double& scr
 
             if (draw_labels)
             {
-                draw::text* label = tlabels[k];
+                graphics::text* label = tlabels[k];
                 label->set_point(x_lab, p_lab_inf + y_spac_bot + hmax/2.0);
                 group.add_fill(label, colors::black());
             }
