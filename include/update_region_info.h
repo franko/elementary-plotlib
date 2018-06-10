@@ -32,6 +32,12 @@ struct update_region_notify {
     std::condition_variable condition;
     bool completed;
 
+    update_region_notify(): completed(false) { }
+
+    void prepare() {
+        completed = false;
+    }
+
     void notify() {
         mutex.lock();
         completed = true;
