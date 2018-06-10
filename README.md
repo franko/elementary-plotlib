@@ -15,8 +15,6 @@ Here an example of a plot with a function and some markers.
 
 The corresponding source code is available [here](https://github.com/franko/libcanvas/blob/master/tests/test-window-markers.cpp).
 
-
-
 Features and Usage
 ---
 
@@ -27,6 +25,19 @@ The plot will take automatically cares of choosing the more appropriate limits, 
 To make faster animations the graphical elements inside a plot can be organized in *layers*. New layers can be added to group all the newly added objects. A layer can be removed removing all the objects that belongs to the layer.
 
 The window is used to show the plot on the screen. It can accomodate one plots or more by choosing a special layout. When a plot is updated by adding or removing some elements the window on the screen can be updated by calling a specific function.
+
+Installing the library
+---
+
+The library can be compiled using the Meson build system and it does requires the AGG and freetype2 libraries. Currently the Meson configuration required the FOX library but it is only used for the FOX toolkit integration and can be disabled if needed.
+
+To build the library and the examples use the following command:
+```
+> meson --buildtype=debug build-debug
+> cd build-debug
+> ninja # or make
+```
+As an alternative to Meson there is also a basic support for CMake but it is not currently updated and is not recommended.
 
 Rendering of graphical elements
 ----
