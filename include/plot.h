@@ -160,8 +160,10 @@ public:
     {
         m_layers.add(&m_root_layer);
         compute_user_trans();
+#if 0
         for (unsigned k = 0; k < 4; k++)
             m_legend[k] = 0;
+#endif
     };
 
     ~plot()
@@ -197,14 +199,14 @@ public:
     str& y_axis_title() {
         return m_y_axis.title;
     }
-
+#if 0
     void add_legend(plot* p, placement_e where) {
         m_legend[where] = p;
     }
     plot* get_legend(placement_e where) {
         return m_legend[where];
     }
-
+#endif
     axis& get_axis(axis_e axis_dir)
     {
         return (axis_dir == x_axis ? m_x_axis : m_y_axis);
@@ -428,7 +430,7 @@ private:
     str m_title;
 
     axis m_x_axis, m_y_axis;
-    plot* m_legend[4];
+    // plot* m_legend[4];
 
     bool m_auto_limits;
     bool m_bbox_updated;

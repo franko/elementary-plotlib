@@ -155,7 +155,7 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
     const double sx = canvas_mtx.sx, sy = canvas_mtx.sy;
     const double ppad = double(canvas_margin_prop_space) / 1000.0;
     const double fpad = double(canvas_margin_fixed_space);
-    const double size_frac_x = 0.125, size_frac_y = 0.05;
+    // const double size_frac_x = 0.125, size_frac_y = 0.05;
 
     double dxl, dxr, dyb, dyt;
 
@@ -179,6 +179,7 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
         dyt += 2 * ptpad + th;
     }
 
+#if 0
     for (int k = 0; k < 4 && do_legends; k++)
     {
         plot* mp = m_legend[k];
@@ -234,6 +235,7 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
             }
         }
     }
+#endif
 
     double x0 = canvas_mtx.tx + dxl, y0 = canvas_mtx.ty + dyb;
     double ssx = sx - (dxl + dxr), ssy = sy - (dyb + dyt);
@@ -253,6 +255,7 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
         canvas.draw(title, colors::black());
     }
 
+#if 0
     for (int k = 0; k < 4; k++)
     {
         plot* mp = m_legend[k];
@@ -265,6 +268,7 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
             mp->draw_simple(canvas, mp_layout, &clip);
         }
     }
+#endif
 }
 
 // Draw the axis elements and labels and set layout.plot_active_area
