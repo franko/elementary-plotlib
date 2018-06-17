@@ -1,0 +1,10 @@
+plot::draw_axis
+    call m_x_axis.draw (plot_axis::draw) that:
+        - returns a sg_composite (x_axis_comp) with the graphical elements
+        - define the screen size needed to accomodate the labels of the axis
+    
+    draw the x_axis_comp using the .draw method and passing a specific affine
+    matrix for the x axis
+
+plot_axis::draw:
+    either calls draw_comp_labels_axis or draw_with_labels

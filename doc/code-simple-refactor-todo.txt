@@ -1,0 +1,1 @@
+put sg_composite in a separate header file (currently using sg_element)
