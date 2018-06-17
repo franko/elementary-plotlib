@@ -283,6 +283,8 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     const double ptpad = double(axis_title_prop_space) / 1000.0;
 
     double dx_label, dy_label;
+    // The calls below will set dy_label to the screen size needed for the axis
+    // and the labels below.
     sg_composite x_axis_comp = m_x_axis.draw(m_trans, dy_label, scale);
     sg_composite y_axis_comp = m_y_axis.draw(m_trans, dx_label, scale);
 
