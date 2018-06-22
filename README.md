@@ -1,13 +1,35 @@
-Libcanvas
-===
+Libcanvas — *A C++ library for high-quality plots and animations*
 
-A C++ library for high-quality plots and animations.
+Looking for an open-source library that gives you a simple API to easily
+create high-quality plots on major desktop platforms? Do you need to pop
+a native window to display a plot without the need of a third-party library?
+Do you need integration with an existing toolkit?
+*Here it is.* And it's free to use, even for commercial purposes.
 
-Libcanvas use the Anti-Grain library with subpixel resolution to create high-quality plots with a simple C++ interface.
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Batteries included**: the library provides functions to create windows to display the plots. It works on Windows and X Window's based systems.
+Beauty of simplicity
+====================
 
-**Integration with existing toolkit**: the library is thought to be integrated with existing GUI toolkits with minimal work. Currently only an implementation for the [FOX Toolkit](http://www.fox-toolkit.org/) is provided but it can be used as an example to integrate libcanvas with other toolkits.
+Simple C++ API to easily create and display plots with a few lines of code. Create animations with simple layer-based functions by adding elements.
+
+With batteries included
+=======================
+
+Display a native window to display the plot or the animations without thind-party libraries on Windows and X Window's based systems.
+
+High quality plots
+==================
+
+Libcanvas use the Anti-Grain library with subpixel resolution to create high-quality plots. The fonts are rendered using state of the art algorithm for font rendering but only basic text layout is supported.
+
+Integration with existing toolkits
+==================================
+
+The library is thought to be integrated with existing GUI toolkits with minimal work. Currently only an implementation for the [FOX Toolkit](http://www.fox-toolkit.org/) is provided but it can be used as an example to integrate libcanvas with other toolkits.
+
+Examples
+========
 
 Here an example of a plot with a function and some markers.
 
@@ -61,12 +83,13 @@ Expect also to find bugs especially since the library is currently being reworke
 Limitations
 ---
 
-Be aware that the library does not offer many features that other, more mature or advanced libraries may offer.
+Be aware that the library does not offer as many features as that other more advanced libraries.
 
 Among the more important limitations of the current implementation:
 
   - no mouse of keyboard events from the windows can be treated
-  - no advanced font capabilities
+  - no advanced text-layout capabilities
+  - only a single type of font is available
   - no harware acceleration
   - plot has only a few options and are generally not very customizable
 
