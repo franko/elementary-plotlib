@@ -8,23 +8,19 @@ Do you need integration with an existing toolkit?
 
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Beauty of simplicity
-====================
+**Beauty of simplicity**
 
 Simple C++ API to easily create and display plots with a few lines of code. Create animations with simple layer-based functions by adding elements.
 
-With batteries included
-=======================
+**With batteries included**
 
 Display a native window to display the plot or the animations without thind-party libraries on Windows and X Window's based systems.
 
-High quality plots
-==================
+**High quality plots**
 
 Libcanvas use the Anti-Grain library with subpixel resolution to create high-quality plots. The fonts are rendered using state of the art algorithm for font rendering but only basic text layout is supported.
 
-Integration with existing toolkits
-==================================
+**Integration with existing toolkits**
 
 The library is thought to be integrated with existing GUI toolkits with minimal work. Currently only an implementation for the [FOX Toolkit](http://www.fox-toolkit.org/) is provided but it can be used as an example to integrate libcanvas with other toolkits.
 
