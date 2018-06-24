@@ -156,6 +156,7 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
     const double ppad = double(canvas_margin_prop_space) / 1000.0;
     const double fpad = double(canvas_margin_fixed_space);
     // const double size_frac_x = 0.125, size_frac_y = 0.05;
+    const double size_frac_x = 0.125;
 
     double dxl, dxr, dyb, dyt;
 
@@ -177,6 +178,31 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
         layout.title_font_size = title_text_size;
 
         dyt += 2 * ptpad + th;
+    }
+
+#if 0
+    if (do_legends) {
+        // TODO: important, treat only the layout in the right region.
+        dxr += sx / 20 + m_legend->get_labels_screen_width();
+        const double x0 = canvas_mtx.tx + px, y0 = canvas_mtx.ty + py;
+        layout.legend_area[k] = agg::trans_affine(dx, 0.0, 0.0, dy, x0, y0);
+    }
+#endif
+    if (m_legend) {
+        const double bb_dx = sx / 20 + m_legend->get_labels_screen_width();
+        const double bb_dy = m_legend->get_labels_screen_height(8);
+        const double dx = max(sx * size_frac_x, bb_dx);
+        const double dy = dx * bb_dy / bb_dx;
+        const double px = sx - dx - ppad * sx - dxr;
+        const double py = (sy - dy) / 2;
+        dxr += dx + 2 * ppad * sx;
+
+        if (px >= 0 && py >= 0 && px + dx < sx && py + dy < sy) {
+            const double x0 = canvas_mtx.tx + px, y0 = canvas_mtx.ty + py;
+            layout.legend_area[right] = agg::trans_affine(dx, 0.0, 0.0, dy, x0, y0);
+        } else {
+            plot_layout::set_area_undefined(layout.legend_area[right]);
+        }
     }
 
 #if 0
@@ -253,6 +279,15 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
         title.set_point(pos.x, pos.y);
         title.apply_transform(identity_matrix, 1.0);
         canvas.draw(title, colors::black());
+    }
+
+    const agg::trans_affine& mtx = layout.legend_area[right];
+    if (m_legend && plot_layout::is_area_defined(mtx))
+    {
+        // agg::rect_i clip = rect_of_slot_matrix<int>(mtx);
+        // plot_layout mp_layout = mp->compute_plot_layout(mtx, false);
+        m_legend->draw(canvas, mtx);
+        // mp->draw_simple(canvas, mp_layout, &clip);
     }
 
 #if 0

@@ -33,6 +33,7 @@
 #include "text.h"
 #include "sg_element.h"
 #include "plot_axis.h"
+#include "plot_legend.h"
 
 #include "agg_array.h"
 #include "agg_bounding_rect.h"
@@ -155,7 +156,7 @@ public:
     plot(unsigned flags) :
         m_drawing_queue(0), m_clip_flag(true), m_need_redraw(true),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
-        m_auto_limits(flags & auto_limits),
+        m_legend(nullptr), m_auto_limits(flags & auto_limits),
         m_bbox_updated(true), m_enlarged_layer(false)
     {
         m_layers.add(&m_root_layer);
@@ -430,6 +431,8 @@ private:
     str m_title;
 
     axis m_x_axis, m_y_axis;
+    plot_legend *m_legend;
+    // placement_e m_legend_placement;
     // plot* m_legend[4];
 
     bool m_auto_limits;
