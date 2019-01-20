@@ -6,10 +6,6 @@
 HINSTANCE window_win32::g_windows_instance = 0;
 int       window_win32::g_windows_cmd_show = 0;
 
-#ifndef GWL_USERDATA
-#define GWL_USERDATA (-21)
-#endif
-
 window_win32::window_win32(graphics::render_target& tgt) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
@@ -141,7 +137,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CALLBACK window_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    void* user_data = reinterpret_cast<void*>(::GetWindowLongPtr(hWnd, GWL_USERDATA));
+    void* user_data = reinterpret_cast<void*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
     window_win32* app = nullptr;
 
     if (user_data) {
@@ -203,7 +199,7 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
                  height + (height - (rct.bottom - rct.top)),
                  FALSE);
 
-    ::SetWindowLongPtr(m_hwnd, GWL_USERDATA, (LONG_PTR)this);
+    ::SetWindowLongPtr(m_hwnd, GWLP_USERDATA, (LONG_PTR)this);
     ::ShowWindow(m_hwnd, g_windows_cmd_show);
     ::SetForegroundWindow(m_hwnd);
     return true;
