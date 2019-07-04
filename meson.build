@@ -8,22 +8,16 @@ project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99
 #  DEFS += -DDISABLE_SUBPIXEL_AA
 # endif
 
+libcanvas_cflags = ['-D_REENTRANT']
+
 if host_machine.system() == 'windows'
-    add_global_arguments('-DWIN32', language : ['c', 'cpp'])
+    libcanvas_cflags += '-DWIN32'
 endif
 
 debug_build = get_option('buildtype') != 'release'
 
-add_global_arguments('-D_REENTRANT', language : ['c', 'cpp'])
 if debug_build
-    add_global_arguments('-DLIBCANVAS_DEBUG', language : ['c', 'cpp'])
-endif
-
-if meson.get_compiler('cpp').get_id() == 'gcc'
-    add_global_arguments('-ffast-math', language : ['c', 'cpp'])
-    if not debug_build
-        add_global_arguments(['-fno-exceptions', '-fno-rtti'], language : 'cpp')
-    endif
+    libcanvas_cflags += '-DLIBCANVAS_DEBUG'
 endif
 
 libcanvas_include = include_directories('include')
