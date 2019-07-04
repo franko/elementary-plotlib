@@ -4,7 +4,7 @@ thread_dep = dependency('threads')
 
 libcanvas_src = ['str.c', 'agg_font_freetype.cpp', 'render_config.cpp', 'fatal.cpp', 'utils.cpp', 'canvas_svg.cpp', 'markers.cpp', 'text.cpp', 'window_part.cpp', 'draw_svg.cpp', 'plot_axis.cpp', 'plot.cpp', 'units.cpp', 'window_surface.cpp', 'printf_check.cpp']
 
-libcanvas = static_library('libcanvas',
+libcanvas = static_library('canvas',
     libcanvas_src,
     c_args: libcanvas_cflags,
     cpp_args: libcanvas_cflags,
