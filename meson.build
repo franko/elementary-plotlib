@@ -33,4 +33,7 @@ else
 endif
 
 subdir('fox')
-subdir('tests')
+
+if get_option('tests')
+    subdir('tests')
+endif
