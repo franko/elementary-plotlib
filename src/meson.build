@@ -9,5 +9,13 @@ libcanvas = static_library('canvas',
     c_args: libcanvas_cflags,
     cpp_args: libcanvas_cflags,
     include_directories: libcanvas_include,
-    dependencies: [agg_dep, freetype_dep, thread_dep]
+    dependencies: [agg_dep, freetype_dep, thread_dep],
+    install: true
+)
+
+pkg.generate(libcanvas,
+    filebase : 'libcanvas',
+    name : 'Libcanvas',
+    description : 'The libcanvas graphics library',
+    url : 'github.com/franko/libcanvas',
 )

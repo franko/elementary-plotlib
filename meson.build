@@ -1,5 +1,7 @@
 project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
 
+pkg = import('pkgconfig')
+
 # ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
 #  DEFS += -DDISABLE_GAMMA_CORR
 # endif
@@ -21,6 +23,7 @@ if debug_build
 endif
 
 libcanvas_include = include_directories('include')
+install_subdir('include', install_dir: 'include/libcanvas', strip_directory: true)
 
 subdir('src')
 if host_machine.system() == 'linux'
