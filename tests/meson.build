@@ -32,11 +32,13 @@ foreach test : window_tests
         gui_app: false)
 endforeach
 
-foreach test : fox_tests
-    executable(test['name'], test['sources'],
-        include_directories: libcanvas_include,
-        dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
-        cpp_args: libcanvas_cflags,
-        link_with: [libcanvas, libcanvasfoxwin],
-        gui_app: false)
-endforeach
+if fox_dep.found()
+    foreach test : fox_tests
+        executable(test['name'], test['sources'],
+            include_directories: libcanvas_include,
+            dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
+            cpp_args: libcanvas_cflags,
+            link_with: [libcanvas, libcanvasfoxwin],
+            gui_app: false)
+    endforeach
+endif
