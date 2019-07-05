@@ -32,7 +32,11 @@ else
     subdir('win32')
 endif
 
-subdir('fox')
+fox_dep = dependency('fox', required: false)
+
+if fox_dep.found()
+    subdir('fox')
+endif
 
 if get_option('tests')
     subdir('tests')

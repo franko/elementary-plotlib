@@ -1,5 +1,3 @@
-fox_dep = dependency('fox')
-
 libcanvasfoxwin_src = ['GraphicsWindow.cpp', 'window_fox.cpp']
 
 libcanvasfoxwin = static_library('canvasfoxwin', libcanvasfoxwin_src,
