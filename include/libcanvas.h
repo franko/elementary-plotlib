@@ -8,7 +8,7 @@
 namespace libcanvas {
 
 struct Rectangle {
-    uint8_t x1, y1, x2, y2;
+    float x1, y1, x2, y2;
 };
 
 enum Axis {
@@ -26,7 +26,7 @@ enum {
 }
 
 struct Color {
-    long r, g, b, a;
+    uint8_t r, g, b, a;
 };
 
 class Plot;
