@@ -30,6 +30,7 @@ struct Color {
 };
 
 class Plot;
+class Window;
 
 class Object {
 public:
@@ -67,9 +68,10 @@ public:
 private:
     struct PlotImpl;
     PlotImpl *plot_impl_;
+
+    friend class Window;
 };
 
-#if 0
 class Window {
 public:
     Window();
@@ -85,7 +87,6 @@ private:
     struct WindowImpl;
     WindowImpl *window_impl_;
 };
-#endif
 }
 
 #endif
