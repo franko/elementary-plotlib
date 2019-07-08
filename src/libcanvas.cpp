@@ -106,4 +106,8 @@ void Window::Wait() {
     win->wait();
 }
 
+void InitializeFonts() {
+    graphics::initialize_fonts();
+}
+
 }

@@ -1,6 +1,8 @@
 #ifndef LIBCANVAS_H_
 #define LIBCANVAS_H_
 
+#include <initializer_list>
+#include <utility>
 #include <cstdint>
 
 // Following: https://google.github.io/styleguide/cppguide.html
@@ -48,10 +50,19 @@ protected:
 class Path : public Object {
 public:
     Path();
+    Path(std::initializer_list<std::pair<double, double>> lst);
 
     void MoveTo(double x, double y);
     void LineTo(double x, double y);
     void ClosePolygon();
+};
+
+class Polygon : public Path {
+public:
+    Polygon(): Path() {}
+    Polygon(std::initializer_list<std::pair<double, double>> lst): Path(lst) {
+        ClosePolygon();
+    }
 };
 
 class Plot {
@@ -65,6 +76,7 @@ public:
 
     void Add(Object& object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
 
+    enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
 private:
     struct PlotImpl;
     PlotImpl *plot_impl_;
@@ -87,6 +99,8 @@ private:
     struct WindowImpl;
     WindowImpl *window_impl_;
 };
+
+void InitializeFonts();
 }
 
 #endif
