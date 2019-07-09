@@ -74,6 +74,8 @@ void Plot::Add(Object& object, Color stroke_color, float stroke_width, Color fil
     graphics::plot *p = (graphics::plot *) plot_impl_;
     sg_object *sg_obj = (sg_object *) (object.object_impl_);
     p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+    // Since the plot take the ownership null the pointer inside the object.
+    object.object_impl_ = nullptr;
 }
 
 #ifdef WIN32

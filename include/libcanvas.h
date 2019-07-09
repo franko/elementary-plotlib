@@ -13,6 +13,7 @@ namespace color {
 enum { Blue = 0x0000B4FF, Red = 0xB40000FF, Yellow = 0xF5FE00FF, None = 0 };
 }
 
+// TODO: should be move inside Window class
 enum {
     WindowResize          = 1,
     WindowHwBuffer        = 2,
