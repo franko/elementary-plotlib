@@ -6,6 +6,7 @@ endif
 
 window_tests = [
     {'name': 'test-window', 'sources': 'test-window.cpp'},
+    {'name': 'test-window-rw', 'sources': 'test-window-rw.cpp'},
     {'name': 'test-window-auto', 'sources': 'test-window-auto.cpp'},
     {'name': 'test-window-pushlayer', 'sources': 'test-window-pushlayer.cpp'},
     {'name': 'test-window-function', 'sources': 'test-window-function.cpp'},

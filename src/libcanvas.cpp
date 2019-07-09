@@ -24,6 +24,9 @@ Object::~Object() {
 Path::Path(): Object{(ObjectImpl *) new graphics::path{}} {
 }
 
+Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(ObjectImpl *) new graphics::path(lst)} {
+}
+
 void Path::MoveTo(double x, double y) {
     graphics::path *path_object = (graphics::path *) object_impl_;
     path_object->move_to(x, y);
@@ -60,6 +63,11 @@ void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     p->enable_label_format(axis == xAxis ? graphics::x_axis : graphics::y_axis, fmt);
+}
+
+void Plot::CommitPendingDraw() {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    p->commit_pending_draw();
 }
 
 void Plot::Add(Object& object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {

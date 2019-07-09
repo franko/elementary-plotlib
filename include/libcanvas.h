@@ -9,6 +9,17 @@
 
 namespace libcanvas {
 
+namespace color {
+enum { Blue = 0x0000B4FF, Red = 0xB40000FF, Yellow = 0xF5FE00FF, None = 0 };
+}
+
+enum {
+    WindowResize          = 1,
+    WindowHwBuffer        = 2,
+    WindowKeepAspectRatio = 4,
+    WindowProcessAllKeys  = 8,
+};
+
 struct Rectangle {
     float x1, y1, x2, y2;
 };
@@ -29,6 +40,7 @@ enum {
 
 struct Color {
     uint8_t r, g, b, a;
+    Color(long x): r((x >> 24) & 0xff), g((x >> 16) & 0xff), b((x >> 8) & 0xff), a(x & 0xff) {}
 };
 
 class Plot;
@@ -73,7 +85,7 @@ public:
     void SetLimits(const Rectangle& r);
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);
-
+    void CommitPendingDraw();
     void Add(Object& object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
 
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
