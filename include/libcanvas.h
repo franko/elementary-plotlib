@@ -9,8 +9,10 @@
 
 namespace libcanvas {
 
+typedef uint32_t Color;
+
 namespace color {
-enum { Blue = 0x0000B4FF, Red = 0xB40000FF, Yellow = 0xF5FE00FF, None = 0 };
+enum : uint32_t { Red = 0xB40000FF, Green = 0x00CC00ff, Blue = 0x0000B4FF, Yellow = 0xF5FE00FF, None = 0 };
 }
 
 // TODO: should be move inside Window class
@@ -38,11 +40,6 @@ enum {
     Crisp   = 1 << 3,
 };
 }
-
-struct Color {
-    uint8_t r, g, b, a;
-    Color(long x): r((x >> 24) & 0xff), g((x >> 16) & 0xff), b((x >> 8) & 0xff), a(x & 0xff) {}
-};
 
 class Plot;
 class Window;

@@ -8,7 +8,7 @@
 #include "window.h"
 
 static agg::rgba8 ColorToRgba8(const libcanvas::Color& c) {
-    return agg::rgba8(c.r, c.g, c.b, c.a);
+    return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
 }
 
 namespace libcanvas {
