@@ -1,45 +1,39 @@
-#include "window.h"
+#include "libcanvas.h"
 #include "debug_log.h"
-#include "path.h"
 
-int main()
-{
-    graphics::initialize_fonts();
+using namespace libcanvas;
 
-    graphics::window win("h.");
+int main() {
+    InitializeFonts();
 
-    graphics::plot p(graphics::plot::show_units);
-    p.set_limits({-1.0, 0.0, 1.0, 10.0});
+    Window win("h.");
 
-    agg::rgba8 none(0,0,0,0);
-    agg::rgba8 red(180, 0, 0, 255);
-    agg::rgba8 blue(0, 0, 180, 255);
-    agg::rgba8 yellow(245, 254, 0, 255);
+    Plot p(Plot::ShowUnits);
+    p.SetLimits({-1.0, 0.0, 1.0, 10.0});
 
-    auto line = new graphics::polygon {{-0.5, 0.0}, {-0.5, 8.0}, {0.5, 4.0}};
-    p.add(line, red, 2.5, yellow, graphics::property::fill | graphics::property::stroke);
+    Polygon line{{-0.5, 0.0}, {-0.5, 8.0}, {0.5, 4.0}};
+    p.Add(line, color::Red, 2.5, color::Yellow, property::Fill | property::Stroke);
 
-    p.commit_pending_draw();
+    p.CommitPendingDraw();
 
-    int index = win.attach(&p, "1");
+    int index = win.Attach(p, "1");
 
-    win.start(640, 480, graphics::window_resize);
+    win.Start(640, 480, WindowResize);
 
     sleep(2);
+    p.PushLayer();
 
-    p.push_layer();
+    Polygon line2{{0.8, 1.0}, {0.8, 7.0}, {0.3, 4.0}};
+    p.Add(line2, color::Blue, 2.5, color::None);
 
-    auto line2 = new graphics::polygon {{0.8, 1.0}, {0.8, 7.0}, {0.3, 4.0}};
-    p.add(line2, blue, 2.5, none);
-
-    win.slot_refresh(index);
-    p.commit_pending_draw();
+    win.SlotRefresh(index);
+    p.CommitPendingDraw();
 
     sleep(2);
-    p.pop_layer();
-    win.slot_refresh(index);
+    p.PopLayer();
+    win.SlotRefresh(index);
 
-    win.wait();
+    win.Wait();
 
     return 0;
 }

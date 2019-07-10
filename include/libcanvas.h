@@ -88,6 +88,8 @@ public:
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();
     void Add(Object& object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
+    bool PushLayer();
+    bool PopLayer();
 
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
 private:

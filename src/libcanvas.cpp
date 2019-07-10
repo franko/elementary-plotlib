@@ -95,6 +95,16 @@ void Plot::Add(Object& object, Color stroke_color, float stroke_width, Color fil
     }
 }
 
+bool Plot::PushLayer() {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    return p->push_layer();
+}
+
+bool Plot::PopLayer() {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    return p->pop_layer();
+}
+
 #ifdef WIN32
 typedef window_gen<window_win32> PlatformWindowImpl;
 #else
