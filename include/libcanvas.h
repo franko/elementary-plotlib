@@ -83,6 +83,9 @@ public:
     Plot(unsigned flags);
     ~Plot();
 
+    void SetTitle(const char *title);
+    void SetXAxisTitle(const char *axis_title);
+    void SetClipMode(bool flag);
     void SetLimits(const Rectangle& r);
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);

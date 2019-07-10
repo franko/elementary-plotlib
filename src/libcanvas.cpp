@@ -50,6 +50,21 @@ Plot::~Plot() {
     delete p;
 }
 
+void Plot::SetTitle(const char *title) {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    p->set_title(title);
+}
+
+void Plot::SetXAxisTitle(const char *axis_title) {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    p->set_x_axis_title(axis_title);
+}
+
+void Plot::SetClipMode(bool flag) {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    p->set_clip_mode(flag);
+}
+
 void Plot::SetLimits(const Rectangle& r) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     p->set_limits(agg::rect_d(r.x1, r.y1, r.x2, r.y2));
