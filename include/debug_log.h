@@ -1,7 +1,9 @@
 #pragma once
 
 #ifdef WIN32
-#include <windows.h>
+#include <synchapi.h>
+// Include only syncapi.h to have the defition of Sleep function
+// without all the windows.h stuff.
 inline void sleep(int s) { Sleep(s * 1000); }
 #else
 #include <unistd.h>
