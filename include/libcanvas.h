@@ -12,7 +12,15 @@ namespace libcanvas {
 typedef uint32_t Color;
 
 namespace color {
-enum : uint32_t { Red = 0xB40000FF, Green = 0x00CC00ff, Blue = 0x0000B4FF, Yellow = 0xF5FE00FF, None = 0 };
+enum : uint32_t { Red = 0xB40000FF, Green = 0x00CC00ff, Blue = 0x0000B4FF, Yellow = 0xF5FE00FF, Black = 0x000000FF, White = 0xFFFFFFFF, None = 0 };
+
+inline Color RGBA(unsigned int r, unsigned int g, unsigned int b, unsigned int a) {
+    return ((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | (a & 0xff);
+}
+
+inline Color RGB(unsigned int r, unsigned int g, unsigned int b) {
+    return RGBA(r, g, b, 0xff);
+}
 }
 
 // TODO: should be move inside Window class
