@@ -20,12 +20,15 @@
 
 #pragma once
 
+#include <cstring>
+
 #include "agg_trans_affine.h"
 #include "agg_bounding_rect.h"
 #include "agg_conv_transform.h"
 #include "agg_rendering_buffer.h"
 #include "agg_scanline_u.h"
 #include "agg_rasterizer_scanline_aa.h"
+#include "agg_ellipse.h"
 
 #include "resource-manager.h"
 #include "pixel_fmt.h"
@@ -38,6 +41,33 @@ struct vertex_source {
     virtual unsigned vertex(double* x, double* y) = 0;
     virtual ~vertex_source() { }
 };
+
+/* Meant to copy a path_base<VertexStorage> instance as declared in
+   agg_path_storage.h. */
+template <typename PathStorage>
+void path_base_copy(PathStorage& dest, const PathStorage& source) {
+    const auto source_vertices = source.vertices();
+    const unsigned source_total_vertices = source_vertices.total_vertices();
+    auto dest_vertices = dest.vertices();
+    for (unsigned i = 0; i < source_total_vertices; i++) {
+        double x, y;
+        unsigned cmd = source_vertices.vertex(i, &x, &y);
+        dest_vertices.add_vertex(x, y, cmd);
+    }
+}
+
+template <typename VertexSource>
+void vertex_source_copy(VertexSource& dest, const VertexSource& source) {
+    path_base_copy(dest, source);
+}
+
+/* As agg:ellipse is used as a VertexSource somewhere so we need to provide a
+   function specialization. The agg::ellipse cannot be copied using public
+   methods or constructors but since it is a POD object we can use memcpy. */
+template <>
+inline void vertex_source_copy<agg::ellipse>(agg::ellipse& dest, const agg::ellipse& source) {
+    memcpy(&dest, &source, sizeof(agg::ellipse));
+}
 
 // Scalable Graphics Object
 struct sg_object : public vertex_source {
@@ -104,6 +134,12 @@ public:
     virtual void bounding_box(double *x1, double *y1, double *x2, double *y2)
     {
         agg::bounding_rect_single(m_base, 0, x1, y1, x2, y2);
+    }
+
+    virtual sg_object *copy() const {
+        sg_object_gen *new_instance = new sg_object_gen();
+        vertex_source_copy(new_instance->m_base, this->m_base);
+        return new_instance;
     }
 
     const VertexSource& self() const {
