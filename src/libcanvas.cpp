@@ -21,6 +21,18 @@ Object::~Object() {
     delete obj;
 };
 
+Object::Object(const Object& obj) {
+    sg_object *source_obj = (sg_object *) obj.object_impl_;
+    sg_object *new_obj = source_obj->copy();
+    object_impl_ = (ObjectImpl *) new_obj;
+}
+
+Object::Object(Object&& obj) {
+    sg_object *source_obj = (sg_object *) obj.object_impl_;
+    obj.object_impl_ = nullptr;
+    object_impl_ = (ObjectImpl *) source_obj;
+}
+
 Path::Path(): Object{(ObjectImpl *) new graphics::path{}} {
 }
 
@@ -85,7 +97,7 @@ void Plot::CommitPendingDraw() {
     p->commit_pending_draw();
 }
 
-void Plot::Add(Object& object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
+void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     sg_object *sg_obj = (sg_object *) (object.object_impl_);
     if (sg_obj != nullptr) {

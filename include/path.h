@@ -38,6 +38,12 @@ public:
         m_path.self().close_polygon();
     }
 
+    virtual sg_object *copy() const {
+        path *new_object = new path();
+        m_path.copy_content(new_object->m_path);
+        return new_object;
+    }
+
 private:
     sg_path m_path;
 };

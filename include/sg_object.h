@@ -46,14 +46,9 @@ struct vertex_source {
    agg_path_storage.h. */
 template <typename PathStorage>
 void path_base_copy(PathStorage& dest, const PathStorage& source) {
-    const auto source_vertices = source.vertices();
-    const unsigned source_total_vertices = source_vertices.total_vertices();
-    auto dest_vertices = dest.vertices();
-    for (unsigned i = 0; i < source_total_vertices; i++) {
-        double x, y;
-        unsigned cmd = source_vertices.vertex(i, &x, &y);
-        dest_vertices.add_vertex(x, y, cmd);
-    }
+    const auto& source_vertices = source.vertices();
+    auto& dest_vertices = dest.vertices();
+    dest_vertices = source_vertices;
 }
 
 template <typename VertexSource>
@@ -92,6 +87,7 @@ struct sg_object : public vertex_source {
         return 0;
     }
 
+    virtual sg_object *copy() const = 0;
     virtual ~sg_object() { }
 };
 
@@ -136,10 +132,14 @@ public:
         agg::bounding_rect_single(m_base, 0, x1, y1, x2, y2);
     }
 
+    void copy_content(sg_object_gen& dest) const {
+        vertex_source_copy(dest.m_base, this->m_base);
+    }
+
     virtual sg_object *copy() const {
-        sg_object_gen *new_instance = new sg_object_gen();
-        vertex_source_copy(new_instance->m_base, this->m_base);
-        return new_instance;
+        sg_object_gen *new_object = new sg_object_gen();
+        copy_content(*new_object);
+        return new_object;
     }
 
     const VertexSource& self() const {
@@ -190,6 +190,12 @@ public:
     const ConvType& self() const {
         return m_output;
     };
+
+    virtual sg_object *copy() const {
+        // TODO: should be removed as not used.
+        return nullptr;
+    }
+
     ConvType& self()       {
         return m_output;
     };
@@ -232,5 +238,12 @@ public:
     virtual void bounding_box(double *x1, double *y1, double *x2, double *y2)
     {
         agg::bounding_rect_single (*m_source, 0, x1, y1, x2, y2);
+    }
+
+    virtual sg_object *copy() const {
+        sg_object *new_source = m_source->copy();
+        sg_object_scaling *new_object = new sg_object_scaling(new_source);
+        new_object->m_mtx = m_mtx;
+        return new_object;
     }
 };

@@ -12,7 +12,7 @@ void AddFunction(Plot& plot, double x0, double x1, Function f, Color color, int 
         const double x = x0 + i * (x1 - x0) / n;
         line.LineTo(x, f(x));
     }
-    plot.Add(line, color, 1.5, color::None, property::Stroke);
+    plot.Add(std::move(line), color, 1.5, color::None, property::Stroke);
 }
 
 int main() {

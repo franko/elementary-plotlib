@@ -54,6 +54,8 @@ class Window;
 
 class Object {
 public:
+    Object(const Object& obj);
+    Object(Object&& obj);
     ~Object();
 protected:
     struct ObjectImpl;
@@ -68,6 +70,8 @@ protected:
 class Path : public Object {
 public:
     Path();
+    Path(const Path& path): Object(path) { }
+    Path(Path&& path): Object(path) { }
     Path(std::initializer_list<std::pair<double, double>> lst);
 
     void MoveTo(double x, double y);
@@ -78,6 +82,8 @@ public:
 class Polygon : public Path {
 public:
     Polygon(): Path() {}
+    Polygon(const Polygon& path): Path(path) { }
+    Polygon(Polygon&& path): Path(path) { }
     Polygon(std::initializer_list<std::pair<double, double>> lst): Path(lst) {
         ClosePolygon();
     }
@@ -95,7 +101,7 @@ public:
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();
-    void Add(Object& object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
+    void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
     bool PushLayer();
     bool PopLayer();
 

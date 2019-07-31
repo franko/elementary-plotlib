@@ -67,6 +67,8 @@ public:
         return m_text_buf;
     }
 
+    double size() const { return m_font_width; }
+
     bool load_glyph()
     {
         m_x += m_advance_x;
