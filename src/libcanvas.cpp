@@ -6,6 +6,7 @@
 #include "path.h"
 #include "plot.h"
 #include "window.h"
+#include "markers.h"
 
 static agg::rgba8 ColorToRgba8(const libcanvas::Color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
@@ -52,6 +53,25 @@ void Path::LineTo(double x, double y) {
 void Path::ClosePolygon() {
     graphics::path *path_object = (graphics::path *) object_impl_;
     path_object->close_polygon();
+}
+
+Markers::Markers(double size, Object marker_symbol) : Object{(Object::ObjectImpl *) new graphics::markers(size, (sg_object *) marker_symbol.object_impl_)} {
+    marker_symbol.object_impl_ = nullptr;
+}
+
+void Markers::MoveTo(double x, double y) {
+    graphics::markers *markers_object = (graphics::markers *) object_impl_;
+    markers_object->move_to(x, y);
+}
+
+void Markers::LineTo(double x, double y) {
+    graphics::markers *markers_object = (graphics::markers *) object_impl_;
+    markers_object->line_to(x, y);
+}
+
+void Markers::ClosePolygon() {
+    graphics::markers *markers_object = (graphics::markers *) object_impl_;
+    markers_object->close_polygon();
 }
 
 Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}} {
@@ -153,6 +173,11 @@ void Window::Start(unsigned width, unsigned height, unsigned flags) {
 void Window::Wait() {
     PlatformWindowImpl *win = (PlatformWindowImpl *) window_impl_;
     win->wait();
+}
+
+Object MarkerSymbol(int n) {
+    sg_object *new_object = new_marker_symbol(n);
+    return Object{(Object::ObjectImpl *) new_object};
 }
 
 void InitializeFonts() {

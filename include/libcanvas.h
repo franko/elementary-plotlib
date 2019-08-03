@@ -65,7 +65,13 @@ protected:
     // Friend declaration needed because Plot::Add method needs to
     // have access to inner sg_object pointer, the object_impl_ field.
     friend class Plot;
+    friend class Markers;
+
+    // Needs to create an object using protected constructor.
+    friend Object MarkerSymbol(int n);
 };
+
+Object MarkerSymbol(int index);
 
 class Path : public Object {
 public:
@@ -87,6 +93,17 @@ public:
     Polygon(std::initializer_list<std::pair<double, double>> lst): Path(lst) {
         ClosePolygon();
     }
+};
+
+class Markers : public Object {
+public:
+    Markers(double size, Object marker_symbol);
+    Markers(const Markers& obj): Object(obj) { }
+    Markers(Markers&& obj): Object(obj) { }
+
+    void MoveTo(double x, double y);
+    void LineTo(double x, double y);
+    void ClosePolygon();
 };
 
 class Plot {
