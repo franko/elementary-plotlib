@@ -4,6 +4,7 @@
 #include "window.h"
 #include "path.h"
 #include "trans.h"
+#include "sg_path.h"
 
 /* This example demonstrate how to build a custom rendering pipeline by
    chaining objects and transforms. In this case we perform a dash transform
