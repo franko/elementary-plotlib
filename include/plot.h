@@ -21,6 +21,7 @@
 #pragma once
 
 #include <new>
+#include <mutex>
 
 #include "utils.h"
 #include "list.h"
@@ -152,6 +153,34 @@ public:
 
     enum { show_units = 1 << 0, auto_limits = 1 << 1 };
 
+    class drawing_context {
+    public:
+        drawing_context(plot& p): m_plot(p) {
+            m_plot.m_drawing_mutex.lock();
+        }
+        ~drawing_context() {
+            m_plot.m_drawing_mutex.unlock();
+        }
+
+        template <class Canvas>
+        void draw(Canvas& canvas, const agg::trans_affine& m, plot_render_info* inf) {
+            m_plot.draw(canvas, m, inf);
+        }
+
+        template <class Canvas>
+        void draw(Canvas& canvas, const agg::rect_i& r, plot_render_info* inf) {
+            m_plot.draw(canvas, r, inf);
+        }
+
+        template <class Canvas>
+        void draw_queue(Canvas& canvas, const agg::trans_affine& m, const plot_render_info& inf, opt_rect<double>& bbox) {
+            m_plot.draw_queue(canvas, m, inf, bbox);
+        }
+
+    private:
+        plot& m_plot;
+    };
+
     plot(unsigned flags) :
         m_drawing_queue(0), m_clip_flag(true), m_need_redraw(true),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
@@ -255,28 +284,6 @@ public:
             bb = agg::rect_base<double>(0.0, 0.0, 0.0, 0.0);
     }
 
-    template <class Canvas>
-    void draw(Canvas& canvas, const agg::trans_affine& m, plot_render_info* inf)
-    {
-        canvas_adapter<Canvas> vc(&canvas);
-        agg::rect_i clip = rect_of_slot_matrix<int>(m);
-        plot_layout layout = compute_plot_layout(m);
-        draw_virtual_canvas(vc, layout, &clip);
-        if (inf)
-            inf->active_area = layout.plot_active_area;
-    }
-
-    template <class Canvas>
-    void draw(Canvas& canvas, const agg::rect_i& r, plot_render_info* inf)
-    {
-        canvas_adapter<Canvas> vc(&canvas);
-        agg::trans_affine mtx = affine_matrix(r);
-        plot_layout layout = compute_plot_layout(mtx);
-        draw_virtual_canvas(vc, layout, &r);
-        if (inf)
-            inf->active_area = layout.plot_active_area;
-    }
-
     bool push_layer();
     bool pop_layer();
     void clear_current_layer();
@@ -297,9 +304,6 @@ public:
         return m_need_redraw;
     };
     void commit_pending_draw();
-
-    template <class Canvas>
-    void draw_queue(Canvas& canvas, const agg::trans_affine& m, const plot_render_info& inf, opt_rect<double>& bbox);
 
     void pad_mode(bool req)
     {
@@ -422,6 +426,31 @@ protected:
     opt_rect<double> m_changes_pending;
 
 private:
+    template <class Canvas>
+    void draw_queue(Canvas& canvas, const agg::trans_affine& m, const plot_render_info& inf, opt_rect<double>& bbox);
+
+    template <class Canvas>
+    void draw( Canvas& canvas, const agg::trans_affine& m, plot_render_info* inf)
+    {
+        canvas_adapter<Canvas> vc(&canvas);
+        agg::rect_i clip = rect_of_slot_matrix<int>(m);
+        plot_layout layout = compute_plot_layout(m);
+        draw_virtual_canvas(vc, layout, &clip);
+        if (inf)
+            inf->active_area = layout.plot_active_area;
+    }
+
+    template <class Canvas>
+    void draw(Canvas& canvas, const agg::rect_i& r, plot_render_info* inf)
+    {
+        canvas_adapter<Canvas> vc(&canvas);
+        agg::trans_affine mtx = affine_matrix(r);
+        plot_layout layout = compute_plot_layout(mtx);
+        draw_virtual_canvas(vc, layout, &r);
+        if (inf)
+            inf->active_area = layout.plot_active_area;
+    }
+
     item_list m_root_layer;
     agg::pod_auto_vector<item_list*, max_layers> m_layers;
 
@@ -433,6 +462,7 @@ private:
     bool m_auto_limits;
     bool m_bbox_updated;
     bool m_enlarged_layer;
+    std::mutex m_drawing_mutex;
 };
 
 template <class Canvas>

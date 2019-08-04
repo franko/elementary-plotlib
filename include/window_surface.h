@@ -91,9 +91,6 @@ public:
     }
 
 private:
-    static void drawing_lock()   { drawing_mutex.lock(); }
-    static void drawing_unlock() { drawing_mutex.unlock(); }
-
     void render_by_ref(plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
 

@@ -23,8 +23,6 @@ agg::lcd_distribution_lut graphics::subpixel_lut(0.448, 0.184, 0.092);
 agg::font_engine_freetype_int32 global_font_eng;
 agg::font_cache_manager<agg::font_engine_freetype_int32> global_font_man(global_font_eng);
 
-std::mutex graphics::drawing_mutex;
-
 #ifdef WIN32
 const char *ttf_names[] = {"calibri.ttf", "arial.ttf", 0};
 const char *console_font_names[] = {"consolas", "lucida console", "fixedsys", 0};
