@@ -99,9 +99,9 @@ public:
     }
 };
 
-class markers : public path_base_scaling {
+class markers : public path {
 public:
-    markers(double size, sg_object* sym) : path_base_scaling(),
+    markers(double size, sg_object* sym) : path(),
         m_marker_conv(m_path_scaling, *sym), m_size(size), m_scale(m_size), m_symbol(sym) {
         // we need to apply the scale transform here to ensure that
         // any call to bounding_box have the correct informations about
