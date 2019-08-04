@@ -12,37 +12,13 @@
 
 namespace graphics {
 
-class path : public sg_object {
+/* This class serve as a base class for derived classes that have a
+   path and should implement the sg_object interface.
+   No virtual methods for sg_object is implemented except, for
+   convenience bounding_box. */
+class path_base : public sg_object {
 public:
-    path() : m_path(), m_scaling_matrix(), m_scaling_trans(m_path, m_scaling_matrix) { }
-
-    path(std::initializer_list<std::pair<double, double>> lst): path() {
-        bool first = true;
-        for (const auto& v : lst) {
-            if (first) {
-                m_path.move_to(v.first, v.second);
-                first = false;
-            } else {
-                m_path.line_to(v.first, v.second);
-            }
-        }
-    }
-
-    virtual void rewind(unsigned path_id) {
-        m_scaling_trans.rewind(path_id);
-    }
-
-    virtual unsigned vertex(double* x, double* y) {
-        return m_scaling_trans.vertex(x, y);
-    }
-
-    virtual void apply_transform(const agg::trans_affine& m, double as) {
-        m_scaling_matrix = m;
-    }
-
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) {
-        agg::bounding_rect_single(m_path, 0, x1, y1, x2, y2);
-    }
+    path_base() : m_path() { }
 
     void line_to(double x, double y) {
         m_path.line_to(x, y);
@@ -56,33 +32,77 @@ public:
         m_path.close_polygon();
     }
 
+    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) {
+        agg::bounding_rect_single(m_path, 0, x1, y1, x2, y2);
+    }
+
+    void path_from_initializer_list(std::initializer_list<std::pair<double, double>> lst) {
+        bool first = true;
+        for (const auto& v : lst) {
+            if (first) {
+                m_path.move_to(v.first, v.second);
+                first = false;
+            } else {
+                m_path.line_to(v.first, v.second);
+            }
+        }
+    }
+
+protected:
+    agg::path_storage m_path;
+};
+
+/* The same of the path_base class but provide scaling and implement
+   the related apply_transform method from sg_object interface. */
+class path_base_scaling : public path_base {
+public:
+    path_base_scaling() : path_base(), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
+
+    virtual void apply_transform(const agg::trans_affine& m, double as) {
+        m_scaling_matrix = m;
+    }
+
+protected:
+    agg::trans_affine m_scaling_matrix;
+    agg::conv_transform<agg::path_storage> m_path_scaling;
+};
+
+class path : public path_base_scaling {
+public:
+    path() : path_base_scaling() { }
+
+    path(std::initializer_list<std::pair<double, double>> lst) : path_base_scaling() {
+        path_from_initializer_list(lst);
+    }
+
+    virtual void rewind(unsigned path_id) {
+        m_path_scaling.rewind(path_id);
+    }
+
+    virtual unsigned vertex(double* x, double* y) {
+        return m_path_scaling.vertex(x, y);
+    }
+
     virtual sg_object *copy() const {
         path *new_object = new path();
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }
-
-private:
-    agg::path_storage m_path;
-    agg::trans_affine m_scaling_matrix;
-    agg::conv_transform<agg::path_storage> m_scaling_trans;
 };
 
 class polygon : public path {
 public:
     polygon(): path() { }
-    polygon(std::initializer_list<std::pair<double, double>> lst): path(lst) {
+    polygon(std::initializer_list<std::pair<double, double>> lst): path() {
+        path_from_initializer_list(lst);
         close_polygon();
     }
 };
 
-
-class markers : public sg_object {
+class markers : public path_base_scaling {
 public:
-    markers(double size, sg_object* sym):
-        m_path(), m_scaling_matrix(), m_scaling_trans(m_path, m_scaling_matrix),
-        m_marker_conv(m_scaling_trans, *sym),
-        m_size(size), m_scale(m_size), m_symbol(sym) {
+    markers(double size, sg_object* sym) : path_base_scaling(),
+        m_marker_conv(m_path_scaling, *sym), m_size(size), m_scale(m_size), m_symbol(sym) {
         // we need to apply the scale transform here to ensure that
         // any call to bounding_box have the correct informations about
         // the symbol size, even if it is called before apply_transform
@@ -93,10 +113,9 @@ public:
         delete m_symbol;
     }
 
-    virtual void apply_transform(const agg::trans_affine& m, double as)
-    {
+    virtual void apply_transform(const agg::trans_affine& m, double as) {
+        path_base_scaling::apply_transform(m, as);
         m_symbol->apply_transform(m_scale, as);
-        m_scaling_matrix = m;
     }
 
     virtual void rewind(unsigned path_id) {
@@ -105,10 +124,6 @@ public:
 
     virtual unsigned vertex(double* x, double* y) {
         return m_marker_conv.vertex(x, y);
-    }
-
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) {
-        agg::bounding_rect_single(m_scaling_trans, 0, x1, y1, x2, y2);
     }
 
     virtual sg_object *copy() const {
@@ -123,7 +138,7 @@ public:
         str marker_def = gen_svg_marker_def(id, c, marker_id);
 
         str path;
-        svg_coords_from_vs(&m_scaling_trans, path, h);
+        svg_coords_from_vs(&m_path_scaling, path, h);
 
         str marker_url = gen_marker_url(marker_id);
         const char* murl = marker_url.cstr();
@@ -138,18 +153,6 @@ public:
         svg_property_list::free(ls);
 
         return str::print("%s\n   %s", marker_def.cstr(), svg.cstr());
-    }
-
-    void line_to(double x, double y) {
-        m_path.line_to(x, y);
-    }
-
-    void move_to(double x, double y) {
-        m_path.move_to(x, y);
-    }
-
-    void close_polygon() {
-        m_path.close_polygon();
     }
 
 private:
@@ -188,9 +191,6 @@ private:
 
 
 private:
-    agg::path_storage m_path;
-    agg::trans_affine m_scaling_matrix;
-    agg::conv_transform<agg::path_storage> m_scaling_trans;
     my::conv_simple_marker<agg::conv_transform<agg::path_storage>, sg_object> m_marker_conv;
     double m_size;
     agg::trans_affine_scaling m_scale;
