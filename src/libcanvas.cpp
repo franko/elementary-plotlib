@@ -55,23 +55,8 @@ void Path::ClosePolygon() {
     path_object->close_polygon();
 }
 
-Markers::Markers(double size, Object marker_symbol) : Object{(Object::ObjectImpl *) new graphics::markers(size, (sg_object *) marker_symbol.object_impl_)} {
+Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *) new graphics::markers(size, (sg_object *) marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
-}
-
-void Markers::MoveTo(double x, double y) {
-    graphics::markers *markers_object = (graphics::markers *) object_impl_;
-    markers_object->move_to(x, y);
-}
-
-void Markers::LineTo(double x, double y) {
-    graphics::markers *markers_object = (graphics::markers *) object_impl_;
-    markers_object->line_to(x, y);
-}
-
-void Markers::ClosePolygon() {
-    graphics::markers *markers_object = (graphics::markers *) object_impl_;
-    markers_object->close_polygon();
 }
 
 Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}} {

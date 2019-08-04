@@ -83,6 +83,9 @@ public:
     void MoveTo(double x, double y);
     void LineTo(double x, double y);
     void ClosePolygon();
+
+protected:
+    Path(ObjectImpl *object_impl) : Object(object_impl) { }
 };
 
 class Polygon : public Path {
@@ -95,15 +98,11 @@ public:
     }
 };
 
-class Markers : public Object {
+class Markers : public Path {
 public:
     Markers(double size, Object marker_symbol);
-    Markers(const Markers& obj): Object(obj) { }
-    Markers(Markers&& obj): Object(obj) { }
-
-    void MoveTo(double x, double y);
-    void LineTo(double x, double y);
-    void ClosePolygon();
+    Markers(const Markers& obj): Path(obj) { }
+    Markers(Markers&& obj): Path(obj) { }
 };
 
 class Plot {
