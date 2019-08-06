@@ -28,6 +28,18 @@ public:
         m_path.move_to(x, y);
     }
 
+    void curve3(double x_ctrl, double y_ctrl, double x_to, double y_to) {
+        m_path.curve3(x_ctrl, y_ctrl, x_to, y_to);
+    }
+
+    void curve4(double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to) {
+        m_path.curve4(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to);
+    }
+
+    void arc_to(double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y) {
+        m_path.arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x, y);
+    }
+
     void close_polygon() {
         m_path.close_polygon();
     }
@@ -195,6 +207,35 @@ private:
     double m_size;
     agg::trans_affine_scaling m_scale;
     sg_object* m_symbol;
+};
+
+class curve_path : public path_base {
+public:
+    curve_path() : path_base(), m_path_curve(m_path), m_scaling_matrix(), m_path_scaling(m_path_curve, m_scaling_matrix) { }
+
+    virtual void apply_transform(const agg::trans_affine& m, double as) {
+        m_scaling_matrix = m;
+        m_path_curve.approximation_scale(as * m.scale());
+    }
+
+    virtual void rewind(unsigned path_id) {
+        m_path_scaling.rewind(path_id);
+    }
+
+    virtual unsigned vertex(double* x, double* y) {
+        return m_path_scaling.vertex(x, y);
+    }
+
+    virtual sg_object *copy() const {
+        curve_path *new_object = new curve_path();
+        vertex_source_copy(new_object->m_path, m_path);
+        return new_object;
+    }
+
+private:
+    agg::conv_curve<agg::path_storage> m_path_curve;
+    agg::trans_affine m_scaling_matrix;
+    agg::conv_transform<agg::conv_curve<agg::path_storage>> m_path_scaling;
 };
 
 }

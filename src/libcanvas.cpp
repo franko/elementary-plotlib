@@ -59,6 +59,39 @@ Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *
     marker_symbol.object_impl_ = nullptr;
 }
 
+CurvePath::CurvePath() : Object{(ObjectImpl *) new graphics::curve_path{}} {
+}
+
+void CurvePath::MoveTo(double x, double y) {
+    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
+    path_object->move_to(x, y);
+}
+
+void CurvePath::LineTo(double x, double y) {
+    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
+    path_object->line_to(x, y);
+}
+
+void CurvePath::Curve3(double x_ctrl, double y_ctrl, double x_to, double y_to) {
+    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
+    path_object->curve3(x_ctrl, y_ctrl, x_to, y_to);
+}
+
+void CurvePath::Curve4(double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to) {
+    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
+    path_object->curve4(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to);
+}
+
+void CurvePath::ArcTo(double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y) {
+    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
+    path_object->arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x, y);
+}
+
+void CurvePath::ClosePolygon() {
+    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
+    path_object->close_polygon();
+}
+
 Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}} {
 }
 

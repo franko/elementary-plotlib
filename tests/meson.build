@@ -16,6 +16,7 @@ window_tests = [
     {'name': 'test-pointer-container', 'sources': 'test-pointer-container.cpp'},
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
     {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},
+    {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
 ]
 
 fox_tests = [

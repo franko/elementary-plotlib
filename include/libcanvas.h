@@ -88,6 +88,23 @@ protected:
     Path(ObjectImpl *object_impl) : Object(object_impl) { }
 };
 
+class CurvePath : public Object {
+public:
+    CurvePath();
+    CurvePath(const CurvePath& path): Object(path) { }
+    CurvePath(CurvePath&& path): Object(path) { }
+
+    void MoveTo(double x, double y);
+    void LineTo(double x, double y);
+    void Curve3(double x_ctrl, double y_ctrl, double x_to, double y_to);
+    void Curve4(double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
+    void ArcTo(double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
+    void ClosePolygon();
+
+protected:
+    CurvePath(ObjectImpl *object_impl) : Object(object_impl) { }
+};
+
 class Polygon : public Path {
 public:
     Polygon(): Path() {}
