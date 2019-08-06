@@ -57,8 +57,8 @@ void window_surface::render_by_ref(plot_ref& ref, const agg::rect_i& r)
     m_canvas->clear_box(r);
     if (ref.plot_ptr)
     {
-        plot::drawing_context plot_drawing_context(*ref.plot_ptr);
-        plot_drawing_context.draw(*m_canvas, r, &ref.inf);
+        plot::drawing_context dc(*ref.plot_ptr);
+        ref.plot_ptr->draw(dc, *m_canvas, r, &ref.inf);
     }
 }
 
@@ -76,8 +76,8 @@ window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
     const agg::trans_affine m = affine_matrix(box);
     opt_rect<double> r;
 
-    plot::drawing_context plot_drawing_context(*ref.plot_ptr);
-    plot_drawing_context.draw_queue(*m_canvas, m, ref.inf, r);
+    plot::drawing_context dc(*ref.plot_ptr);
+    ref.plot_ptr->draw_queue(dc, *m_canvas, m, ref.inf, r);
 
     opt_rect<int> ri;
     if (r.is_defined())
