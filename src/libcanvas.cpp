@@ -69,36 +69,43 @@ Plot::~Plot() {
 
 void Plot::SetTitle(const char *title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->set_title(title);
 }
 
 void Plot::SetXAxisTitle(const char *axis_title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->set_x_axis_title(axis_title);
 }
 
 void Plot::SetClipMode(bool flag) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->set_clip_mode(flag);
 }
 
 void Plot::SetLimits(const Rectangle& r) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->set_limits(agg::rect_d(r.x1, r.y1, r.x2, r.y2));
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->set_axis_labels_angle(axis == xAxis ? graphics::x_axis : graphics::y_axis, angle);
 }
 
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->enable_label_format(axis == xAxis ? graphics::x_axis : graphics::y_axis, fmt);
 }
 
 void Plot::CommitPendingDraw() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     p->commit_pending_draw();
 }
 
@@ -106,6 +113,7 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
     graphics::plot *p = (graphics::plot *) plot_impl_;
     sg_object *sg_obj = (sg_object *) (object.object_impl_);
     if (sg_obj != nullptr) {
+        graphics::plot::drawing_context dc(*p);
         p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
@@ -114,11 +122,13 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
 
 bool Plot::PushLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     return p->push_layer();
 }
 
 bool Plot::PopLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
     return p->pop_layer();
 }
 
