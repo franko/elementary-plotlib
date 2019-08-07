@@ -27,6 +27,16 @@ T max(T a, T b)
 template <class T>
 class ptr_list {
 public:
+    ptr_list(): m_list() { }
+
+    ptr_list(const ptr_list& source) : m_list() {
+        for (unsigned i = 0; i < m_list.size(); i++) {
+            const T *item = m_list[i];
+            T *new_item = new T(*item);
+            m_list.add(new_item);
+        }
+    }
+
     ~ptr_list() {
         clear();
     }
