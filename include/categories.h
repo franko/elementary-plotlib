@@ -37,6 +37,8 @@ public:
     };
 
 public:
+    category_map() : ptr_list<category_item>() { }
+
     void add_item(double v, const char* name) {
         add(new item(v, name));
     }

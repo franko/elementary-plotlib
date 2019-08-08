@@ -108,6 +108,8 @@ public:
 class Plot {
 public:
     Plot(unsigned flags);
+    Plot(const Plot& other);
+    Plot(Plot&& other);
     ~Plot();
 
     void SetTitle(const char *title);

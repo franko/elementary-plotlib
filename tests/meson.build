@@ -15,6 +15,7 @@ window_tests = [
     {'name': 'test-window-outline', 'sources': 'test-window-outline.cpp'},
     {'name': 'test-pointer-container', 'sources': 'test-pointer-container.cpp'},
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
+    {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},
 ]
 
 fox_tests = [

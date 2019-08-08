@@ -31,6 +31,10 @@ struct sg_element {
     agg::rgba8 fill_color;
     unsigned   flags;
 
+    void clone_object() {
+        object = object->copy();
+    }
+
     template <class Canvas>
     void draw(Canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb = 0)
     {

@@ -15,6 +15,11 @@ class opt_rect {
 public:
     opt_rect() : m_defined(false) {};
     opt_rect(T x1, T y1, T x2, T y2) : m_defined(true), m_rect(x1, y1, x2, y2) {};
+    opt_rect(const opt_rect& source) : m_defined(source.m_defined) {
+        if (m_defined) {
+            m_rect = source.m_rect;
+        }
+    }
 
     void clear() {
         m_defined = false;

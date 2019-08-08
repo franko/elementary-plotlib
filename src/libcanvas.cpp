@@ -62,6 +62,13 @@ Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *
 Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}} {
 }
 
+Plot::Plot(const Plot& other) : plot_impl_{(PlotImpl *) new graphics::plot(*(const graphics::plot *) other.plot_impl_)} {
+}
+
+Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_} {
+    other.plot_impl_ = nullptr;
+}
+
 Plot::~Plot() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     delete p;

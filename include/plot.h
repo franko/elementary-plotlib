@@ -130,6 +130,18 @@ protected:
     public:
         item_list(): agg::pod_bvector<sg_element>() { }
 
+        item_list(const item_list& source) : agg::pod_bvector<sg_element>(), m_bbox(source.m_bbox) {
+            add_duplicate_elements(source);
+        }
+
+        void add_duplicate_elements(const item_list& source) {
+            for (unsigned k = 0; k < source.size(); k++) {
+                sg_element new_element = source[k];
+                new_element.clone_object();
+                add(new_element);
+            }
+        }
+
         const opt_rect<double>& bounding_box() const {
             return m_bbox;
         }
@@ -177,6 +189,37 @@ public:
             m_legend[k] = 0;
     };
 
+
+    plot(const plot& source) :
+            m_trans(source.m_trans), m_drawing_queue(nullptr), m_clip_flag(source.m_clip_flag),
+            m_need_redraw(source.m_need_redraw), m_rect(source.m_rect),
+            m_changes_accu(source.m_changes_accu), m_changes_pending(source.m_changes_pending),
+            m_root_layer(source.m_root_layer), m_layers(),
+            m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
+            m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
+            m_enlarged_layer(source.m_enlarged_layer),
+            m_drawing_mutex() {
+        m_layers.add(&m_root_layer);
+        // Start from 1 below because zero is the pointer to the root layer, added above.
+        for (unsigned k = 1; k < source.m_layers.size(); k++) {
+            m_layers.add(new item_list(*(m_layers[k])));
+        }
+        for (list<sg_element> *source_node = source.m_drawing_queue; source_node; source_node = source_node->next()) {
+            m_drawing_queue = new list<sg_element>(source_node->content(), m_drawing_queue);
+            m_drawing_queue->content().clone_object();
+        }
+
+        for (unsigned k = 0; k < 4; k++) {
+            const plot *source_legend = m_legend[k];
+            if (source_legend) {
+                m_legend[k] = new plot(*source_legend);
+            } else {
+                m_legend[k] = nullptr;
+            }
+        }
+    }
+
+
     ~plot()
     {
         for (unsigned k = 0; k < m_layers.size(); k++)
@@ -185,6 +228,9 @@ public:
             layer_dispose_elements(layer);
             if (k > 0)
                 delete layer;
+        }
+        for (unsigned k = 0; k < 4; k++) {
+            delete m_legend[k];
         }
     };
 
@@ -433,7 +479,6 @@ protected:
     // the last pushlayer or clear
     opt_rect<double> m_changes_accu;
     opt_rect<double> m_changes_pending;
-
 private:
     item_list m_root_layer;
     agg::pod_auto_vector<item_list*, max_layers> m_layers;
