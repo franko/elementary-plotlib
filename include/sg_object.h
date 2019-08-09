@@ -115,20 +115,18 @@ public:
     template <class InitType1, class InitType2>
     sg_object_gen(InitType1& i1, InitType2& i2) : m_base(i1, i2) { }
 
-    virtual void rewind(unsigned path_id) {
+    void rewind(unsigned path_id) override {
         m_base.rewind(path_id);
     }
-    virtual unsigned vertex(double* x, double* y) {
+    unsigned vertex(double* x, double* y) override {
         return m_base.vertex(x, y);
     }
 
-    virtual void apply_transform(const agg::trans_affine& m, double as)
-    {
+    void apply_transform(const agg::trans_affine& m, double as) override {
         ApproxManager::approximation_scale(m_base, as);
     }
 
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2)
-    {
+    void bounding_box(double *x1, double *y1, double *x2, double *y2) override {
         agg::bounding_rect_single(m_base, 0, x1, y1, x2, y2);
     }
 
@@ -136,7 +134,7 @@ public:
         vertex_source_copy(dest.m_base, this->m_base);
     }
 
-    virtual sg_object *copy() const {
+    sg_object *copy() const override {
         sg_object_gen *new_object = new sg_object_gen();
         copy_content(*new_object);
         return new_object;
@@ -169,21 +167,19 @@ public:
 
     virtual ~sg_adapter() { }
 
-    virtual void rewind(unsigned path_id) {
+    void rewind(unsigned path_id) override {
         m_output.rewind(path_id);
     }
-    virtual unsigned vertex(double* x, double* y) {
+    unsigned vertex(double* x, double* y) override {
         return m_output.vertex(x, y);
     }
 
-    virtual void apply_transform(const agg::trans_affine& m, double as)
-    {
+    void apply_transform(const agg::trans_affine& m, double as) override {
         ApproxManager::approximation_scale(m_output, as);
         this->m_source->apply_transform(m, as);
     }
 
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2)
-    {
+    void bounding_box(double *x1, double *y1, double *x2, double *y2) override {
         this->m_source->bounding_box(x1, y1, x2, y2);
     }
 
@@ -191,7 +187,7 @@ public:
         return m_output;
     };
 
-    virtual sg_object *copy() const {
+    sg_object *copy() const override {
         // TODO: should be removed as not used.
         return nullptr;
     }
@@ -218,29 +214,27 @@ public:
         ResourceManager::acquire(m_source);
     }
 
-    virtual ~sg_object_scaling() {
+    ~sg_object_scaling() override {
         ResourceManager::dispose(m_source);
     }
 
-    virtual void rewind(unsigned path_id) {
+    void rewind(unsigned path_id) override {
         m_trans.rewind(path_id);
     }
-    virtual unsigned vertex(double* x, double* y) {
+    unsigned vertex(double* x, double* y) override {
         return m_trans.vertex(x, y);
     }
 
-    virtual void apply_transform(const agg::trans_affine& m, double as)
-    {
+    void apply_transform(const agg::trans_affine& m, double as) override {
         m_mtx = m;
         m_source->apply_transform (m, as * m.scale());
     }
 
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2)
-    {
+    void bounding_box(double *x1, double *y1, double *x2, double *y2) override {
         agg::bounding_rect_single (*m_source, 0, x1, y1, x2, y2);
     }
 
-    virtual sg_object *copy() const {
+    sg_object *copy() const override {
         sg_object *new_source = m_source->copy();
         sg_object_scaling *new_object = new sg_object_scaling(new_source);
         new_object->m_mtx = m_mtx;
