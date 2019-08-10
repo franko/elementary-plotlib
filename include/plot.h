@@ -30,7 +30,6 @@
 #include "units.h"
 #include "rect.h"
 #include "canvas_svg.h"
-#include "trans.h"
 #include "text.h"
 #include "sg_element.h"
 #include "plot_axis.h"
