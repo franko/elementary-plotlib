@@ -210,7 +210,7 @@ public:
         }
 
         for (unsigned k = 0; k < 4; k++) {
-            const plot *source_legend = m_legend[k];
+            const plot *source_legend = source.m_legend[k];
             if (source_legend) {
                 m_legend[k] = new plot(*source_legend);
             } else {
