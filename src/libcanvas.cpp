@@ -173,6 +173,14 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
     }
 }
 
+void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
+    graphics::plot *plot = (graphics::plot *) plot_impl_;
+    graphics::plot *legend_plot = (graphics::plot *) legend.plot_impl_;
+    plot->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
+    // The plot take the ownership of the legend plot so null the pointer inside the object.
+    legend.plot_impl_ = nullptr;
+}
+
 bool Plot::PushLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     graphics::plot::drawing_context dc(*p);

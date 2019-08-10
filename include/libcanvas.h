@@ -134,7 +134,10 @@ public:
 
 class Plot {
 public:
-    Plot(unsigned flags);
+    enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
+    enum Placement { Right = 0, Left = 1, Bottom = 2, Top = 3 };
+
+    Plot(unsigned flags = 0);
     Plot(const Plot& other);
     Plot(Plot&& other);
     ~Plot();
@@ -149,8 +152,7 @@ public:
     void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
     bool PushLayer();
     bool PopLayer();
-
-    enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
+    void AddLegend(Plot legend, Placement location);
 private:
     struct PlotImpl;
     PlotImpl *plot_impl_;
