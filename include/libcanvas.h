@@ -122,6 +122,16 @@ public:
     Markers(Markers&& obj): Path(obj) { }
 };
 
+class Text : public Object {
+public:
+    Text(const char* text, double size = 10.0, double hjustif = 0.0, double vjustif = 0.0);
+    Text(const Text& source) : Object(source) { }
+    Text(const Text&& source) : Object(source) { }
+
+    void SetAngle(double angle);
+    void SetPosition(double x, double y);
+};
+
 class Plot {
 public:
     Plot(unsigned flags);

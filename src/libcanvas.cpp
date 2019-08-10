@@ -92,6 +92,19 @@ void CurvePath::ClosePolygon() {
     path_object->close_polygon();
 }
 
+Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(ObjectImpl *) new graphics::text(text, size, hjustif, vjustif)} {
+}
+
+void Text::SetAngle(double angle) {
+    graphics::text *text_object = (graphics::text *) object_impl_;
+    text_object->angle(angle);
+}
+
+void Text::SetPosition(double x, double y) {
+    graphics::text *text_object = (graphics::text *) object_impl_;
+    text_object->set_point(x, y);
+}
+
 Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}} {
 }
 
