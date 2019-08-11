@@ -1,5 +1,4 @@
 #include <cmath>
-#include <cstdio>
 
 #include "libcanvas.h"
 
@@ -20,7 +19,6 @@ public:
             const double x_current = m_x0 + m_index * (m_x1 - m_x0) / (m_points_number + 1);
             *x = x_current;
             *y = m_function(x_current);
-            fprintf(stderr, "%d %g %g\n", m_index, *x, *y);
             return (m_index++ == 0 ? command::MoveTo : command::LineTo);
         }
         return command::Stop;
