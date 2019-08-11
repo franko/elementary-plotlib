@@ -55,6 +55,9 @@ void Path::ClosePolygon() {
     path_object->close_polygon();
 }
 
+CustomPath::CustomPath(VertexSource& vs) : Object{(ObjectImpl *) new graphics::path_custom<VertexSource>(vs)} {
+}
+
 Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *) new graphics::markers(size, (sg_object *) marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
 }

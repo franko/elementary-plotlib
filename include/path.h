@@ -102,6 +102,36 @@ public:
     }
 };
 
+template <typename PathStorage>
+class path_custom : public sg_object {
+public:
+    path_custom(PathStorage& path) : m_path(path), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
+
+    virtual void rewind(unsigned path_id) {
+        m_path_scaling.rewind(path_id);
+    }
+
+    virtual unsigned vertex(double* x, double* y) {
+        return m_path_scaling.vertex(x, y);
+    }
+
+    virtual sg_object *copy() const {
+        return new path_custom(m_path);
+    }
+
+    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) {
+        agg::bounding_rect_single(m_path, 0, x1, y1, x2, y2);
+    }
+
+    virtual void apply_transform(const agg::trans_affine& m, double as) {
+        m_scaling_matrix = m;
+    }
+private:
+    PathStorage& m_path;
+    agg::trans_affine m_scaling_matrix;
+    agg::conv_transform<PathStorage> m_path_scaling;
+};
+
 class polygon : public path {
 public:
     polygon(): path() { }

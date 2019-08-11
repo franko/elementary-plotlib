@@ -17,6 +17,7 @@ window_tests = [
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
     {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
+    {'name': 'test-path-custom', 'sources': 'test-path-custom.cpp'},
 ]
 
 fox_tests = [

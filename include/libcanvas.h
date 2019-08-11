@@ -49,6 +49,11 @@ enum {
 };
 }
 
+// Important, the value below needs to be the same of what defined in agg_basics.h
+namespace command {
+enum { Stop = 0, MoveTo = 1, LineTo = 2, Curve3 = 3, Curve4 = 4 };
+}
+
 class Plot;
 class Window;
 
@@ -86,6 +91,22 @@ public:
 
 protected:
     Path(ObjectImpl *object_impl) : Object(object_impl) { }
+};
+
+// The methods' names and their signatures are aligned with those used
+// in the AGG library.
+class VertexSource {
+public:
+    virtual void rewind(unsigned path_id) = 0;
+    virtual unsigned vertex(double* x, double* y) = 0;
+    virtual ~VertexSource() { }
+};
+
+class CustomPath : public Object {
+public:
+    CustomPath(VertexSource& vs);
+    CustomPath(const Path& path): Object(path) { }
+    CustomPath(Path&& path): Object(path) { }
 };
 
 class CurvePath : public Object {
