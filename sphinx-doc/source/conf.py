@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'libcanvas'
+project = 'Libcanvas'
 copyright = '2019, Francesco Abbate'
 author = 'Francesco Abbate'
 
@@ -44,7 +44,7 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'haiku'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

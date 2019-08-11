@@ -3,13 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to libcanvas's documentation!
-=====================================
+Libcanvas Reference Manual
+==========================
+
+This is the reference documentation for the C++ interface of Libcanvas, a C++ library for high-quality plots and animations.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   graphical-element.rst
 
 
 Indices and tables
