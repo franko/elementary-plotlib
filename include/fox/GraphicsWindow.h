@@ -7,7 +7,7 @@
 class GraphicsWindow : public FXWindow {
     FXDECLARE(GraphicsWindow)
 protected:
-    GraphicsWindow(): m_surface(nullptr), m_window(m_surface, this) { }
+    GraphicsWindow(): m_window(this) { }
 private:
     GraphicsWindow(const GraphicsWindow&);
     GraphicsWindow &operator=(const GraphicsWindow&);
@@ -17,11 +17,11 @@ public:
     ~GraphicsWindow();
 
     int attach(graphics::plot* p, const char* slot_str) {
-        return m_surface.attach(p, slot_str);
+        return m_window.attach(p, slot_str);
     }
 
     void slot_refresh(unsigned index) {
-        m_surface.slot_refresh(index);
+        m_window.slot_refresh(index);
     }
 
     void wait() {
@@ -45,6 +45,5 @@ public:
     };
 
 private:
-    graphics::window_surface m_surface;
     window_fox m_window;
 };

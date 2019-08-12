@@ -13,10 +13,9 @@ FXDEFMAP(GraphicsWindow) GraphicsWindowMap[] = {
 FXIMPLEMENT(GraphicsWindow,FXWindow,GraphicsWindowMap,ARRAYNUMBER(GraphicsWindowMap))
 
 GraphicsWindow::GraphicsWindow(FXComposite* p, FXuint opts, FXint x, FXint y, FXint w, FXint h):
-    FXWindow(p, opts, x, y, w, h), m_surface(nullptr), m_window(m_surface, this)
+    FXWindow(p, opts, x, y, w, h), m_window(this)
 {
     flags |= FLAG_SHOWN;
-    m_surface.attach_window(&m_window);
 }
 
 GraphicsWindow::~GraphicsWindow() {

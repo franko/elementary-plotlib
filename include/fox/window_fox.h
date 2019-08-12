@@ -13,7 +13,7 @@ class GraphicsWindow;
 
 class window_fox : public graphics::display_window {
 public:
-    window_fox(graphics::render_target& tgt, GraphicsWindow *canvas);
+    window_fox(GraphicsWindow *canvas);
     ~window_fox();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
@@ -39,19 +39,27 @@ public:
 
     void draw(FXEvent *ev) {
         debug_log("window_fox: calling draw on target");
-        m_target.draw();
+        m_surface.draw();
     }
 
     void on_resize(FXint w, FXint h) {
         if (w <= 0 || h <= 0) return;
         debug_log("window_fox: calling resize on target %d %d", w, h);
-        m_target.resize(unsigned(w), unsigned(h));
+        m_surface.resize(unsigned(w), unsigned(h));
         debug_log("window_fox: calling render on target");
-        m_target.render();
+        m_surface.render();
     }
 
     void set_window_status(graphics::window_status_e win_status) {
         m_window_status.set(win_status);
+    }
+
+    int attach(graphics::plot* p, const char* slot_str) {
+        return m_surface.attach(p, slot_str);
+    }
+
+    void slot_refresh(unsigned index) {
+        m_surface.slot_refresh(index);
     }
 
 private:
@@ -64,5 +72,5 @@ private:
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.
     std::mutex m_mutex;
     status_notifier<graphics::window_status_e> m_window_status;
-    graphics::render_target& m_target;
+    graphics::window_surface m_surface;
 };
