@@ -2,12 +2,13 @@
 
 #include <fx.h>
 
-#include "fox/window_fox.h"
+// We include here only the public interface libcanvas header.
+#include "libcanvas.h"
 
 class GraphicsWindow : public FXWindow {
     FXDECLARE(GraphicsWindow)
 protected:
-    GraphicsWindow(): m_window(this) { }
+    GraphicsWindow(): m_window_impl(nullptr) { }
 private:
     GraphicsWindow(const GraphicsWindow&);
     GraphicsWindow &operator=(const GraphicsWindow&);
@@ -16,21 +17,9 @@ public:
 
     ~GraphicsWindow();
 
-    int attach(graphics::plot* p, const char* slot_str) {
-        return m_window.attach(p, slot_str);
-    }
-
-    void slot_refresh(unsigned index) {
-        m_window.slot_refresh(index);
-    }
-
-    void wait() {
-        notify_request<graphics::window_status_e> req{graphics::window_closed};
-        int retval = m_window.set_notify_request(req);
-        if (retval == request_success) {
-            req.wait();
-        }
-    }
+    int Attach(libcanvas::Plot& p, const char* slot_str);
+    void SlotRefresh(unsigned index);
+    void Wait();
 
     void position(FXint x, FXint y, FXint w, FXint h) override;
     void create() override;
@@ -45,5 +34,6 @@ public:
     };
 
 private:
-    window_fox m_window;
+    struct WindowImpl;
+    WindowImpl *m_window_impl;
 };
