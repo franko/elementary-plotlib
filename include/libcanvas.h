@@ -54,9 +54,13 @@ class Window;
 
 class Object {
 public:
+    Object() : object_impl_(nullptr) { }
     Object(const Object& obj);
     Object(Object&& obj);
     ~Object();
+
+    Object& operator=(const Object& that);
+    Object& operator=(Object&& that);
 protected:
     struct ObjectImpl;
     Object(ObjectImpl *object_impl);
@@ -141,6 +145,9 @@ public:
     Plot(const Plot& other);
     Plot(Plot&& other);
     ~Plot();
+
+    Plot& operator=(Plot&& other);
+    Plot& operator=(const Plot& other);
 
     void SetTitle(const char *title);
     void SetXAxisTitle(const char *axis_title);

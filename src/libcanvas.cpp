@@ -34,6 +34,26 @@ Object::Object(Object&& obj) {
     object_impl_ = (ObjectImpl *) source_obj;
 }
 
+Object& Object::operator=(const Object& other) {
+    if (this != &other) {
+        sg_object *obj = (sg_object *) object_impl_;
+        delete obj;
+        const sg_object *other_obj = (sg_object *) other.object_impl_;
+        object_impl_ = (ObjectImpl *) other_obj->copy();
+    }
+    return *this;
+}
+
+Object& Object::operator=(Object&& other) {
+    if (this != &other) {
+        sg_object *obj = (sg_object *) object_impl_;
+        delete obj;
+        object_impl_ = other.object_impl_;
+        other.object_impl_ = nullptr;
+    }
+    return *this;
+}
+
 Path::Path(): Object{(ObjectImpl *) new graphics::path{}} {
 }
 
@@ -118,6 +138,26 @@ Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_} {
 Plot::~Plot() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     delete p;
+}
+
+Plot& Plot::operator=(Plot&& other) {
+    if (this != &other) {
+        graphics::plot *p = (graphics::plot *) plot_impl_;
+        delete p;
+        plot_impl_ = other.plot_impl_;
+        other.plot_impl_ = nullptr;
+    }
+    return *this;
+}
+
+Plot& Plot::operator=(const Plot& other) {
+    if (this != &other) {
+        graphics::plot *p = (graphics::plot *) plot_impl_;
+        delete p;
+        const graphics::plot *other_plot = (graphics::plot *) other.plot_impl_;
+        plot_impl_ = (PlotImpl *) new graphics::plot(*other_plot);
+    }
+    return *this;
 }
 
 void Plot::SetTitle(const char *title) {
