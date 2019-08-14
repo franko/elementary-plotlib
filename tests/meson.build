@@ -22,8 +22,8 @@ window_tests = [
 fox_tests = [
     {'name': 'test-fox-window-0', 'sources': 'test-window.cpp'},
     {'name': 'test-fox-window', 'sources': 'test-fox-window.cpp'},
-#    {'name': 'test-fox-window-2', 'sources': 'test-fox-window-2.cpp'},
-#    {'name': 'test-fox-window-3', 'sources': 'test-fox-window-3.cpp'},
+    {'name': 'test-fox-window-2', 'sources': 'test-fox-window-2.cpp'},
+    {'name': 'test-fox-window-3', 'sources': 'test-fox-window-3.cpp'},
 ]
 
 foreach test : window_tests
