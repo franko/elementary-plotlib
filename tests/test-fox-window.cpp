@@ -2,7 +2,6 @@
 #include <thread>
 
 #include "libcanvas.h"
-#include "debug_log.h"
 #include "fox/GraphicsWindow.h"
 
 using namespace libcanvas;
@@ -22,9 +21,7 @@ void RunFox(FXApp *app, FXMainWindow *win) {
     app->create();
     win->show(PLACEMENT_SCREEN);
     app->run();
-    debug_log("thread terminating...");
     delete app;
-    debug_log("app terminated...");
 }
 
 int main(int argc, char *argv[]) {
