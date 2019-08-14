@@ -13,7 +13,7 @@ private:
     GraphicsWindow(const GraphicsWindow&);
     GraphicsWindow &operator=(const GraphicsWindow&);
 public:
-    GraphicsWindow(FXComposite* p, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    GraphicsWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
     ~GraphicsWindow();
 

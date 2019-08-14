@@ -13,8 +13,8 @@ FXDEFMAP(GraphicsWindow) GraphicsWindowMap[] = {
 
 FXIMPLEMENT(GraphicsWindow,FXWindow,GraphicsWindowMap,ARRAYNUMBER(GraphicsWindowMap))
 
-GraphicsWindow::GraphicsWindow(FXComposite* p, FXuint opts, FXint x, FXint y, FXint w, FXint h):
-    FXWindow(p, opts, x, y, w, h), m_window_impl((WindowImpl *) new window_fox(this))
+GraphicsWindow::GraphicsWindow(FXComposite* p, const char *split_str, FXuint opts, FXint x, FXint y, FXint w, FXint h):
+    FXWindow(p, opts, x, y, w, h), m_window_impl((WindowImpl *) new window_fox(this, split_str))
 {
     flags |= FLAG_SHOWN;
 }

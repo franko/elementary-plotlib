@@ -2,7 +2,7 @@
 #include "fox/GraphicsWindow.h"
 #include "debug_log.h"
 
-window_fox::window_fox(GraphicsWindow *canvas) : m_plot_canvas(canvas), m_surface(nullptr)
+window_fox::window_fox(GraphicsWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
 {
     m_surface.attach_window(this);
     m_gui_signal = new FXGUISignal(app(), m_plot_canvas, GraphicsWindow::ID_UPDATE_REGION, nullptr);

@@ -43,7 +43,7 @@ FXIMPLEMENT(PlotExampleApp,FXApp,PlotExampleAppMap,ARRAYNUMBER(PlotExampleAppMap
 PlotExampleApp::PlotExampleApp(): FXApp("libcanvas", "libcanvas"), m_re(m_rd()) {
     m_main_window = new FXMainWindow(this, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 640);
     auto vframe = new FXVerticalFrame(m_main_window, FRAME_SUNKEN|LAYOUT_FILL_Y|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT, 0, 0, 0, 0, 10, 10, 10, 10);
-    m_graphics_window = new GraphicsWindow(vframe, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+    m_graphics_window = new GraphicsWindow(vframe, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
     new FXHorizontalSeparator(vframe, SEPARATOR_GROOVE|LAYOUT_FILL_X);
     new FXButton(vframe, "Add", nullptr, this, ID_PLOT_ADD, FRAME_THICK|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT, 0, 0, 0, 0, 10, 10, 5, 5);
 }

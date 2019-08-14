@@ -20,6 +20,7 @@ window_tests = [
 ]
 
 fox_tests = [
+    {'name': 'test-fox-window-0', 'sources': 'test-window.cpp'},
     {'name': 'test-fox-window', 'sources': 'test-fox-window.cpp'},
 #    {'name': 'test-fox-window-2', 'sources': 'test-fox-window-2.cpp'},
 #    {'name': 'test-fox-window-3', 'sources': 'test-fox-window-3.cpp'},
@@ -40,8 +41,7 @@ if fox_dep.found()
             include_directories: libcanvas_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
             cpp_args: libcanvas_cflags,
-            # FIXME: libcanvaswin should not be used here (or maybe yes ?)
-            link_with: [libcanvas, libcanvaswin, libcanvasfoxwin],
+            link_with: [libcanvas, libcanvasfoxwin],
             gui_app: false)
     endforeach
 endif

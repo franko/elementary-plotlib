@@ -1,4 +1,4 @@
-libcanvasfoxwin_src = ['GraphicsWindow.cpp', 'window_fox.cpp']
+libcanvasfoxwin_src = ['GraphicsWindow.cpp', 'window_fox.cpp', 'FoxWindow.cpp']
 
 libcanvasfoxwin = static_library('canvasfoxwin', libcanvasfoxwin_src,
     include_directories: libcanvas_include,

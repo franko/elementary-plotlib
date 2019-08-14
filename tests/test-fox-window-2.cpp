@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto window = new GraphicsWindow(main_window, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+    auto window = new GraphicsWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     graphics::plot p(graphics::plot::show_units);
     p.set_limits({-1.0, 0.0, 1.0, 10.0});
