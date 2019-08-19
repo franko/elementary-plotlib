@@ -21,9 +21,8 @@ GraphicsWindow::GraphicsWindow(FXComposite* p, const char *split_str, FXuint opt
 
 int GraphicsWindow::Attach(libcanvas::Plot& p, const char* slot_str) {
     window_fox *window_impl = (window_fox *) m_window_impl;
-    // FIXME: dirty hack to access the private pimpl member of Plot.
-    graphics::plot **plot_ptr = (graphics::plot **) &p;
-    return window_impl->attach(*plot_ptr, slot_str);
+    graphics::plot *plot_impl = (graphics::plot *) p.plot_impl_;
+    return window_impl->attach(plot_impl, slot_str);
 }
 
 void GraphicsWindow::SlotRefresh(unsigned index) {

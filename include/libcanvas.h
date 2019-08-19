@@ -7,6 +7,8 @@
 
 // Following: https://google.github.io/styleguide/cppguide.html
 
+class GraphicsWindow;
+
 namespace libcanvas {
 
 typedef uint32_t Color;
@@ -165,6 +167,7 @@ private:
     PlotImpl *plot_impl_;
 
     friend class Window;
+    friend class ::GraphicsWindow;
 };
 
 class Window {
