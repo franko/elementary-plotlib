@@ -4,15 +4,14 @@
 #include "libcanvas.h"
 #include "fox/GraphicsWindow.h"
 
+using namespace libcanvas;
+
 void RunFoxWindow(FXApp *app, FXMainWindow *win, unsigned width, unsigned height) {
     app->create();
     win->resize(width, height);
     win->show(PLACEMENT_SCREEN);
     app->run();
 }
-
-using libcanvas::Plot;
-using libcanvas::Window;
 
 class FoxWindow : public FXObject {
     FXDECLARE(FoxWindow)

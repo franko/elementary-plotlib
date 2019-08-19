@@ -5,6 +5,8 @@
 
 #include "rendering_buffer_utils.h"
 
+namespace libcanvas {
+
 FXDEFMAP(GraphicsWindow) GraphicsWindowMap[] = {
     FXMAPFUNC(SEL_MAP,     0,                            GraphicsWindow::onMap),
     FXMAPFUNC(SEL_PAINT,   0,                            GraphicsWindow::onPaint),
@@ -77,4 +79,5 @@ long GraphicsWindow::onMap(FXObject *, FXSelector, void *) {
     window_impl->set_thread_id();
     window_impl->set_window_status(graphics::window_running);
     return 1;
+}
 }

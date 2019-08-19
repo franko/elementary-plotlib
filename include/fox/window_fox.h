@@ -9,7 +9,11 @@
 #include "update_region_info.h"
 #include "debug_log.h"
 
-class GraphicsWindow;
+namespace libcanvas {
+    class GraphicsWindow;
+}
+
+using libcanvas::GraphicsWindow;
 
 class window_fox : public graphics::display_window {
 public:

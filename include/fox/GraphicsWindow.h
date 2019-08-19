@@ -5,6 +5,8 @@
 // We include here only the public interface libcanvas header.
 #include "libcanvas.h"
 
+namespace libcanvas {
+
 class GraphicsWindow : public FXWindow {
     FXDECLARE(GraphicsWindow)
 protected:
@@ -37,3 +39,4 @@ private:
     struct WindowImpl;
     WindowImpl *m_window_impl;
 };
+}
