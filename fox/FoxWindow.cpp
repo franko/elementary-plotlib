@@ -14,20 +14,36 @@ void RunFoxWindow(FXApp *app, FXMainWindow *win, unsigned width, unsigned height
 using libcanvas::Plot;
 using libcanvas::Window;
 
-class FoxWindow {
+class FoxWindow : public FXObject {
+    FXDECLARE(FoxWindow)
+protected:
+    FoxWindow() { }
+private:
+    FoxWindow(const FoxWindow&);
+    FoxWindow &operator=(const FoxWindow&);
 public:
     FoxWindow(int& argc, char **argv, const char *split_str) : app_("libcanvas", "libcanvas") {
         app_.init(argc, argv);
         main_window_ = new FXMainWindow(&app_, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 0, 0);
         graphics_window_ = new GraphicsWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+        main_window_->setTarget(this);
+    }
+
+    bool isRunning() const {
+        return graphics_window_ != nullptr;
     }
 
     int Attach(Plot& p, const char *slot_str) {
-        return graphics_window_->Attach(p, slot_str);
+        if (isRunning()) {
+            return graphics_window_->Attach(p, slot_str);
+        }
+        return -1;
     }
 
     void SlotRefresh(unsigned index) {
-        graphics_window_->SlotRefresh(index);
+        if (isRunning()) {
+            graphics_window_->SlotRefresh(index);
+        }
     }
 
     // FIXME: do not ignore "flags"
@@ -37,14 +53,31 @@ public:
     }
 
     void Wait() {
-        graphics_window_->Wait();
+        if (isRunning()) {
+            graphics_window_->Wait();
+        }
     }
 
+    long onClose(FXObject *, FXSelector, void *);
 private:
     FXApp app_;
     FXMainWindow *main_window_;
     GraphicsWindow *graphics_window_;
 };
+
+FXDEFMAP(FoxWindow) FoxWindowMap[] = {
+    FXMAPFUNC(SEL_CLOSE, 0, FoxWindow::onClose),
+};
+
+FXIMPLEMENT(FoxWindow,FXObject,FoxWindowMap,ARRAYNUMBER(FoxWindowMap))
+
+long FoxWindow::onClose(FXObject *, FXSelector, void *) {
+    // We set the main window's and graphics window's pointer to null to mean
+    // that the windows is closed.
+    main_window_ = nullptr;
+    graphics_window_ = nullptr;
+    return 0;
+}
 
 Window::Window() {
     int argc = 1;
