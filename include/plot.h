@@ -409,6 +409,11 @@ public:
 
     void update_windows() {
         m_plot_agent.update_windows();
+        commit_pending_draw();
+    }
+
+    void link_window(graphics::window *w, int slot_index) {
+        m_plot_agent.add_window(w, slot_index);
     }
 
 protected:
