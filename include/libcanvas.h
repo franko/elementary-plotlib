@@ -163,7 +163,9 @@ public:
     void AddLegend(Plot legend, Placement location);
 private:
     struct PlotImpl;
+    struct PlotAgentImpl;
     PlotImpl *plot_impl_;
+    PlotAgentImpl *plot_agent_impl_;
 
     friend class Window;
     friend class GraphicsWindow;

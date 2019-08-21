@@ -1,7 +1,7 @@
 #include "debug_log.h"
 #include "libcanvas.h"
 
-using namespace libcanvas;;
+using namespace libcanvas;
 
 int main() {
     InitializeFonts();

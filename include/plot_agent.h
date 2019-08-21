@@ -2,17 +2,16 @@
 
 #include "agg_array.h"
 
+#include "libcanvas.h"
+
 namespace graphics {
-
-class window;
-
 class plot_agent {
     struct window_index_pair {
-        window *window;
+        libcanvas::Window *window;
         int slot_index;
     };
 public:
-    void add_window(window *w, int slot_index);
+    void add_window(libcanvas::Window *w, int slot_index);
     void update_windows();
 private:
     agg::pod_bvector<window_index_pair> m_linked_windows;

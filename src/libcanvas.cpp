@@ -5,6 +5,7 @@
 #include "sg_object.h"
 #include "path.h"
 #include "plot.h"
+#include "plot_agent.h"
 #include "window.h"
 #include "markers.h"
 
@@ -125,19 +126,22 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
-Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}} {
+Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}}, plot_agent_impl_{(PlotAgentImpl *) new graphics::plot_agent{}} {
 }
 
-Plot::Plot(const Plot& other) : plot_impl_{(PlotImpl *) new graphics::plot(*(const graphics::plot *) other.plot_impl_)} {
+Plot::Plot(const Plot& other) : plot_impl_{(PlotImpl *) new graphics::plot(*(const graphics::plot *) other.plot_impl_)}, plot_agent_impl_{(PlotAgentImpl *) new graphics::plot_agent{}} {
 }
 
-Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_} {
+Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_}, plot_agent_impl_{other.plot_agent_impl_} {
     other.plot_impl_ = nullptr;
+    other.plot_agent_impl_ = nullptr;
 }
 
 Plot::~Plot() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     delete p;
+    graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
+    delete agent;
 }
 
 Plot& Plot::operator=(Plot&& other) {
@@ -146,6 +150,11 @@ Plot& Plot::operator=(Plot&& other) {
         delete p;
         plot_impl_ = other.plot_impl_;
         other.plot_impl_ = nullptr;
+
+        graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
+        delete agent;
+        plot_agent_impl_ = other.plot_agent_impl_;
+        other.plot_agent_impl_ = nullptr;
     }
     return *this;
 }
@@ -211,7 +220,9 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
-    p->update_windows();
+    graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
+    agent->update_windows();
+    p->commit_pending_draw();
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {

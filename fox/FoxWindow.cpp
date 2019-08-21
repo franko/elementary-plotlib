@@ -4,6 +4,9 @@
 #include "libcanvas.h"
 #include "fox/GraphicsWindow.h"
 
+// the following are private headers.
+#include "plot_agent.h"
+
 using namespace libcanvas;
 
 void RunFoxWindow(FXApp *app, FXMainWindow *win, unsigned width, unsigned height) {
@@ -101,7 +104,10 @@ Window::~Window() {
 
 int Window::Attach(Plot& plot, const char* slot_str) {
     FoxWindow *win = (FoxWindow *) window_impl_;
-    return win->Attach(plot, slot_str);
+    int index = win->Attach(plot, slot_str);
+    graphics::plot_agent *agent = (graphics::plot_agent *) plot.plot_agent_impl_;
+    agent->add_window(this, index);
+    return index;
 }
 
 void Window::SlotRefresh(unsigned index) {
