@@ -33,6 +33,7 @@
 #include "text.h"
 #include "sg_element.h"
 #include "plot_axis.h"
+#include "plot_agent.h"
 
 #include "agg_array.h"
 #include "agg_bounding_rect.h"
@@ -406,6 +407,10 @@ public:
             inf->active_area = layout.plot_active_area;
     }
 
+    void update_windows() {
+        m_plot_agent.update_windows();
+    }
+
 protected:
     void draw_virtual_canvas(canvas_type& canvas, plot_layout& layout, const agg::rect_i* r);
     void draw_simple(canvas_type& canvas, plot_layout& layout, const agg::rect_i* r);
@@ -491,6 +496,7 @@ private:
     bool m_bbox_updated;
     bool m_enlarged_layer;
     std::mutex m_drawing_mutex;
+    plot_agent m_plot_agent;
 };
 
 template <class Canvas>

@@ -211,6 +211,7 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
+    p->update_windows();
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
