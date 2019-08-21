@@ -13,7 +13,6 @@ window_tests = [
     {'name': 'test-window-anim', 'sources': 'test-window-anim.cpp'},
     {'name': 'test-custom-render-pipeline', 'sources': 'test-custom-render-pipeline.cpp'},
     {'name': 'test-window-outline', 'sources': 'test-window-outline.cpp'},
-    {'name': 'test-pointer-container', 'sources': 'test-pointer-container.cpp'},
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
     {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
