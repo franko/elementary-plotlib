@@ -68,12 +68,17 @@ private:
 
 #ifdef WIN32
 #include "win32/window_win32.h"
-namespace graphics {
-typedef window_gen<window_win32> window;
-}
+typedef window_gen<window_win32> window_platform_native;
 #else
 #include "xwindow/xwindow.h"
-namespace graphics {
-typedef window_gen<xwindow> window;
-}
+typedef window_gen<xwindow> window_platform_native;
 #endif
+
+namespace graphics {
+
+class window : public window_platform_native {
+public:
+    using window_platform_native::window_platform_native;
+};
+
+}
