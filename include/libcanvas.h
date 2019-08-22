@@ -164,6 +164,8 @@ public:
     bool PopLayer();
     void AddLegend(Plot legend, Placement location);
 private:
+    void UpdateWindowsAndCommitChanges();
+
     struct PlotImpl;
     PlotImpl *plot_impl_;
     PlotAgent *plot_agent_;

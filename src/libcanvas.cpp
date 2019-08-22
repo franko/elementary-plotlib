@@ -163,7 +163,6 @@ Plot& Plot::operator=(const Plot& other) {
         delete p;
         const graphics::plot *other_plot = (graphics::plot *) other.plot_impl_;
         plot_impl_ = (PlotImpl *) new graphics::plot(*other_plot);
-
         plot_agent_->Clear();
     }
     return *this;
@@ -171,14 +170,20 @@ Plot& Plot::operator=(const Plot& other) {
 
 void Plot::SetTitle(const char *title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->set_title(title);
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_title(title);
+    }
+    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::SetXAxisTitle(const char *axis_title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->set_x_axis_title(axis_title);
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_x_axis_title(axis_title);
+    }
+    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::SetClipMode(bool flag) {
@@ -189,20 +194,29 @@ void Plot::SetClipMode(bool flag) {
 
 void Plot::SetLimits(const Rectangle& r) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->set_limits(agg::rect_d(r.x1, r.y1, r.x2, r.y2));
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_limits(agg::rect_d(r.x1, r.y1, r.x2, r.y2));
+    }
+    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->set_axis_labels_angle(axis == xAxis ? graphics::x_axis : graphics::y_axis, angle);
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_axis_labels_angle(axis == xAxis ? graphics::x_axis : graphics::y_axis, angle);
+    }
+    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->enable_label_format(axis == xAxis ? graphics::x_axis : graphics::y_axis, fmt);
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->enable_label_format(axis == xAxis ? graphics::x_axis : graphics::y_axis, fmt);
+    }
+    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::CommitPendingDraw() {
@@ -220,8 +234,7 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
-    plot_agent_->UpdateWindows();
-    p->commit_pending_draw();
+    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
@@ -234,14 +247,33 @@ void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
 
 bool Plot::PushLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    return p->push_layer();
+    bool success = false;
+    {
+        graphics::plot::drawing_context dc(*p);
+        success = p->push_layer();
+    }
+    if (success) {
+        UpdateWindowsAndCommitChanges();
+    }
+    return success;
 }
 
 bool Plot::PopLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    return p->pop_layer();
+    bool success;
+    {
+        graphics::plot::drawing_context dc(*p);
+        success = p->pop_layer();
+    }
+    if (success) {
+        UpdateWindowsAndCommitChanges();
+    }
+    return success;
+}
+
+void Plot::UpdateWindowsAndCommitChanges() {
+    plot_agent_->UpdateWindows();
+    CommitPendingDraw();
 }
 
 Object MarkerSymbol(int n) {
