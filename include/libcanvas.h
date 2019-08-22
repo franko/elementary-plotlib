@@ -137,6 +137,8 @@ public:
     void SetPosition(double x, double y);
 };
 
+class PlotAgent;
+
 class Plot {
 public:
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
@@ -163,9 +165,8 @@ public:
     void AddLegend(Plot legend, Placement location);
 private:
     struct PlotImpl;
-    struct PlotAgentImpl;
     PlotImpl *plot_impl_;
-    PlotAgentImpl *plot_agent_impl_;
+    PlotAgent *plot_agent_;
 
     friend class Window;
     friend class GraphicsWindow;

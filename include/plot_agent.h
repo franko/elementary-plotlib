@@ -1,19 +1,20 @@
 #pragma once
 
 #include "agg_array.h"
-
 #include "libcanvas.h"
 
-namespace graphics {
-class plot_agent {
-    struct window_index_pair {
-        libcanvas::Window *window;
+namespace libcanvas {
+
+class PlotAgent {
+    struct WindowIndexPair {
+        Window *window;
         int slot_index;
     };
 public:
-    void add_window(libcanvas::Window *w, int slot_index);
-    void update_windows();
+    void AddWindow(Window *w, int slot_index);
+    void UpdateWindows();
+    void Clear();
 private:
-    agg::pod_bvector<window_index_pair> m_linked_windows;
+    agg::pod_bvector<WindowIndexPair> linked_windows_;
 };
 }

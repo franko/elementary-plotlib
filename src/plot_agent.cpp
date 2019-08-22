@@ -1,22 +1,25 @@
 #include "plot_agent.h"
-#include "window.h"
 
-namespace graphics {
+namespace libcanvas {
 
-void plot_agent::add_window(libcanvas::Window *w, int slot_index) {
-    for (unsigned i = 0; i < m_linked_windows.size(); i++) {
-        if (m_linked_windows[i].window == w) {
-            m_linked_windows[i].slot_index = slot_index;
+void PlotAgent::AddWindow(Window *w, int slot_index) {
+    for (unsigned i = 0; i < linked_windows_.size(); i++) {
+        if (linked_windows_[i].window == w) {
+            linked_windows_[i].slot_index = slot_index;
             return;
         }
     }
-    m_linked_windows.add(window_index_pair{w, slot_index});
+    linked_windows_.add(WindowIndexPair{w, slot_index});
 }
 
-void plot_agent::update_windows() {
-    for (unsigned i = 0; i < m_linked_windows.size(); i++) {
-        window_index_pair& pair = m_linked_windows[i];
+void PlotAgent::UpdateWindows() {
+    for (unsigned i = 0; i < linked_windows_.size(); i++) {
+        WindowIndexPair& pair = linked_windows_[i];
         pair.window->SlotRefresh(pair.slot_index);
     }
+}
+
+void PlotAgent::Clear() {
+    linked_windows_.clear();
 }
 }
