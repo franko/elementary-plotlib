@@ -17,6 +17,7 @@ if host_machine.system() == 'windows'
 endif
 
 debug_build = get_option('buildtype') != 'release'
+cc = meson.get_compiler('cpp')
 
 if debug_build
     libcanvas_cflags += '-DLIBCANVAS_DEBUG'
