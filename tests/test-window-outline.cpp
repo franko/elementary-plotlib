@@ -13,7 +13,7 @@ Object NewLineFunction(double x0, double x1, Function f, int n = 512) {
         const double x = x0 + i * (x1 - x0) / n;
         line.LineTo(x, f(x));
     }
-    return line;
+    return std::move(line);
 }
 
 Plot CreateFunctionPlot(const char *title, unsigned flags) {
