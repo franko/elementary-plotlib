@@ -13,13 +13,13 @@ window_tests = [
     {'name': 'test-window-anim', 'sources': 'test-window-anim.cpp'},
     {'name': 'test-custom-render-pipeline', 'sources': 'test-custom-render-pipeline.cpp'},
     {'name': 'test-window-outline', 'sources': 'test-window-outline.cpp'},
-    {'name': 'test-pointer-container', 'sources': 'test-pointer-container.cpp'},
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
     {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
 ]
 
 fox_tests = [
+    {'name': 'test-fox-window-0', 'sources': 'test-window.cpp'},
     {'name': 'test-fox-window', 'sources': 'test-fox-window.cpp'},
     {'name': 'test-fox-window-2', 'sources': 'test-fox-window-2.cpp'},
     {'name': 'test-fox-window-3', 'sources': 'test-fox-window-3.cpp'},

@@ -1,10 +1,10 @@
 #include "fox/window_fox.h"
 #include "fox/GraphicsWindow.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 
-window_fox::window_fox(graphics::render_target& tgt, GraphicsWindow *canvas):
-    m_plot_canvas(canvas), m_target(tgt)
+window_fox::window_fox(GraphicsWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
 {
+    m_surface.attach_window(this);
     m_gui_signal = new FXGUISignal(app(), m_plot_canvas, GraphicsWindow::ID_UPDATE_REGION, nullptr);
 }
 
@@ -23,7 +23,7 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
 
     if (width <= 0 || height <= 0) return;
 
-    debug_log("update_region rect: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
+    debug_log(1, "update_region rect: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
 
     /* Create a rendering_buffer and the underlying memory buffer to
        store a FXColor array. */
@@ -46,12 +46,12 @@ void window_fox::update_region_request(graphics::image& img, const agg::rect_i& 
     if (std::this_thread::get_id() == m_window_thread_id) {
         // We are running in the thread of the Window's event loop. Just do the
         // drawing operation.
-        debug_log("update_region request from window's thread");
+        debug_log(1, "update_region request from window's thread");
         update_region(img, r);
     } else {
         // We are on another thread. Interrupt the Window's thread to request
         // the update_region operation.
-        debug_log("update_region request from secondary thread");
+        debug_log(1, "update_region request from secondary thread");
         m_update_notify.prepare();
         m_update_region.prepare(img, r);
         m_gui_signal->signal();

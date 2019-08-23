@@ -3,7 +3,7 @@
 #include "window_surface.h"
 #include "notify_request.h"
 #include "window_flags.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 
 template <typename Window>
 void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
@@ -19,9 +19,9 @@ void wait_until_notification(Window *window, graphics::window_status_e notify_st
     if (retval == request_success) {
         req.wait();
     } else if (retval == request_satisfied) {
-        debug_log("request already satisfied");
+        debug_log(1, "request already satisfied");
     } else {
-        debug_log("error sending request: %d", retval);
+        debug_log(1, "error sending request: %d", retval);
     }
 }
 
@@ -68,12 +68,17 @@ private:
 
 #ifdef WIN32
 #include "win32/window_win32.h"
-namespace graphics {
-typedef window_gen<window_win32> window;
-}
+typedef window_gen<window_win32> window_platform_native;
 #else
 #include "xwindow/xwindow.h"
-namespace graphics {
-typedef window_gen<xwindow> window;
-}
+typedef window_gen<xwindow> window_platform_native;
 #endif
+
+namespace graphics {
+
+class window : public window_platform_native {
+public:
+    using window_platform_native::window_platform_native;
+};
+
+}

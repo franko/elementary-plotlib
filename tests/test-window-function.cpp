@@ -18,7 +18,6 @@ void AddFunction(Plot& plot, double x0, double x1, Function f, Color color, int 
 int main() {
     InitializeFonts();
 
-    Window window;
     Plot plot(Plot::ShowUnits | Plot::AutoLimits);
     plot.SetClipMode(false);
 
@@ -28,17 +27,12 @@ int main() {
     plot.SetTitle("Function plot example");
     plot.SetXAxisTitle("x variable");
 
-    plot.CommitPendingDraw();
-
-    int index = window.Attach(plot, "");
-
+    Window window;
+    window.Attach(plot, "");
     window.Start(640, 480, WindowResize);
 
     AddFunction(plot, 0.8, x1, [](double x) { return std::cos(x) / x; }, color::Red);
-    window.SlotRefresh(index);
-    plot.CommitPendingDraw();
 
     window.Wait();
-
     return 0;
 }

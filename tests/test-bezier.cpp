@@ -1,4 +1,4 @@
-#include "debug_log.h"
+#include "libcanvas_utils.h"
 #include "libcanvas.h"
 
 using namespace libcanvas;;
@@ -18,7 +18,6 @@ int main() {
     heart.ClosePolygon();
 
     plot.Add(heart, color::Red, 2.5, color::None, property::Stroke);
-    plot.CommitPendingDraw();
 
     Window window;
     window.Attach(plot, "");

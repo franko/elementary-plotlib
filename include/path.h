@@ -44,7 +44,7 @@ public:
         m_path.close_polygon();
     }
 
-    virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) {
+    void bounding_box(double *x1, double *y1, double *x2, double *y2) override {
         agg::bounding_rect_single(m_path, 0, x1, y1, x2, y2);
     }
 
@@ -70,7 +70,7 @@ class path_base_scaling : public path_base {
 public:
     path_base_scaling() : path_base(), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
 
-    virtual void apply_transform(const agg::trans_affine& m, double as) {
+    void apply_transform(const agg::trans_affine& m, double as) override {
         m_scaling_matrix = m;
     }
 
@@ -87,15 +87,15 @@ public:
         path_from_initializer_list(lst);
     }
 
-    virtual void rewind(unsigned path_id) {
+    void rewind(unsigned path_id) override {
         m_path_scaling.rewind(path_id);
     }
 
-    virtual unsigned vertex(double* x, double* y) {
+    unsigned vertex(double* x, double* y) override {
         return m_path_scaling.vertex(x, y);
     }
 
-    virtual sg_object *copy() const {
+    sg_object *copy() const override {
         path *new_object = new path();
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
@@ -121,31 +121,31 @@ public:
         m_symbol->apply_transform(m_scale, 1.0);
     }
 
-    virtual ~markers() {
+    ~markers() override {
         delete m_symbol;
     }
 
-    virtual void apply_transform(const agg::trans_affine& m, double as) {
+    void apply_transform(const agg::trans_affine& m, double as) override {
         path_base_scaling::apply_transform(m, as);
         m_symbol->apply_transform(m_scale, as);
     }
 
-    virtual void rewind(unsigned path_id) {
+    void rewind(unsigned path_id) override {
         m_marker_conv.rewind(path_id);
     }
 
-    virtual unsigned vertex(double* x, double* y) {
+    unsigned vertex(double* x, double* y) override {
         return m_marker_conv.vertex(x, y);
     }
 
-    virtual sg_object *copy() const {
+    sg_object *copy() const override {
         sg_object *new_symbol = m_symbol->copy();
         markers *new_object = new markers(m_size, new_symbol);
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }
 
-    virtual str write_svg(int id, agg::rgba8 c, double h) {
+    str write_svg(int id, agg::rgba8 c, double h) override {
         str marker_id;
         str marker_def = gen_svg_marker_def(id, c, marker_id);
 

@@ -28,15 +28,12 @@ Plot CreatePlotLegend() {
     Text label2{"cos(x) / x", 14.0, 0.0, 0.3};
     label2.SetPosition(4.0, +3.0);
     p.Add(label2, color::Black, 1.0, color::Black, property::Fill);
-
-    p.CommitPendingDraw();
     return p;
 }
 
 int main() {
     InitializeFonts();
 
-    Window win;
     Plot p(Plot::ShowUnits | Plot::AutoLimits);
     p.SetClipMode(false);
 
@@ -47,15 +44,12 @@ int main() {
     p.SetXAxisTitle("x variable");
 
     p.AddLegend(CreatePlotLegend(), Plot::Right);
-    p.CommitPendingDraw();
 
-    int index = win.Attach(p, "");
-
+    Window win;
+    win.Attach(p, "");
     win.Start(640, 480, WindowResize);
 
     AddFunction(p, 0.8, x1, [](double x) { return std::cos(x) / x; }, color::Red);
-    win.SlotRefresh(index);
-    p.CommitPendingDraw();
 
     win.Wait();
     return 0;
