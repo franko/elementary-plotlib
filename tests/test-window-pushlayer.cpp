@@ -6,18 +6,14 @@ using namespace libcanvas;
 int main() {
     InitializeFonts();
 
-    Window win("h.");
-
     Plot p(Plot::ShowUnits);
     p.SetLimits({-1.0, 0.0, 1.0, 10.0});
 
     Polygon line{{-0.5, 0.0}, {-0.5, 8.0}, {0.5, 4.0}};
     p.Add(line, color::Red, 2.5, color::Yellow, property::Fill | property::Stroke);
 
-    p.CommitPendingDraw();
-
-    int index = win.Attach(p, "1");
-
+    Window win("h.");
+    win.Attach(p, "1");
     win.Start(640, 480, WindowResize);
 
     sleep(2);
@@ -26,14 +22,9 @@ int main() {
     Polygon line2{{0.8, 1.0}, {0.8, 7.0}, {0.3, 4.0}};
     p.Add(line2, color::Blue, 2.5, color::None);
 
-    win.SlotRefresh(index);
-    p.CommitPendingDraw();
-
     sleep(2);
     p.PopLayer();
-    win.SlotRefresh(index);
 
     win.Wait();
-
     return 0;
 }

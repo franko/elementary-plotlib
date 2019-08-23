@@ -28,12 +28,11 @@ void AddTriangle(Plot& plot, double x, double y, double size, double angle, Colo
 int main() {
     InitializeFonts();
 
-    Window window("h.");
-
     Plot plot(Plot::ShowUnits);
     plot.SetLimits({0.0, 0.0, 100.0, 100.0});
-    int index = window.Attach(plot, "1");
 
+    Window window("h.");
+    window.Attach(plot, "1");
     window.Start(640, 640, WindowResize);
 
     std::random_device r;
@@ -49,8 +48,6 @@ int main() {
             double x = unif_dist(e1), y = unif_dist(e1), size = size_dist(e1), angle = angle_dist(e1);
             Color color = color::RGB(randi(e1), randi(e1), randi(e1));
             AddTriangle(plot, x, y, size, angle, color);
-            window.SlotRefresh(index);
-            plot.CommitPendingDraw();
         }
         if (k+1 < 30) {
             plot.PopLayer();

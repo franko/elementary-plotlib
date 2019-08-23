@@ -25,19 +25,17 @@ Plot CreateFunctionPlot(const char *title, unsigned flags) {
     auto fcos = [](double x) { return std::cos(x) / x; };
     p.Add(NewLineFunction(x0, x1, fsin), color::Blue, 1.5, color::None, flags);
     p.Add(NewLineFunction(x0, x1, fcos), color::Red, 1.5, color::None, flags);
-    p.CommitPendingDraw();
     return p;
 }
 
 int main() {
     InitializeFonts();
 
-    Window win("v...");
-
     Plot plot1 = CreateFunctionPlot("Plot example (antialias)", property::Stroke);
     Plot plot2 = CreateFunctionPlot("Plot example (outline)", property::Outline);
     Plot plot3 = CreateFunctionPlot("Plot example (aliased)", property::Stroke | property::Crisp);
 
+    Window win("v...");
     win.Attach(plot1, "3");
     win.Attach(plot2, "2");
     win.Attach(plot3, "1");

@@ -16,7 +16,6 @@ int main() {
 
     Polygon line2{{0.8, 1.0}, {0.8, 7.0}, {0.3, 4.0}};
     plot->Add(line2, color::Blue, 2.5, color::None);
-    plot->CommitPendingDraw();
 
     Plot plot2 = *plot;
     delete plot;

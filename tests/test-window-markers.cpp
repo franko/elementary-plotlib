@@ -17,7 +17,6 @@ void PathFunction(PathType& line, Function f, double x0, double x1, int n = 128)
 int main() {
     InitializeFonts();
 
-    Window window;
     Plot plot(Plot::ShowUnits | Plot::AutoLimits);
     plot.SetClipMode(false);
 
@@ -39,8 +38,7 @@ int main() {
     plot.SetTitle("Function plot example");
     plot.SetXAxisTitle("x variable");
 
-    plot.CommitPendingDraw();
-
+    Window window;
     window.Attach(plot, "");
     window.Start(640, 480, WindowResize);
     window.Wait();
