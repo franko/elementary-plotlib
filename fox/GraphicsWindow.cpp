@@ -1,7 +1,7 @@
 #include "fox/GraphicsWindow.h"
 #include "fox/window_fox.h"
 #include "window_flags.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 
 #include "rendering_buffer_utils.h"
 
@@ -47,7 +47,7 @@ GraphicsWindow::~GraphicsWindow() {
 }
 
 void GraphicsWindow::position(FXint x, FXint y, FXint w, FXint h) {
-    debug_log("GraphicsWindow::position: %d %d", w, h);
+    debug_log(1, "GraphicsWindow::position: %d %d", w, h);
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->on_resize(w, h);
     FXWindow::position(x, y, w, h);
@@ -67,14 +67,14 @@ long GraphicsWindow::onUpdateRegion(FXObject *, FXSelector, void *) {
 
 long GraphicsWindow::onPaint(FXObject *, FXSelector, void *ptr) {
     FXEvent *ev=(FXEvent*)ptr;
-    debug_log("paint event");
+    debug_log(1, "paint event");
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->draw(ev);
     return 1;
 }
 
 long GraphicsWindow::onMap(FXObject *, FXSelector, void *) {
-    debug_log("GraphicsWindow: map event");
+    debug_log(1, "GraphicsWindow: map event");
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->set_thread_id();
     window_impl->set_window_status(graphics::window_running);

@@ -2,7 +2,7 @@
 #include <thread>
 
 #include "libcanvas.h"
-#include "debug_log.h"
+#include "libcanvas_utils.h"
 #include "fox/GraphicsWindow.h"
 
 using namespace libcanvas;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     std::thread wt(RunFox, app, main_window);
     wt.detach();
 
-    sleep(4);
+    utils::Sleep(4);
 
     Polygon line2{{0.8, 1.0}, {0.8, 7.0}, {0.3, 4.0}};
     p.Add(line2, color::Blue, 2.5, color::None);

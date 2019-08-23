@@ -21,6 +21,7 @@ cc = meson.get_compiler('cpp')
 
 if debug_build
     libcanvas_cflags += '-DLIBCANVAS_DEBUG'
+    libcanvas_cflags += '-DLIBCANVAS_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
 endif
 
 libcanvas_include = include_directories('include')

@@ -7,7 +7,7 @@
 #include "status_notifier.h"
 #include "window_flags.h"
 #include "update_region_info.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 
 namespace libcanvas {
     class GraphicsWindow;
@@ -42,15 +42,15 @@ public:
     }
 
     void draw(FXEvent *ev) {
-        debug_log("window_fox: calling draw on target");
+        debug_log(1, "window_fox: calling draw on target");
         m_surface.draw();
     }
 
     void on_resize(FXint w, FXint h) {
         if (w <= 0 || h <= 0) return;
-        debug_log("window_fox: calling resize on target %d %d", w, h);
+        debug_log(1, "window_fox: calling resize on target %d %d", w, h);
         m_surface.resize(unsigned(w), unsigned(h));
-        debug_log("window_fox: calling render on target");
+        debug_log(1, "window_fox: calling render on target");
         m_surface.render();
     }
 

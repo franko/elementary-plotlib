@@ -3,7 +3,7 @@
 
 #include "notify_request.h"
 #include "xwindow/xwindow.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 #include "fatal.h"
 
 bool xwindow::need_initialize = true;
@@ -344,9 +344,9 @@ void xwindow::send_update_region_event() {
     event.format = 8;
     Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
     if (status == BadValue) {
-        debug_log("custom event, got BadValue");
+        debug_log(1, "custom event, got BadValue");
     } else if (status == BadWindow) {
-        debug_log("custom event, got BadWindow");
+        debug_log(1, "custom event, got BadWindow");
     } else {
         XFlush(m_connection.display);
     }

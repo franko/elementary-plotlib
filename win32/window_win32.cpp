@@ -1,6 +1,6 @@
 #include "notify_request.h"
 #include "win32/window_win32.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 
 //------------------------------------------------------------------------
 HINSTANCE window_win32::g_windows_instance = 0;
@@ -90,12 +90,12 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch(msg) {
     case WM_CREATE:
-        debug_log("treating WM_CREATE event");
+        debug_log(1, "treating WM_CREATE event");
         break;
 
     case WM_SIZE: {
         const unsigned width = LOWORD(lParam), height = HIWORD(lParam);
-        debug_log("treating WM_SIZE event width: %d height: %d", width, height);
+        debug_log(1, "treating WM_SIZE event width: %d height: %d", width, height);
         m_target.resize(width, height);
         m_target.render();
         break;
@@ -105,7 +105,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_PAINT: {
-        debug_log("treating WM_PAINT event");
+        debug_log(1, "treating WM_PAINT event");
         PAINTSTRUCT ps;
         HDC paintDC = ::BeginPaint(hWnd, &ps);
         m_target.draw();
@@ -208,7 +208,7 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 int window_win32::run() {
     MSG msg;
     m_window_status.set(graphics::window_starting);
-    debug_log("window run");
+    debug_log(1, "window run");
     for(;;) {
         bool status;
         if (m_window_status.value() == graphics::window_running) {
@@ -225,13 +225,13 @@ int window_win32::run() {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
     }
-    debug_log("window run exit");
+    debug_log(1, "window run exit");
     m_window_status.set(graphics::window_closed);
     return (int)msg.wParam;
 }
 
 void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
-    debug_log("update_region: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
+    debug_log(1, "update_region: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
     ::ReleaseDC(m_hwnd, dc);

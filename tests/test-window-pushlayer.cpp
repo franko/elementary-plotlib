@@ -1,5 +1,5 @@
 #include "libcanvas.h"
-#include "debug_log.h"
+#include "libcanvas_utils.h"
 
 using namespace libcanvas;
 
@@ -16,13 +16,13 @@ int main() {
     win.Attach(p, "1");
     win.Start(640, 480, WindowResize);
 
-    sleep(2);
+    utils::Sleep(2);
     p.PushLayer();
 
     Polygon line2{{0.8, 1.0}, {0.8, 7.0}, {0.3, 4.0}};
     p.Add(line2, color::Blue, 2.5, color::None);
 
-    sleep(2);
+    utils::Sleep(2);
     p.PopLayer();
 
     win.Wait();

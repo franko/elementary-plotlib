@@ -3,7 +3,7 @@
 #include "window_surface.h"
 #include "notify_request.h"
 #include "window_flags.h"
-#include "debug_log.h"
+#include "debug_priv.h"
 
 template <typename Window>
 void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
@@ -19,9 +19,9 @@ void wait_until_notification(Window *window, graphics::window_status_e notify_st
     if (retval == request_success) {
         req.wait();
     } else if (retval == request_satisfied) {
-        debug_log("request already satisfied");
+        debug_log(1, "request already satisfied");
     } else {
-        debug_log("error sending request: %d", retval);
+        debug_log(1, "error sending request: %d", retval);
     }
 }
 
