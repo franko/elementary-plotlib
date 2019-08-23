@@ -330,24 +330,34 @@ void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) 
     m_update_notify.prepare();
     m_update_region.prepare(img, r);
     m_update_notify.completed = false;
-    send_update_region_event();
-    m_update_notify.wait();
+    if (send_update_region_event()) {
+        // Wait for the notification but only if the message was actually sent.
+        m_update_notify.wait();
+    }
     m_update_region.clear();
 }
 
-void xwindow::send_update_region_event() {
-    XClientMessageEvent event;
-    event.type = ClientMessage;
-    event.display = m_connection.display;
-    event.send_event = True;
-    event.message_type = m_update_region_atom;
-    event.format = 8;
-    Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
-    if (status == BadValue) {
-        debug_log(1, "custom event, got BadValue");
-    } else if (status == BadWindow) {
-        debug_log(1, "custom event, got BadWindow");
-    } else {
-        XFlush(m_connection.display);
+// Returns true is the message was actually sent.
+bool xwindow::send_update_region_event() {
+    lock();
+    if (status() == graphics::window_running) {
+        XClientMessageEvent event;
+        event.type = ClientMessage;
+        event.display = m_connection.display;
+        event.send_event = True;
+        event.message_type = m_update_region_atom;
+        event.format = 8;
+        Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
+        unlock();
+        if (status == BadValue) {
+            debug_log(1, "custom event, got BadValue");
+        } else if (status == BadWindow) {
+            debug_log(1, "custom event, got BadWindow");
+        } else {
+            XFlush(m_connection.display);
+        }
+        return true;
     }
+    unlock();
+    return false;
 }

@@ -45,7 +45,7 @@ private:
     void run();
     void close();
 
-    void send_update_region_event();
+    bool send_update_region_event();
     void close_connections();
     void caption(const str& s);
     void wait_map_notify();
