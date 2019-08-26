@@ -13,7 +13,7 @@ This is the reference documentation for the C++ interface of Libcanvas, a C++ li
    :caption: Contents:
 
    graphical-element.rst
-
+   plot.rst
 
 Indices and tables
 ==================

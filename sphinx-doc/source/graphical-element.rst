@@ -16,11 +16,13 @@ Graphical Elements
     .. cpp:enumerator:: Green
     .. cpp:enumerator:: Yellow
     .. cpp:enumerator:: Black
+    .. cpp:enumerator:: Gray
+    .. cpp:enumerator:: White
     .. cpp:enumerator:: None = 0
 
 .. cpp:class:: Object
 
-  A graphical shape that can be added to a plot. An instance of the :cpp:class:`Object` cannot be directly created but it is the base class of other elements like, for example, a :cpp:class:`Path`.
+  A graphical element that can be added to a plot. An instance of the :cpp:class:`Object` cannot be directly created but it is the base class of other elements like, for example, a :cpp:class:`Path`. It is a copyable and movable object.
 
 .. cpp:class:: Path : public Object
 
@@ -72,7 +74,7 @@ Graphical Elements
 
      -  ``(rx, ry)``, x and y radius of the ellipse.
      -  ``angle``, rotation angle of the ellipse's x axis.
-     -  ``lare_arc_flag``, if a large angle or small angle arc should be chosen.
+     -  ``large_arc_flag``, if a large angle or small angle arc should be chosen.
      -  ``bool sweep_flag``, if the arc should be drawn in the sense of increasing angles.
 
   .. cpp:function:: void ClosePolygon()
@@ -93,5 +95,12 @@ Graphical Elements
 
   .. cpp:function:: Text(const char* text, double size = 10.0, double hjustif = 0.0, double vjustif = 0.0)
 
+    Create a text object with the given text. The size corresponds to the text size in pixel. The other parameters represents the horizontal and vertical justification. For the horizontal 0.0 corresponds to left justification and 1.0 to right justification. For the vertical 0.0 corresponds to alignement on the text's bottom line and 1.0 to the text's top line.
+
   .. cpp:function:: void SetAngle(double angle)
+
+    Set the angle, in radians, for the text orientation.
+
   .. cpp:function:: void SetPosition(double x, double y)
+
+    Set the position of the text.
