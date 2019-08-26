@@ -37,7 +37,11 @@ Plot
 
   .. cpp:function:: void SetXAxisTitle(const char *axis_title)
 
-    Set the X axis' title.
+    Set the X axis title.
+
+  .. cpp:function:: void SetYAxisTitle(const char *axis_title)
+
+    Set the Y axis title.
 
   .. cpp:function:: void SetClipMode(bool flag)
 

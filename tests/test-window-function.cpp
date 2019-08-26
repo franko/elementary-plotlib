@@ -26,6 +26,7 @@ int main() {
 
     plot.SetTitle("Function plot example");
     plot.SetXAxisTitle("x variable");
+    plot.SetYAxisTitle("y variable");
 
     Window window;
     window.Attach(plot, "");

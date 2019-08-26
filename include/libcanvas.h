@@ -154,6 +154,7 @@ public:
 
     void SetTitle(const char *title);
     void SetXAxisTitle(const char *axis_title);
+    void SetYAxisTitle(const char *axis_title);
     void SetClipMode(bool flag);
     void SetLimits(const Rectangle& r);
     void SetAxisLabelsAngle(const Axis& axis, float angle);

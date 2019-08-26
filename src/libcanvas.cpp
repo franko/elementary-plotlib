@@ -186,6 +186,15 @@ void Plot::SetXAxisTitle(const char *axis_title) {
     UpdateWindowsAndCommitChanges();
 }
 
+void Plot::SetYAxisTitle(const char *axis_title) {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_y_axis_title(axis_title);
+    }
+    UpdateWindowsAndCommitChanges();
+}
+
 void Plot::SetClipMode(bool flag) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     graphics::plot::drawing_context dc(*p);
