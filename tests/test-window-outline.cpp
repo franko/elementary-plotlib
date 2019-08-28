@@ -23,8 +23,8 @@ Plot CreateFunctionPlot(const char *title, unsigned flags) {
     const double x0 = 3.14159265358979323846/2, x1 = 8 * 2 * 3.14159265358979323846;
     auto fsin = [](double x) { return std::sin(x) / x; };
     auto fcos = [](double x) { return std::cos(x) / x; };
-    p.Add(NewLineFunction(x0, x1, fsin), color::Blue, 1.5, color::None, flags);
-    p.Add(NewLineFunction(x0, x1, fcos), color::Red, 1.5, color::None, flags);
+    p.AddStroke(NewLineFunction(x0, x1, fsin), color::Blue, 1.5, flags);
+    p.AddStroke(NewLineFunction(x0, x1, fcos), color::Red, 1.5, flags);
     return p;
 }
 

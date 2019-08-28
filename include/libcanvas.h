@@ -161,6 +161,7 @@ public:
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();
     void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
+    void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
     bool PushLayer();
     bool PopLayer();
     void AddLegend(Plot legend, Placement location);

@@ -67,6 +67,10 @@ Plot
 
     Add a graphical object to the plot by specifying the stroke color, line's width and fill color.
 
+  .. cpp:function:: void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke)
+
+    Add a graphical object to the plot by specifying the stroke color, line's width but without fill. Equivalent to :cpp:function:`Add` with fill color set to ``color::None``.
+
   .. cpp:function:: bool PushLayer()
 
     Create a new empty layer.
