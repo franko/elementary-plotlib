@@ -13,14 +13,12 @@ Plot
 
   .. figure:: plot-function-example.png
 
-  Plot options:
-  ~~~~~~~~~~~~~~
+  **Plot options**
 
   .. cpp:enumerator:: ShowUnits
   .. cpp:enumerator:: AutoLimits
 
-  Legend Placement
-  ~~~~~~~~~~~~~~~~
+  **Legend Placement**
 
   .. cpp:enumerator:: Left
   .. cpp:enumerator:: Right
@@ -69,7 +67,7 @@ Plot
 
   .. cpp:function:: void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke)
 
-    Add a graphical object to the plot by specifying the stroke color, line's width but without fill. Equivalent to :cpp:function:`Add` with fill color set to ``color::None``.
+    Add a graphical object to the plot by specifying the stroke color, line's width but without fill. Equivalent to :cpp:func:`Plot::Add` with fill color set to ``color::None``.
 
   .. cpp:function:: bool PushLayer()
 
