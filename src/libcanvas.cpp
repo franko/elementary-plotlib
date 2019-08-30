@@ -113,6 +113,14 @@ void CurvePath::ClosePolygon() {
     path_object->close_polygon();
 }
 
+DashPath::DashPath() : Path{(ObjectImpl *) new graphics::dash_path{}} {
+}
+
+void DashPath::AddDash(double a, double b) {
+    graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
+    dash_object->add_dash(a, b);
+}
+
 Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(ObjectImpl *) new graphics::text(text, size, hjustif, vjustif)} {
 }
 

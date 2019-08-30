@@ -110,6 +110,18 @@ protected:
     CurvePath(ObjectImpl *object_impl) : Object(object_impl) { }
 };
 
+class DashPath : public Path {
+public:
+    DashPath();
+    DashPath(const DashPath& path): Path(path) { }
+    DashPath(DashPath&& path): Path(path) { }
+
+    void AddDash(double a, double b);
+
+protected:
+    DashPath(ObjectImpl *object_impl) : Path(object_impl) { }
+};
+
 class Polygon : public Path {
 public:
     Polygon(): Path() {}
