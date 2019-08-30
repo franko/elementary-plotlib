@@ -113,7 +113,19 @@ void CurvePath::ClosePolygon() {
     path_object->close_polygon();
 }
 
-DashPath::DashPath() : Path{(ObjectImpl *) new graphics::dash_path{}} {
+DashPath::DashPath(std::initializer_list<double> lst) : Path{(ObjectImpl *) new graphics::dash_path{}} {
+    graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
+    double prev_len;
+    bool accu = false;
+    for (double len : lst) {
+        if (accu) {
+            dash_object->add_dash(prev_len, len);
+            accu = false;
+        } else {
+            prev_len = len;
+            accu = true;
+        }
+    }
 }
 
 void DashPath::AddDash(double a, double b) {

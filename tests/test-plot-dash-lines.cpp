@@ -20,8 +20,7 @@ int main() {
     plot.SetClipMode(false);
 
     const double x0 = 0.0001, x1 = 8 * 2 *  3.14159265358979323846;
-    DashPath line;
-    line.AddDash(8, 4);
+    DashPath line{8, 4};
     SetFunctionPath(line, x0, x1, [](double x) { return std::sin(x) / x; });
     plot.AddStroke(std::move(line), color::Blue, 1.5);
 
@@ -33,9 +32,7 @@ int main() {
     window.Attach(plot, "");
     window.Start(640, 480, WindowResize);
 
-    DashPath line2;
-    line2.AddDash(8, 4);
-    line2.AddDash(2, 4);
+    DashPath line2{8, 4, 2, 4};
     SetFunctionPath(line2, 0.8, x1, [](double x) { return std::cos(x) / x; });
     plot.AddStroke(std::move(line2), color::Red, 1.5);
 

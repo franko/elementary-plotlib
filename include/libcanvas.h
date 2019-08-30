@@ -112,7 +112,7 @@ protected:
 
 class DashPath : public Path {
 public:
-    DashPath();
+    DashPath(std::initializer_list<double> lst);
     DashPath(const DashPath& path): Path(path) { }
     DashPath(DashPath&& path): Path(path) { }
 
