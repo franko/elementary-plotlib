@@ -255,7 +255,7 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
 }
 
 void Plot::AddStroke(Object object, Color color, float line_width, unsigned flags) {
-    Add(object, color, line_width, Color(0), flags);
+    Add(std::move(object), color, line_width, Color(0), flags);
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
