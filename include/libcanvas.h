@@ -110,6 +110,18 @@ protected:
     CurvePath(ObjectImpl *object_impl) : Object(object_impl) { }
 };
 
+class DashPath : public Path {
+public:
+    DashPath(std::initializer_list<double> lst);
+    DashPath(const DashPath& path): Path(path) { }
+    DashPath(DashPath&& path): Path(path) { }
+
+    void AddDash(double a, double b);
+
+protected:
+    DashPath(ObjectImpl *object_impl) : Path(object_impl) { }
+};
+
 class Polygon : public Path {
 public:
     Polygon(): Path() {}
@@ -154,12 +166,14 @@ public:
 
     void SetTitle(const char *title);
     void SetXAxisTitle(const char *axis_title);
+    void SetYAxisTitle(const char *axis_title);
     void SetClipMode(bool flag);
     void SetLimits(const Rectangle& r);
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();
     void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
+    void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
     bool PushLayer();
     bool PopLayer();
     void AddLegend(Plot legend, Placement location);

@@ -113,6 +113,26 @@ void CurvePath::ClosePolygon() {
     path_object->close_polygon();
 }
 
+DashPath::DashPath(std::initializer_list<double> lst) : Path{(ObjectImpl *) new graphics::dash_path{}} {
+    graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
+    double prev_len;
+    bool accu = false;
+    for (double len : lst) {
+        if (accu) {
+            dash_object->add_dash(prev_len, len);
+            accu = false;
+        } else {
+            prev_len = len;
+            accu = true;
+        }
+    }
+}
+
+void DashPath::AddDash(double a, double b) {
+    graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
+    dash_object->add_dash(a, b);
+}
+
 Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(ObjectImpl *) new graphics::text(text, size, hjustif, vjustif)} {
 }
 
@@ -186,6 +206,15 @@ void Plot::SetXAxisTitle(const char *axis_title) {
     UpdateWindowsAndCommitChanges();
 }
 
+void Plot::SetYAxisTitle(const char *axis_title) {
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_y_axis_title(axis_title);
+    }
+    UpdateWindowsAndCommitChanges();
+}
+
 void Plot::SetClipMode(bool flag) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     graphics::plot::drawing_context dc(*p);
@@ -235,6 +264,10 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
         object.object_impl_ = nullptr;
     }
     UpdateWindowsAndCommitChanges();
+}
+
+void Plot::AddStroke(Object object, Color color, float line_width, unsigned flags) {
+    Add(std::move(object), color, line_width, Color(0), flags);
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
