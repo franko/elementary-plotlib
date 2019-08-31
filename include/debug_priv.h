@@ -21,6 +21,6 @@ inline void debug_log(int level, const char *fmt, ...) {
     }
 }
 #else
-inline void debug_log(const char *fmt, ...) {
+inline void debug_log(int level, const char *fmt, ...) {
 }
 #endif
