@@ -10,7 +10,7 @@ pkg = import('pkgconfig')
 #  DEFS += -DDISABLE_SUBPIXEL_AA
 # endif
 
-libcanvas_cflags = ['-D_REENTRANT']
+libcanvas_cflags = []
 
 if host_machine.system() == 'windows'
     libcanvas_cflags += '-DWIN32'
@@ -25,7 +25,8 @@ if debug_build
 endif
 
 libcanvas_include = include_directories('include')
-install_subdir('include', install_dir: 'include/libcanvas', strip_directory: true)
+install_headers('include/libcanvas.h')
+install_headers('include/fox/GraphicsWindow.h', subdir: 'fox')
 
 subdir('src')
 if host_machine.system() == 'linux'
@@ -33,6 +34,13 @@ if host_machine.system() == 'linux'
 else
     subdir('win32')
 endif
+
+pkg.generate(libcanvaswin,
+    filebase : 'libcanvas',
+    name : 'Libcanvas',
+    description : 'The Libcanvas library',
+    url : 'github.com/franko/libcanvas',
+)
 
 fox_dep = dependency('fox', required: false)
 

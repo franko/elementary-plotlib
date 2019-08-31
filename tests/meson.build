@@ -1,8 +1,3 @@
-if host_machine.system() == 'linux'
-    libcanvaswin = libcanvasxwin
-else
-    libcanvaswin = libcanvaswin32
-endif
 
 window_tests = [
     {'name': 'test-window', 'sources': 'test-window.cpp'},
@@ -31,7 +26,7 @@ foreach test : window_tests
         include_directories: libcanvas_include,
         dependencies: [agg_dep, freetype_dep, thread_dep],
         cpp_args: libcanvas_cflags,
-        link_with: [libcanvas, libcanvaswin],
+        link_with: libcanvaswin,
         gui_app: false)
 endforeach
 
@@ -41,7 +36,7 @@ if fox_dep.found()
             include_directories: libcanvas_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
             cpp_args: libcanvas_cflags,
-            link_with: [libcanvas, libcanvasfoxwin],
+            link_with: [libcanvas, libcanvasfox],
             gui_app: false)
     endforeach
 endif

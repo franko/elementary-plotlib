@@ -15,9 +15,12 @@ libcanvas = static_library('canvas',
     install: true
 )
 
-pkg.generate(libcanvas,
-    filebase : 'libcanvas',
-    name : 'Libcanvas',
-    description : 'The libcanvas graphics library',
-    url : 'github.com/franko/libcanvas',
+# The following is useful in order to let pkg.generate add -lcanvas
+# in the libraries list, in addition to -lcanvaswin.
+# It works by declaring libcanvas as a dependency instead of using
+# link_with.
+libcanvas_dep = declare_dependency(
+    dependencies : [agg_dep, freetype_dep, thread_dep],
+    include_directories : libcanvas_include,
+    link_with : libcanvas
 )
