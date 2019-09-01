@@ -61,6 +61,10 @@ public:
         wait_until_notification(&m_window, graphics::window_closed);
     }
 
+    graphics::window_surface *window_surface() {
+        return &m_surface;
+    }
+
 private:
 	graphics::window_surface m_surface;
 	Window m_window;

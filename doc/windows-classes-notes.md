@@ -64,6 +64,8 @@ public:
     void start(unsigned width, unsigned height, unsigned flags);
     void wait();
 
+    graphics::window_surface *window_surface();
+
 private:
     graphics::window_surface m_surface;
     Window m_window;

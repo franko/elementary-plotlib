@@ -146,21 +146,22 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
-Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}}, plot_agent_{new PlotAgent{}} {
+Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}}, plot_agent_impl_{(PlotAgentImpl *) new graphics::plot_agent{}} {
 }
 
-Plot::Plot(const Plot& other) : plot_impl_{(PlotImpl *) new graphics::plot(*(const graphics::plot *) other.plot_impl_)}, plot_agent_{new PlotAgent{}} {
+Plot::Plot(const Plot& other) : plot_impl_{(PlotImpl *) new graphics::plot(*(const graphics::plot *) other.plot_impl_)}, plot_agent_impl_{(PlotAgentImpl *) new graphics::plot_agent{}} {
 }
 
-Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_}, plot_agent_{other.plot_agent_} {
+Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_}, plot_agent_impl_{other.plot_agent_impl_} {
     other.plot_impl_ = nullptr;
-    other.plot_agent_ = nullptr;
+    other.plot_agent_impl_ = nullptr;
 }
 
 Plot::~Plot() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
     delete p;
-    delete plot_agent_;
+    delete agent;
 }
 
 Plot& Plot::operator=(Plot&& other) {
@@ -170,9 +171,10 @@ Plot& Plot::operator=(Plot&& other) {
         plot_impl_ = other.plot_impl_;
         other.plot_impl_ = nullptr;
 
-        delete plot_agent_;
-        plot_agent_ = other.plot_agent_;
-        other.plot_agent_ = nullptr;
+        graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
+        delete agent;
+        plot_agent_impl_ = other.plot_agent_impl_;
+        other.plot_agent_impl_ = nullptr;
     }
     return *this;
 }
@@ -183,7 +185,8 @@ Plot& Plot::operator=(const Plot& other) {
         delete p;
         const graphics::plot *other_plot = (graphics::plot *) other.plot_impl_;
         plot_impl_ = (PlotImpl *) new graphics::plot(*other_plot);
-        plot_agent_->Clear();
+        graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
+        agent->clear();
     }
     return *this;
 }
@@ -305,7 +308,8 @@ bool Plot::PopLayer() {
 }
 
 void Plot::UpdateWindowsAndCommitChanges() {
-    plot_agent_->UpdateWindows();
+    graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
+    agent->update_windows();
     CommitPendingDraw();
 }
 

@@ -104,9 +104,7 @@ Window::~Window() {
 
 int Window::Attach(Plot& plot, const char* slot_str) {
     FoxWindow *win = (FoxWindow *) window_impl_;
-    int index = win->Attach(plot, slot_str);
-    plot.plot_agent_->AddWindow(this, index);
-    return index;
+    return win->Attach(plot, slot_str);
 }
 
 void Window::SlotRefresh(unsigned index) {

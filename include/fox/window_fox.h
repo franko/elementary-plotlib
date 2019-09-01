@@ -66,6 +66,10 @@ public:
         m_surface.slot_refresh(index);
     }
 
+    graphics::window_surface *window_surface() {
+        return &m_surface;
+    }
+
 private:
     FXApp *app();
 

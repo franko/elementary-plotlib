@@ -1,6 +1,7 @@
 #include "fox/GraphicsWindow.h"
 #include "fox/window_fox.h"
 #include "window_flags.h"
+#include "plot_agent.h"
 #include "debug_priv.h"
 
 #include "rendering_buffer_utils.h"
@@ -24,7 +25,10 @@ GraphicsWindow::GraphicsWindow(FXComposite* p, const char *split_str, FXuint opt
 int GraphicsWindow::Attach(libcanvas::Plot& p, const char* slot_str) {
     window_fox *window_impl = (window_fox *) m_window_impl;
     graphics::plot *plot_impl = (graphics::plot *) p.plot_impl_;
-    return window_impl->attach(plot_impl, slot_str);
+    int index = window_impl->attach(plot_impl, slot_str);
+    graphics::plot_agent *agent = (graphics::plot_agent *) p.plot_agent_impl_;
+    agent->add_window(window_impl->window_surface(), index);
+    return index;
 }
 
 void GraphicsWindow::SlotRefresh(unsigned index) {
