@@ -32,14 +32,7 @@ struct plot_ref {
     bool have_save_img;
 };
 
-struct render_target {
-    virtual bool resize(unsigned width, unsigned height) = 0;
-    virtual void render() = 0;
-    virtual void draw() = 0;
-    virtual ~render_target() { }
-};
-
-class window_surface : public render_target {
+class window_surface {
 public:
     window_surface(const char* split);
     ~window_surface();
@@ -54,7 +47,9 @@ public:
         return (m_img.width() == ww && m_img.height() == hh);
     }
 
-    virtual bool resize(unsigned ww, unsigned hh);
+    bool resize(unsigned ww, unsigned hh);
+    void render();
+    void draw();
 
     // redraw all the image buffer for the current plots
     void draw_image_buffer();
@@ -64,9 +59,6 @@ public:
 
     void render_plot_by_index(unsigned index);
     opt_rect<int> render_drawing_queue(unsigned index);
-
-    virtual void render();
-    virtual void draw();
 
     plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 

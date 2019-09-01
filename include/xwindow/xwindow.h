@@ -23,7 +23,7 @@ public:
         xevent_mask = ExposureMask | StructureNotifyMask,
     };
 
-    xwindow(graphics::render_target& tgt);
+    xwindow(graphics::window_surface& window_surface);
     ~xwindow();
 
     void start(unsigned width, unsigned height, unsigned flags);
@@ -71,7 +71,7 @@ private:
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
     status_notifier<graphics::window_status_e> m_window_status;
-    graphics::render_target& m_target;
+    graphics::window_surface& m_window_surface;
 
     static bool need_initialize;
 };

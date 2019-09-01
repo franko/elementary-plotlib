@@ -11,13 +11,13 @@ struct display_window {
     virtual int status() = 0;
 };
 
-struct render_target {
-    virtual bool resize(unsigned width, unsigned height) = 0;
-    virtual void render() = 0;
-    virtual void draw() = 0;
-};
+class window_surface {
+    bool resize(unsigned ww, unsigned hh);
+    void render();
+    void draw();
 
-class window_surface : public render_target {
+    void attach_window(display_window* win);
+
     int attach(plot* p, const char* slot_str);
 
     void slot_refresh(unsigned index);
@@ -34,10 +34,18 @@ private:
 
 ## XWindow implementation
 
+Important: classes that contains a window_surface will call the function
+
+```c++
+// m_window is passed as a graphics::display_window.
+m_surface.attach_window(m_window);
+```
+
 ```c++
 class xwindow : public graphics::display_window {
+    xwindow(graphics::window_surface& window_surface);
 private:
-    graphics::render_target& m_target;
+    graphics::window_surface& m_target;
 };
 ```
 

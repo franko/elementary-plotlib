@@ -6,12 +6,12 @@
 HINSTANCE window_win32::g_windows_instance = 0;
 int       window_win32::g_windows_cmd_show = 0;
 
-window_win32::window_win32(graphics::render_target& tgt) :
+window_win32::window_win32(graphics::window_surface& window_surface) :
     m_sys_format(agg::pix_format_bgr24),
     m_sys_bpp(24),
     m_hwnd(0),
     m_caption("Graphics Window"),
-    m_target(tgt)
+    m_window_surface(window_surface)
 {
 }
 
@@ -96,8 +96,8 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_SIZE: {
         const unsigned width = LOWORD(lParam), height = HIWORD(lParam);
         debug_log(1, "treating WM_SIZE event width: %d height: %d", width, height);
-        m_target.resize(width, height);
-        m_target.render();
+        m_window_surface.resize(width, height);
+        m_window_surface.render();
         break;
     }
 
@@ -108,7 +108,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         debug_log(1, "treating WM_PAINT event");
         PAINTSTRUCT ps;
         HDC paintDC = ::BeginPaint(hWnd, &ps);
-        m_target.draw();
+        m_window_surface.draw();
         ::EndPaint(hWnd, &ps);
         m_window_status.set(graphics::window_running);
         break;

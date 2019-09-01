@@ -9,7 +9,7 @@
 bool xwindow::need_initialize = true;
 
 // m_sys_format, m_byte_order, m_sys_bpp will be set based on XWindow display on "init" method.
-xwindow::xwindow(graphics::render_target& tgt):
+xwindow::xwindow(graphics::window_surface& window_surface):
     m_sys_format(agg::pix_format_undefined),
     m_byte_order(LSBFirst),
     m_sys_bpp(0),
@@ -21,7 +21,7 @@ xwindow::xwindow(graphics::render_target& tgt):
     m_update_region_atom(0),
     m_draw_img(0),
     m_caption("Graphics Window"),
-    m_target(tgt)
+    m_window_surface(window_surface)
 {
 }
 
@@ -215,7 +215,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 
     wait_map_notify();
     resize(width, height);
-    m_target.render();
+    m_window_surface.render();
 
     m_window_status.set(graphics::window_running);
 
@@ -236,7 +236,7 @@ void xwindow::wait_map_notify()
 
 void xwindow::resize(unsigned width, unsigned height)
 {
-    m_target.resize(width, height);
+    m_window_surface.resize(width, height);
 
     delete m_draw_img;
     m_draw_img = new(std::nothrow) x_image(m_sys_bpp, m_byte_order, width, height, &m_connection);
@@ -269,7 +269,7 @@ void xwindow::run()
             if (width != m_width || height != m_height)
             {
                 resize(width, height);
-                m_target.render();
+                m_window_surface.render();
             }
         }
         break;
@@ -279,7 +279,7 @@ void xwindow::run()
                other expose event will follow */
             if (ev.xexpose.count == 0)
             {
-                m_target.draw();
+                m_window_surface.draw();
                 break;
             }
 
