@@ -45,7 +45,7 @@ m_surface.attach_window(m_window);
 class xwindow : public graphics::display_window {
     xwindow(graphics::window_surface& window_surface);
 private:
-    graphics::window_surface& m_target;
+    graphics::window_surface& m_window_surface;
 };
 ```
 
