@@ -23,7 +23,6 @@ public:
 
 private:
     Plot m_plot;
-    int m_plot_index;
     FXMainWindow *m_main_window;
     GraphicsWindow *m_graphics_window;
 
@@ -63,14 +62,12 @@ long PlotExampleApp::onPlotAdd(FXObject *, FXSelector, void *) {
     std::normal_distribution<double> nrnd(0.0, 1.0);
     std::uniform_real_distribution<double> urnd(0.0, 2 * 3.14159265359);
     m_plot.Add(RotatedSquare(nrnd(m_re) * 0.2, nrnd(m_re) * 0.2, nrnd(m_re) * 0.15, urnd(m_re)), color::Gray, 1.0, color::None);
-    m_graphics_window->SlotRefresh(m_plot_index);
-    m_plot.CommitPendingDraw();
     return 1;   
 }
 
 void PlotExampleApp::addPlot(Plot p) {
     m_plot = std::move(p);
-    m_plot_index = m_graphics_window->Attach(m_plot, "");
+    m_graphics_window->Attach(m_plot, "");
 }
 
 Plot CreatePlot() {
@@ -78,7 +75,6 @@ Plot CreatePlot() {
     p.SetLimits({-1.0, -1.0, 1.0, 1.0});
     Polygon line{{0.0, -0.5}, {0.0, 0.5}, {0.8, 0.0}};
     p.Add(line, color::Red, 2.5, color::Yellow, property::Fill | property::Stroke);
-    p.CommitPendingDraw();
     return p;
 }
 
