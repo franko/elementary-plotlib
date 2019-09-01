@@ -29,9 +29,9 @@ Examples
 
 Here an example of a plot with a function and some markers.
 
-![Plot of function with markers](https://github.com/franko/libcanvas/blob/master/doc/libcanvas-function-markers.png)
+![Plot of function with markers](https://github.com/franko/libcanvas/blob/master/sphinx-doc/source/plot-function-example.png)
 
-The corresponding source code is available [here](https://github.com/franko/libcanvas/blob/master/tests/test-window-markers.cpp).
+The corresponding source code is available [here](https://github.com/franko/libcanvas/blob/master/tests/test-window-function.cpp).
 
 Features and Usage
 ---
@@ -47,13 +47,12 @@ The window is used to show the plot on the screen. It can accomodate one plots o
 Installing the library
 ---
 
-The library can be compiled using the Meson build system and it does requires the AGG and freetype2 libraries. Currently the Meson configuration required the FOX library but it is only used for the FOX toolkit integration and can be disabled if needed.
+The library can be compiled using the Meson build system and it does require the AGG and freetype2 libraries. If the FOX library is detected in addition the FOX support library will be built.
 
 To build the library and the examples use the following command:
 ```
-> meson --buildtype=debug build-debug
-> cd build-debug
-> ninja # or make
+> meson build
+> ninja -C build
 ```
 As an alternative to Meson there is also a basic support for CMake but it is not currently updated and is not recommended.
 
