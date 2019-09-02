@@ -5,9 +5,16 @@ Plot
 
 .. cpp:class:: Plot
 
-  A plot that can contains graphical elements organized in layers. The plot has some logical limits that corresponds to the the coordinates of the graphical elements. The limits can be explicitly given or they can be automatically determinate by the plot to accomodate all the objects it contains.
+  A plot is an object that is used to group and display one or more graphical elements. The elements that belong to a plot will share the same coordinates space, we will refer to this latter as the model coordinates space.
 
-  The plot can also draw the plot's axis with the labels and it can contains one or more plot legends that can be placed outside of the plot's area.
+  The plot works by displaying on the screen a region of the model coordinates space.
+  When in :cpp:enum:`Autolimits` the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot's method :cpp:func:`Plot::SetLimits`.
+
+  When shown on the screen the plot will show all the objects it contains using for each of them a combination of stroking and filling.
+  The plot will also display the X and Y axis with units and labels if the option :cpp:enum:`ShowUnits` is used.
+
+  The elements that belongs to a plot are organized in incremental *layers* of visualization that contains one or more graphical elements.
+  Layers and be added or removed from a plot in an incremental fashion.
 
   Examples of a plot that contains two Path objects, drawn with different colors.
 
@@ -55,11 +62,12 @@ Plot
 
   .. cpp:function:: void EnableLabelFormat(const Axis& axis, const char *fmt)
 
-    Set the format to be used to write the label for the given axis. Follow the same format of the printf function nut only the most common options for numbers are supported.
+    Set the format to be used to write the label for the given axis. Follow the same format of the printf function but accepts only specifiers for integer and floating point numbers.
 
   .. cpp:function:: void CommitPendingDraw()
 
     Mark all pending changes as done and they are added to the plot elements.
+    **Should not be used** as plots includes now a mechanism to perform this operation automatically.
 
   .. cpp:function:: void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill | property::Stroke)
 

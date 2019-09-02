@@ -14,6 +14,7 @@ This is the reference documentation for the C++ interface of Libcanvas, a C++ li
 
    graphical-element.rst
    plot.rst
+   window.rst
 
 Indices and tables
 ==================
