@@ -30,19 +30,19 @@ The values are meant tb be combined using logical bit operators.
 
 .. cpp:namespace-push:: property
 
-.. cpp:enumerator:: Fill    = 1 << 0,
+.. cpp:enumerator:: Fill
 
   Draw each closed polygon with a filling color.
 
-.. cpp:enumerator:: Stroke  = 1 << 1,
+.. cpp:enumerator:: Stroke
 
   Draw the stroking of the path or contour.
 
-.. cpp:enumerator:: Outline = 1 << 2,
+.. cpp:enumerator:: Outline
 
   Only the outline of the path will be drawn, without anti-aliasing.
 
-.. cpp:enumerator:: Crisp   = 1 << 3,
+.. cpp:enumerator:: Crisp
 
 .. cpp:namespace-pop::
 
@@ -138,7 +138,7 @@ The values are meant tb be combined using logical bit operators.
 
     Set the position of the text.
 
-.. cpp:class:: class DashPath : public Path
+.. cpp:class:: DashPath : public Path
 
   A path object but it will be drawn as a dashed lines.
 
