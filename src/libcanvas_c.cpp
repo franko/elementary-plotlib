@@ -8,6 +8,7 @@
 #include "plot_agent.h"
 #include "window.h"
 #include "markers.h"
+#include "libcanvas_c_priv.h"
 
 static agg::rgba8 ColorToRgba8(const canvas_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
@@ -26,11 +27,6 @@ void canvas_path_free(canvas_path *path) {
     sg_object *obj = (sg_object *) path;
     delete obj;
 }
-
-struct canvas_plot {
-    graphics::plot *plot;
-    graphics::plot_agent *plot_agent;
-};
 
 canvas_plot *canvas_plot_new(int flags) {
     struct canvas_plot *plot_struct = malloc(sizeof(struct canvas_plot));
@@ -63,13 +59,3 @@ void canvas_plot_add(canvas_plot *plot_object, canvas_object *obj, canvas_color 
     // object.object_impl_ = nullptr;
     plot_update_windows_and_commit(plot_object);
 }
-
-canvas_window *canvas_window_new();
-canvas_window *canvas_window_new_with_layout(const char *fmt);
-
-int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str);
-void canvas_window_slot_refresh(canvas_window *win, unsigned index);
-void canvas_window_start(canvas_window *win, unsigned width, unsigned height, unsigned flags);
-void canvas_window_wait(canvas_window *win);
-
-void canvas_window_free(canvas_window *w);
