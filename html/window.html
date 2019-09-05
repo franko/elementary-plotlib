@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Windows &#8212; Libcanvas  documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Plot" href="plot.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Libcanvas  documentation</span></a></h1>
+        <h2 class="heading"><span>Windows</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="plot.html">Plot</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="windows">
+<h1>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="_CPPv4N9libcanvas6WindowE">
+<span id="_CPPv3N9libcanvas6WindowE"></span><span id="_CPPv2N9libcanvas6WindowE"></span><span id="libcanvas::Window"></span><em class="property">class </em><code class="sig-name descname">Window</code><a class="headerlink" href="#_CPPv4N9libcanvas6WindowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A window that can accomodate one or more plots to be shown on the screen.</p>
+<dl class="function">
+<dt id="_CPPv4N9libcanvas6Window6WindowEv">
+<span id="_CPPv3N9libcanvas6Window6WindowEv"></span><span id="_CPPv2N9libcanvas6Window6WindowEv"></span><span id="libcanvas::Window::Window"></span><code class="sig-name descname">Window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9libcanvas6Window6WindowEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>Create an empty window with a single slot.</p>
+<dl class="function">
+<dt id="_CPPv4N9libcanvas6Window6WindowEPKc">
+<span id="_CPPv3N9libcanvas6Window6WindowEPKc"></span><span id="_CPPv2N9libcanvas6Window6WindowEPKc"></span><span id="libcanvas::Window::Window__cCP"></span><code class="sig-name descname">Window</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9libcanvas6Window6WindowEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>Create an empty window subdivided accordingly to the <code class="docutils literal notranslate"><span class="pre">fmt</span></code> string.</p>
+<p>The format string works by recognizing the following elements:</p>
+<blockquote>
+<div><p>int Attach(Plot&amp; plot, const char* slot_str);
+void SlotRefresh(unsigned index);
+void Start(unsigned width, unsigned height, unsigned flags);
+void Wait();</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="plot.html">Plot</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Francesco Abbate.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+    </div>
+  </body>
+</html>
