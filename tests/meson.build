@@ -16,6 +16,10 @@ window_tests = [
     {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
 ]
 
+window_c_tests = [
+    {'name': 'test-window-c', 'sources': 'test-window-c.c'},
+]
+
 fox_tests = [
     {'name': 'test-fox-window-0', 'sources': 'test-window.cpp'},
     {'name': 'test-fox-window', 'sources': 'test-fox-window.cpp'},
@@ -29,6 +33,15 @@ foreach test : window_tests
         dependencies: [agg_dep, freetype_dep, thread_dep],
         cpp_args: libcanvas_cflags,
         link_with: libcanvaswin,
+        gui_app: false)
+endforeach
+
+foreach test : window_c_tests
+    executable(test['name'], test['sources'],
+        include_directories: libcanvas_include,
+        dependencies: [agg_dep, freetype_dep, thread_dep],
+        cpp_args: libcanvas_cflags,
+        link_with: libcanvaswin_c,
         gui_app: false)
 endforeach
 

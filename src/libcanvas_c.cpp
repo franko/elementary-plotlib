@@ -14,6 +14,12 @@ static agg::rgba8 ColorToRgba8(const canvas_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
 }
 
+static void plot_update_windows_and_commit(canvas_plot *plot_object) {
+    graphics::plot_agent *agent = plot_object->plot_agent;
+    agent->update_windows();
+    canvas_plot_commit_pending_draw(plot_object);
+}
+
 canvas_path *canvas_path_new() {
     return (canvas_path *) new graphics::path{};
 }
@@ -28,13 +34,43 @@ void canvas_path_free(canvas_path *path) {
     delete obj;
 }
 
-canvas_plot *canvas_plot_new(int flags) {
-    struct canvas_plot *plot_struct = malloc(sizeof(struct canvas_plot));
+void canvas_path_move_to(canvas_path *path_object, double x, double y) {
+    graphics::path *path = (graphics::path *) path_object;
+    path->move_to(x, y);
+}
+
+void canvas_path_line_to(canvas_path *path_object, double x, double y) {
+    graphics::path *path = (graphics::path *) path_object;
+    path->line_to(x, y);
+}
+
+void canvas_path_close_polygon(canvas_path *path_object) {
+    graphics::path *path = (graphics::path *) path_object;
+    path->close_polygon();
+}
+
+canvas_plot *canvas_plot_new(unsigned int flags) {
+    canvas_plot *plot_struct = new canvas_plot();
     if (plot_struct) {
         plot_struct->plot = new graphics::plot{flags};
         plot_struct->plot_agent = new graphics::plot_agent{};
     }
     return plot_struct;
+}
+
+void canvas_plot_free(canvas_plot *plot_object) {
+    delete plot_object->plot;
+    delete plot_object->plot_agent;
+    delete plot_object;
+}
+
+void canvas_plot_set_limits(canvas_plot *plot_object, float x1, float y1, float x2, float y2) {
+    graphics::plot *p = plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_limits(agg::rect_d(x1, y1, x2, y2));
+    }
+    plot_update_windows_and_commit(plot_object);
 }
 
 void canvas_plot_commit_pending_draw(canvas_plot *plot_object) {
@@ -43,19 +79,17 @@ void canvas_plot_commit_pending_draw(canvas_plot *plot_object) {
     p->commit_pending_draw();
 }
 
-static void plot_update_windows_and_commit(canvas_plot *plot_object) {
-    graphics::plot_agent *agent = plot_object->plot_agent;
-    agent->update_windows();
-    canvas_plot_commit_pending_draw(plot_object);
-
-}
-
+// The plot takes implicitly the ownership of the object.
 void canvas_plot_add(canvas_plot *plot_object, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags) {
     graphics::plot *p = plot_object->plot;
     sg_object *sg_obj = (sg_object *) obj;
-    graphics::plot::drawing_context dc(*p);
-    p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
-    // Since the plot take the ownership null the pointer inside the object.
-    // object.object_impl_ = nullptr;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+    }
     plot_update_windows_and_commit(plot_object);
+}
+
+void canvas_initialize_fonts() {
+    graphics::initialize_fonts();
 }

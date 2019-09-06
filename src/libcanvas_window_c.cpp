@@ -1,5 +1,5 @@
 // public declarations header.
-#include "libcanvas.h"
+#include "libcanvas_c.h"
 
 // the following are private headers.
 #include "plot.h"
@@ -15,8 +15,8 @@ canvas_window *canvas_window_new_with_layout(const char *fmt) {
     return (canvas_window *) new graphics::window{fmt};
 }
 
-int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str) {
-    graphics::window *win = (graphics::window *) win;
+int canvas_window_attach(canvas_window *win_, canvas_plot *plot, const char* slot_str) {
+    graphics::window *win = (graphics::window *) win_;
     graphics::plot *p = plot->plot;
     int index = win->attach(p, slot_str);
     graphics::plot_agent *agent = (graphics::plot_agent *) plot->plot_agent;
