@@ -1,7 +1,5 @@
 project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
 
-pkg = import('pkgconfig')
-
 # ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
 #  DEFS += -DDISABLE_GAMMA_CORR
 # endif
@@ -25,6 +23,8 @@ if debug_build
 endif
 
 libcanvas_include = include_directories('include')
+install_headers('include/libcanvas_cpp.h')
+install_headers('include/libcanvas_c.h')
 install_headers('include/libcanvas.h')
 install_headers('include/FXLibcanvasWindow.h')
 
@@ -35,10 +35,19 @@ else
     subdir('win32')
 endif
 
+pkg = import('pkgconfig')
+
 pkg.generate(libcanvaswin,
     filebase : 'libcanvas',
     name : 'Libcanvas',
     description : 'The Libcanvas library',
+    url : 'github.com/franko/libcanvas',
+)
+
+pkg.generate(libcanvaswin_c,
+    filebase : 'libcanvasc',
+    name : 'Libcanvas-c',
+    description : 'The Libcanvas library for C',
     url : 'github.com/franko/libcanvas',
 )
 

@@ -1,5 +1,5 @@
 // #include "libcanvas_utils.h"
-#include "libcanvas_c.h"
+#include "libcanvas.h"
 
 int main() {
     canvas_initialize_fonts();
