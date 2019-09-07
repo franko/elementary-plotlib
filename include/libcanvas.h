@@ -50,7 +50,6 @@ inline Color RGB(unsigned int r, unsigned int g, unsigned int b) {
 }
 }
 
-// TODO: should be move inside Window class
 enum {
     WindowResize          = 1,
     WindowHwBuffer        = 2,
