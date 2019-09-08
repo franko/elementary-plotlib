@@ -6,9 +6,20 @@ Graphical Elements
 
 .. cpp:enum:: Color
 
-  Used to express colors in RGBA format corresponds to an unsigned 32 bit integer type.
+  Used to express colors in RGBA format. Corresponds to an unsigned 32 bit integer type.
+  The R, G, B and A corresponds respectively to the red, green, blue and alpha channel and each takes 8 bit.
+  The alpha channel controls the transparency and its values corresponds to zero for completely transparent and 255, ``0xff`` in hexadecimal, for completely opaque.
+  The color can be given directly in hexadecimal format like, for example, ``0x00ff00ff`` for green, or using the functions :cpp:func:`color::RGB` and :cpp:func:`color::RGBA`.
 
 .. cpp:namespace-push:: color
+
+.. cpp:function:: Color RGBA(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+
+   Form a color from the value of its individual channel.
+
+.. cpp:function:: Color RGB(unsigned int r, unsigned int g, unsigned int b)
+
+   Form a color from the value of its individual channel setting the alpha channel to its maximum value.
 
 .. cpp:enumerator:: Red
 .. cpp:enumerator:: Blue
@@ -48,7 +59,7 @@ The values are meant tb be combined using logical bit operators.
 
 .. cpp:class:: Object
 
-  A graphical element that can be added to a plot. An instance of the :cpp:class:`Object` cannot be directly created but it is the base class of other elements like, for example, a :cpp:class:`Path`. It is a copyable and movable object.
+  A graphical element that can be added to a plot. An instance of the :cpp:class:`Object` cannot be directly created but it is the base class of other elements like, for example, a :cpp:class:`Path`. It is a copyable and movable.
 
 .. cpp:class:: Path : public Object
 
