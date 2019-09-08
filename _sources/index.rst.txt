@@ -8,6 +8,13 @@ Libcanvas Reference Manual
 
 This is the reference documentation for the C++ interface of Libcanvas, a C++ library for high-quality plots and animations.
 
+In the chapter below you can find the documentation for the classes and functions that are part of the Libcanvas public C++ interface.
+All the classes, functions and enumerators are defined inside the ``libcanvas`` namespace.
+
+All the definitions are provided by a single header file, ``libcanvas.h``.
+
+The recommended way to link with Libcanvas is to use the library flags provided by the pkg-config file.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

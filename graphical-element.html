@@ -40,7 +40,22 @@
 <dl class="enum">
 <dt id="_CPPv4N9libcanvas5ColorE">
 <span id="_CPPv3N9libcanvas5ColorE"></span><span id="_CPPv2N9libcanvas5ColorE"></span><em class="property">enum </em><code class="sig-name descname">Color</code><a class="headerlink" href="#_CPPv4N9libcanvas5ColorE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Used to express colors in RGBA format corresponds to an unsigned 32 bit integer type.</p>
+<dd><p>Used to express colors in RGBA format. Corresponds to an unsigned 32 bit integer type.
+The R, G, B and A corresponds respectively to the red, green, blue and alpha channel and each takes 8 bit.
+The alpha channel controls the transparency and its values corresponds to zero for completely transparent and 255, <code class="docutils literal notranslate"><span class="pre">0xff</span></code> in hexadecimal, for completely opaque.
+The color can be given directly in hexadecimal format like, for example, <code class="docutils literal notranslate"><span class="pre">0x00ff00ff</span></code> for green, or using the functions <a class="reference internal" href="#_CPPv4N9libcanvas5color3RGBEjjj" title="libcanvas::color::RGB"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">color::RGB()</span></code></a> and <a class="reference internal" href="#_CPPv4N9libcanvas5color4RGBAEjjjj" title="libcanvas::color::RGBA"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">color::RGBA()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9libcanvas5color4RGBAEjjjj">
+<span id="_CPPv3N9libcanvas5color4RGBAEjjjj"></span><span id="_CPPv2N9libcanvas5color4RGBAEjjjj"></span><span id="libcanvas::color::RGBA__unsigned-i.unsigned-i.unsigned-i.unsigned-i"></span><a class="reference internal" href="#_CPPv4N9libcanvas5ColorE" title="libcanvas::Color">Color</a> <code class="sig-name descname">RGBA</code><span class="sig-paren">(</span>unsigned int <em>r</em>, unsigned int <em>g</em>, unsigned int <em>b</em>, unsigned int <em>a</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9libcanvas5color4RGBAEjjjj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Form a color from the value of its individual channel.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9libcanvas5color3RGBEjjj">
+<span id="_CPPv3N9libcanvas5color3RGBEjjj"></span><span id="_CPPv2N9libcanvas5color3RGBEjjj"></span><span id="libcanvas::color::RGB__unsigned-i.unsigned-i.unsigned-i"></span><a class="reference internal" href="#_CPPv4N9libcanvas5ColorE" title="libcanvas::Color">Color</a> <code class="sig-name descname">RGB</code><span class="sig-paren">(</span>unsigned int <em>r</em>, unsigned int <em>g</em>, unsigned int <em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9libcanvas5color3RGBEjjj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Form a color from the value of its individual channel setting the alpha channel to its maximum value.</p>
 </dd></dl>
 
 <dl class="enumerator">
@@ -114,7 +129,7 @@ The values are meant tb be combined using logical bit operators.</p>
 <dl class="class">
 <dt id="_CPPv4N9libcanvas6ObjectE">
 <span id="_CPPv3N9libcanvas6ObjectE"></span><span id="_CPPv2N9libcanvas6ObjectE"></span><span id="libcanvas::Object"></span><em class="property">class </em><code class="sig-name descname">Object</code><a class="headerlink" href="#_CPPv4N9libcanvas6ObjectE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>A graphical element that can be added to a plot. An instance of the <a class="reference internal" href="#_CPPv4N9libcanvas6ObjectE" title="libcanvas::Object"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Object</span></code></a> cannot be directly created but it is the base class of other elements like, for example, a <a class="reference internal" href="#_CPPv4N9libcanvas4PathE" title="libcanvas::Path"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Path</span></code></a>. It is a copyable and movable object.</p>
+<dd><p>A graphical element that can be added to a plot. An instance of the <a class="reference internal" href="#_CPPv4N9libcanvas6ObjectE" title="libcanvas::Object"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Object</span></code></a> cannot be directly created but it is the base class of other elements like, for example, a <a class="reference internal" href="#_CPPv4N9libcanvas4PathE" title="libcanvas::Path"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Path</span></code></a>. It is a copyable and movable.</p>
 </dd></dl>
 
 <dl class="class">
