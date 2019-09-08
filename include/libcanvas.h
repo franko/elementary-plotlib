@@ -35,7 +35,7 @@
 // Following: https://google.github.io/styleguide/cppguide.html
 
 namespace FX {
-    class LibcanvasWindow;
+    class FXLibcanvasWindow;
 }
 
 namespace libcanvas {
@@ -213,7 +213,7 @@ private:
     PlotAgentImpl *plot_agent_impl_;
 
     friend class Window;
-    friend class FX::LibcanvasWindow;
+    friend class FX::FXLibcanvasWindow;
 };
 
 class Window {

@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto window = new LibcanvasWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+    auto window = new FXLibcanvasWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     Plot plot(Plot::ShowUnits | Plot::AutoLimits);
     plot.SetClipMode(false);

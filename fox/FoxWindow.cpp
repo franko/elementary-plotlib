@@ -31,7 +31,7 @@ public:
 
         app_.init(argc_, argv_);
         main_window_ = new FXMainWindow(&app_, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 0, 0);
-        libcanvas_window_ = new LibcanvasWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+        libcanvas_window_ = new FXLibcanvasWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
         main_window_->setTarget(this);
     }
 
@@ -73,7 +73,7 @@ private:
 
     FXApp app_;
     FXMainWindow *main_window_;
-    LibcanvasWindow *libcanvas_window_;
+    FXLibcanvasWindow *libcanvas_window_;
 };
 
 FXDEFMAP(FoxWindow) FoxWindowMap[] = {

@@ -7,17 +7,17 @@
 
 namespace FX {
 
-class LibcanvasWindow : public FXWindow {
-    FXDECLARE(LibcanvasWindow)
+class FXLibcanvasWindow : public FXWindow {
+    FXDECLARE(FXLibcanvasWindow)
 protected:
-    LibcanvasWindow(): m_window_impl(nullptr) { }
+    FXLibcanvasWindow(): m_window_impl(nullptr) { }
 private:
-    LibcanvasWindow(const LibcanvasWindow&);
-    LibcanvasWindow &operator=(const LibcanvasWindow&);
+    FXLibcanvasWindow(const FXLibcanvasWindow&);
+    FXLibcanvasWindow &operator=(const FXLibcanvasWindow&);
 public:
-    LibcanvasWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    FXLibcanvasWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
-    ~LibcanvasWindow();
+    ~FXLibcanvasWindow();
 
     int Attach(libcanvas::Plot& p, const char* slot_str);
     void SlotRefresh(unsigned index);
