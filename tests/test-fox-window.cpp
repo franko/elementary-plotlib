@@ -1,8 +1,7 @@
 #include <cmath>
 #include <thread>
 
-#include "libcanvas.h"
-#include "fox/LibcanvasWindow.h"
+#include "FXLibcanvasWindow.h"
 
 using namespace libcanvas;
 

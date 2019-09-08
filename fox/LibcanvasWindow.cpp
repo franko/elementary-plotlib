@@ -1,5 +1,5 @@
-#include "fox/LibcanvasWindow.h"
-#include "fox/window_fox.h"
+#include "FXLibcanvasWindow.h"
+#include "window_fox.h"
 #include "window_flags.h"
 #include "plot_agent.h"
 #include "debug_priv.h"

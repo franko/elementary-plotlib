@@ -1,8 +1,7 @@
 #include <thread>
 #include <cstring>
 
-#include "libcanvas.h"
-#include "fox/LibcanvasWindow.h"
+#include "FXLibcanvasWindow.h"
 
 // the following are private headers.
 #include "plot_agent.h"

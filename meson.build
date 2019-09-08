@@ -26,7 +26,7 @@ endif
 
 libcanvas_include = include_directories('include')
 install_headers('include/libcanvas.h')
-install_headers('include/fox/LibcanvasWindow.h', subdir: 'fox')
+install_headers('include/FXLibcanvasWindow.h')
 
 subdir('src')
 if host_machine.system() == 'linux'
