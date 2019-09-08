@@ -34,6 +34,10 @@
 
 // Following: https://google.github.io/styleguide/cppguide.html
 
+namespace FX {
+    class LibcanvasWindow;
+}
+
 namespace libcanvas {
 
 typedef uint32_t Color;
@@ -77,7 +81,6 @@ enum {
 
 class Plot;
 class Window;
-class GraphicsWindow;
 
 class Object {
 public:
@@ -210,7 +213,7 @@ private:
     PlotAgentImpl *plot_agent_impl_;
 
     friend class Window;
-    friend class GraphicsWindow;
+    friend class FX::LibcanvasWindow;
 };
 
 class Window {

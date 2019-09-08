@@ -2,7 +2,7 @@
 #include <thread>
 
 #include "libcanvas.h"
-#include "fox/GraphicsWindow.h"
+#include "fox/LibcanvasWindow.h"
 
 using namespace libcanvas;
 
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto window = new GraphicsWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+    auto window = new LibcanvasWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     Plot plot(Plot::ShowUnits | Plot::AutoLimits);
     plot.SetClipMode(false);

@@ -5,19 +5,19 @@
 // We include here only the public interface libcanvas header.
 #include "libcanvas.h"
 
-namespace libcanvas {
+namespace FX {
 
-class GraphicsWindow : public FXWindow {
-    FXDECLARE(GraphicsWindow)
+class LibcanvasWindow : public FXWindow {
+    FXDECLARE(LibcanvasWindow)
 protected:
-    GraphicsWindow(): m_window_impl(nullptr) { }
+    LibcanvasWindow(): m_window_impl(nullptr) { }
 private:
-    GraphicsWindow(const GraphicsWindow&);
-    GraphicsWindow &operator=(const GraphicsWindow&);
+    LibcanvasWindow(const LibcanvasWindow&);
+    LibcanvasWindow &operator=(const LibcanvasWindow&);
 public:
-    GraphicsWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    LibcanvasWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
-    ~GraphicsWindow();
+    ~LibcanvasWindow();
 
     int Attach(libcanvas::Plot& p, const char* slot_str);
     void SlotRefresh(unsigned index);

@@ -9,15 +9,13 @@
 #include "update_region_info.h"
 #include "debug_priv.h"
 
-namespace libcanvas {
-    class GraphicsWindow;
+namespace FX {
+    class LibcanvasWindow;
 }
-
-using libcanvas::GraphicsWindow;
 
 class window_fox : public graphics::display_window {
 public:
-    window_fox(GraphicsWindow *canvas, const char *split_str);
+    window_fox(LibcanvasWindow *canvas, const char *split_str);
     ~window_fox();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
@@ -73,7 +71,7 @@ public:
 private:
     FXApp *app();
 
-    GraphicsWindow *m_plot_canvas;
+    LibcanvasWindow *m_plot_canvas;
     FXGUISignal *m_gui_signal;
     update_region_info   m_update_region;
     update_region_notify m_update_notify;

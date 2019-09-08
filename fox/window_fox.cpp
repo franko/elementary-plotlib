@@ -1,11 +1,11 @@
 #include "fox/window_fox.h"
-#include "fox/GraphicsWindow.h"
+#include "fox/LibcanvasWindow.h"
 #include "debug_priv.h"
 
-window_fox::window_fox(GraphicsWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
+window_fox::window_fox(LibcanvasWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
 {
     m_surface.attach_window(this);
-    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, GraphicsWindow::ID_UPDATE_REGION, nullptr);
+    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, LibcanvasWindow::ID_UPDATE_REGION, nullptr);
 }
 
 window_fox::~window_fox() {
