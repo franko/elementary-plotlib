@@ -8,10 +8,10 @@ Plot
   A plot is an object that is used to group and display one or more graphical elements. The elements that belong to a plot will share the same coordinates space, we will refer to this latter as the model coordinates space.
 
   The plot works by displaying on the screen a region of the model coordinates space.
-  When in :cpp:enum:`Autolimits` the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot's method :cpp:func:`Plot::SetLimits`.
+  When in :cpp:enumerator:`Autolimits` the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot's method :cpp:func:`Plot::SetLimits`.
 
   When shown on the screen the plot will show all the objects it contains using for each of them a combination of stroking and filling.
-  The plot will also display the X and Y axis with units and labels if the option :cpp:enum:`ShowUnits` is used.
+  The plot will also display the X and Y axis with units and labels if the option :cpp:enumerator:`ShowUnits` is used.
 
   The elements that belongs to a plot are organized in incremental *layers* of visualization that contains one or more graphical elements.
   Layers and be added or removed from a plot in an incremental fashion.

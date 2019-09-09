@@ -1,7 +1,7 @@
 FOX toolkit integration
 =======================
 
-The Libcanvas library can be used inside a `FOX Toolkit <http://fox-toolkit.org/`_ application using a special class :cpp:class:`FX::FXLibcanvasWindow` declared in the header file ``FXLibcanvasWindow.h``.
+The Libcanvas library can be used inside a `FOX Toolkit <http://fox-toolkit.org/>`_ application using a special class :cpp:class:`FX::FXLibcanvasWindow` declared in the header file ``FXLibcanvasWindow.h``.
 
 The :cpp:class:`FX::FXLibcanvasWindow` inherit from ``FX::FXWindow`` and can be used as an ordinary FOX Window in every respect.
 In addition the class implements the method :cpp:func:`FX::FXLibcanvasWindow::Attach` to bind a plot, like it can be done with a :cpp:class:`libcanvas::Window`.
