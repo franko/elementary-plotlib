@@ -33,7 +33,7 @@ namespace graphics { namespace transform {
             m_width = w;
         }
 
-        virtual str write_svg(int id, agg::rgba8 c, double h) {
+        str write_svg(int id, agg::rgba8 c, double h) override {
             str path;
             svg_property_list* ls = this->m_source->svg_path(path, h);
             str s = svg_stroke_path(path, m_width, id, c, ls);
@@ -60,7 +60,7 @@ namespace graphics { namespace transform {
     public:
         curve_a(sg_object* src) : base_type(src) { }
 
-        virtual svg_property_list* svg_path(str& s, double h) {
+        svg_property_list* svg_path(str& s, double h) override {
             svg_curve_coords_from_vs(this->m_source, s, h);
             return 0;
         }
@@ -81,7 +81,7 @@ namespace graphics { namespace transform {
     public:
         dash_a(sg_object* src) : base_type(src), m_dasharray(16) { }
 
-        virtual svg_property_list* svg_path(str& s, double h) {
+        svg_property_list* svg_path(str& s, double h) override {
             svg_property_list* ls = this->m_source->svg_path(s, h);
             svg_property_item item(stroke_dasharray, m_dasharray.cstr());
             ls = new svg_property_list(item, ls);
@@ -112,11 +112,11 @@ namespace graphics { namespace transform {
             m_norm = m_matrix.scale();
         }
 
-        virtual void apply_transform(const agg::trans_affine& m, double as) {
+        void apply_transform(const agg::trans_affine& m, double as) override {
             this->m_source->apply_transform(m, as * m_norm);
         };
 
-        virtual bool affine_compose(agg::trans_affine& m) {
+        bool affine_compose(agg::trans_affine& m) override {
             trans_affine_compose (m_matrix, m);
             return true;
         }
@@ -162,7 +162,7 @@ namespace graphics { namespace transform {
             m_symbol->apply_transform(m_scale, 1.0);
         }
 
-        virtual str write_svg(int id, agg::rgba8 c, double h) {
+        str write_svg(int id, agg::rgba8 c, double h) override {
             str marker_id;
             str marker_def = gen_svg_marker_def(id, c, marker_id);
 
@@ -188,8 +188,7 @@ namespace graphics { namespace transform {
             delete m_symbol;
         }
 
-        virtual void apply_transform(const agg::trans_affine& m, double as)
-        {
+        void apply_transform(const agg::trans_affine& m, double as) override {
             m_symbol->apply_transform(m_scale, as);
             m_source->apply_transform(m, as);
         }
