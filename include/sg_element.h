@@ -24,6 +24,10 @@ enum {
 
 }}
 
+inline color_alpha_not_zero(const agg::rgba8& color) {
+    return (color.a > 0);
+}
+
 struct sg_element {
     sg_object* object;
     agg::rgba8 stroke_color;
@@ -39,10 +43,10 @@ struct sg_element {
     void draw(Canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb = 0)
     {
         object->apply_transform(m, 1.0);
-        const bool has_fill = (flags & graphics::property::fill);
-        const bool has_stroke = (stroke_width > 0.0 && (flags & graphics::property::stroke));
+        const bool has_fill = (flags & graphics::property::fill) && color_alpha_not_zero(fill_color);
+        const bool has_stroke = stroke_width > 0.0 && (flags & graphics::property::stroke) && color_alpha_not_zero(stroke_color);
         const bool crisp = (flags & graphics::property::crisp);
-        const bool outline = (flags & graphics::property::outline);
+        const bool outline = (flags & graphics::property::outline) && color_alpha_not_zero(stroke_color);
         if (has_fill) {
             if (crisp) {
                 canvas.draw_noaa(*object, fill_color);
