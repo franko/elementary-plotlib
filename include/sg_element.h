@@ -24,7 +24,7 @@ enum {
 
 }}
 
-inline color_alpha_not_zero(const agg::rgba8& color) {
+inline bool color_alpha_not_zero(const agg::rgba8& color) {
     return (color.a > 0);
 }
 
@@ -58,7 +58,7 @@ struct sg_element {
             canvas.draw_outline_noaa(*object, stroke_color);
         } else if (has_stroke) {
             graphics::transform::stroke_a stobj(object);
-            stobj.self().width(double(stroke_width));
+            stobj.width(double(stroke_width));
             stobj.self().line_cap(agg::round_cap);
             if (crisp) {
                 canvas.draw_noaa(stobj, stroke_color);
