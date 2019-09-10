@@ -204,6 +204,7 @@ public:
     bool PushLayer();
     bool PopLayer();
     void AddLegend(Plot legend, Placement location);
+    bool WriteSvg(const char *filename, double width, double height);
 private:
     void UpdateWindowsAndCommitChanges();
 

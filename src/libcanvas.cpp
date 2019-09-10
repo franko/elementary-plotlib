@@ -1,6 +1,8 @@
 // public declarations header.
 #include "libcanvas.h"
 
+#include "agg_trans_affine.h"
+
 // the following are private headers.
 #include "sg_object.h"
 #include "path.h"
@@ -8,6 +10,7 @@
 #include "plot_agent.h"
 #include "window.h"
 #include "markers.h"
+#include "canvas_svg.h"
 
 static agg::rgba8 ColorToRgba8(const libcanvas::Color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
@@ -311,6 +314,22 @@ void Plot::UpdateWindowsAndCommitChanges() {
     graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
     agent->update_windows();
     CommitPendingDraw();
+}
+
+bool Plot::WriteSvg(const char *filename, double width, double height) {
+    FILE *svg_file = fopen(filename, "w");
+    if (!svg_file) {
+        return false;
+    }
+    canvas_svg canvas{svg_file, height};
+    agg::trans_affine_scaling m(width, height);
+    canvas.write_header(width, height);
+    graphics::plot *p = (graphics::plot *) plot_impl_;
+    graphics::plot::drawing_context dc(*p);
+    p->draw(dc, canvas, m, nullptr);
+    canvas.write_end();
+    fclose(svg_file);
+    return true;
 }
 
 Object MarkerSymbol(int n) {
