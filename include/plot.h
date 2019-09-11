@@ -29,21 +29,14 @@
 #include "canvas.h"
 #include "units.h"
 #include "rect.h"
-#include "canvas_svg.h"
-#include "text.h"
 #include "sg_element.h"
+#include "text.h"
 #include "plot_axis.h"
 
 #include "agg_array.h"
 #include "agg_bounding_rect.h"
-#include "agg_vcgen_markers_term.h"
-#include "agg_conv_transform.h"
 #include "agg_color_rgba.h"
 #include "agg_path_storage.h"
-#include "agg_array.h"
-#include "agg_conv_stroke.h"
-#include "agg_conv_dash.h"
-#include "agg_gsv_text.h"
 
 template <class Canvas>
 class canvas_adapter : public virtual_canvas {
