@@ -18,7 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#define _GNU_SOURCE 1
+#ifdef WIN32
+/* Needed to disable warning with MS VS C++ for not using secure string
+   functions terminating in _s. */
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -255,10 +259,54 @@ str_getline (str_t d, FILE *f)
   return 0;
 }
 
+#define STR_BUFSIZE 64
+/* The function svnprintf behaves differently on windows, it returns -1 when
+   there is not enough space in the provided buffer. Because of this the
+   Windows-specific function _vscprintf has to be used to know the size
+   needed for the buffer. */
+#ifdef WIN32
+void str_vprintf(str_t d, const char *fmt, int append, va_list ap) {
+  char buffer[STR_BUFSIZE];
+  char *xbuf;
+  int xbuf_size;
+  va_list aq;
+  va_copy (aq, ap);
+
+  /* The variable ns holds the number of characters needed for the printf call, not
+     including the terminating null character. */
+  int ns = _vscprintf(fmt, ap);
+
+  if (ns >= STR_BUFSIZE) {
+    xbuf_size = ns + 1;
+    xbuf = malloc(xbuf_size * sizeof(char));
+    vsnprintf(xbuf, xbuf_size, fmt, aq);
+  } else {
+    xbuf = buffer;
+    xbuf_size = 0;
+  }
+
+  va_end(aq);
+
+  if (append) {
+    str_append_c(d, xbuf, 0);
+    if (xbuf_size > 0) {
+      free (xbuf);
+    }
+  } else {
+    if (xbuf_size > 0) {
+      free(d->heap);
+      d->heap = xbuf;
+      d->size = xbuf_size;
+      d->length = ns;
+    } else {
+      str_copy_c_substr(d, xbuf, ns);
+    }
+  }
+}
+#else
 void
 str_vprintf (str_t d, const char *fmt, int append, va_list ap)
 {
-#define STR_BUFSIZE 64
   char buffer[STR_BUFSIZE];
   char *xbuf;
   int xbuf_size;
@@ -303,8 +351,9 @@ str_vprintf (str_t d, const char *fmt, int append, va_list ap)
 	  str_copy_c_substr (d, xbuf, ns);
 	}
     }
-#undef STR_BUFSIZE
 }
+#endif
+#undef STR_BUFSIZE
 
 void
 str_printf (str_t d, const char *fmt, ...)
