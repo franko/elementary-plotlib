@@ -82,7 +82,7 @@ public:
         fprintf(f, "%s\n", s.cstr());
     }
 
-    static const double default_stroke_width;
+    enum { default_stroke_width = 1 };
 
 private:
     FILE *m_output;
