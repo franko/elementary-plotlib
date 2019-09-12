@@ -244,21 +244,21 @@ void str_vprintf(str_t d, const char *fmt, int append, va_list ap) {
     if (ns >= STR_BUFSIZE) {
         xbuf_size = ns + 1;
         xbuf = malloc(xbuf_size * sizeof(char));
-        vsnprintf(xbuf, xbuf_size, fmt, aq);
     } else {
         xbuf = buffer;
-        xbuf_size = 0;
+        xbuf_size = STR_BUFSIZE;
     }
 
+    vsnprintf(xbuf, xbuf_size, fmt, aq);
     va_end(aq);
 
     if (append) {
         str_append_c(d, xbuf, 0);
-        if (xbuf_size > 0) {
+        if (xbuf != buffer) {
             free(xbuf);
         }
     } else {
-        if (xbuf_size > 0) {
+        if (xbuf != buffer) {
             free(d->heap);
             d->heap = xbuf;
             d->size = xbuf_size;
