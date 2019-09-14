@@ -124,13 +124,13 @@ public:
     }
 
     svg_property_list* svg_path(str& s, double h) override {
+        svg_coords_from_vs(&m_path_scaling, s, h);
         svg_property_item item(stroke_dasharray, m_svg_dash_array.cstr());
         return new svg_property_list(item, nullptr);
     }
 
     sg_object *copy() const override {
         dash_path *new_object = new dash_path();
-        fprintf(stderr, "copy: dash_path\n");
         vertex_source_copy(new_object->m_path, m_path);
         new_object->m_dash_lengths = m_dash_lengths;
         new_object->m_svg_dash_array = m_svg_dash_array;
