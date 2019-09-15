@@ -13,6 +13,7 @@ window_tests = [
     {'name': 'test-plot-dash-lines', 'sources': 'test-plot-dash-lines.cpp'},
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
     {'name': 'test-write-svg', 'sources': 'test-write-svg.cpp'},
+    {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
 ]
 
 fox_tests = [
