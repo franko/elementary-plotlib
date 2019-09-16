@@ -88,3 +88,7 @@ Plot
   .. cpp:function:: void AddLegend(Plot legend, Placement location)
 
     Add a new plot as a legend in the given location.
+
+  .. cpp:function:: bool WriteSvg(const char *filename, double width, double height)
+
+    Write the plot as a SVG file with the given filename, width and height.
