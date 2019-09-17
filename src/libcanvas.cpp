@@ -64,19 +64,22 @@ Path::Path(): Object{(ObjectImpl *) new graphics::path{}} {
 Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(ObjectImpl *) new graphics::path(lst)} {
 }
 
-void Path::MoveTo(double x, double y) {
+Path& Path::MoveTo(double x, double y) {
     graphics::path *path_object = (graphics::path *) object_impl_;
     path_object->move_to(x, y);
+    return *this;
 }
 
-void Path::LineTo(double x, double y) {
+Path& Path::LineTo(double x, double y) {
     graphics::path *path_object = (graphics::path *) object_impl_;
     path_object->line_to(x, y);
+    return *this;
 }
 
-void Path::ClosePolygon() {
+Path& Path::ClosePolygon() {
     graphics::path *path_object = (graphics::path *) object_impl_;
     path_object->close_polygon();
+    return *this;
 }
 
 Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *) new graphics::markers(size, (sg_object *) marker_symbol.object_impl_)} {
@@ -194,73 +197,81 @@ Plot& Plot::operator=(const Plot& other) {
     return *this;
 }
 
-void Plot::SetTitle(const char *title) {
+Plot& Plot::SetTitle(const char *title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     {
         graphics::plot::drawing_context dc(*p);
         p->set_title(title);
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::SetXAxisTitle(const char *axis_title) {
+Plot& Plot::SetXAxisTitle(const char *axis_title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     {
         graphics::plot::drawing_context dc(*p);
         p->set_x_axis_title(axis_title);
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::SetYAxisTitle(const char *axis_title) {
+Plot& Plot::SetYAxisTitle(const char *axis_title) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     {
         graphics::plot::drawing_context dc(*p);
         p->set_y_axis_title(axis_title);
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::SetClipMode(bool flag) {
+Plot& Plot::SetClipMode(bool flag) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     graphics::plot::drawing_context dc(*p);
     p->set_clip_mode(flag);
+    return *this;
 }
 
-void Plot::SetLimits(const Rectangle& r) {
+Plot& Plot::SetLimits(const Rectangle& r) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     {
         graphics::plot::drawing_context dc(*p);
         p->set_limits(agg::rect_d(r.x1, r.y1, r.x2, r.y2));
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
+Plot& Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     {
         graphics::plot::drawing_context dc(*p);
         p->set_axis_labels_angle(axis == xAxis ? graphics::x_axis : graphics::y_axis, angle);
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
+Plot& Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     {
         graphics::plot::drawing_context dc(*p);
         p->enable_label_format(axis == xAxis ? graphics::x_axis : graphics::y_axis, fmt);
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::CommitPendingDraw() {
+Plot& Plot::CommitPendingDraw() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     graphics::plot::drawing_context dc(*p);
     p->commit_pending_draw();
+    return *this;
 }
 
-void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
+Plot& Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     sg_object *sg_obj = (sg_object *) (object.object_impl_);
     if (sg_obj != nullptr) {
@@ -270,21 +281,24 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
         object.object_impl_ = nullptr;
     }
     UpdateWindowsAndCommitChanges();
+    return *this;
 }
 
-void Plot::AddStroke(Object object, Color color, float line_width, unsigned flags) {
+Plot& Plot::AddStroke(Object object, Color color, float line_width, unsigned flags) {
     Add(std::move(object), color, line_width, Color(0), flags);
+    return *this;
 }
 
-void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
+Plot& Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
     graphics::plot *plot = (graphics::plot *) plot_impl_;
     graphics::plot *legend_plot = (graphics::plot *) legend.plot_impl_;
     plot->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
     // The plot take the ownership of the legend plot so null the pointer inside the object.
     legend.plot_impl_ = nullptr;
+    return *this;
 }
 
-bool Plot::PushLayer() {
+Plot& Plot::PushLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     bool success = false;
     {
@@ -294,10 +308,10 @@ bool Plot::PushLayer() {
     if (success) {
         UpdateWindowsAndCommitChanges();
     }
-    return success;
+    return *this;
 }
 
-bool Plot::PopLayer() {
+Plot& Plot::PopLayer() {
     graphics::plot *p = (graphics::plot *) plot_impl_;
     bool success;
     {
@@ -307,7 +321,7 @@ bool Plot::PopLayer() {
     if (success) {
         UpdateWindowsAndCommitChanges();
     }
-    return success;
+    return *this;
 }
 
 void Plot::UpdateWindowsAndCommitChanges() {
@@ -316,10 +330,10 @@ void Plot::UpdateWindowsAndCommitChanges() {
     CommitPendingDraw();
 }
 
-bool Plot::WriteSvg(const char *filename, double width, double height) {
+Plot& Plot::WriteSvg(const char *filename, double width, double height) {
     FILE *svg_file = fopen(filename, "w");
     if (!svg_file) {
-        return false;
+        return *this;
     }
     canvas_svg canvas{svg_file, height};
     agg::trans_affine_scaling m(width, height);
@@ -329,7 +343,7 @@ bool Plot::WriteSvg(const char *filename, double width, double height) {
     p->draw(dc, canvas, m, nullptr);
     canvas.write_end();
     fclose(svg_file);
-    return true;
+    return *this;
 }
 
 Object MarkerSymbol(int n) {

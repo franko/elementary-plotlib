@@ -114,9 +114,9 @@ public:
     Path(Path&& path): Object(path) { }
     Path(std::initializer_list<std::pair<double, double>> lst);
 
-    void MoveTo(double x, double y);
-    void LineTo(double x, double y);
-    void ClosePolygon();
+    Path& MoveTo(double x, double y);
+    Path& LineTo(double x, double y);
+    Path& ClosePolygon();
 
 protected:
     Path(ObjectImpl *object_impl) : Object(object_impl) { }
@@ -191,20 +191,20 @@ public:
     Plot& operator=(Plot&& other);
     Plot& operator=(const Plot& other);
 
-    void SetTitle(const char *title);
-    void SetXAxisTitle(const char *axis_title);
-    void SetYAxisTitle(const char *axis_title);
-    void SetClipMode(bool flag);
-    void SetLimits(const Rectangle& r);
-    void SetAxisLabelsAngle(const Axis& axis, float angle);
-    void EnableLabelFormat(const Axis& axis, const char *fmt);
-    void CommitPendingDraw();
-    void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
-    void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
-    bool PushLayer();
-    bool PopLayer();
-    void AddLegend(Plot legend, Placement location);
-    bool WriteSvg(const char *filename, double width, double height);
+    Plot& SetTitle(const char *title);
+    Plot& SetXAxisTitle(const char *axis_title);
+    Plot& SetYAxisTitle(const char *axis_title);
+    Plot& SetClipMode(bool flag);
+    Plot& SetLimits(const Rectangle& r);
+    Plot& SetAxisLabelsAngle(const Axis& axis, float angle);
+    Plot& EnableLabelFormat(const Axis& axis, const char *fmt);
+    Plot& CommitPendingDraw();
+    Plot& Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
+    Plot& AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
+    Plot& PushLayer();
+    Plot& PopLayer();
+    Plot& AddLegend(Plot legend, Placement location);
+    Plot& WriteSvg(const char *filename, double width, double height);
 private:
     void UpdateWindowsAndCommitChanges();
 
@@ -223,10 +223,10 @@ public:
     Window(const char *fmt);
     ~Window();
 
-    int Attach(Plot& plot, const char* slot_str);
-    void SlotRefresh(unsigned index);
-    void Start(unsigned width, unsigned height, unsigned flags);
-    void Wait();
+    Window& Attach(Plot& plot, const char* slot_str, int *slot_index = nullptr);
+    Window& SlotRefresh(unsigned index);
+    Window& Start(unsigned width, unsigned height, unsigned flags);
+    Window& Wait();
 
 private:
     struct WindowImpl;

@@ -103,22 +103,29 @@ Window::~Window() {
     delete win;
 }
 
-int Window::Attach(Plot& plot, const char* slot_str) {
+Window& Window::Attach(Plot& plot, const char* slot_str, int *slot_index) {
     FoxWindow *win = (FoxWindow *) window_impl_;
-    return win->Attach(plot, slot_str);
+    int index = win->Attach(plot, slot_str);
+    if (slot_index) {
+        *slot_index = index;
+    }
+    return *this;
 }
 
-void Window::SlotRefresh(unsigned index) {
+Window& Window::SlotRefresh(unsigned index) {
     FoxWindow *win = (FoxWindow *) window_impl_;
     win->SlotRefresh(index);
+    return *this;
 }
 
-void Window::Start(unsigned width, unsigned height, unsigned flags) {
+Window& Window::Start(unsigned width, unsigned height, unsigned flags) {
     FoxWindow *win = (FoxWindow *) window_impl_;
     win->Start(width, height, flags);
+    return *this;
 }
 
-void Window::Wait() {
+Window& Window::Wait() {
     FoxWindow *win = (FoxWindow *) window_impl_;
     win->Wait();
+    return *this;
 }
