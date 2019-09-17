@@ -236,4 +236,7 @@ private:
 void InitializeFonts();
 }
 
+#include "libcanvas_constants.h"
+#include "libcanvas_generator.h"
+
 #endif
