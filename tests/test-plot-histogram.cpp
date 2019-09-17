@@ -19,15 +19,6 @@ void GenHistogram(Plot& plot, RandomEngine &e, ParentDistDensity parent_df, doub
     }
 }
 
-template <typename PathType, typename Function>
-void PathFunction(PathType& line, Function f, double x0, double x1, int n = 128) {
-    line.MoveTo(x0, f(x0));
-    for (int i = 1; i <= n; i++) {
-        const double x = x0 + i * (x1 - x0) / n;
-        line.LineTo(x, f(x));
-    }
-}
-
 int main() {
     InitializeFonts();
 
@@ -42,8 +33,7 @@ int main() {
     auto normal_density = [=](double x) { return 1 / (sqrt(2 * Pi) * gauss_sigma) * std::exp(- 0.5 * std::pow((x - gauss_x0) / gauss_sigma, 2)); };
     GenHistogram(plot, e1, normal_density, x0, x1, n_bins, n_samples);
 
-    Path line;
-    PathFunction(line, [&](double x) { return normal_density(x) * (x1 - x0) / n_bins * n_samples; }, x0, x1);
+    Path line = FxLine(x0, x1, [&](double x) { return normal_density(x) * (x1 - x0) / n_bins * n_samples; });
     plot.AddStroke(std::move(line), color::Red, 1.5);
 
     Window window;
