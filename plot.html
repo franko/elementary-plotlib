@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Plot &#8212; Libcanvas  documentation</title>
-    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -15,26 +15,23 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Windows" href="window.html" />
-    <link rel="prev" title="Graphical Elements" href="graphical-element.html" /> 
-  </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Libcanvas  documentation</span></a></h1>
-        <h2 class="heading"><span>Plot</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="graphical-element.html">Graphical Elements</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="window.html">Windows</a>&#160;&#160;»
-        </p>
+    <link rel="prev" title="Graphical Elements" href="graphical-element.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-      </div>
-      <div class="content" role="main">
-        
-        
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
   <div class="section" id="plot">
 <h1>Plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
@@ -42,9 +39,9 @@
 <span id="_CPPv3N9libcanvas4PlotE"></span><span id="_CPPv2N9libcanvas4PlotE"></span><span id="libcanvas::Plot"></span><em class="property">class </em><code class="sig-name descname">Plot</code><a class="headerlink" href="#_CPPv4N9libcanvas4PlotE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A plot is an object that is used to group and display one or more graphical elements. The elements that belong to a plot will share the same coordinates space, we will refer to this latter as the model coordinates space.</p>
 <p>The plot works by displaying on the screen a region of the model coordinates space.
-When in <code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">Autolimits</span></code> the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot’s method <a class="reference internal" href="#_CPPv4N9libcanvas4Plot9SetLimitsERK9Rectangle" title="libcanvas::Plot::SetLimits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::SetLimits()</span></code></a>.</p>
+When in <code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">Autolimits</span></code> the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot’s method <a class="reference internal" href="#_CPPv4N9libcanvas4Plot9SetLimitsERK9Rectangle" title="libcanvas::Plot::SetLimits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::SetLimits()</span></code></a>.</p>
 <p>When shown on the screen the plot will show all the objects it contains using for each of them a combination of stroking and filling.
-The plot will also display the X and Y axis with units and labels if the option <a class="reference internal" href="#_CPPv4N9libcanvas4Plot9ShowUnitsE" title="libcanvas::Plot::ShowUnits"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">ShowUnits</span></code></a> is used.</p>
+The plot will also display the X and Y axis with units and labels if the option <a class="reference internal" href="#_CPPv4N9libcanvas4Plot9ShowUnitsE" title="libcanvas::Plot::ShowUnits"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">ShowUnits</span></code></a> is used.</p>
 <p>The elements that belongs to a plot are organized in incremental <em>layers</em> of visualization that contains one or more graphical elements.
 Layers and be added or removed from a plot in an incremental fashion.</p>
 <p>Examples of a plot that contains two Path objects, drawn with different colors.</p>
@@ -168,27 +165,86 @@ Layers and be added or removed from a plot in an incremental fashion.</p>
 <dd><p>Add a new plot as a legend in the given location.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="_CPPv4N9libcanvas4Plot8WriteSvgEPKcdd">
+<span id="_CPPv3N9libcanvas4Plot8WriteSvgEPKcdd"></span><span id="_CPPv2N9libcanvas4Plot8WriteSvgEPKcdd"></span><span id="libcanvas::Plot::WriteSvg__cCP.double.double"></span>bool <code class="sig-name descname">WriteSvg</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, double <em>width</em>, double <em>height</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9libcanvas4Plot8WriteSvgEPKcdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write the plot as a SVG file with the given filename, width and height.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
 
 
+          </div>
+          
+        </div>
       </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="graphical-element.html">Graphical Elements</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="window.html">Windows</a>&#160;&#160;»
-        </p>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Libcanvas</a></h1>
 
-      </div>
 
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Francesco Abbate.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="graphical-element.html" title="previous chapter">Graphical Elements</a></li>
+      <li>Next: <a href="window.html" title="next chapter">Windows</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
     </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Francesco Abbate.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/plot.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
   </body>
 </html>

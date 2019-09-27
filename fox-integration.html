@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>FOX toolkit integration &#8212; Libcanvas  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Windows" href="window.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="fox-toolkit-integration">
+<h1>FOX toolkit integration<a class="headerlink" href="#fox-toolkit-integration" title="Permalink to this headline">¶</a></h1>
+<p>The Libcanvas library can be used inside a <a class="reference external" href="http://fox-toolkit.org/">FOX Toolkit</a> application using a special class <a class="reference internal" href="#_CPPv4N2FX17FXLibcanvasWindowE" title="FX::FXLibcanvasWindow"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FX::FXLibcanvasWindow</span></code></a> declared in the header file <code class="docutils literal notranslate"><span class="pre">FXLibcanvasWindow.h</span></code>.</p>
+<p>The <a class="reference internal" href="#_CPPv4N2FX17FXLibcanvasWindowE" title="FX::FXLibcanvasWindow"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FX::FXLibcanvasWindow</span></code></a> inherit from <code class="docutils literal notranslate"><span class="pre">FX::FXWindow</span></code> and can be used as an ordinary FOX Window in every respect.
+In addition the class implements the method <a class="reference internal" href="#_CPPv4N2FX17FXLibcanvasWindow6AttachERN9libcanvas4PlotEPKc" title="FX::FXLibcanvasWindow::Attach"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">FX::FXLibcanvasWindow::Attach()</span></code></a> to bind a plot, like it can be done with a <a class="reference internal" href="window.html#_CPPv4N9libcanvas6WindowE" title="libcanvas::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">libcanvas::Window</span></code></a>.</p>
+<p>The plots themselves can be created and modified using the standard Libcanvas functions.</p>
+<p>Once a plot is bound to a window the application will be automatically updated for any plot’s modification, without the need of any explicit action.</p>
+<dl class="class">
+<dt id="_CPPv4N2FX17FXLibcanvasWindowE">
+<span id="_CPPv3N2FX17FXLibcanvasWindowE"></span><span id="_CPPv2N2FX17FXLibcanvasWindowE"></span><span id="FX::FXLibcanvasWindow"></span><em class="property">class </em><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXLibcanvasWindow</code> : <em class="property">public</em> FX::FXWindow<a class="headerlink" href="#_CPPv4N2FX17FXLibcanvasWindowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>FOX toolkit class used to display one or more Libcanvas plots.</p>
+<dl class="function">
+<dt id="_CPPv4N2FX17FXLibcanvasWindow2FX17FXLibcanvasWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint">
+<span id="_CPPv3N2FX17FXLibcanvasWindow2FX17FXLibcanvasWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint"></span><span id="_CPPv2N2FX17FXLibcanvasWindow2FX17FXLibcanvasWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint"></span><span id="FX::FXLibcanvasWindow::FX::FXLibcanvasWindow__FX::FXCompositeP.cCP.FXuint.FXint.FXint.FXint.FXint"></span><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXLibcanvasWindow</code><span class="sig-paren">(</span>FX::FXComposite *<em>p</em>, <em class="property">const</em> char *<em>plot_layout</em> = nullptr, FXuint <em>opts</em> = FRAME_NORMAL, FXint <em>x</em> = 0, FXint <em>y</em> = 0, FXint <em>w</em> = 0, FXint <em>h</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX17FXLibcanvasWindow2FX17FXLibcanvasWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Ordinary FOX constructor with the addition of <code class="docutils literal notranslate"><span class="pre">plot_layout</span></code> used to subdivide the windows in multiple plotting slots.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N2FX17FXLibcanvasWindow6AttachERN9libcanvas4PlotEPKc">
+<span id="_CPPv3N2FX17FXLibcanvasWindow6AttachERN9libcanvas4PlotEPKc"></span><span id="_CPPv2N2FX17FXLibcanvasWindow6AttachERN9libcanvas4PlotEPKc"></span><span id="FX::FXLibcanvasWindow::Attach__libcanvas::PlotR.cCP"></span>int <code class="sig-name descname">Attach</code><span class="sig-paren">(</span>libcanvas::<a class="reference internal" href="plot.html#_CPPv4N9libcanvas4PlotE" title="libcanvas::Plot">Plot</a> &amp;<em>p</em>, <em class="property">const</em> char *<em>slot_str</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX17FXLibcanvasWindow6AttachERN9libcanvas4PlotEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Act like the method <a class="reference internal" href="window.html#_CPPv4N9libcanvas6WindowE" title="libcanvas::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">libcanvas::Window</span></code></a> of the <a class="reference internal" href="window.html#_CPPv4N9libcanvas6WindowE" title="libcanvas::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">libcanvas::Window</span></code></a> class to bind a plot to a given slot.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N2FX17FXLibcanvasWindow11SlotRefreshEj">
+<span id="_CPPv3N2FX17FXLibcanvasWindow11SlotRefreshEj"></span><span id="_CPPv2N2FX17FXLibcanvasWindow11SlotRefreshEj"></span><span id="FX::FXLibcanvasWindow::SlotRefresh__unsigned"></span>void <code class="sig-name descname">SlotRefresh</code><span class="sig-paren">(</span>unsigned <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX17FXLibcanvasWindow11SlotRefreshEj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Act like the <a class="reference internal" href="window.html#_CPPv4N9libcanvas6WindowE" title="libcanvas::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">libcanvas::Window</span></code></a>’s method of the same name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N2FX17FXLibcanvasWindow4WaitEv">
+<span id="_CPPv3N2FX17FXLibcanvasWindow4WaitEv"></span><span id="_CPPv2N2FX17FXLibcanvasWindow4WaitEv"></span><span id="FX::FXLibcanvasWindow::Wait"></span>void <code class="sig-name descname">Wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX17FXLibcanvasWindow4WaitEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Act like the <a class="reference internal" href="window.html#_CPPv4N9libcanvas6WindowE" title="libcanvas::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">libcanvas::Window</span></code></a>’s method of the same name.
+Normally not needed in classic FOX applications.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Libcanvas</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FOX toolkit integration</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="window.html" title="previous chapter">Windows</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Francesco Abbate.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/fox-integration.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
