@@ -3,7 +3,7 @@ Libcanvas — *A C++ library for high-quality plots and animations*
 Looking for an open-source library that gives you a simple API to easily
 create high-quality plots on major desktop platforms? Do you need to pop
 a native window to display a plot without the need of a third-party library?
-Do you need integration with an existing toolkit?
+Do you need integration with the FOX toolkit?
 *Here it is.* And it's free to use, even for commercial purposes.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -23,6 +23,10 @@ Libcanvas use the Anti-Grain library with subpixel resolution to create high-qua
 **Integration with existing toolkits**
 
 The library is thought to be integrated with existing GUI toolkits with minimal work. Currently only an implementation for the [FOX Toolkit](http://www.fox-toolkit.org/) is provided but it can be used as an example to integrate libcanvas with other toolkits.
+
+**Documentation available**
+
+The [Libcanvas' reference manual](http://franko.github.io/libcanvas/plot.html) for the new API is available.
 
 Examples
 ========
@@ -67,13 +71,16 @@ The text drawing is doing using the freetype library. The font system is extreme
 Current status
 ---
 
-The libcanvas library is quite solid  in its core since it was used previously in two other projects. Nevertheless in its current incarnation it is undergoing a major rework to simplify and improve its C++ implementation and API.
+The libcanvas library is quite solid in its core since it was used previously in two other projects.
+Its current status is 1.0 pre-release.
 
-It currently works on Windows and GNU/Linux system but there will be major changes in the API interface. For example the name of the library and the namespace it uses are temporary and will probably change.
+A clean and simple C++ API is now available to make the utilisation of the library super-simple and to isolate from the implementation details.
 
-For the moment there is no documentation for the library, only some examples are provided.
+The library currently works on Windows and GNU/Linux system.
 
-Expect also to find bugs especially since the library is currently being reworked.
+The documentation for the library is available in the form of a [reference manual](http://franko.github.io/libcanvas/plot.html).
+
+If you use the library expect to find bugs because the library was recently over-hauled and it is not largely tested.
 
 Limitations
 ---
@@ -90,6 +97,8 @@ Among the more important limitations of the current implementation:
 
 More Screenshots
 ---
+
+***The examples below are obsolete with the new API but still somewhat relevant in developer mode***.
 
 Below an example that show a customized pipeline to render a path:
 
