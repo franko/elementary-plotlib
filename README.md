@@ -26,7 +26,7 @@ The library is thought to be integrated with existing GUI toolkits with minimal 
 
 **Documentation available**
 
-The [Libcanvas' reference manual](http://franko.github.io/libcanvas/plot.html) for the new API is available.
+The [Libcanvas' reference manual](http://franko.github.io/libcanvas/) for the new API is available.
 
 Examples
 ========
@@ -78,7 +78,7 @@ A clean and simple C++ API is now available to make the utilisation of the libra
 
 The library currently works on Windows and GNU/Linux system.
 
-The documentation for the library is available in the form of a [reference manual](http://franko.github.io/libcanvas/plot.html).
+The documentation for the library is available in the form of a [reference manual](http://franko.github.io/libcanvas/).
 
 If you use the library expect to find bugs because the library was recently over-hauled and it is not largely tested.
 
