@@ -92,6 +92,7 @@ void canvas_plot_set_limits(canvas_plot *plot_object, float x0, float y0, float 
 void canvas_plot_commit_pending_draw(canvas_plot *plot_object);
 void canvas_plot_add(canvas_plot *plot, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
 void canvas_plot_free(canvas_plot *plot);
+int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width, double height);
 
 canvas_window *canvas_window_new();
 canvas_window *canvas_window_new_with_layout(const char *fmt);

@@ -30,11 +30,10 @@
 
 #ifdef __cplusplus
 #include "libcanvas_cpp.h"
+#include "libcanvas_constants.h"
+#include "libcanvas_generator.h"
 #else
 #include "libcanvas_c.h"
 #endif
-
-#include "libcanvas_constants.h"
-#include "libcanvas_generator.h"
 
 #endif

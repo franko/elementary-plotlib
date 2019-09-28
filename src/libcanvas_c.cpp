@@ -2,6 +2,7 @@
 #include "libcanvas_c.h"
 
 // the following are private headers.
+#include "canvas_svg.h"
 #include "sg_object.h"
 #include "path.h"
 #include "plot.h"
@@ -88,6 +89,22 @@ void canvas_plot_add(canvas_plot *plot_object, canvas_object *obj, canvas_color 
         p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
     }
     plot_update_windows_and_commit(plot_object);
+}
+
+int canvas_plot_write_svg(canvas_plot *plot_object, const char *filename, double width, double height) {
+    FILE *svg_file = fopen(filename, "w");
+    if (!svg_file) {
+        return false;
+    }
+    canvas_svg canvas{svg_file, height};
+    agg::trans_affine_scaling m(width, height);
+    canvas.write_header(width, height);
+    graphics::plot *p = plot_object->plot;
+    graphics::plot::drawing_context dc(*p);
+    p->draw(dc, canvas, m, nullptr);
+    canvas.write_end();
+    fclose(svg_file);
+    return true;
 }
 
 void canvas_initialize_fonts() {
