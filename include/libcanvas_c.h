@@ -77,6 +77,9 @@ typedef struct canvas_path canvas_path;
 typedef struct canvas_plot canvas_plot;
 typedef struct canvas_window canvas_window;
 
+canvas_object *canvas_object_copy(const canvas_object *obj);
+void canvas_object_free(canvas_object *obj);
+
 canvas_path *canvas_path_new();
 canvas_path *canvas_path_copy(const canvas_path *source);
 void canvas_path_free(canvas_path *path);

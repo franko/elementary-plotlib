@@ -21,15 +21,8 @@ namespace libcanvas {
 Object::Object(Object::ObjectImpl *object_impl): object_impl_(object_impl) {
 }
 
-Object::~Object() {
-    sg_object *obj = (sg_object *) object_impl_;
-    delete obj;
-};
-
 Object::Object(const Object& obj) {
-    sg_object *source_obj = (sg_object *) obj.object_impl_;
-    sg_object *new_obj = source_obj->copy();
-    object_impl_ = (ObjectImpl *) new_obj;
+    object_impl_ = canvas_object_copy(obj.object_impl_);
 }
 
 Object::Object(Object&& obj) {

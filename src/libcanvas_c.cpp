@@ -21,6 +21,16 @@ static void plot_update_windows_and_commit(canvas_plot *plot_object) {
     canvas_plot_commit_pending_draw(plot_object);
 }
 
+canvas_object *canvas_object_copy(const canvas_object *obj) {
+    const sg_object *source_obj = (sg_object *) obj;
+    return (canvas_object *) source_obj->copy();
+}
+
+void canvas_object_free(canvas_object *obj) {
+    sg_object *sg_obj = (sg_object *) obj;
+    delete sg_obj;
+}
+
 canvas_path *canvas_path_new() {
     return (canvas_path *) new graphics::path{};
 }
@@ -31,8 +41,7 @@ canvas_path *canvas_path_copy(const canvas_path *path) {
 }
 
 void canvas_path_free(canvas_path *path) {
-    sg_object *obj = (sg_object *) path;
-    delete obj;
+    canvas_object_free(canvas_object(path));
 }
 
 void canvas_path_move_to(canvas_path *path_object, double x, double y) {
