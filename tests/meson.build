@@ -14,9 +14,6 @@ window_tests = [
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
     {'name': 'test-write-svg', 'sources': 'test-write-svg.cpp'},
     {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
-]
-
-window_c_tests = [
     {'name': 'test-window-c', 'sources': 'test-window-c.c'},
 ]
 
@@ -33,15 +30,6 @@ foreach test : window_tests
         dependencies: [agg_dep, freetype_dep, thread_dep],
         cpp_args: libcanvas_cflags,
         link_with: libcanvaswin,
-        gui_app: false)
-endforeach
-
-foreach test : window_c_tests
-    executable(test['name'], test['sources'],
-        include_directories: libcanvas_include,
-        dependencies: [agg_dep, freetype_dep, thread_dep],
-        cpp_args: libcanvas_cflags,
-        link_with: libcanvaswin_c,
         gui_app: false)
 endforeach
 

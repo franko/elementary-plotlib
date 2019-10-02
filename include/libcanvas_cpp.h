@@ -38,9 +38,6 @@ namespace FX {
     class FXLibcanvasWindow;
 }
 
-#include "libcanvas_c.h"
-#include "libcanvas_c_priv.h"
-
 namespace libcanvas {
 
 typedef uint32_t Color;
@@ -90,15 +87,12 @@ public:
     Object() : object_impl_(nullptr) { }
     Object(const Object& obj);
     Object(Object&& obj);
-
-    ~Object() {
-        canvas_object_free(object_impl_);
-    }
+    ~Object();
 
     Object& operator=(const Object& that);
     Object& operator=(Object&& that);
 protected:
-    using ObjectImpl = canvas_object;
+    class ObjectImpl;
     Object(ObjectImpl *object_impl);
     ObjectImpl *object_impl_;
 

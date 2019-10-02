@@ -44,13 +44,6 @@ pkg.generate(libcanvaswin,
     url : 'github.com/franko/libcanvas',
 )
 
-pkg.generate(libcanvaswin_c,
-    filebase : 'libcanvasc',
-    name : 'Libcanvas-c',
-    description : 'The Libcanvas library for C',
-    url : 'github.com/franko/libcanvas',
-)
-
 fox_dep = dependency('fox', required: false)
 
 if fox_dep.found()

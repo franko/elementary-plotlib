@@ -4,6 +4,8 @@
 #include "agg_trans_affine.h"
 
 // the following are private headers.
+#include "libcanvas_c.h"
+#include "libcanvas_c_priv.h"
 #include "sg_object.h"
 #include "path.h"
 #include "plot.h"
@@ -22,13 +24,17 @@ Object::Object(Object::ObjectImpl *object_impl): object_impl_(object_impl) {
 }
 
 Object::Object(const Object& obj) {
-    object_impl_ = canvas_object_copy(obj.object_impl_);
+    object_impl_ = (ObjectImpl *) canvas_object_copy(canvas_object(obj.object_impl_));
 }
 
 Object::Object(Object&& obj) {
     sg_object *source_obj = (sg_object *) obj.object_impl_;
     obj.object_impl_ = nullptr;
     object_impl_ = (ObjectImpl *) source_obj;
+}
+
+Object::~Object() {
+    canvas_object_free(canvas_object(object_impl_));
 }
 
 Object& Object::operator=(const Object& other) {
