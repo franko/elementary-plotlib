@@ -14,17 +14,13 @@
 #include "markers.h"
 #include "canvas_svg.h"
 
-static agg::rgba8 ColorToRgba8(const libcanvas::Color& c) {
-    return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
-}
-
 namespace libcanvas {
 
 Object::Object(Object::ObjectImpl *object_impl): object_impl_(object_impl) {
 }
 
 Object::Object(const Object& obj) {
-    object_impl_ = (ObjectImpl *) canvas_object_copy(canvas_object(obj.object_impl_));
+    object_impl_ = (ObjectImpl *) canvas_object_copy((canvas_object *) obj.object_impl_);
 }
 
 Object::Object(Object&& obj) {
@@ -34,7 +30,7 @@ Object::Object(Object&& obj) {
 }
 
 Object::~Object() {
-    canvas_object_free(canvas_object(object_impl_));
+    canvas_object_free((canvas_object *) object_impl_);
 }
 
 Object& Object::operator=(const Object& other) {
@@ -194,30 +190,18 @@ Plot& Plot::operator=(const Plot& other) {
 }
 
 void Plot::SetTitle(const char *title) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    {
-        graphics::plot::drawing_context dc(*p);
-        p->set_title(title);
-    }
-    UpdateWindowsAndCommitChanges();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_set_title(&cplot, title);
 }
 
 void Plot::SetXAxisTitle(const char *axis_title) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    {
-        graphics::plot::drawing_context dc(*p);
-        p->set_x_axis_title(axis_title);
-    }
-    UpdateWindowsAndCommitChanges();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_set_x_axis_title(&cplot, axis_title);
 }
 
 void Plot::SetYAxisTitle(const char *axis_title) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    {
-        graphics::plot::drawing_context dc(*p);
-        p->set_y_axis_title(axis_title);
-    }
-    UpdateWindowsAndCommitChanges();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_set_y_axis_title(&cplot, axis_title);
 }
 
 void Plot::SetClipMode(bool flag) {
@@ -227,48 +211,32 @@ void Plot::SetClipMode(bool flag) {
 }
 
 void Plot::SetLimits(const Rectangle& r) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    {
-        graphics::plot::drawing_context dc(*p);
-        p->set_limits(agg::rect_d(r.x1, r.y1, r.x2, r.y2));
-    }
-    UpdateWindowsAndCommitChanges();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_set_limits(&cplot, r.x1, r.y1, r.x2, r.y2);
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    {
-        graphics::plot::drawing_context dc(*p);
-        p->set_axis_labels_angle(axis == xAxis ? graphics::x_axis : graphics::y_axis, angle);
-    }
-    UpdateWindowsAndCommitChanges();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_set_label_angle(&cplot, axis, angle);
 }
 
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    {
-        graphics::plot::drawing_context dc(*p);
-        p->enable_label_format(axis == xAxis ? graphics::x_axis : graphics::y_axis, fmt);
-    }
-    UpdateWindowsAndCommitChanges();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_enable_label_format(&cplot, axis, fmt);
 }
 
 void Plot::CommitPendingDraw() {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->commit_pending_draw();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    canvas_plot_commit_pending_draw(&cplot);
 }
 
 void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    sg_object *sg_obj = (sg_object *) (object.object_impl_);
-    if (sg_obj != nullptr) {
-        graphics::plot::drawing_context dc(*p);
-        p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+    if (object.object_impl_ != nullptr) {
+        canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+        canvas_plot_add(&cplot, (canvas_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
-    UpdateWindowsAndCommitChanges();
 }
 
 void Plot::AddStroke(Object object, Color color, float line_width, unsigned flags) {
@@ -284,51 +252,18 @@ void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
 }
 
 bool Plot::PushLayer() {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    bool success = false;
-    {
-        graphics::plot::drawing_context dc(*p);
-        success = p->push_layer();
-    }
-    if (success) {
-        UpdateWindowsAndCommitChanges();
-    }
-    return success;
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    return canvas_plot_push_layer(&cplot);
 }
 
 bool Plot::PopLayer() {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    bool success;
-    {
-        graphics::plot::drawing_context dc(*p);
-        success = p->pop_layer();
-    }
-    if (success) {
-        UpdateWindowsAndCommitChanges();
-    }
-    return success;
-}
-
-void Plot::UpdateWindowsAndCommitChanges() {
-    graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
-    agent->update_windows();
-    CommitPendingDraw();
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    return canvas_plot_pop_layer(&cplot);
 }
 
 bool Plot::WriteSvg(const char *filename, double width, double height) {
-    FILE *svg_file = fopen(filename, "w");
-    if (!svg_file) {
-        return false;
-    }
-    canvas_svg canvas{svg_file, height};
-    agg::trans_affine_scaling m(width, height);
-    canvas.write_header(width, height);
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->draw(dc, canvas, m, nullptr);
-    canvas.write_end();
-    fclose(svg_file);
-    return true;
+    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
+    return canvas_plot_write_svg(&cplot, filename, width, height);
 }
 
 Object MarkerSymbol(int n) {

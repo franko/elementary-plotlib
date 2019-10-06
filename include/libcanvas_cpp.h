@@ -67,7 +67,7 @@ struct Rectangle {
 
 enum Axis {
     xAxis = 0,
-    yAxis
+    yAxis = 1,
 };
 
 namespace property {

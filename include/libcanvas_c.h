@@ -29,6 +29,7 @@
 #define LIBCANVAS_C_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,6 +63,11 @@ enum {
     canvas_plot_top    = 3
 };
 
+enum {
+    canvas_x_axis = 0,
+    canvas_y_axis = 1,
+};
+
 typedef uint32_t canvas_color;
 
 struct canvas_rectangle {
@@ -88,11 +94,16 @@ void canvas_path_move_to(canvas_path *path, double x, double y);
 void canvas_path_line_to(canvas_path *path, double x, double y);
 void canvas_path_close_polygon(canvas_path *path);
 
-#define canvas_object(obj) ((canvas_object *) (obj))
-
 canvas_plot *canvas_plot_new(unsigned int flags);
-void canvas_plot_set_limits(canvas_plot *plot_object, float x0, float y0, float x1, float y1);
+void canvas_plot_set_title(canvas_plot *plot, const char *title);
+void canvas_plot_set_x_axis_title(canvas_plot *plot, const char *title);
+void canvas_plot_set_y_axis_title(canvas_plot *plot, const char *title);
+void canvas_plot_set_label_angle(canvas_plot *plot, int axis, float angle);
+void canvas_plot_set_limits(canvas_plot *plot, float x0, float y0, float x1, float y1);
+void canvas_plot_enable_label_format(canvas_plot *plot, int axis, const char *fmt);
 void canvas_plot_commit_pending_draw(canvas_plot *plot_object);
+bool canvas_plot_push_layer(canvas_plot *plot);
+bool canvas_plot_pop_layer(canvas_plot *plot);
 void canvas_plot_add(canvas_plot *plot, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
 void canvas_plot_free(canvas_plot *plot);
 int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width, double height);
@@ -108,6 +119,10 @@ void canvas_window_wait(canvas_window *win);
 void canvas_window_free(canvas_window *w);
 
 void canvas_initialize_fonts();
+
+static inline canvas_object *path_as_object(canvas_path *p) {
+    return (canvas_object *) p;
+}
 
 #ifdef __cplusplus
 }

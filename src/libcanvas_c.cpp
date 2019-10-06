@@ -41,7 +41,7 @@ canvas_path *canvas_path_copy(const canvas_path *path) {
 }
 
 void canvas_path_free(canvas_path *path) {
-    canvas_object_free(canvas_object(path));
+    canvas_object_free((canvas_object *) path);
 }
 
 void canvas_path_move_to(canvas_path *path_object, double x, double y) {
@@ -72,6 +72,77 @@ void canvas_plot_free(canvas_plot *plot_object) {
     delete plot_object->plot;
     delete plot_object->plot_agent;
     delete plot_object;
+}
+
+void canvas_plot_set_title(canvas_plot *plot_object, const char *title) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_title(title);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
+void canvas_plot_set_x_axis_title(canvas_plot *plot_object, const char *axis_title) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_x_axis_title(axis_title);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
+void canvas_plot_set_y_axis_title(canvas_plot *plot_object, const char *axis_title) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_y_axis_title(axis_title);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
+void canvas_plot_set_label_angle(canvas_plot *plot_object, int axis, float angle) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_axis_labels_angle(axis == canvas_x_axis ? graphics::x_axis : graphics::y_axis, angle);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
+void canvas_plot_enable_label_format(canvas_plot *plot_object, int axis, const char *fmt) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->enable_label_format(axis == canvas_x_axis ? graphics::x_axis : graphics::y_axis, fmt);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
+bool canvas_plot_push_layer(canvas_plot *plot_object) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    bool success = false;
+    {
+        graphics::plot::drawing_context dc(*p);
+        success = p->push_layer();
+    }
+    if (success) {
+        plot_update_windows_and_commit(plot_object);
+    }
+    return success;
+}
+
+bool canvas_plot_pop_layer(canvas_plot *plot_object) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    bool success = false;
+    {
+        graphics::plot::drawing_context dc(*p);
+        success = p->pop_layer();
+    }
+    if (success) {
+        plot_update_windows_and_commit(plot_object);
+    }
+    return success;
 }
 
 void canvas_plot_set_limits(canvas_plot *plot_object, float x1, float y1, float x2, float y2) {
