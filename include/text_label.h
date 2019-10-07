@@ -7,7 +7,7 @@
 #include "agg_renderer_scanline.h"
 #include "agg_font_freetype.h"
 
-#include "sg_object.h"
+#include "canvas_object.h"
 
 struct grid_fit_y_only {
     static void adjust(double& x, double& y) {

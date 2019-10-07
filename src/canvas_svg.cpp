@@ -1,7 +1,7 @@
 #include "canvas_svg.h"
 
 template <>
-void canvas_svg::draw<sg_object>(sg_object& vs, agg::rgba8 c)
+void canvas_svg::draw<canvas_object>(canvas_object& vs, agg::rgba8 c)
 {
     int id = m_current_id ++;
     str s = vs.write_svg(id, c, m_height);
@@ -9,7 +9,7 @@ void canvas_svg::draw<sg_object>(sg_object& vs, agg::rgba8 c)
 }
 
 template <>
-void canvas_svg::draw_outline<sg_object>(sg_object& vs, agg::rgba8 c)
+void canvas_svg::draw_outline<canvas_object>(canvas_object& vs, agg::rgba8 c)
 {
     int id = m_current_id ++;
     str path;

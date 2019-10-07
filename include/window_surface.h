@@ -6,7 +6,6 @@
 
 #include "image_buf.h"
 #include "window_part.h"
-#include "sg_object.h"
 #include "canvas.h"
 #include "rect.h"
 #include "plot.h"

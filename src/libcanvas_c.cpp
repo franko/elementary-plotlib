@@ -3,7 +3,7 @@
 
 // the following are private headers.
 #include "canvas_svg.h"
-#include "sg_object.h"
+#include "canvas_object.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -21,21 +21,13 @@ static void plot_update_windows_and_commit(canvas_plot *plot_object) {
     canvas_plot_commit_pending_draw(plot_object);
 }
 
-// TODO: defines directly sg_object as canvas_object.
-struct canvas_object : sg_object {
-};
-
 canvas_object *canvas_object_copy(const canvas_object *obj) {
-    return (canvas_object *) obj->copy();
+    return obj->copy();
 }
 
 void canvas_object_free(canvas_object *obj) {
     delete obj;
 }
-
-// TODO: define graphics::path as a canvas_path.
-struct canvas_path : graphics::path {
-};
 
 canvas_path *canvas_path_new() {
     return new canvas_path{};
@@ -204,10 +196,9 @@ void canvas_plot_commit_pending_draw(canvas_plot *plot_object) {
 // The plot takes implicitly the ownership of the object.
 void canvas_plot_add(canvas_plot *plot_object, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags) {
     graphics::plot *p = plot_object->plot;
-    sg_object *sg_obj = (sg_object *) obj;
     {
         graphics::plot::drawing_context dc(*p);
-        p->add(sg_obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+        p->add(obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
     }
     plot_update_windows_and_commit(plot_object);
 }

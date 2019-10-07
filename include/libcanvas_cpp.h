@@ -97,7 +97,7 @@ protected:
     ObjectImpl *object_impl_;
 
     // Friend declaration needed because Plot::Add method needs to
-    // have access to inner sg_object pointer, the object_impl_ field.
+    // have access to inner canvas_object pointer, the object_impl_ field.
     friend class Plot;
     friend class Markers;
 

@@ -2,12 +2,12 @@
 
 #include "agg_trans_affine.h"
 
-#include "sg_object.h"
+#include "canvas_object.h"
 #include "text_label.h"
 
 namespace graphics {
 
-class text : public sg_object
+class text : public canvas_object
 {
     agg::trans_affine m_matrix;
 
@@ -82,7 +82,7 @@ public:
 
     virtual str write_svg(int id, agg::rgba8 c, double h);
 
-    virtual sg_object *copy() const {
+    virtual canvas_object *copy() const {
         const str& text_string = m_text_label.text();
         text *new_object = new text(text_string.cstr(), m_text_label.size(), m_hjustif, m_vjustif);
         new_object->m_matrix = m_matrix;

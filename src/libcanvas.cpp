@@ -6,7 +6,7 @@
 // the following are private headers.
 #include "libcanvas_c.h"
 #include "libcanvas_c_priv.h"
-#include "sg_object.h"
+#include "canvas_object.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -24,7 +24,7 @@ Object::Object(const Object& obj) {
 }
 
 Object::Object(Object&& obj) {
-    sg_object *source_obj = (sg_object *) obj.object_impl_;
+    canvas_object *source_obj = (canvas_object *) obj.object_impl_;
     obj.object_impl_ = nullptr;
     object_impl_ = (ObjectImpl *) source_obj;
 }
@@ -35,9 +35,9 @@ Object::~Object() {
 
 Object& Object::operator=(const Object& other) {
     if (this != &other) {
-        sg_object *obj = (sg_object *) object_impl_;
+        canvas_object *obj = (canvas_object *) object_impl_;
         delete obj;
-        const sg_object *other_obj = (sg_object *) other.object_impl_;
+        const canvas_object *other_obj = (canvas_object *) other.object_impl_;
         object_impl_ = (ObjectImpl *) other_obj->copy();
     }
     return *this;
@@ -45,7 +45,7 @@ Object& Object::operator=(const Object& other) {
 
 Object& Object::operator=(Object&& other) {
     if (this != &other) {
-        sg_object *obj = (sg_object *) object_impl_;
+        canvas_object *obj = (canvas_object *) object_impl_;
         delete obj;
         object_impl_ = other.object_impl_;
         other.object_impl_ = nullptr;
@@ -53,28 +53,28 @@ Object& Object::operator=(Object&& other) {
     return *this;
 }
 
-Path::Path(): Object{(ObjectImpl *) new graphics::path{}} {
+Path::Path(): Object{(ObjectImpl *) new canvas_path{}} {
 }
 
-Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(ObjectImpl *) new graphics::path(lst)} {
+Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(ObjectImpl *) new canvas_path(lst)} {
 }
 
 void Path::MoveTo(double x, double y) {
-    graphics::path *path_object = (graphics::path *) object_impl_;
+    canvas_path *path_object = (canvas_path *) object_impl_;
     path_object->move_to(x, y);
 }
 
 void Path::LineTo(double x, double y) {
-    graphics::path *path_object = (graphics::path *) object_impl_;
+    canvas_path *path_object = (canvas_path *) object_impl_;
     path_object->line_to(x, y);
 }
 
 void Path::ClosePolygon() {
-    graphics::path *path_object = (graphics::path *) object_impl_;
+    canvas_path *path_object = (canvas_path *) object_impl_;
     path_object->close_polygon();
 }
 
-Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *) new graphics::markers(size, (sg_object *) marker_symbol.object_impl_)} {
+Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *) new graphics::markers(size, (canvas_object *) marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
 }
 
@@ -267,7 +267,7 @@ bool Plot::WriteSvg(const char *filename, double width, double height) {
 }
 
 Object MarkerSymbol(int n) {
-    sg_object *new_object = new_marker_symbol(n);
+    canvas_object *new_object = new_marker_symbol(n);
     return Object{(Object::ObjectImpl *) new_object};
 }
 

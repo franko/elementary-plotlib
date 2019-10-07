@@ -8,18 +8,16 @@
 #include "agg_conv_transform.h"
 #include "agg_conv_dash.h"
 
-#include "sg_object.h"
+#include "canvas_object.h"
 #include "my_conv_simple_marker.h"
 
-namespace graphics {
-
 /* This class serve as a base class for derived classes that have a
-   path and should implement the sg_object interface.
-   No virtual methods for sg_object is implemented except, for
+   path and should implement the canvas_object interface.
+   No virtual methods for canvas_object is implemented except, for
    convenience bounding_box. */
-class path_base : public sg_object {
+class canvas_path_base : public canvas_object {
 public:
-    path_base() : m_path() { }
+    canvas_path_base() : m_path() { }
 
     void line_to(double x, double y) {
         m_path.line_to(x, y);
@@ -65,11 +63,11 @@ protected:
     agg::path_storage m_path;
 };
 
-/* The same of the path_base class but provide scaling and implement
-   the related apply_transform method from sg_object interface. */
-class path_base_scaling : public path_base {
+/* The same of the canvas_path_base class but provide scaling and implement
+   the related apply_transform method from canvas_object interface. */
+class path_base_scaling : public canvas_path_base {
 public:
-    path_base_scaling() : path_base(), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
+    path_base_scaling() : canvas_path_base(), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
 
     void apply_transform(const agg::trans_affine& m, double as) override {
         m_scaling_matrix = m;
@@ -80,11 +78,11 @@ protected:
     agg::conv_transform<agg::path_storage> m_path_scaling;
 };
 
-class path : public path_base_scaling {
+class canvas_path : public path_base_scaling {
 public:
-    path() : path_base_scaling() { }
+    canvas_path() : path_base_scaling() { }
 
-    path(std::initializer_list<std::pair<double, double>> lst) : path_base_scaling() {
+    canvas_path(std::initializer_list<std::pair<double, double>> lst) : path_base_scaling() {
         path_from_initializer_list(lst);
     }
 
@@ -96,16 +94,18 @@ public:
         return m_path_scaling.vertex(x, y);
     }
 
-    sg_object *copy() const override {
-        path *new_object = new path();
+    canvas_object *copy() const override {
+        canvas_path *new_object = new canvas_path();
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }
 };
 
-class dash_path : public path {
+namespace graphics {
+
+class dash_path : public canvas_path {
 public:
-    dash_path() : path(), m_path_dash(m_path_scaling), m_svg_dash_array(16) { }
+    dash_path() : canvas_path(), m_path_dash(m_path_scaling), m_svg_dash_array(16) { }
 
     void rewind(unsigned path_id) override {
         m_path_dash.rewind(path_id);
@@ -129,7 +129,7 @@ public:
         return new svg_property_list(item, nullptr);
     }
 
-    sg_object *copy() const override {
+    canvas_object *copy() const override {
         dash_path *new_object = new dash_path();
         vertex_source_copy(new_object->m_path, m_path);
         new_object->m_dash_lengths = m_dash_lengths;
@@ -147,18 +147,18 @@ protected:
     str m_svg_dash_array;
 };
 
-class polygon : public path {
+class polygon : public canvas_path {
 public:
-    polygon(): path() { }
-    polygon(std::initializer_list<std::pair<double, double>> lst): path() {
+    polygon(): canvas_path() { }
+    polygon(std::initializer_list<std::pair<double, double>> lst): canvas_path() {
         path_from_initializer_list(lst);
         close_polygon();
     }
 };
 
-class markers : public path {
+class markers : public canvas_path {
 public:
-    markers(double size, sg_object* sym) : path(),
+    markers(double size, canvas_object* sym) : canvas_path(),
         m_marker_conv(m_path_scaling, *sym), m_size(size), m_scale(m_size), m_symbol(sym) {
         // we need to apply the scale transform here to ensure that
         // any call to bounding_box have the correct informations about
@@ -183,8 +183,8 @@ public:
         return m_marker_conv.vertex(x, y);
     }
 
-    sg_object *copy() const override {
-        sg_object *new_symbol = m_symbol->copy();
+    canvas_object *copy() const override {
+        canvas_object *new_symbol = m_symbol->copy();
         markers *new_object = new markers(m_size, new_symbol);
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
@@ -248,15 +248,15 @@ private:
 
 
 private:
-    my::conv_simple_marker<agg::conv_transform<agg::path_storage>, sg_object> m_marker_conv;
+    my::conv_simple_marker<agg::conv_transform<agg::path_storage>, canvas_object> m_marker_conv;
     double m_size;
     agg::trans_affine_scaling m_scale;
-    sg_object* m_symbol;
+    canvas_object* m_symbol;
 };
 
-class curve_path : public path_base {
+class curve_path : public canvas_path_base {
 public:
-    curve_path() : path_base(), m_path_curve(m_path), m_scaling_matrix(), m_path_scaling(m_path_curve, m_scaling_matrix) { }
+    curve_path() : canvas_path_base(), m_path_curve(m_path), m_scaling_matrix(), m_path_scaling(m_path_curve, m_scaling_matrix) { }
 
     virtual void apply_transform(const agg::trans_affine& m, double as) {
         m_scaling_matrix = m;
@@ -271,7 +271,7 @@ public:
         return m_path_scaling.vertex(x, y);
     }
 
-    virtual sg_object *copy() const {
+    virtual canvas_object *copy() const {
         curve_path *new_object = new curve_path();
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;

@@ -43,15 +43,15 @@ class canvas_adapter : public virtual_canvas {
 public:
     canvas_adapter(Canvas* c) : m_canvas(c) {}
 
-    virtual void draw(sg_object& vs, agg::rgba8 c) {
+    virtual void draw(canvas_object& vs, agg::rgba8 c) {
         m_canvas->draw(vs, c);
     }
 
-    virtual void draw_outline_noaa(sg_object& vs, agg::rgba8 c) {
+    virtual void draw_outline_noaa(canvas_object& vs, agg::rgba8 c) {
         m_canvas->draw_outline_noaa(vs, c);
     }
 
-    virtual void draw_noaa(sg_object& vs, agg::rgba8 c) {
+    virtual void draw_noaa(canvas_object& vs, agg::rgba8 c) {
         m_canvas->draw_noaa(vs, c);
     }
 
@@ -290,7 +290,7 @@ public:
 
     void add(sg_element element);
 
-    void add(sg_object *object, agg::rgba8 stroke_color, float stroke_width, agg::rgba8 fill_color, unsigned flags = graphics::property::fill|graphics::property::stroke) {
+    void add(canvas_object *object, agg::rgba8 stroke_color, float stroke_width, agg::rgba8 fill_color, unsigned flags = graphics::property::fill|graphics::property::stroke) {
         add(sg_element{object, stroke_color, stroke_width, fill_color, flags});
     }
 

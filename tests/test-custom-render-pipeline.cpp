@@ -21,10 +21,10 @@
 
    As for the classes actually used, below we are using objects from the
    graphics::transform namespace and they all works by implementing the
-   sg_object interface with virtual functions. This is the more simple
+   canvas_object interface with virtual functions. This is the more simple
    approach but in principle one could build a chain using only basic AGG
    objects, without virtual methods or interfaces. The only constraint is that
-   the class itself has to implement the sg_object interface. In this case we
+   the class itself has to implement the canvas_object interface. In this case we
    have it automatically because we are inheriting from
    graphics::transform::scaling_a.
 
