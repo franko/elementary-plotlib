@@ -16,47 +16,44 @@
 
 namespace libcanvas {
 
-Object::Object(Object::ObjectImpl *object_impl): object_impl_(object_impl) {
+Object::Object(canvas_object *object_impl): object_impl_(object_impl) {
 }
 
 Object::Object(const Object& obj) {
-    object_impl_ = (ObjectImpl *) canvas_object_copy((canvas_object *) obj.object_impl_);
+    object_impl_ = canvas_object_copy(obj.object_impl_);
 }
 
 Object::Object(Object&& obj) {
-    canvas_object *source_obj = (canvas_object *) obj.object_impl_;
+    delete object_impl_;
+    object_impl_ = obj.object_impl_;
     obj.object_impl_ = nullptr;
-    object_impl_ = (ObjectImpl *) source_obj;
 }
 
 Object::~Object() {
-    canvas_object_free((canvas_object *) object_impl_);
+    delete object_impl_;
 }
 
 Object& Object::operator=(const Object& other) {
     if (this != &other) {
-        canvas_object *obj = (canvas_object *) object_impl_;
-        delete obj;
-        const canvas_object *other_obj = (canvas_object *) other.object_impl_;
-        object_impl_ = (ObjectImpl *) other_obj->copy();
+        delete object_impl_;
+        object_impl_ = other.object_impl_->copy();
     }
     return *this;
 }
 
 Object& Object::operator=(Object&& other) {
     if (this != &other) {
-        canvas_object *obj = (canvas_object *) object_impl_;
-        delete obj;
+        delete object_impl_;
         object_impl_ = other.object_impl_;
         other.object_impl_ = nullptr;
     }
     return *this;
 }
 
-Path::Path(): Object{(ObjectImpl *) new canvas_path{}} {
+Path::Path(): Object{(canvas_object *) new canvas_path{}} {
 }
 
-Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(ObjectImpl *) new canvas_path(lst)} {
+Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(canvas_object *) new canvas_path(lst)} {
 }
 
 void Path::MoveTo(double x, double y) {
@@ -74,11 +71,11 @@ void Path::ClosePolygon() {
     path_object->close_polygon();
 }
 
-Markers::Markers(double size, Object marker_symbol) : Path{(Object::ObjectImpl *) new graphics::markers(size, (canvas_object *) marker_symbol.object_impl_)} {
+Markers::Markers(double size, Object marker_symbol) : Path{(canvas_object *) new graphics::markers(size, (canvas_object *) marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
 }
 
-CurvePath::CurvePath() : Object{(ObjectImpl *) new graphics::curve_path{}} {
+CurvePath::CurvePath() : Object{(canvas_object *) new graphics::curve_path{}} {
 }
 
 void CurvePath::MoveTo(double x, double y) {
@@ -111,7 +108,7 @@ void CurvePath::ClosePolygon() {
     path_object->close_polygon();
 }
 
-DashPath::DashPath(std::initializer_list<double> lst) : Path{(ObjectImpl *) new graphics::dash_path{}} {
+DashPath::DashPath(std::initializer_list<double> lst) : Path{(canvas_object *) new graphics::dash_path{}} {
     graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
     double prev_len;
     bool accu = false;
@@ -131,7 +128,7 @@ void DashPath::AddDash(double a, double b) {
     dash_object->add_dash(a, b);
 }
 
-Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(ObjectImpl *) new graphics::text(text, size, hjustif, vjustif)} {
+Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(canvas_object *) new graphics::text(text, size, hjustif, vjustif)} {
 }
 
 void Text::SetAngle(double angle) {
@@ -268,7 +265,7 @@ bool Plot::WriteSvg(const char *filename, double width, double height) {
 
 Object MarkerSymbol(int n) {
     canvas_object *new_object = new_marker_symbol(n);
-    return Object{(Object::ObjectImpl *) new_object};
+    return Object{(canvas_object *) new_object};
 }
 
 void InitializeFonts() {

@@ -34,6 +34,9 @@
 
 // Following: https://google.github.io/styleguide/cppguide.html
 
+// Forward declaration of C API object.
+class canvas_object;
+
 namespace FX {
     class FXLibcanvasWindow;
 }
@@ -92,9 +95,8 @@ public:
     Object& operator=(const Object& that);
     Object& operator=(Object&& that);
 protected:
-    class ObjectImpl;
-    Object(ObjectImpl *object_impl);
-    ObjectImpl *object_impl_;
+    Object(canvas_object *object_impl);
+    canvas_object *object_impl_;
 
     // Friend declaration needed because Plot::Add method needs to
     // have access to inner canvas_object pointer, the object_impl_ field.
@@ -119,7 +121,7 @@ public:
     void ClosePolygon();
 
 protected:
-    Path(ObjectImpl *object_impl) : Object(object_impl) { }
+    Path(canvas_object *object_impl) : Object(object_impl) { }
 };
 
 class CurvePath : public Object {
@@ -136,7 +138,7 @@ public:
     void ClosePolygon();
 
 protected:
-    CurvePath(ObjectImpl *object_impl) : Object(object_impl) { }
+    CurvePath(canvas_object *object_impl) : Object(object_impl) { }
 };
 
 class DashPath : public Path {
@@ -148,7 +150,7 @@ public:
     void AddDash(double a, double b);
 
 protected:
-    DashPath(ObjectImpl *object_impl) : Path(object_impl) { }
+    DashPath(canvas_object *object_impl) : Path(object_impl) { }
 };
 
 class Polygon : public Path {
