@@ -76,10 +76,12 @@ struct canvas_rectangle {
 
 struct canvas_object;
 struct canvas_path;
+struct canvas_curve;
 struct canvas_plot;
 struct canvas_window;
 typedef struct canvas_object canvas_object;
 typedef struct canvas_path canvas_path;
+typedef struct canvas_curve canvas_curve;
 typedef struct canvas_plot canvas_plot;
 typedef struct canvas_window canvas_window;
 
@@ -93,6 +95,16 @@ void canvas_path_free(canvas_path *path);
 void canvas_path_move_to(canvas_path *path, double x, double y);
 void canvas_path_line_to(canvas_path *path, double x, double y);
 void canvas_path_close_polygon(canvas_path *path);
+
+canvas_curve *canvas_curve_new();
+canvas_curve *canvas_curve_copy(const canvas_curve *source);
+void canvas_curve_free(canvas_curve *curve);
+void canvas_curve_move_to(canvas_curve *curve, double x, double y);
+void canvas_curve_line_to(canvas_curve *curve, double x, double y);
+void canvas_curve_curve3(canvas_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to);
+void canvas_curve_curve4(canvas_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
+void canvas_curve_arc_to(canvas_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
+void canvas_curve_close_polygon(canvas_curve *curve);
 
 canvas_plot *canvas_plot_new(unsigned int flags);
 void canvas_plot_set_title(canvas_plot *plot, const char *title);
@@ -122,6 +134,10 @@ void canvas_initialize_fonts();
 
 static inline canvas_object *path_as_object(canvas_path *p) {
     return (canvas_object *) p;
+}
+
+static inline canvas_object *curve_as_object(canvas_curve *c) {
+    return (canvas_object *) c;
 }
 
 #ifdef __cplusplus

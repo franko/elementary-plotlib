@@ -21,42 +21,83 @@ static void plot_update_windows_and_commit(canvas_plot *plot_object) {
     canvas_plot_commit_pending_draw(plot_object);
 }
 
+// TODO: defines directly sg_object as canvas_object.
+struct canvas_object : sg_object {
+};
+
 canvas_object *canvas_object_copy(const canvas_object *obj) {
-    const sg_object *source_obj = (sg_object *) obj;
-    return (canvas_object *) source_obj->copy();
+    return (canvas_object *) obj->copy();
 }
 
 void canvas_object_free(canvas_object *obj) {
-    sg_object *sg_obj = (sg_object *) obj;
-    delete sg_obj;
+    delete obj;
 }
 
+// TODO: define graphics::path as a canvas_path.
+struct canvas_path : graphics::path {
+};
+
 canvas_path *canvas_path_new() {
-    return (canvas_path *) new graphics::path{};
+    return new canvas_path{};
 }
 
 canvas_path *canvas_path_copy(const canvas_path *path) {
-    sg_object *source_obj = (sg_object *) path;
-    return (canvas_path *) source_obj->copy();
+    return (canvas_path *) path->copy();
 }
 
 void canvas_path_free(canvas_path *path) {
-    canvas_object_free((canvas_object *) path);
+    delete path;
 }
 
-void canvas_path_move_to(canvas_path *path_object, double x, double y) {
-    graphics::path *path = (graphics::path *) path_object;
+void canvas_path_move_to(canvas_path *path, double x, double y) {
     path->move_to(x, y);
 }
 
-void canvas_path_line_to(canvas_path *path_object, double x, double y) {
-    graphics::path *path = (graphics::path *) path_object;
+void canvas_path_line_to(canvas_path *path, double x, double y) {
     path->line_to(x, y);
 }
 
-void canvas_path_close_polygon(canvas_path *path_object) {
-    graphics::path *path = (graphics::path *) path_object;
+void canvas_path_close_polygon(canvas_path *path) {
     path->close_polygon();
+}
+
+struct canvas_curve : graphics::curve_path {
+};
+
+canvas_curve *canvas_curve_new() {
+    return new canvas_curve{};
+}
+
+canvas_curve *canvas_curve_copy(const canvas_curve *source) {
+    return (canvas_curve *) source->copy();
+}
+
+void canvas_curve_free(canvas_curve *curve) {
+    delete curve;
+}
+
+void canvas_curve_move_to(canvas_curve *curve, double x, double y) {
+    curve->move_to(x, y);
+}
+
+void canvas_curve_line_to(canvas_curve *curve, double x, double y) {
+    curve->line_to(x, y);
+}
+
+void canvas_curve_curve3(canvas_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to) {
+    curve->curve3(x_ctrl, y_ctrl, x_to, y_to);
+}
+
+void canvas_curve_curve4(canvas_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to) {
+    curve->curve4(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to);
+}
+
+void canvas_curve_arc_to(canvas_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y) {
+    curve->arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x, y);
+}
+
+void canvas_curve_close_polygon(canvas_curve *curve) {
+    curve->close_polygon();
 }
 
 canvas_plot *canvas_plot_new(unsigned int flags) {
