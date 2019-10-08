@@ -7,6 +7,7 @@
 #include "libcanvas_c.h"
 #include "libcanvas_c_priv.h"
 #include "canvas_object.h"
+#include "canvas_path.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"

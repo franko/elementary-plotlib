@@ -4,6 +4,7 @@
 // the following are private headers.
 #include "canvas_svg.h"
 #include "canvas_object.h"
+#include "canvas_path.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
