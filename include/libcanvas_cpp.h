@@ -36,6 +36,8 @@
 
 // Forward declaration of C API object.
 class canvas_object;
+class canvas_path;
+class canvas_curve;
 
 namespace FX {
     class FXLibcanvasWindow;
@@ -122,6 +124,7 @@ public:
 
 protected:
     Path(canvas_object *object_impl) : Object(object_impl) { }
+    canvas_path *PathImpl() { return (canvas_path *) object_impl_; }
 };
 
 class CurvePath : public Object {
@@ -138,7 +141,8 @@ public:
     void ClosePolygon();
 
 protected:
-    CurvePath(canvas_object *object_impl) : Object(object_impl) { }
+    CurvePath(canvas_object *object) : Object(object) { }
+    canvas_curve *CurveImpl() { return (canvas_curve *) object_impl_; }
 };
 
 class DashPath : public Path {

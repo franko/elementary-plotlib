@@ -5,6 +5,7 @@
 #include "canvas_svg.h"
 #include "canvas_object.h"
 #include "canvas_path.h"
+#include "canvas_curve.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -53,9 +54,6 @@ void canvas_path_line_to(canvas_path *path, double x, double y) {
 void canvas_path_close_polygon(canvas_path *path) {
     path->close_polygon();
 }
-
-struct canvas_curve : graphics::curve_path {
-};
 
 canvas_curve *canvas_curve_new() {
     return new canvas_curve{};

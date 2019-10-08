@@ -8,6 +8,7 @@
 #include "libcanvas_c_priv.h"
 #include "canvas_object.h"
 #include "canvas_path.h"
+#include "canvas_curve.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -57,55 +58,46 @@ Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(canvas
 }
 
 void Path::MoveTo(double x, double y) {
-    canvas_path *path_object = (canvas_path *) object_impl_;
-    path_object->move_to(x, y);
+    PathImpl()->move_to(x, y);
 }
 
 void Path::LineTo(double x, double y) {
-    canvas_path *path_object = (canvas_path *) object_impl_;
-    path_object->line_to(x, y);
+    PathImpl()->line_to(x, y);
 }
 
 void Path::ClosePolygon() {
-    canvas_path *path_object = (canvas_path *) object_impl_;
-    path_object->close_polygon();
+    PathImpl()->close_polygon();
 }
 
 Markers::Markers(double size, Object marker_symbol) : Path{(canvas_object *) new graphics::markers(size, (canvas_object *) marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
 }
 
-CurvePath::CurvePath() : Object{(canvas_object *) new graphics::curve_path{}} {
+CurvePath::CurvePath() : Object{new canvas_curve{}} {
 }
 
 void CurvePath::MoveTo(double x, double y) {
-    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
-    path_object->move_to(x, y);
+    CurveImpl()->move_to(x, y);
 }
 
 void CurvePath::LineTo(double x, double y) {
-    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
-    path_object->line_to(x, y);
+    CurveImpl()->line_to(x, y);
 }
 
 void CurvePath::Curve3(double x_ctrl, double y_ctrl, double x_to, double y_to) {
-    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
-    path_object->curve3(x_ctrl, y_ctrl, x_to, y_to);
+    CurveImpl()->curve3(x_ctrl, y_ctrl, x_to, y_to);
 }
 
 void CurvePath::Curve4(double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to) {
-    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
-    path_object->curve4(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to);
+    CurveImpl()->curve4(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to);
 }
 
 void CurvePath::ArcTo(double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y) {
-    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
-    path_object->arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x, y);
+    CurveImpl()->arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x, y);
 }
 
 void CurvePath::ClosePolygon() {
-    graphics::curve_path *path_object = (graphics::curve_path *) object_impl_;
-    path_object->close_polygon();
+    CurveImpl()->close_polygon();
 }
 
 DashPath::DashPath(std::initializer_list<double> lst) : Path{(canvas_object *) new graphics::dash_path{}} {
