@@ -38,6 +38,7 @@
 class canvas_object;
 class canvas_path;
 class canvas_curve;
+class canvas_dashed;
 
 namespace FX {
     class FXLibcanvasWindow;
@@ -155,6 +156,7 @@ public:
 
 protected:
     DashPath(canvas_object *object_impl) : Path(object_impl) { }
+    canvas_dashed *DashedImpl() { return (canvas_dashed *) object_impl_; }
 };
 
 class Polygon : public Path {

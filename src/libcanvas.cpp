@@ -9,6 +9,7 @@
 #include "canvas_object.h"
 #include "canvas_path.h"
 #include "canvas_curve.h"
+#include "canvas_dashed.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -100,8 +101,8 @@ void CurvePath::ClosePolygon() {
     CurveImpl()->close_polygon();
 }
 
-DashPath::DashPath(std::initializer_list<double> lst) : Path{(canvas_object *) new graphics::dash_path{}} {
-    graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
+DashPath::DashPath(std::initializer_list<double> lst) : Path{new canvas_dashed{}} {
+    canvas_dashed *dash_object = DashedImpl();
     double prev_len;
     bool accu = false;
     for (double len : lst) {
@@ -116,8 +117,7 @@ DashPath::DashPath(std::initializer_list<double> lst) : Path{(canvas_object *) n
 }
 
 void DashPath::AddDash(double a, double b) {
-    graphics::dash_path *dash_object = (graphics::dash_path *) object_impl_;
-    dash_object->add_dash(a, b);
+    DashedImpl()->add_dash(a, b);
 }
 
 Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(canvas_object *) new graphics::text(text, size, hjustif, vjustif)} {

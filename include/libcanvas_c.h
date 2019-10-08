@@ -77,11 +77,13 @@ struct canvas_rectangle {
 struct canvas_object;
 struct canvas_path;
 struct canvas_curve;
+struct canvas_dashed;
 struct canvas_plot;
 struct canvas_window;
 typedef struct canvas_object canvas_object;
 typedef struct canvas_path canvas_path;
 typedef struct canvas_curve canvas_curve;
+typedef struct canvas_dashed canvas_dashed;
 typedef struct canvas_plot canvas_plot;
 typedef struct canvas_window canvas_window;
 
@@ -105,6 +107,11 @@ void canvas_curve_curve3(canvas_curve *curve, double x_ctrl, double y_ctrl, doub
 void canvas_curve_curve4(canvas_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
 void canvas_curve_arc_to(canvas_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
 void canvas_curve_close_polygon(canvas_curve *curve);
+
+canvas_dashed *canvas_dashed_new(double dash_len, double gap_len);
+void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len);
+void canvas_dashed_free(canvas_dashed *path);
+canvas_dashed *canvas_dashed_copy(const canvas_dashed *path);
 
 canvas_plot *canvas_plot_new(unsigned int flags);
 void canvas_plot_set_title(canvas_plot *plot, const char *title);
@@ -138,6 +145,14 @@ static inline canvas_object *path_as_object(canvas_path *p) {
 
 static inline canvas_object *curve_as_object(canvas_curve *c) {
     return (canvas_object *) c;
+}
+
+static inline canvas_object *dashed_as_object(canvas_dashed *c) {
+    return (canvas_object *) c;
+}
+
+static inline canvas_path *dashed_as_path(canvas_dashed *c) {
+    return (canvas_path *) c;
 }
 
 #ifdef __cplusplus

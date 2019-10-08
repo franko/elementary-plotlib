@@ -6,6 +6,7 @@
 #include "canvas_object.h"
 #include "canvas_path.h"
 #include "canvas_curve.h"
+#include "canvas_dashed.h"
 #include "path.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -89,6 +90,24 @@ void canvas_curve_arc_to(canvas_curve *curve, double rx, double ry, double angle
 
 void canvas_curve_close_polygon(canvas_curve *curve) {
     curve->close_polygon();
+}
+
+canvas_dashed *canvas_dashed_new(double dash_len, double gap_len) {
+    canvas_dashed *dashed = new canvas_dashed{};
+    dashed->add_dash(dash_len, gap_len);
+    return dashed;
+}
+
+canvas_dashed *canvas_dashed_copy(const canvas_dashed *path) {
+    return (canvas_dashed *) path->copy();
+}
+
+void canvas_dashed_free(canvas_dashed *path) {
+    delete path;
+}
+
+void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len) {
+    path->add_dash(dash_len, gap_len);
 }
 
 canvas_plot *canvas_plot_new(unsigned int flags) {
