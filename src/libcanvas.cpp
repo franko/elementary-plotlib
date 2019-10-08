@@ -20,11 +20,10 @@ Object::Object(canvas_object *object_impl): object_impl_(object_impl) {
 }
 
 Object::Object(const Object& obj) {
-    object_impl_ = canvas_object_copy(obj.object_impl_);
+    object_impl_ = obj.object_impl_->copy();
 }
 
 Object::Object(Object&& obj) {
-    delete object_impl_;
     object_impl_ = obj.object_impl_;
     obj.object_impl_ = nullptr;
 }
