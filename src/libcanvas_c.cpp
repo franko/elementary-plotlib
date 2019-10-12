@@ -170,6 +170,12 @@ void canvas_plot_enable_label_format(canvas_plot *plot_object, int axis, const c
     plot_update_windows_and_commit(plot_object);
 }
 
+void canvas_plot_set_clip_mode(canvas_plot *plot_object, bool flag) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    graphics::plot::drawing_context dc(*p);
+    p->set_clip_mode(flag);
+}
+
 bool canvas_plot_push_layer(canvas_plot *plot_object) {
     graphics::plot *p = (graphics::plot *) plot_object->plot;
     bool success = false;

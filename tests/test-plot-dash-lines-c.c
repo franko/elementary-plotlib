@@ -14,8 +14,7 @@ int main() {
     canvas_initialize_fonts();
 
     canvas_plot *plot = canvas_plot_new(canvas_plot_show_units | canvas_plot_auto_limits);
-    // TODO
-    // canvas_plot_set_clip_mode(plot, false);
+    canvas_plot_set_clip_mode(plot, false);
 
     // TODO add PI definition
     const double x0 = 0.8, x1 = 8 * 2 * 3.14159265359;
