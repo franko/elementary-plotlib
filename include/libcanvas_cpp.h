@@ -35,10 +35,7 @@
 // Following: https://google.github.io/styleguide/cppguide.html
 
 // Forward declaration of C API object.
-class canvas_object;
-class canvas_path;
-class canvas_curve;
-class canvas_dashed;
+#include "libcanvas_c_forward.h"
 
 namespace FX {
     class FXLibcanvasWindow;
@@ -216,10 +213,7 @@ public:
 private:
     void UpdateWindowsAndCommitChanges();
 
-    struct PlotImpl;
-    struct PlotAgentImpl;
-    PlotImpl *plot_impl_;
-    PlotAgentImpl *plot_agent_impl_;
+    canvas_plot plot_impl_;
 
     friend class Window;
     friend class FX::FXLibcanvasWindow;

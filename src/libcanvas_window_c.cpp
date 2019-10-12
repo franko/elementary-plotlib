@@ -5,7 +5,7 @@
 #include "plot.h"
 #include "plot_agent.h"
 #include "window.h"
-#include "libcanvas_c_priv.h"
+#include "libcanvas_c_forward.h"
 
 canvas_window *canvas_window_new() {
     return (canvas_window *) new graphics::window{};

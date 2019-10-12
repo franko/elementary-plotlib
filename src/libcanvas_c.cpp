@@ -12,7 +12,7 @@
 #include "plot_agent.h"
 #include "window.h"
 #include "markers.h"
-#include "libcanvas_c_priv.h"
+#include "libcanvas_c_forward.h"
 
 static agg::rgba8 ColorToRgba8(const canvas_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);

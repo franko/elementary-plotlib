@@ -5,7 +5,7 @@
 
 // the following are private headers.
 #include "libcanvas_c.h"
-#include "libcanvas_c_priv.h"
+#include "libcanvas_c_forward.h"
 #include "canvas_object.h"
 #include "canvas_path.h"
 #include "canvas_curve.h"
@@ -133,96 +133,84 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
-Plot::Plot(unsigned flags) : plot_impl_{(PlotImpl *) new graphics::plot{flags}}, plot_agent_impl_{(PlotAgentImpl *) new graphics::plot_agent{}} {
+void DeletePlotImpl(canvas_plot& plot) {
+    delete plot.plot;
+    delete plot.plot_agent;
 }
 
-Plot::Plot(const Plot& other) : plot_impl_{(PlotImpl *) new graphics::plot(*(const graphics::plot *) other.plot_impl_)}, plot_agent_impl_{(PlotAgentImpl *) new graphics::plot_agent{}} {
+void NullPlotImpl(canvas_plot& plot) {
+    plot.plot = nullptr;
+    plot.plot_agent = nullptr;
 }
 
-Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_}, plot_agent_impl_{other.plot_agent_impl_} {
-    other.plot_impl_ = nullptr;
-    other.plot_agent_impl_ = nullptr;
+Plot::Plot(unsigned flags) : plot_impl_{new graphics::plot{flags}, new graphics::plot_agent{}} {
+}
+
+Plot::Plot(const Plot& other) : plot_impl_{new graphics::plot(*other.plot_impl_.plot), new graphics::plot_agent{}} {
+}
+
+Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_.plot, other.plot_impl_.plot_agent} {
+    NullPlotImpl(other.plot_impl_);
 }
 
 Plot::~Plot() {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
-    delete p;
-    delete agent;
+    DeletePlotImpl(plot_impl_);
 }
 
 Plot& Plot::operator=(Plot&& other) {
     if (this != &other) {
-        graphics::plot *p = (graphics::plot *) plot_impl_;
-        delete p;
+        DeletePlotImpl(plot_impl_);
         plot_impl_ = other.plot_impl_;
-        other.plot_impl_ = nullptr;
-
-        graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
-        delete agent;
-        plot_agent_impl_ = other.plot_agent_impl_;
-        other.plot_agent_impl_ = nullptr;
+        NullPlotImpl(other.plot_impl_);
     }
     return *this;
 }
 
 Plot& Plot::operator=(const Plot& other) {
     if (this != &other) {
-        graphics::plot *p = (graphics::plot *) plot_impl_;
-        delete p;
-        const graphics::plot *other_plot = (graphics::plot *) other.plot_impl_;
-        plot_impl_ = (PlotImpl *) new graphics::plot(*other_plot);
-        graphics::plot_agent *agent = (graphics::plot_agent *) plot_agent_impl_;
-        agent->clear();
+        delete plot_impl_.plot;
+        plot_impl_.plot = new graphics::plot(*other.plot_impl_.plot);
+        plot_impl_.plot_agent->clear();
     }
     return *this;
 }
 
 void Plot::SetTitle(const char *title) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_set_title(&cplot, title);
+    canvas_plot_set_title(&plot_impl_, title);
 }
 
 void Plot::SetXAxisTitle(const char *axis_title) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_set_x_axis_title(&cplot, axis_title);
+    canvas_plot_set_x_axis_title(&plot_impl_, axis_title);
 }
 
 void Plot::SetYAxisTitle(const char *axis_title) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_set_y_axis_title(&cplot, axis_title);
+    canvas_plot_set_y_axis_title(&plot_impl_, axis_title);
 }
 
 void Plot::SetClipMode(bool flag) {
-    graphics::plot *p = (graphics::plot *) plot_impl_;
-    graphics::plot::drawing_context dc(*p);
-    p->set_clip_mode(flag);
+    graphics::plot::drawing_context dc(*plot_impl_.plot);
+    plot_impl_.plot->set_clip_mode(flag);
 }
 
 void Plot::SetLimits(const Rectangle& r) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_set_limits(&cplot, r.x1, r.y1, r.x2, r.y2);
+    canvas_plot_set_limits(&plot_impl_, r.x1, r.y1, r.x2, r.y2);
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_set_label_angle(&cplot, axis, angle);
+    canvas_plot_set_label_angle(&plot_impl_, axis, angle);
 }
 
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_enable_label_format(&cplot, axis, fmt);
+    canvas_plot_enable_label_format(&plot_impl_, axis, fmt);
 }
 
 void Plot::CommitPendingDraw() {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    canvas_plot_commit_pending_draw(&cplot);
+    canvas_plot_commit_pending_draw(&plot_impl_);
 }
 
 void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
     if (object.object_impl_ != nullptr) {
-        canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-        canvas_plot_add(&cplot, (canvas_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
+        canvas_plot_add(&plot_impl_, (canvas_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
@@ -233,26 +221,23 @@ void Plot::AddStroke(Object object, Color color, float line_width, unsigned flag
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
-    graphics::plot *plot = (graphics::plot *) plot_impl_;
-    graphics::plot *legend_plot = (graphics::plot *) legend.plot_impl_;
-    plot->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
+    graphics::plot *legend_plot = (graphics::plot *) legend.plot_impl_.plot;
+    plot_impl_.plot->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
     // The plot take the ownership of the legend plot so null the pointer inside the object.
-    legend.plot_impl_ = nullptr;
+    delete legend.plot_impl_.plot_agent;
+    NullPlotImpl(legend.plot_impl_);
 }
 
 bool Plot::PushLayer() {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    return canvas_plot_push_layer(&cplot);
+    return canvas_plot_push_layer(&plot_impl_);
 }
 
 bool Plot::PopLayer() {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    return canvas_plot_pop_layer(&cplot);
+    return canvas_plot_pop_layer(&plot_impl_);
 }
 
 bool Plot::WriteSvg(const char *filename, double width, double height) {
-    canvas_plot cplot{(graphics::plot *) plot_impl_, (graphics::plot_agent *) plot_agent_impl_};
-    return canvas_plot_write_svg(&cplot, filename, width, height);
+    return canvas_plot_write_svg(&plot_impl_, filename, width, height);
 }
 
 Object MarkerSymbol(int n) {
