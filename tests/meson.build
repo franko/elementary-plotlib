@@ -17,6 +17,7 @@ window_tests = [
     {'name': 'test-window-c', 'sources': 'test-window-c.c'},
     {'name': 'test-bezier-c', 'sources': 'test-bezier-c.c'},
     {'name': 'test-plot-dash-lines-c', 'sources': 'test-plot-dash-lines-c.c'},
+    {'name': 'test-window-markers-c', 'sources': 'test-window-markers-c.c'},
 ]
 
 fox_tests = [

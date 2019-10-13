@@ -34,7 +34,7 @@
 
 // Following: https://google.github.io/styleguide/cppguide.html
 
-// Forward declaration of C API object.
+// Forward declaration of C API objects.
 #include "libcanvas_c_forward.h"
 
 namespace FX {

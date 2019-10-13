@@ -2,6 +2,7 @@
 #include "libcanvas_c.h"
 
 // the following are private headers.
+#include "libcanvas_c_forward.h"
 #include "canvas_svg.h"
 #include "canvas_object.h"
 #include "canvas_path.h"
@@ -12,7 +13,6 @@
 #include "plot_agent.h"
 #include "window.h"
 #include "markers.h"
-#include "libcanvas_c_forward.h"
 
 static agg::rgba8 ColorToRgba8(const canvas_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
@@ -108,6 +108,25 @@ void canvas_dashed_free(canvas_dashed *path) {
 
 void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len) {
     path->add_dash(dash_len, gap_len);
+}
+
+canvas_object *canvas_marker_symbol_new(int index) {
+    return new_marker_symbol(index);
+}
+
+// TODO indetify graphics::markers with canvas_markers
+canvas_markers *canvas_markers_new(double size, canvas_object *marker_symbol) {
+    return (canvas_markers *) new graphics::markers(size, marker_symbol);
+}
+
+canvas_markers *canvas_markers_copy(const canvas_markers *markers) {
+    const graphics::markers *obj = (const graphics::markers *) markers;
+    return (canvas_markers *) obj->copy();
+}
+
+void canvas_markers_free(canvas_markers *markers) {
+    graphics::markers *obj = (graphics::markers *) markers;
+    delete obj;    
 }
 
 canvas_plot *canvas_plot_new(unsigned int flags) {

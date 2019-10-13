@@ -78,12 +78,14 @@ struct canvas_object;
 struct canvas_path;
 struct canvas_curve;
 struct canvas_dashed;
+struct canvas_markers;
 struct canvas_plot;
 struct canvas_window;
 typedef struct canvas_object canvas_object;
 typedef struct canvas_path canvas_path;
 typedef struct canvas_curve canvas_curve;
 typedef struct canvas_dashed canvas_dashed;
+typedef struct canvas_markers canvas_markers;
 typedef struct canvas_plot canvas_plot;
 typedef struct canvas_window canvas_window;
 
@@ -112,6 +114,12 @@ canvas_dashed *canvas_dashed_new(double dash_len, double gap_len);
 void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len);
 void canvas_dashed_free(canvas_dashed *path);
 canvas_dashed *canvas_dashed_copy(const canvas_dashed *path);
+
+// TODO: identify this function with new_marker_symbol.
+canvas_object *canvas_marker_symbol_new(int index);
+canvas_markers *canvas_markers_new(double size, canvas_object *marker_symbol);
+canvas_markers *canvas_markers_copy(const canvas_markers *markers);
+void canvas_markers_free(canvas_markers *markers);
 
 canvas_plot *canvas_plot_new(unsigned int flags);
 void canvas_plot_set_title(canvas_plot *plot, const char *title);
@@ -154,6 +162,14 @@ static inline canvas_object *dashed_as_object(canvas_dashed *c) {
 
 static inline canvas_path *dashed_as_path(canvas_dashed *c) {
     return (canvas_path *) c;
+}
+
+static inline canvas_path *markers_as_path(canvas_markers *c) {
+    return (canvas_path *) c;
+}
+
+static inline canvas_object *markers_as_object(canvas_markers *c) {
+    return (canvas_object *) c;
 }
 
 #ifdef __cplusplus
