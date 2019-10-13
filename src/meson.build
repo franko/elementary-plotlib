@@ -3,9 +3,9 @@ freetype_dep = dependency('freetype2')
 thread_dep = dependency('threads')
 
 libcanvas_src = ['str.c', 'agg_font_freetype.cpp', 'render_config.cpp', 'fatal.cpp', 'utils.cpp', 'canvas_svg.cpp', 'markers.cpp', 'text.cpp', 'window_part.cpp', 'draw_svg.cpp', 'plot_axis.cpp', 'plot.cpp', 'units.cpp', 'window_surface.cpp', 'printf_check.cpp', 'plot_agent.cpp']
-libcanvas_api_src = ['libcanvas_c.cpp', 'libcanvas.cpp']
+libcanvas_api_src = ['libcanvas_c.cpp', 'libcanvas_cpp.cpp']
 
-libcanvaswin_api_src = files('libcanvas_window_c.cpp', 'libcanvas_window.cpp')
+libcanvaswin_api_src = files('libcanvas_window_c.cpp', 'libcanvas_window_cpp.cpp')
 
 libcanvas = static_library('canvas',
     libcanvas_src + libcanvas_api_src,
