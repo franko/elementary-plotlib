@@ -2,7 +2,6 @@
 #include <random>
 
 #include "window.h"
-#include "path.h"
 #include "trans.h"
 #include "sg_path.h"
 

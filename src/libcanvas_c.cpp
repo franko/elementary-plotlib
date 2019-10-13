@@ -8,7 +8,7 @@
 #include "canvas_path.h"
 #include "canvas_curve.h"
 #include "canvas_dashed.h"
-#include "path.h"
+#include "canvas_markers.h"
 #include "plot.h"
 #include "plot_agent.h"
 #include "window.h"
@@ -114,19 +114,16 @@ canvas_object *canvas_marker_symbol_new(int index) {
     return new_marker_symbol(index);
 }
 
-// TODO indetify graphics::markers with canvas_markers
 canvas_markers *canvas_markers_new(double size, canvas_object *marker_symbol) {
-    return (canvas_markers *) new graphics::markers(size, marker_symbol);
+    return new canvas_markers(size, marker_symbol);
 }
 
 canvas_markers *canvas_markers_copy(const canvas_markers *markers) {
-    const graphics::markers *obj = (const graphics::markers *) markers;
-    return (canvas_markers *) obj->copy();
+    return (canvas_markers *) markers->copy();
 }
 
 void canvas_markers_free(canvas_markers *markers) {
-    graphics::markers *obj = (graphics::markers *) markers;
-    delete obj;    
+    delete markers;
 }
 
 canvas_plot *canvas_plot_new(unsigned int flags) {

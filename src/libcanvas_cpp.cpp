@@ -10,7 +10,7 @@
 #include "canvas_path.h"
 #include "canvas_curve.h"
 #include "canvas_dashed.h"
-#include "path.h"
+#include "canvas_markers.h"
 #include "plot.h"
 #include "plot_agent.h"
 #include "window.h"
@@ -70,7 +70,7 @@ void Path::ClosePolygon() {
     PathImpl()->close_polygon();
 }
 
-Markers::Markers(double size, Object marker_symbol) : Path{(canvas_object *) new graphics::markers(size, (canvas_object *) marker_symbol.object_impl_)} {
+Markers::Markers(double size, Object marker_symbol) : Path{new canvas_markers(size, marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
 }
 

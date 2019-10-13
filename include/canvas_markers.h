@@ -1,31 +1,9 @@
-#pragma once
-
-#include <initializer_list>
-#include <utility>
-
-#include "agg_trans_affine.h"
-#include "agg_path_storage.h"
-#include "agg_conv_transform.h"
-#include "agg_conv_dash.h"
-
-#include "canvas_object.h"
 #include "canvas_path.h"
 #include "my_conv_simple_marker.h"
 
-namespace graphics {
-
-class polygon : public canvas_path {
+class canvas_markers : public canvas_path {
 public:
-    polygon(): canvas_path() { }
-    polygon(std::initializer_list<std::pair<double, double>> lst): canvas_path() {
-        path_from_initializer_list(lst);
-        close_polygon();
-    }
-};
-
-class markers : public canvas_path {
-public:
-    markers(double size, canvas_object* sym) : canvas_path(),
+    canvas_markers(double size, canvas_object* sym) : canvas_path(),
         m_marker_conv(m_path_scaling, *sym), m_size(size), m_scale(m_size), m_symbol(sym) {
         // we need to apply the scale transform here to ensure that
         // any call to bounding_box have the correct informations about
@@ -33,7 +11,7 @@ public:
         m_symbol->apply_transform(m_scale, 1.0);
     }
 
-    ~markers() override {
+    ~canvas_markers() override {
         delete m_symbol;
     }
 
@@ -52,7 +30,7 @@ public:
 
     canvas_object *copy() const override {
         canvas_object *new_symbol = m_symbol->copy();
-        markers *new_object = new markers(m_size, new_symbol);
+        canvas_markers *new_object = new canvas_markers(m_size, new_symbol);
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }
@@ -120,5 +98,3 @@ private:
     agg::trans_affine_scaling m_scale;
     canvas_object* m_symbol;
 };
-
-}
