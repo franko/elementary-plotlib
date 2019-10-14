@@ -125,6 +125,8 @@ protected:
     canvas_path *PathImpl() { return (canvas_path *) object_impl_; }
 };
 
+// FIXME to be changed or improved: it would be better if CurvePath was
+// directly inheriting from Path.
 class CurvePath : public Object {
 public:
     CurvePath();
