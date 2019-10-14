@@ -7,7 +7,6 @@
 struct bm_generator {
     bool have_z;
     double z1;
-    unsigned int *seed;
 };
 
 static double xfsin(double x) {
@@ -20,8 +19,8 @@ static double box_muller(struct bm_generator *gen, double mu, double sigma) {
         gen->have_z = false;
         return gen->z1 * sigma + mu;
     }
-    double u1 = rand_r(gen->seed) * (1.0 / RAND_MAX);
-    double u2 = rand_r(gen->seed) * (1.0 / RAND_MAX);
+    double u1 = rand() * (1.0 / RAND_MAX);
+    double u2 = rand() * (1.0 / RAND_MAX);
 
     double z0 = sqrt(-2.0 * log(u1)) * cos(tau * u2);
     gen->z1 = sqrt(-2.0 * log(u1)) * sin(tau * u2);
@@ -35,8 +34,8 @@ int main() {
     canvas_plot *plot = canvas_plot_new(canvas_plot_show_units | canvas_plot_auto_limits);
     canvas_plot_set_clip_mode(plot, false);
 
-    unsigned int gen_seed = 193;
-    struct bm_generator gen[1] = {{false, 0.0, &gen_seed}};
+    srand(193);
+    struct bm_generator gen[1] = {{false, 0.0}};
 
     canvas_markers *markers = canvas_markers_new(6, canvas_marker_symbol_new(1));
     const double x0 = 0.0001, x1 = 8 * 2 * 3.14153265359;
