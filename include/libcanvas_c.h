@@ -115,8 +115,8 @@ void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len
 void canvas_dashed_free(canvas_dashed *path);
 canvas_dashed *canvas_dashed_copy(const canvas_dashed *path);
 
-// TODO: identify this function with new_marker_symbol.
-canvas_object *canvas_marker_symbol_new(int index);
+canvas_object *canvas_marker_symbol_by_index(int index);
+canvas_object *canvas_marker_symbol_by_name(const char *name);
 canvas_markers *canvas_markers_new(double size, canvas_object *marker_symbol);
 canvas_markers *canvas_markers_copy(const canvas_markers *markers);
 void canvas_markers_free(canvas_markers *markers);

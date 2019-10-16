@@ -110,8 +110,12 @@ void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len
     path->add_dash(dash_len, gap_len);
 }
 
-canvas_object *canvas_marker_symbol_new(int index) {
+canvas_object *canvas_marker_symbol_by_index(int index) {
     return new_marker_symbol(index);
+}
+
+canvas_object *canvas_marker_symbol_by_name(const char *name) {
+    return new_marker_symbol(name);
 }
 
 canvas_markers *canvas_markers_new(double size, canvas_object *marker_symbol) {

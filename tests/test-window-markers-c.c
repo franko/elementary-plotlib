@@ -37,7 +37,7 @@ int main() {
     srand(193);
     struct bm_generator gen[1] = {{false, 0.0}};
 
-    canvas_markers *markers = canvas_markers_new(6, canvas_marker_symbol_new(1));
+    canvas_markers *markers = canvas_markers_new(6, canvas_marker_symbol_by_index(1));
     const double x0 = 0.0001, x1 = 8 * 2 * 3.14153265359;
     const int n_markers = 23;
     for (int i = 0; i < n_markers; i++) {
