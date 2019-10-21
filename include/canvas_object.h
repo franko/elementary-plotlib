@@ -1,5 +1,5 @@
 
-/* sg_object.h
+/* canvas_object.h
  *
  * Copyright (C) 2009, 2010 Francesco Abbate
  *
@@ -65,7 +65,7 @@ inline void vertex_source_copy<agg::ellipse>(agg::ellipse& dest, const agg::elli
 }
 
 // Scalable Graphics Object
-struct sg_object : public vertex_source {
+struct canvas_object : public vertex_source {
 
     virtual void apply_transform(const agg::trans_affine& m, double as) = 0;
     virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) = 0;
@@ -87,8 +87,8 @@ struct sg_object : public vertex_source {
         return 0;
     }
 
-    virtual sg_object *copy() const = 0;
-    virtual ~sg_object() { }
+    virtual canvas_object *copy() const = 0;
+    virtual ~canvas_object() { }
 };
 
 struct approx_scale {
@@ -103,17 +103,17 @@ struct no_approx_scale {
 };
 
 template <class VertexSource, class ApproxManager=no_approx_scale>
-class sg_object_gen : public sg_object {
+class canvas_object_gen : public canvas_object {
 protected:
     VertexSource m_base;
 
 public:
-    sg_object_gen(): m_base() {}
+    canvas_object_gen(): m_base() {}
 
-    template <class InitType> sg_object_gen(InitType& i) : m_base(i) { }
+    template <class InitType> canvas_object_gen(InitType& i) : m_base(i) { }
 
     template <class InitType1, class InitType2>
-    sg_object_gen(InitType1& i1, InitType2& i2) : m_base(i1, i2) { }
+    canvas_object_gen(InitType1& i1, InitType2& i2) : m_base(i1, i2) { }
 
     void rewind(unsigned path_id) override {
         m_base.rewind(path_id);
@@ -130,12 +130,12 @@ public:
         agg::bounding_rect_single(m_base, 0, x1, y1, x2, y2);
     }
 
-    void copy_content(sg_object_gen& dest) const {
+    void copy_content(canvas_object_gen& dest) const {
         vertex_source_copy(dest.m_base, this->m_base);
     }
 
-    sg_object *copy() const override {
-        sg_object_gen *new_object = new sg_object_gen();
+    canvas_object *copy() const override {
+        canvas_object_gen *new_object = new canvas_object_gen();
         copy_content(*new_object);
         return new_object;
     }
@@ -148,21 +148,21 @@ public:
     };
 };
 
-/* this class does create an sg_object obtained combining an an AGG
+/* this class does create an canvas_object obtained combining an an AGG
    transformation like conv_stroke, conv_dash or any other transform
-   with a sg_object source. This adapter implements therefore the
-   virtual methods from the sg_object abstract class */
+   with a canvas_object source. This adapter implements therefore the
+   virtual methods from the canvas_object abstract class */
 template <class ConvType, class ApproxManager>
-class sg_adapter : public sg_object {
+class sg_adapter : public canvas_object {
 protected:
     ConvType m_output;
-    sg_object* m_source;
+    canvas_object* m_source;
 
 public:
-    sg_adapter(sg_object* src): m_output(*src), m_source(src) { }
+    sg_adapter(canvas_object* src): m_output(*src), m_source(src) { }
 
     template <class InitType>
-    sg_adapter(sg_object* src, InitType& val): m_output(*src, val), m_source(src)
+    sg_adapter(canvas_object* src, InitType& val): m_output(*src, val), m_source(src)
     { }
 
     virtual ~sg_adapter() { }
@@ -187,7 +187,7 @@ public:
         return m_output;
     };
 
-    sg_object *copy() const override {
+    canvas_object *copy() const override {
         // TODO: should be removed as not used.
         return nullptr;
     }
@@ -201,20 +201,20 @@ public:
    transfomation is an affine transform that adapt to the size of the
    canvas where the object is drawn. */
 template <class ResourceManager = manage_owner>
-class sg_object_scaling : public sg_object
+class canvas_object_scaling : public canvas_object
 {
-    sg_object* m_source;
-    agg::conv_transform<sg_object> m_trans;
+    canvas_object* m_source;
+    agg::conv_transform<canvas_object> m_trans;
     agg::trans_affine m_mtx;
 
 public:
-    sg_object_scaling(sg_object* src):
+    canvas_object_scaling(canvas_object* src):
         m_source(src), m_trans(*m_source, m_mtx)
     {
         ResourceManager::acquire(m_source);
     }
 
-    ~sg_object_scaling() override {
+    ~canvas_object_scaling() override {
         ResourceManager::dispose(m_source);
     }
 
@@ -234,9 +234,9 @@ public:
         agg::bounding_rect_single (*m_source, 0, x1, y1, x2, y2);
     }
 
-    sg_object *copy() const override {
-        sg_object *new_source = m_source->copy();
-        sg_object_scaling *new_object = new sg_object_scaling(new_source);
+    canvas_object *copy() const override {
+        canvas_object *new_source = m_source->copy();
+        canvas_object_scaling *new_object = new canvas_object_scaling(new_source);
         new_object->m_mtx = m_mtx;
         return new_object;
     }

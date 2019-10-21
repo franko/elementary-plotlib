@@ -21,9 +21,9 @@ Window::~Window() {
 
 int Window::Attach(Plot& plot, const char* slot_str) {
     graphics::window *win = (graphics::window *) window_impl_;
-    graphics::plot *p = (graphics::plot *) plot.plot_impl_;
+    graphics::plot *p = plot.plot_impl_.plot;
     int index = win->attach(p, slot_str);
-    graphics::plot_agent *agent = (graphics::plot_agent *) plot.plot_agent_impl_;
+    graphics::plot_agent *agent = plot.plot_impl_.plot_agent;
     agent->add_window(win->window_surface(), index);
     return index;
 }

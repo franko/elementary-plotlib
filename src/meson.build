@@ -2,12 +2,13 @@ agg_dep = dependency('libagg')
 freetype_dep = dependency('freetype2')
 thread_dep = dependency('threads')
 
-libcanvas_src = ['str.c', 'agg_font_freetype.cpp', 'render_config.cpp', 'fatal.cpp', 'utils.cpp', 'canvas_svg.cpp', 'markers.cpp', 'text.cpp', 'window_part.cpp', 'draw_svg.cpp', 'plot_axis.cpp', 'plot.cpp', 'units.cpp', 'window_surface.cpp', 'printf_check.cpp', 'plot_agent.cpp', 'libcanvas.cpp']
+libcanvas_src = ['str.c', 'agg_font_freetype.cpp', 'render_config.cpp', 'fatal.cpp', 'utils.cpp', 'canvas_svg.cpp', 'markers.cpp', 'text.cpp', 'window_part.cpp', 'draw_svg.cpp', 'plot_axis.cpp', 'plot.cpp', 'units.cpp', 'window_surface.cpp', 'printf_check.cpp', 'plot_agent.cpp']
+libcanvas_api_src = ['libcanvas_c.cpp', 'libcanvas_cpp.cpp']
 
-libcanvaswin_interface_src = files('libcanvas_window.cpp')
+libcanvaswin_api_src = files('libcanvas_window_c.cpp', 'libcanvas_window_cpp.cpp')
 
 libcanvas = static_library('canvas',
-    libcanvas_src,
+    libcanvas_src + libcanvas_api_src,
     c_args: libcanvas_cflags,
     cpp_args: libcanvas_cflags,
     include_directories: libcanvas_include,

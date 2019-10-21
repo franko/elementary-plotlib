@@ -6,9 +6,9 @@
 Libcanvas Reference Manual
 ==========================
 
-This is the reference documentation for the C++ interface of Libcanvas, a C++ library for high-quality plots and animations.
+This is the reference documentation for the C and C++ interface of Libcanvas, a library for high-quality plots and animations.
 
-In the chapter below you can find the documentation for the classes and functions that are part of the Libcanvas public C++ interface.
+In the chapter below you can find the documentation for the classes and functions that are part of the Libcanvas public C and C++ interfaces.
 All the classes, functions and enumerators are defined inside the ``libcanvas`` namespace.
 
 All the definitions are provided by a single header file, ``libcanvas.h``.
@@ -23,6 +23,9 @@ The recommended way to link with Libcanvas is to use the library flags provided 
    plot.rst
    window.rst
    fox-integration.rst
+   graphical-element-c.rst
+   plot-c.rst
+   window-c.rst
 
 Indices and tables
 ==================

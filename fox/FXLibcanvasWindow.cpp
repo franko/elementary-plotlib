@@ -22,9 +22,9 @@ FXLibcanvasWindow::FXLibcanvasWindow(FXComposite* p, const char *split_str, FXui
 
 int FXLibcanvasWindow::Attach(libcanvas::Plot& p, const char* slot_str) {
     window_fox *window_impl = (window_fox *) m_window_impl;
-    graphics::plot *plot_impl = (graphics::plot *) p.plot_impl_;
+    graphics::plot *plot_impl = p.plot_impl_.plot;
     int index = window_impl->attach(plot_impl, slot_str);
-    graphics::plot_agent *agent = (graphics::plot_agent *) p.plot_agent_impl_;
+    graphics::plot_agent *agent = p.plot_impl_.plot_agent;
     agent->add_window(window_impl->window_surface(), index);
     return index;
 }

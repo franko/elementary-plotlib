@@ -37,7 +37,7 @@ Drawing Properties
 
 The following are used when adding an element into a plot to specify if should be stroked, filled or possibly both.
 In addition some properties affect the way the object will be drawn on the screen.
-The values are meant tb be combined using logical bit operators.
+The values are meant to be combined using logical bit operators.
 
 .. cpp:namespace-push:: property
 

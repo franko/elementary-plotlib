@@ -28,7 +28,7 @@ int main() {
     const double gauss_x0 = 4.5, gauss_sigma = 0.5;
     const int n_samples = 1000, n_bins = 16;
     const double x0 = gauss_x0 - 5 * gauss_sigma, x1 = gauss_x0 + 5 * gauss_sigma;
-    auto normal_density = [=](double x) { return 1 / (sqrt(2 * math::Pi()) * gauss_sigma) * std::exp(- 0.5 * std::pow((x - gauss_x0) / gauss_sigma, 2)); };
+    auto normal_density = [=](double x) { return 1 / (sqrt(math::Tau()) * gauss_sigma) * std::exp(- 0.5 * std::pow((x - gauss_x0) / gauss_sigma, 2)); };
     GenHistogram(plot, e1, normal_density, x0, x1, n_bins, n_samples);
 
     Path line = FxLine(x0, x1, [&](double x) { return normal_density(x) * (x1 - x0) / n_bins * n_samples; });

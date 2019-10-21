@@ -14,7 +14,6 @@ int main() {
     std::random_device r;
     std::default_random_engine e1(r());
     std::normal_distribution<double> normal_dist(0.0, 0.02);
-    std::normal_distribution<double> normal_dist_large(0.0, 0.08);
 
     const double x0 = 0.0001, x1 = 8 * math::Tau();
 
