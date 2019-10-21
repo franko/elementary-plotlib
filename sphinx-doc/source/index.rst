@@ -24,7 +24,7 @@ The recommended way to link with Libcanvas is to use the library flags provided 
    window.rst
    fox-integration.rst
    graphical-element-c.rst
-
+   plot-c.rst
 
 Indices and tables
 ==================

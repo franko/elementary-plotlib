@@ -122,6 +122,8 @@ canvas_markers *canvas_markers_copy(const canvas_markers *markers);
 void canvas_markers_free(canvas_markers *markers);
 
 canvas_plot *canvas_plot_new(unsigned int flags);
+// TODO: implement functions to copy a plot
+void canvas_plot_free(canvas_plot *plot);
 void canvas_plot_set_title(canvas_plot *plot, const char *title);
 void canvas_plot_set_x_axis_title(canvas_plot *plot, const char *title);
 void canvas_plot_set_y_axis_title(canvas_plot *plot, const char *title);
@@ -133,7 +135,7 @@ void canvas_plot_commit_pending_draw(canvas_plot *plot_object);
 bool canvas_plot_push_layer(canvas_plot *plot);
 bool canvas_plot_pop_layer(canvas_plot *plot);
 void canvas_plot_add(canvas_plot *plot, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
-void canvas_plot_free(canvas_plot *plot);
+// TODO: add function to add a legend
 int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width, double height);
 
 canvas_window *canvas_window_new();
