@@ -140,16 +140,16 @@ int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width,
 
 canvas_window *canvas_window_new();
 canvas_window *canvas_window_new_with_layout(const char *fmt);
-
+void canvas_window_free(canvas_window *w);
 int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str);
 void canvas_window_slot_refresh(canvas_window *win, unsigned index);
 void canvas_window_start(canvas_window *win, unsigned width, unsigned height, unsigned flags);
 void canvas_window_wait(canvas_window *win);
 
-void canvas_window_free(canvas_window *w);
-
+// TODO: document initialize fonts function
 void canvas_initialize_fonts();
 
+// TODO: document all the cast functions below
 static inline canvas_object *path_as_object(canvas_path *p) {
     return (canvas_object *) p;
 }

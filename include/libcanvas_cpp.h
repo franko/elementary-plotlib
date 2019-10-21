@@ -237,6 +237,7 @@ private:
     WindowImpl *window_impl_;
 };
 
+// TODO: document initialize fonts function
 void InitializeFonts();
 }
 
