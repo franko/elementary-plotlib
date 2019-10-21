@@ -1,6 +1,20 @@
 Plot - C API
 ============
 
+Plot options
+------------
+
+  .. c:macro:: canvas_plot_show_units
+  .. c:macro:: canvas_plot_auto_limits
+
+Legend Placement
+----------------
+
+  .. c:macro:: canvas_plot_left
+  .. c:macro:: canvas_plot_right
+  .. c:macro:: canvas_plot_bottom
+  .. c:macro:: canvas_plot_top
+
 .. c:type:: canvas_plot
 
   A plot is an object that is used to group and display one or more graphical elements. The elements that belong to a plot will share the same coordinates space, we will refer to this latter as the model coordinates space.
@@ -17,18 +31,6 @@ Plot - C API
   Examples of a plot that contains two Path objects, drawn with different colors.
 
   .. figure:: plot-function-example.png
-
-  **Plot options**
-
-  .. c:macro:: canvas_plot_show_units
-  .. c:macro:: canvas_plot_auto_limits
-
-  **Legend Placement**
-
-  .. c:macro:: canvas_plot_left
-  .. c:macro:: canvas_plot_right
-  .. c:macro:: canvas_plot_bottom
-  .. c:macro:: canvas_plot_top
 
   .. c:function:: canvas_plot *canvas_plot_new(unsigned int flags)
 
