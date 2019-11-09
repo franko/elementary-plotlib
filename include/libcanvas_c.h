@@ -129,6 +129,8 @@ void canvas_plot_set_x_axis_title(canvas_plot *plot, const char *title);
 void canvas_plot_set_y_axis_title(canvas_plot *plot, const char *title);
 void canvas_plot_set_label_angle(canvas_plot *plot, int axis, float angle);
 void canvas_plot_set_limits(canvas_plot *plot, float x0, float y0, float x1, float y1);
+void canvas_plot_set_x_limits(canvas_plot *plot, float x0, float x1);
+void canvas_plot_set_y_limits(canvas_plot *plot, float y0, float y1);
 void canvas_plot_set_clip_mode(canvas_plot *plot, bool flag);
 void canvas_plot_enable_label_format(canvas_plot *plot, int axis, const char *fmt);
 void canvas_plot_commit_pending_draw(canvas_plot *plot_object);

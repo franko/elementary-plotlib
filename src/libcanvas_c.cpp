@@ -231,6 +231,24 @@ void canvas_plot_set_limits(canvas_plot *plot_object, float x1, float y1, float 
     plot_update_windows_and_commit(plot_object);
 }
 
+void canvas_plot_set_x_limits(canvas_plot *plot_object, float x0, float x1) {
+    graphics::plot *p = plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_x_limits(x0, x1);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
+void canvas_plot_set_y_limits(canvas_plot *plot_object, float y0, float y1) {
+    graphics::plot *p = plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->set_x_limits(y0, y1);
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
 void canvas_plot_commit_pending_draw(canvas_plot *plot_object) {
     graphics::plot *p = plot_object->plot;
     graphics::plot::drawing_context dc(*p);

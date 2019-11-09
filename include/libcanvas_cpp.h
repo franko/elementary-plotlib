@@ -187,7 +187,7 @@ public:
 
 class Plot {
 public:
-    enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
+    enum { ShowUnits = 1 << 0, AutoLimitsX = 1 << 1, AutoLimitsY = 1 << 2, AutoLimits = AutoLimitsX | AutoLimitsY };
     enum Placement { Right = 0, Left = 1, Bottom = 2, Top = 3 };
 
     Plot(unsigned flags = 0);
@@ -203,6 +203,8 @@ public:
     void SetYAxisTitle(const char *axis_title);
     void SetClipMode(bool flag);
     void SetLimits(const Rectangle& r);
+    void SetXLimits(float x1, float x2);
+    void SetYLimits(float y1, float y2);
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();

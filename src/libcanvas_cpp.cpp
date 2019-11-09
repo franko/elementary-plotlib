@@ -196,6 +196,14 @@ void Plot::SetLimits(const Rectangle& r) {
     canvas_plot_set_limits(&plot_impl_, r.x1, r.y1, r.x2, r.y2);
 }
 
+void Plot::SetXLimits(float x1, float x2) {
+    canvas_plot_set_x_limits(&plot_impl_, x1, x2);
+}
+
+void Plot::SetYLimits(float y1, float y2) {
+    canvas_plot_set_y_limits(&plot_impl_, y1, y2);
+}
+
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
     canvas_plot_set_label_angle(&plot_impl_, axis, angle);
 }

@@ -17,14 +17,17 @@ void plot::commit_pending_draw()
     m_changes_pending.clear();
 }
 
-void plot::add(sg_element elem)
-{
-    if (m_auto_limits && !fit_inside(elem)) {
-        m_bbox_updated = false;
+void plot::add(sg_element elem) {
+    if (m_auto_limits_x && !fit_inside_x(elem)) {
+        m_bbox_updated_x = false;
         m_need_redraw = true;
         m_enlarged_layer = true;
     }
-
+    if (m_auto_limits_y && !fit_inside_y(elem)) {
+        m_bbox_updated_y = false;
+        m_need_redraw = true;
+        m_enlarged_layer = true;
+    }
     auto new_node = new list<sg_element>(elem);
     m_drawing_queue = list<sg_element>::push_back(m_drawing_queue, new_node);
 }
@@ -109,9 +112,8 @@ void plot::draw_elements(canvas_type& canvas, const plot_layout& layout)
     canvas.reset_clipping();
 }
 
-void plot::compute_user_trans()
-{
-    agg::rect_d rin = m_rect.is_defined() ? m_rect.rect() : agg::rect_d(0, 0, 1, 1);
+void plot::compute_user_trans() {
+    agg::rect_d rin = get_limits_rect();
     agg::rect_d r;
     m_x_axis.get_limits(rin.x1, rin.x2, r.x1, r.x2);
     m_y_axis.get_limits(rin.y1, rin.y2, r.y1, r.y2);
@@ -374,35 +376,56 @@ void plot::set_units(bool _use_units)
     }
 }
 
-void plot::update_units()
-{
+void plot::update_units() {
     units& ux = m_x_axis.u;
-    units& uy = m_y_axis.u;
-    if (m_rect.is_defined())
-    {
-        const rect_base<double>& r = m_rect.rect();
-        ux.set(r.x1, r.x2);
-        uy.set(r.y1, r.y2);
-    }
-    else
-    {
+    if (m_limits_x.is_defined()) {
+        ux.set(m_limits_x.value1(), m_limits_x.value2());
+    } else {
         ux.clear();
+    }
+    units& uy = m_y_axis.u;
+    if (m_limits_y.is_defined()) {
+        uy.set(m_limits_y.value1(), m_limits_y.value2());
+    } else {
         uy.clear();
     }
-
     compute_user_trans();
 }
 
-void plot::set_limits(const agg::rect_base<double>& r)
-{
-    m_rect.set(r);
+void plot::set_limits(const agg::rect_base<double>& r) {
+    m_limits_x.set(r.x1, r.x2);
+    m_limits_y.set(r.y1, r.y2);
     update_units();
     m_need_redraw = true;
 }
 
-void plot::unset_limits()
-{
-    m_rect.clear();
+void plot::set_x_limits(double x1, double x2) {
+    m_limits_x.set(x1, x2);
+    update_units();
+    m_need_redraw = true;
+}
+
+void plot::set_y_limits(double y1, double y2) {
+    m_limits_y.set(y1, y2);
+    update_units();
+    m_need_redraw = true;
+}
+
+void plot::unset_limits() {
+    m_limits_x.unset();
+    m_limits_y.unset();
+    update_units();
+    m_need_redraw = true;
+}
+
+void plot::unset_x_limits() {
+    m_limits_x.unset();
+    update_units();
+    m_need_redraw = true;
+}
+
+void plot::unset_y_limits() {
+    m_limits_y.unset();
     update_units();
     m_need_redraw = true;
 }
@@ -427,11 +450,15 @@ bool plot::push_layer()
         m_layers.add(new_layer);
     }
 
-    if (m_auto_limits) {
-        if (m_rect.is_defined()) {
-            parent_layer()->set_bounding_box(m_rect.rect());
+    if (using_auto_limits()) {
+        // FIXME: dubious logic here!
+        if (m_limits_x.is_defined() && m_limits_y.is_defined()) {
+            agg::rect_d limits_rect = get_limits_rect();
+            parent_layer()->set_bounding_box(limits_rect);
         }
-        m_bbox_updated = true;
+        // FIXME logic here
+        m_bbox_updated_x = true;
+        m_bbox_updated_y = true;
         m_enlarged_layer = false;
     }
 
@@ -452,9 +479,11 @@ bool plot::pop_layer()
     clear_drawing_queue();
     m_need_redraw = true;
 
-    if (m_auto_limits) {
-        if (m_enlarged_layer)
-            m_bbox_updated = false;
+    if (using_auto_limits()) {
+        if (m_enlarged_layer) {
+            m_bbox_updated_x = false;
+            m_bbox_updated_y = false;
+        }
         m_enlarged_layer = true;
     }
 
@@ -478,7 +507,7 @@ void plot::clear_current_layer()
     m_changes_pending = m_changes_accu;
     m_changes_accu.clear();
 
-    if (m_auto_limits) {
+    if (using_auto_limits()) {
         if (m_enlarged_layer) {
             item_list* parent = parent_layer();
             if (parent) {
@@ -487,7 +516,8 @@ void plot::clear_current_layer()
                 unset_limits();
             }
         }
-        m_bbox_updated = true;
+        m_bbox_updated_x = true;
+        m_bbox_updated_y = true;
         m_enlarged_layer = false;
     }
 }
@@ -497,16 +527,22 @@ int plot::current_layer_index()
     return m_layers.size();
 }
 
-bool plot::fit_inside(const sg_element& elem) const
-{
-    if (!m_bbox_updated || !m_rect.is_defined()) {
+bool plot::fit_inside_x(const sg_element& elem) const {
+    if (!m_bbox_updated_x || !m_limits_x.is_defined()) {
         return false;
     }
-
     agg::rect_base<double> r;
     elem.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
-    const agg::rect_d& bb = m_rect.rect();
-    return bb.hit_test(r.x1, r.y1) && bb.hit_test(r.x2, r.y2);
+    return (r.x1 >= m_limits_x.value1() && r.x2 <= m_limits_x.value2());
+}
+
+bool plot::fit_inside_y(const sg_element& elem) const {
+    if (!m_bbox_updated_y || !m_limits_y.is_defined()) {
+        return false;
+    }
+    agg::rect_base<double> r;
+    elem.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+    return (r.y1 >= m_limits_y.value1() && r.y2 <= m_limits_y.value2());
 }
 
 
@@ -520,8 +556,7 @@ void plot::calc_layer_bounding_box(plot::item_list* layer, opt_rect<double>& rec
     }
 }
 
-void plot::calc_bounding_box()
-{
+void plot::calc_bounding_box() {
     opt_rect<double> box;
     unsigned n = nb_layers();
     for (unsigned j = 0; j < n-1; j++) {
@@ -537,19 +572,30 @@ void plot::calc_bounding_box()
         box.add<rect_union>(r);
     }
 
-    m_rect = box;
+    if (box.is_defined()) {
+        if (!m_bbox_updated_x) {
+            m_limits_x.set(box.rect().x1, box.rect().x2);
+        }
+        if (!m_bbox_updated_y) {
+            m_limits_y.set(box.rect().y1, box.rect().y2);
+        }
+    } else {
+        m_limits_x.unset();
+        m_limits_y.unset();
+    }
 }
 
 void plot::check_bounding_box()
 {
     calc_bounding_box();
     update_units();
-    m_bbox_updated = true;
+    m_bbox_updated_x = true;
+    m_bbox_updated_y = true;
 }
 
 void plot::before_draw()
 {
-    if (m_auto_limits && !m_bbox_updated) {
+    if (using_auto_limits() && (!m_bbox_updated_x || !m_bbox_updated_y)) {
         check_bounding_box();
     }
 }

@@ -155,7 +155,12 @@ public:
 
     enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
 
-    enum { show_units = 1 << 0, auto_limits = 1 << 1 };
+    enum {
+        show_units    = 1 << 0,
+        auto_limits_x = 1 << 1,
+        auto_limits_y = 1 << 2,
+        auto_limits   = auto_limits_x | auto_limits_y,
+    };
 
     class drawing_context {
     public:
@@ -172,8 +177,11 @@ public:
     plot(unsigned flags) :
         m_drawing_queue(0), m_clip_flag(true), m_need_redraw(true),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
-        m_auto_limits(flags & auto_limits),
-        m_bbox_updated(true), m_enlarged_layer(false)
+        m_auto_limits_x(flags & auto_limits_x),
+        m_auto_limits_y(flags & auto_limits_y),
+        m_bbox_updated_x(true),
+        m_bbox_updated_y(true),
+        m_enlarged_layer(false)
     {
         m_layers.add(&m_root_layer);
         compute_user_trans();
@@ -184,11 +192,16 @@ public:
 
     plot(const plot& source) :
             m_trans(source.m_trans), m_drawing_queue(nullptr), m_clip_flag(source.m_clip_flag),
-            m_need_redraw(source.m_need_redraw), m_rect(source.m_rect),
+            m_need_redraw(source.m_need_redraw),
+            m_limits_x(source.m_limits_x),
+            m_limits_y(source.m_limits_y),
             m_changes_accu(source.m_changes_accu), m_changes_pending(source.m_changes_pending),
             m_root_layer(source.m_root_layer), m_layers(),
             m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
-            m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
+            m_auto_limits_x(source.m_auto_limits_x),
+            m_auto_limits_y(source.m_auto_limits_y),
+            m_bbox_updated_x(source.m_bbox_updated_x),
+            m_bbox_updated_y(source.m_bbox_updated_y),
             m_enlarged_layer(source.m_enlarged_layer),
             m_drawing_mutex() {
         m_layers.add(&m_root_layer);
@@ -280,7 +293,13 @@ public:
     };
 
     void update_units();
+
+    void set_x_limits(double x1, double x2);
+    void set_y_limits(double y1, double y2);
     void set_limits(const agg::rect_d& r);
+
+    void unset_x_limits();
+    void unset_y_limits();
     void unset_limits();
 
     void set_xaxis_comp_labels(ptr_list<factor_labels>* labels)
@@ -299,11 +318,10 @@ public:
     void get_bounding_rect(agg::rect_base<double>& bb)
     {
         before_draw();
-
-        if (m_rect.is_defined())
-            bb = m_rect.rect();
-        else
-            bb = agg::rect_base<double>(0.0, 0.0, 0.0, 0.0);
+        bb.x1 = m_limits_x.value1_if_defined_or(0);
+        bb.x2 = m_limits_x.value2_if_defined_or(0);
+        bb.y1 = m_limits_y.value1_if_defined_or(0);
+        bb.y2 = m_limits_y.value2_if_defined_or(0);
     }
 
     bool push_layer();
@@ -427,11 +445,16 @@ protected:
 
     void compute_user_trans();
 
-    bool fit_inside(const sg_element& elem) const;
+    bool fit_inside_x(const sg_element& elem) const;
+    bool fit_inside_y(const sg_element& elem) const;
     void check_bounding_box();
     void calc_layer_bounding_box(item_list* layer, opt_rect<double>& rect);
     void calc_bounding_box();
     void set_opt_limits(const opt_rect<double>& r);
+
+    bool using_auto_limits() const {
+        return m_auto_limits_x || m_auto_limits_y;
+    }
 
     void layer_dispose_elements (item_list* layer);
 
@@ -440,6 +463,10 @@ protected:
             property = new_value;
             m_need_redraw = true;
         }
+    }
+
+    agg::rect_d get_limits_rect() {
+        return agg::rect_d{m_limits_x.value1_if_defined_or(0), m_limits_y.value1_if_defined_or(1), m_limits_x.value2_if_defined_or(0), m_limits_y.value2_if_defined_or(1)};
     }
 
     unsigned nb_layers() const {
@@ -463,9 +490,8 @@ protected:
     list<sg_element> *m_drawing_queue;
 
     bool m_clip_flag;
-
     bool m_need_redraw;
-    opt_rect<double> m_rect;
+    opt_range<double> m_limits_x, m_limits_y;
 
     // keep trace of the region where changes happened since
     // the last pushlayer or clear
@@ -480,8 +506,8 @@ private:
     axis m_x_axis, m_y_axis;
     plot* m_legend[4];
 
-    bool m_auto_limits;
-    bool m_bbox_updated;
+    bool m_auto_limits_x, m_auto_limits_y;
+    bool m_bbox_updated_x, m_bbox_updated_y;
     bool m_enlarged_layer;
     std::mutex m_drawing_mutex;
 };

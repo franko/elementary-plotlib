@@ -14,6 +14,7 @@ window_tests = [
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
     {'name': 'test-write-svg', 'sources': 'test-write-svg.cpp'},
     {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
+    {'name': 'test-plot-xy-limits', 'sources': 'test-plot-xy-limits.cpp'},
     {'name': 'test-window-c', 'sources': 'test-window-c.c'},
     {'name': 'test-bezier-c', 'sources': 'test-bezier-c.c'},
     {'name': 'test-plot-dash-lines-c', 'sources': 'test-plot-dash-lines-c.c'},
