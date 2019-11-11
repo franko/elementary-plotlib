@@ -244,6 +244,10 @@ bool Plot::PopLayer() {
     return canvas_plot_pop_layer(&plot_impl_);
 }
 
+void Plot::ClearLayer() {
+    return canvas_plot_clear_layer(&plot_impl_);
+}
+
 bool Plot::WriteSvg(const char *filename, double width, double height) {
     return canvas_plot_write_svg(&plot_impl_, filename, width, height);
 }

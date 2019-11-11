@@ -222,6 +222,15 @@ bool canvas_plot_pop_layer(canvas_plot *plot_object) {
     return success;
 }
 
+void canvas_plot_clear_layer(canvas_plot *plot_object) {
+    graphics::plot *p = (graphics::plot *) plot_object->plot;
+    {
+        graphics::plot::drawing_context dc(*p);
+        p->clear_current_layer();
+    }
+    plot_update_windows_and_commit(plot_object);
+}
+
 void canvas_plot_set_limits(canvas_plot *plot_object, float x1, float y1, float x2, float y2) {
     graphics::plot *p = plot_object->plot;
     {

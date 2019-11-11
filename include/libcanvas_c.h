@@ -136,6 +136,7 @@ void canvas_plot_enable_label_format(canvas_plot *plot, int axis, const char *fm
 void canvas_plot_commit_pending_draw(canvas_plot *plot_object);
 bool canvas_plot_push_layer(canvas_plot *plot);
 bool canvas_plot_pop_layer(canvas_plot *plot);
+void canvas_plot_clear_layer(canvas_plot *plot);
 void canvas_plot_add(canvas_plot *plot, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
 // TODO: add function to add a legend
 int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width, double height);

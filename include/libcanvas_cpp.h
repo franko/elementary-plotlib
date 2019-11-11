@@ -212,6 +212,7 @@ public:
     void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
     bool PushLayer();
     bool PopLayer();
+    void ClearLayer();
     void AddLegend(Plot legend, Placement location);
     bool WriteSvg(const char *filename, double width, double height);
 private:
