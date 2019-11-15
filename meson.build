@@ -10,7 +10,10 @@ project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99
 
 libcanvas_cflags = []
 
-if host_machine.system() == 'windows'
+host_system = host_machine.system()
+host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
+
+if host_is_window
     libcanvas_cflags += '-DWIN32'
 endif
 
@@ -32,10 +35,12 @@ install_headers('include/libcanvas_c_forward.h')
 install_headers('include/FXLibcanvasWindow.h')
 
 subdir('src')
-if host_machine.system() == 'linux'
+if host_system == 'linux'
     subdir('xwindow')
-else
+elif host_is_window
     subdir('win32')
+else
+    error('Host not supported \'' + host_machine.system() + '\'.')
 endif
 
 pkg = import('pkgconfig')
