@@ -1,10 +1,8 @@
-#ifdef WIN32
+#if defined (WIN32) || defined (CYGWIN)
 #include <windows.h>
 #include <shlobj.h>
-#include <sys/stat.h>
-#else
-#include <sys/stat.h>
 #endif
+#include <sys/stat.h>
 
 #include "render_config.h"
 #include "fatal.h"
@@ -23,10 +21,29 @@ agg::lcd_distribution_lut graphics::subpixel_lut(0.448, 0.184, 0.092);
 agg::font_engine_freetype_int32 global_font_eng;
 agg::font_cache_manager<agg::font_engine_freetype_int32> global_font_man(global_font_eng);
 
-#ifdef WIN32
+#if defined (WIN32) || defined (CYGWIN)
 const char *ttf_names[] = {"calibri.ttf", "arial.ttf", 0};
 const char *console_font_names[] = {"consolas", "lucida console", "fixedsys", 0};
 const char *console_font_filenames[] = {"consola.ttf", "lucon.ttf", "cvgafix.fon", 0};
+#elif defined (DARWIN_MACOSX)
+const char *ttf_names[] = {"Arial.ttf", "Trebuchet MS.ttf", "Courier New.ttf", 0};
+#define TTF_SYSTEM_DIR "/Library/Fonts/"
+#define CONSOLE_FONT_NAME "Monaco"
+#else
+const char *ttf_names[] = {"ubuntu-font-family/Ubuntu-R.ttf", "freefont/FreeSans.ttf", "ttf-dejavu/DejaVuSans.ttf", 0};
+#define TTF_SYSTEM_DIR "/usr/share/fonts/truetype/"
+#define CONSOLE_FONT_NAME "monospace"
+#endif
+
+#if defined (WIN32) || defined (CYGWIN)
+
+#ifdef CYGWIN
+#define MYWSTRUCT_STAT struct stat
+#define MYWSTAT stat
+#else
+#define MYWSTRUCT_STAT struct _stat
+#define MYWSTAT _stat
+#endif
 
 const char *graphics::get_font_name()
 {
@@ -38,8 +55,8 @@ const char *graphics::get_font_name()
     {
         const char* font_name = ttf_names[k];
         memcpy(pf + len, font_name, (strlen(font_name) + 1) * sizeof(char));
-        struct _stat inf[1];
-        int status = _stat(pf, inf);
+        MYWSTRUCT_STAT inf[1];
+        int status = MYWSTAT(pf, inf);
         if (status == 0)
             return pf;
     }
@@ -57,8 +74,8 @@ const char* graphics::get_fox_console_font_name()
     {
         const char* filename = console_font_filenames[k];
         memcpy(pf + len, filename, (strlen(filename) + 1) * sizeof(char));
-        struct _stat inf[1];
-        int status = _stat(pf, inf);
+        MYWSTRUCT_STAT inf[1];
+        int status = MYWSTAT(pf, inf);
         if (status == 0)
             return console_font_names[k];
     }
@@ -67,16 +84,6 @@ const char* graphics::get_fox_console_font_name()
 }
 
 #else
-
-#ifdef DARWIN_MACOSX
-const char *ttf_names[] = {"Arial.ttf", "Trebuchet MS.ttf", "Courier New.ttf", 0};
-#define TTF_SYSTEM_DIR "/Library/Fonts/"
-#define CONSOLE_FONT_NAME "Monaco"
-#else
-const char *ttf_names[] = {"ubuntu-font-family/Ubuntu-R.ttf", "freefont/FreeSans.ttf", "ttf-dejavu/DejaVuSans.ttf", 0};
-#define TTF_SYSTEM_DIR "/usr/share/fonts/truetype/"
-#define CONSOLE_FONT_NAME "monospace"
-#endif
 
 const char *graphics::get_font_name()
 {

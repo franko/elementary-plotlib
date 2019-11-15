@@ -13,8 +13,10 @@ libcanvas_cflags = []
 host_system = host_machine.system()
 host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
 
-if host_is_window
+if host_system == 'windows'
     libcanvas_cflags += '-DWIN32'
+elif host_system == 'cygwin'
+    libcanvas_cflags += '-DCYGWIN'
 endif
 
 debug_build = get_option('buildtype') != 'release'

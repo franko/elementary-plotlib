@@ -70,7 +70,7 @@ private:
 	Window m_window;
 };
 
-#ifdef WIN32
+#if defined (WIN32) || defined (CYGWIN)
 #include "win32/window_win32.h"
 typedef window_gen<window_win32> window_platform_native;
 #else
