@@ -190,7 +190,8 @@ public:
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
     enum Placement { Right = 0, Left = 1, Bottom = 2, Top = 3 };
 
-    Plot(unsigned flags = 0);
+    Plot() : Plot(ShowUnits | AutoLimits) { }
+    Plot(unsigned flags);
     Plot(const Plot& other);
     Plot(Plot&& other);
     ~Plot();
