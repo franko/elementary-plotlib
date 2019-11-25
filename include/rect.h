@@ -81,46 +81,6 @@ public:
 };
 
 template <typename T>
-class opt_range {
-public:
-    opt_range(): m_x1(1), m_x2(-1) { }
-    opt_range(T x1, T x2): m_x1(x1), m_x2(x2) { }
-
-    void set(T x1, T x2) {
-        m_x1 = x1;
-        m_x2 = x2;
-    }
-
-    void unset() {
-        m_x1 = 1;
-        m_x2 = -1;
-    }
-
-    bool is_defined() const {
-        return m_x1 <= m_x2;
-    }
-
-    T value1() const {
-        return m_x1;
-    }
-
-    T value2() const {
-        return m_x2;
-    }
-
-    T value1_if_defined_or(double x_default) {
-        return is_defined() ? m_x1 : x_default;
-    }
-
-    T value2_if_defined_or(double x_default) {
-        return is_defined() ? m_x2 : x_default;
-    }
-
-private:
-    T m_x1, m_x2;
-};
-
-template <typename T>
 agg::rect_base<T> rect_of_slot_matrix (const agg::trans_affine& mtx)
 {
     T dx = T(mtx.sx + mtx.tx), dy = T(mtx.sy + mtx.ty);
