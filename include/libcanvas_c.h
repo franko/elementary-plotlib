@@ -74,6 +74,15 @@ struct canvas_rectangle {
     float x1, y1, x2, y2;
 };
 
+#ifdef __cplusplus
+class canvas_object;
+class canvas_path;
+class canvas_curve;
+class canvas_dashed;
+class canvas_markers;
+class canvas_plot;
+class canvas_window;
+#else
 struct canvas_object;
 struct canvas_path;
 struct canvas_curve;
@@ -88,6 +97,7 @@ typedef struct canvas_dashed canvas_dashed;
 typedef struct canvas_markers canvas_markers;
 typedef struct canvas_plot canvas_plot;
 typedef struct canvas_window canvas_window;
+#endif
 
 canvas_object *canvas_object_copy(const canvas_object *obj);
 void canvas_object_free(canvas_object *obj);
