@@ -15,6 +15,11 @@ canvas_window *canvas_window_new_with_layout(const char *fmt) {
     return (canvas_window *) new graphics::window{fmt};
 }
 
+void canvas_window_set_layout(canvas_window *win_, const char *fmt) {
+    graphics::window *win = (graphics::window *) win_;
+    win->set_layout(fmt);
+}
+
 int canvas_window_attach(canvas_window *win_, canvas_plot *plot, const char* slot_str) {
     graphics::window *win = (graphics::window *) win_;
     graphics::plot *p = plot->plot;

@@ -141,6 +141,7 @@ int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width,
 
 canvas_window *canvas_window_new();
 canvas_window *canvas_window_new_with_layout(const char *fmt);
+void canvas_window_set_layout(canvas_window *win, const char *fmt);
 void canvas_window_free(canvas_window *w);
 int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str);
 void canvas_window_slot_refresh(canvas_window *win, unsigned index);

@@ -36,6 +36,12 @@ Window's flags
   For example to accommodate two plots horizontally use the layout string ``h..``.
   To subdivide a window in a 2x2 grid it can be used the layout string ``h(v..)(v..)``.
 
+  .. cpp:function:: void SetLayout(const char *layout)
+
+    Set the window's layout using the format string `layout` like when using the constructor :cpp:func:`Window::Window()`.
+    Can be used only if the windows is not yet running.
+    If the window is already running the call has no effect.
+
   .. cpp:function:: int Attach(Plot& plot, const char* slot)
 
     Attach the given plot inside a window using ``slot`` to address the slot.

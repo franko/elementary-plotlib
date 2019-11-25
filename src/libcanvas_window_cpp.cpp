@@ -19,6 +19,11 @@ Window::~Window() {
     delete win;
 }
 
+void Window::SetLayout(const char *fmt) {
+    graphics::window *win = (graphics::window *) window_impl_;
+    win->set_layout(fmt);    
+}
+
 int Window::Attach(Plot& plot, const char* slot_str) {
     graphics::window *win = (graphics::window *) window_impl_;
     graphics::plot *p = plot.plot_impl_.plot;

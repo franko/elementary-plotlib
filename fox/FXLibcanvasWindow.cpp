@@ -29,6 +29,13 @@ int FXLibcanvasWindow::Attach(libcanvas::Plot& p, const char* slot_str) {
     return index;
 }
 
+void FXLibcanvasWindow::SetLayout(const char *fmt) {
+    window_fox *win = (window_fox *) m_window_impl;
+    if (win->status() == graphics::window_not_started) {
+        win->window_surface()->split(fmt);
+    }
+}
+
 void FXLibcanvasWindow::SlotRefresh(unsigned index) {
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->slot_refresh(index);

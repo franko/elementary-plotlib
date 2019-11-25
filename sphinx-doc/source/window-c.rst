@@ -34,6 +34,12 @@ Window's flags
   For example to accommodate two plots horizontally use the layout string ``h..``.
   To subdivide a window in a 2x2 grid it can be used the layout string ``h(v..)(v..)``.
 
+  .. c:function:: void canvas_window_set_layout(canvas_window *win, const char *layout)
+
+    Set the window's layout using the format string `layout` like when using the constructor :c:func:`canvas_window_new_with_layout(const char *layout)`.
+    Can be used only if the windows is not yet running.
+    If the window is already running the call has no effect.
+
   .. c:function:: int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str)
 
     Attach the given plot inside a window using ``slot`` to address the slot.

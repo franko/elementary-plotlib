@@ -45,6 +45,12 @@ public:
 		m_surface.attach_window(&m_window);
 	}
 
+    void set_layout(const char *fmt) {
+        if (m_window.status() == graphics::window_not_started) {
+            m_surface.split(fmt);
+        }
+    }
+
     int attach(graphics::plot* p, const char* slot_str) {
     	return m_surface.attach(p, slot_str);
     }

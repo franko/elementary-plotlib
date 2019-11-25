@@ -229,6 +229,7 @@ public:
     ~Window();
 
     int Attach(Plot& plot, const char* slot_str);
+    void SetLayout(const char *fmt);
     void SlotRefresh(unsigned index);
     void Start(unsigned width, unsigned height, unsigned flags);
     void Wait();

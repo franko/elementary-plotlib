@@ -20,6 +20,7 @@ public:
     ~FXLibcanvasWindow();
 
     int Attach(libcanvas::Plot& p, const char* slot_str);
+    void SetLayout(const char *fmt);
     void SlotRefresh(unsigned index);
     void Wait();
 
