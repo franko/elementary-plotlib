@@ -17,9 +17,9 @@
 #include "markers.h"
 #include "canvas_svg.h"
 
-namespace libcanvas {
+namespace elp {
 
-Object::Object(canvas_object *object_impl): object_impl_(object_impl) {
+Object::Object(elp_object *object_impl): object_impl_(object_impl) {
 }
 
 Object::Object(const Object& obj) {
@@ -52,10 +52,10 @@ Object& Object::operator=(Object&& other) {
     return *this;
 }
 
-Path::Path(): Object{(canvas_object *) new canvas_path{}} {
+Path::Path(): Object{(elp_object *) new elp_path{}} {
 }
 
-Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(canvas_object *) new canvas_path(lst)} {
+Path::Path(std::initializer_list<std::pair<double, double>> lst): Object{(elp_object *) new elp_path(lst)} {
 }
 
 void Path::MoveTo(double x, double y) {
@@ -70,11 +70,11 @@ void Path::ClosePolygon() {
     PathImpl()->close_polygon();
 }
 
-Markers::Markers(double size, Object marker_symbol) : Path{new canvas_markers(size, marker_symbol.object_impl_)} {
+Markers::Markers(double size, Object marker_symbol) : Path{new elp_markers(size, marker_symbol.object_impl_)} {
     marker_symbol.object_impl_ = nullptr;
 }
 
-CurvePath::CurvePath() : Object{new canvas_curve{}} {
+CurvePath::CurvePath() : Object{new elp_curve{}} {
 }
 
 void CurvePath::MoveTo(double x, double y) {
@@ -101,8 +101,8 @@ void CurvePath::ClosePolygon() {
     CurveImpl()->close_polygon();
 }
 
-DashPath::DashPath(std::initializer_list<double> lst) : Path{new canvas_dashed{}} {
-    canvas_dashed *dash_object = DashedImpl();
+DashPath::DashPath(std::initializer_list<double> lst) : Path{new elp_dashed{}} {
+    elp_dashed *dash_object = DashedImpl();
     double prev_len;
     bool accu = false;
     for (double len : lst) {
@@ -120,7 +120,7 @@ void DashPath::AddDash(double a, double b) {
     DashedImpl()->add_dash(a, b);
 }
 
-Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(canvas_object *) new graphics::text(text, size, hjustif, vjustif)} {
+Text::Text(const char* text, double size, double hjustif, double vjustif) : Object{(elp_object *) new graphics::text(text, size, hjustif, vjustif)} {
 }
 
 void Text::SetAngle(double angle) {
@@ -133,12 +133,12 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
-void DeletePlotImpl(canvas_plot& plot) {
+void DeletePlotImpl(elp_plot& plot) {
     delete plot.plot;
     delete plot.plot_agent;
 }
 
-void NullPlotImpl(canvas_plot& plot) {
+void NullPlotImpl(elp_plot& plot) {
     plot.plot = nullptr;
     plot.plot_agent = nullptr;
 }
@@ -176,15 +176,15 @@ Plot& Plot::operator=(const Plot& other) {
 }
 
 void Plot::SetTitle(const char *title) {
-    canvas_plot_set_title(&plot_impl_, title);
+    elp_plot_set_title(&plot_impl_, title);
 }
 
 void Plot::SetXAxisTitle(const char *axis_title) {
-    canvas_plot_set_x_axis_title(&plot_impl_, axis_title);
+    elp_plot_set_x_axis_title(&plot_impl_, axis_title);
 }
 
 void Plot::SetYAxisTitle(const char *axis_title) {
-    canvas_plot_set_y_axis_title(&plot_impl_, axis_title);
+    elp_plot_set_y_axis_title(&plot_impl_, axis_title);
 }
 
 void Plot::SetClipMode(bool flag) {
@@ -193,24 +193,24 @@ void Plot::SetClipMode(bool flag) {
 }
 
 void Plot::SetLimits(const Rectangle& r) {
-    canvas_plot_set_limits(&plot_impl_, r.x1, r.y1, r.x2, r.y2);
+    elp_plot_set_limits(&plot_impl_, r.x1, r.y1, r.x2, r.y2);
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
-    canvas_plot_set_label_angle(&plot_impl_, axis, angle);
+    elp_plot_set_label_angle(&plot_impl_, axis, angle);
 }
 
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
-    canvas_plot_enable_label_format(&plot_impl_, axis, fmt);
+    elp_plot_enable_label_format(&plot_impl_, axis, fmt);
 }
 
 void Plot::CommitPendingDraw() {
-    canvas_plot_commit_pending_draw(&plot_impl_);
+    elp_plot_commit_pending_draw(&plot_impl_);
 }
 
 void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
     if (object.object_impl_ != nullptr) {
-        canvas_plot_add(&plot_impl_, (canvas_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
+        elp_plot_add(&plot_impl_, (elp_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
@@ -229,24 +229,24 @@ void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
 }
 
 bool Plot::PushLayer() {
-    return canvas_plot_push_layer(&plot_impl_);
+    return elp_plot_push_layer(&plot_impl_);
 }
 
 bool Plot::PopLayer() {
-    return canvas_plot_pop_layer(&plot_impl_);
+    return elp_plot_pop_layer(&plot_impl_);
 }
 
 void Plot::ClearLayer() {
-    return canvas_plot_clear_layer(&plot_impl_);
+    return elp_plot_clear_layer(&plot_impl_);
 }
 
 bool Plot::WriteSvg(const char *filename, double width, double height) {
-    return canvas_plot_write_svg(&plot_impl_, filename, width, height);
+    return elp_plot_write_svg(&plot_impl_, filename, width, height);
 }
 
 Object MarkerSymbol(int n) {
-    canvas_object *new_object = new_marker_symbol(n);
-    return Object{(canvas_object *) new_object};
+    elp_object *new_object = new_marker_symbol(n);
+    return Object{(elp_object *) new_object};
 }
 
 void InitializeFonts() {

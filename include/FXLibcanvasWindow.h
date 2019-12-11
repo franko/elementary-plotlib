@@ -7,19 +7,19 @@
 
 namespace FX {
 
-class FXLibcanvasWindow : public FXWindow {
-    FXDECLARE(FXLibcanvasWindow)
+class FXElpWindow : public FXWindow {
+    FXDECLARE(FXElpWindow)
 protected:
-    FXLibcanvasWindow(): m_window_impl(nullptr) { }
+    FXElpWindow(): m_window_impl(nullptr) { }
 private:
-    FXLibcanvasWindow(const FXLibcanvasWindow&);
-    FXLibcanvasWindow &operator=(const FXLibcanvasWindow&);
+    FXElpWindow(const FXElpWindow&);
+    FXElpWindow &operator=(const FXElpWindow&);
 public:
-    FXLibcanvasWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    FXElpWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
-    ~FXLibcanvasWindow();
+    ~FXElpWindow();
 
-    int Attach(libcanvas::Plot& p, const char* slot_str);
+    int Attach(elp::Plot& p, const char* slot_str);
     void SetLayout(const char *fmt);
     void SlotRefresh(unsigned index);
     void Wait();

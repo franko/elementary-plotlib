@@ -9,7 +9,7 @@
 #include <unistd.h>
 #endif
 
-namespace libcanvas {
+namespace elp {
 namespace utils {
 
 #ifdef WIN32

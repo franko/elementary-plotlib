@@ -36,31 +36,31 @@ extern "C" {
 #endif
 
 enum {
-    canvas_window_resize            = 1,
-    canvas_window_hw_buffer         = 2,
-    canvas_window_keep_aspect_ratio = 4,
-    canvas_window_process_all_keys  = 8,
+    elp_window_resize            = 1,
+    elp_window_hw_buffer         = 2,
+    elp_window_keep_aspect_ratio = 4,
+    elp_window_process_all_keys  = 8,
 };
 
 enum { canvas_color_red = 0xB40000FF, canvas_color_green = 0x00CC00ff, canvas_color_blue = 0x0000B4FF, canvas_color_yellow = 0xF5FE00FF, canvas_color_black = 0x000000FF, canvas_color_gray = 0xBBBBBBFF, canvas_color_white = 0xFFFFFFFF, canvas_color_none = 0 };
 
 enum {
-    canvas_fill    = 1 << 0,
-    canvas_stroke  = 1 << 1,
-    canvas_outline = 1 << 2,
-    canvas_crisp   = 1 << 3,
+    elp_fill    = 1 << 0,
+    elp_stroke  = 1 << 1,
+    elp_outline = 1 << 2,
+    elp_crisp   = 1 << 3,
 };
 
 enum {
-    canvas_plot_show_units = 1 << 0,
-    canvas_plot_auto_limits = 1 << 1
+    elp_plot_show_units = 1 << 0,
+    elp_plot_auto_limits = 1 << 1
 };
 
 enum {
-    canvas_plot_right  = 0,
-    canvas_plot_left   = 1, 
-    canvas_plot_bottom = 2,
-    canvas_plot_top    = 3
+    elp_plot_right  = 0,
+    elp_plot_left   = 1, 
+    elp_plot_bottom = 2,
+    elp_plot_top    = 3
 };
 
 enum {
@@ -75,115 +75,115 @@ struct canvas_rectangle {
 };
 
 #ifdef __cplusplus
-class canvas_object;
-class canvas_path;
-class canvas_curve;
-class canvas_dashed;
-class canvas_markers;
-class canvas_plot;
-class canvas_window;
+class elp_object;
+class elp_path;
+class elp_curve;
+class elp_dashed;
+class elp_markers;
+class elp_plot;
+class elp_window;
 #else
-struct canvas_object;
-struct canvas_path;
-struct canvas_curve;
-struct canvas_dashed;
-struct canvas_markers;
-struct canvas_plot;
-struct canvas_window;
-typedef struct canvas_object canvas_object;
-typedef struct canvas_path canvas_path;
-typedef struct canvas_curve canvas_curve;
-typedef struct canvas_dashed canvas_dashed;
-typedef struct canvas_markers canvas_markers;
-typedef struct canvas_plot canvas_plot;
-typedef struct canvas_window canvas_window;
+struct elp_object;
+struct elp_path;
+struct elp_curve;
+struct elp_dashed;
+struct elp_markers;
+struct elp_plot;
+struct elp_window;
+typedef struct elp_object elp_object;
+typedef struct elp_path elp_path;
+typedef struct elp_curve elp_curve;
+typedef struct elp_dashed elp_dashed;
+typedef struct elp_markers elp_markers;
+typedef struct elp_plot elp_plot;
+typedef struct elp_window elp_window;
 #endif
 
-canvas_object *canvas_object_copy(const canvas_object *obj);
-void canvas_object_free(canvas_object *obj);
+elp_object *elp_object_copy(const elp_object *obj);
+void elp_object_free(elp_object *obj);
 
-canvas_path *canvas_path_new();
-canvas_path *canvas_path_copy(const canvas_path *source);
-void canvas_path_free(canvas_path *path);
+elp_path *elp_path_new();
+elp_path *elp_path_copy(const elp_path *source);
+void elp_path_free(elp_path *path);
 
-void canvas_path_move_to(canvas_path *path, double x, double y);
-void canvas_path_line_to(canvas_path *path, double x, double y);
-void canvas_path_close_polygon(canvas_path *path);
+void elp_path_move_to(elp_path *path, double x, double y);
+void elp_path_line_to(elp_path *path, double x, double y);
+void elp_path_close_polygon(elp_path *path);
 
-canvas_curve *canvas_curve_new();
-canvas_curve *canvas_curve_copy(const canvas_curve *source);
-void canvas_curve_free(canvas_curve *curve);
-void canvas_curve_move_to(canvas_curve *curve, double x, double y);
-void canvas_curve_line_to(canvas_curve *curve, double x, double y);
-void canvas_curve_curve3(canvas_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to);
-void canvas_curve_curve4(canvas_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
-void canvas_curve_arc_to(canvas_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
-void canvas_curve_close_polygon(canvas_curve *curve);
+elp_curve *elp_curve_new();
+elp_curve *elp_curve_copy(const elp_curve *source);
+void elp_curve_free(elp_curve *curve);
+void elp_curve_move_to(elp_curve *curve, double x, double y);
+void elp_curve_line_to(elp_curve *curve, double x, double y);
+void elp_curve_curve3(elp_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to);
+void elp_curve_curve4(elp_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
+void elp_curve_arc_to(elp_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
+void elp_curve_close_polygon(elp_curve *curve);
 
-canvas_dashed *canvas_dashed_new(double dash_len, double gap_len);
-void canvas_dashed_add_dash(canvas_dashed *path, double dash_len, double gap_len);
-void canvas_dashed_free(canvas_dashed *path);
-canvas_dashed *canvas_dashed_copy(const canvas_dashed *path);
+elp_dashed *elp_dashed_new(double dash_len, double gap_len);
+void elp_dashed_add_dash(elp_dashed *path, double dash_len, double gap_len);
+void elp_dashed_free(elp_dashed *path);
+elp_dashed *elp_dashed_copy(const elp_dashed *path);
 
-canvas_object *canvas_marker_symbol_by_index(int index);
-canvas_object *canvas_marker_symbol_by_name(const char *name);
-canvas_markers *canvas_markers_new(double size, canvas_object *marker_symbol);
-canvas_markers *canvas_markers_copy(const canvas_markers *markers);
-void canvas_markers_free(canvas_markers *markers);
+elp_object *canvas_marker_symbol_by_index(int index);
+elp_object *canvas_marker_symbol_by_name(const char *name);
+elp_markers *elp_markers_new(double size, elp_object *marker_symbol);
+elp_markers *elp_markers_copy(const elp_markers *markers);
+void elp_markers_free(elp_markers *markers);
 
-canvas_plot *canvas_plot_new(unsigned int flags);
+elp_plot *elp_plot_new(unsigned int flags);
 // TODO: implement functions to copy a plot
-void canvas_plot_free(canvas_plot *plot);
-void canvas_plot_set_title(canvas_plot *plot, const char *title);
-void canvas_plot_set_x_axis_title(canvas_plot *plot, const char *title);
-void canvas_plot_set_y_axis_title(canvas_plot *plot, const char *title);
-void canvas_plot_set_label_angle(canvas_plot *plot, int axis, float angle);
-void canvas_plot_set_limits(canvas_plot *plot, float x0, float y0, float x1, float y1);
-void canvas_plot_set_clip_mode(canvas_plot *plot, bool flag);
-void canvas_plot_enable_label_format(canvas_plot *plot, int axis, const char *fmt);
-void canvas_plot_commit_pending_draw(canvas_plot *plot_object);
-bool canvas_plot_push_layer(canvas_plot *plot);
-bool canvas_plot_pop_layer(canvas_plot *plot);
-void canvas_plot_clear_layer(canvas_plot *plot);
-void canvas_plot_add(canvas_plot *plot, canvas_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
+void elp_plot_free(elp_plot *plot);
+void elp_plot_set_title(elp_plot *plot, const char *title);
+void elp_plot_set_x_axis_title(elp_plot *plot, const char *title);
+void elp_plot_set_y_axis_title(elp_plot *plot, const char *title);
+void elp_plot_set_label_angle(elp_plot *plot, int axis, float angle);
+void elp_plot_set_limits(elp_plot *plot, float x0, float y0, float x1, float y1);
+void elp_plot_set_clip_mode(elp_plot *plot, bool flag);
+void elp_plot_enable_label_format(elp_plot *plot, int axis, const char *fmt);
+void elp_plot_commit_pending_draw(elp_plot *plot_object);
+bool elp_plot_push_layer(elp_plot *plot);
+bool elp_plot_pop_layer(elp_plot *plot);
+void elp_plot_clear_layer(elp_plot *plot);
+void elp_plot_add(elp_plot *plot, elp_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
 // TODO: add function to add a legend
-int canvas_plot_write_svg(canvas_plot *plot, const char *filename, double width, double height);
+int elp_plot_write_svg(elp_plot *plot, const char *filename, double width, double height);
 
-canvas_window *canvas_window_new();
-canvas_window *canvas_window_new_with_layout(const char *fmt);
-void canvas_window_set_layout(canvas_window *win, const char *fmt);
-void canvas_window_free(canvas_window *w);
-int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str);
-void canvas_window_slot_refresh(canvas_window *win, unsigned index);
-void canvas_window_start(canvas_window *win, unsigned width, unsigned height, unsigned flags);
-void canvas_window_wait(canvas_window *win);
+elp_window *elp_window_new();
+elp_window *elp_window_new_with_layout(const char *fmt);
+void elp_window_set_layout(elp_window *win, const char *fmt);
+void elp_window_free(elp_window *w);
+int elp_window_attach(elp_window *win, elp_plot *plot, const char* slot_str);
+void elp_window_slot_refresh(elp_window *win, unsigned index);
+void elp_window_start(elp_window *win, unsigned width, unsigned height, unsigned flags);
+void elp_window_wait(elp_window *win);
 
 // TODO: document initialize fonts function
-void canvas_initialize_fonts();
+void elp_initialize_fonts();
 
 // TODO: document all the cast functions below
-static inline canvas_object *path_as_object(canvas_path *p) {
-    return (canvas_object *) p;
+static inline elp_object *path_as_object(elp_path *p) {
+    return (elp_object *) p;
 }
 
-static inline canvas_object *curve_as_object(canvas_curve *c) {
-    return (canvas_object *) c;
+static inline elp_object *curve_as_object(elp_curve *c) {
+    return (elp_object *) c;
 }
 
-static inline canvas_object *dashed_as_object(canvas_dashed *c) {
-    return (canvas_object *) c;
+static inline elp_object *dashed_as_object(elp_dashed *c) {
+    return (elp_object *) c;
 }
 
-static inline canvas_path *dashed_as_path(canvas_dashed *c) {
-    return (canvas_path *) c;
+static inline elp_path *dashed_as_path(elp_dashed *c) {
+    return (elp_path *) c;
 }
 
-static inline canvas_path *markers_as_path(canvas_markers *c) {
-    return (canvas_path *) c;
+static inline elp_path *markers_as_path(elp_markers *c) {
+    return (elp_path *) c;
 }
 
-static inline canvas_object *markers_as_object(canvas_markers *c) {
-    return (canvas_object *) c;
+static inline elp_object *markers_as_object(elp_markers *c) {
+    return (elp_object *) c;
 }
 
 #ifdef __cplusplus

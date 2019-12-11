@@ -3,7 +3,7 @@
 
 #include "libcanvas.h"
 
-using namespace libcanvas;
+using namespace elp;
 
 Plot CreateFunctionPlot(const char *title, unsigned flags) {
     Plot p(Plot::ShowUnits | Plot::AutoLimits);

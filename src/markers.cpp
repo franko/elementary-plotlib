@@ -10,15 +10,15 @@
 
 struct symbol_reg {
     const char *name;
-    canvas_object *(*builder)(bool&);
+    elp_object *(*builder)(bool&);
 };
 
-static canvas_object *build_circle(bool& stroke);
-static canvas_object *build_square(bool& stroke);
-static canvas_object *build_triangle(bool& stroke);
-static canvas_object *build_diamond(bool& stroke);
-static canvas_object *build_plus(bool& stroke);
-static canvas_object *build_cross(bool& stroke);
+static elp_object *build_circle(bool& stroke);
+static elp_object *build_square(bool& stroke);
+static elp_object *build_triangle(bool& stroke);
+static elp_object *build_diamond(bool& stroke);
+static elp_object *build_plus(bool& stroke);
+static elp_object *build_cross(bool& stroke);
 
 const unsigned NB_SYMBOLS = 6;
 static struct symbol_reg builder_table[NB_SYMBOLS+1] = {
@@ -31,7 +31,7 @@ static struct symbol_reg builder_table[NB_SYMBOLS+1] = {
     {NULL, NULL}
 };
 
-canvas_object *
+elp_object *
 build_circle(bool& stroke)
 {
     sg_ellipse* c = new sg_ellipse();
@@ -40,7 +40,7 @@ build_circle(bool& stroke)
     return c;
 }
 
-canvas_object *
+elp_object *
 build_square(bool& stroke)
 {
     sg_path* p = new sg_path();
@@ -56,7 +56,7 @@ build_square(bool& stroke)
     return p;
 }
 
-canvas_object *
+elp_object *
 build_triangle(bool& stroke)
 {
     sg_path* p = new sg_path();
@@ -73,7 +73,7 @@ build_triangle(bool& stroke)
     return p;
 }
 
-canvas_object *
+elp_object *
 build_diamond(bool& stroke)
 {
     sg_path* p = new sg_path();
@@ -89,7 +89,7 @@ build_diamond(bool& stroke)
     return p;
 }
 
-canvas_object *
+elp_object *
 build_plus(bool& stroke)
 {
     sg_path* p = new sg_path();
@@ -104,7 +104,7 @@ build_plus(bool& stroke)
     return p;
 }
 
-canvas_object *
+elp_object *
 build_cross(bool& stroke)
 {
     sg_path* p = new sg_path();
@@ -119,7 +119,7 @@ build_cross(bool& stroke)
     return p;
 }
 
-canvas_object*
+elp_object*
 new_marker_symbol_raw(const char *req_name, bool& stroke)
 {
     struct symbol_reg *reg;
@@ -132,20 +132,20 @@ new_marker_symbol_raw(const char *req_name, bool& stroke)
     return builder_table[0].builder(stroke);
 }
 
-canvas_object*
+elp_object*
 new_marker_symbol (const char *req_name)
 {
     bool stroke;
-    canvas_object* s = new_marker_symbol_raw(req_name, stroke);
+    elp_object* s = new_marker_symbol_raw(req_name, stroke);
 
     graphics::transform::scaling *ss = new graphics::transform::scaling(s);
-    canvas_object* sf = ss;
+    elp_object* sf = ss;
     if (stroke)
         sf = new graphics::transform::stroke(sf);
     return sf;
 }
 
-canvas_object*
+elp_object*
 new_marker_symbol (int n)
 {
     n = (n-1) % NB_SYMBOLS;

@@ -6,7 +6,7 @@
 // the following are private headers.
 #include "plot_agent.h"
 
-using namespace libcanvas;
+using namespace elp;
 
 void RunFoxWindow(FXApp *app, FXMainWindow *win, unsigned width, unsigned height) {
     app->create();
@@ -23,15 +23,15 @@ private:
     FoxWindow(const FoxWindow&);
     FoxWindow &operator=(const FoxWindow&);
 public:
-    FoxWindow(const char *split_str) : app_("libcanvas", "libcanvas") {
+    FoxWindow(const char *split_str) : app_("libelplot", "libelplot") {
         argc_ = 1;
-        strcpy(argv0_, "libcanvas");
+        strcpy(argv0_, "libelplot");
         argv_[0] = argv0_;
         argv_[1] = nullptr;
 
         app_.init(argc_, argv_);
         main_window_ = new FXMainWindow(&app_, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 0, 0);
-        libcanvas_window_ = new FXLibcanvasWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+        libcanvas_window_ = new FXElpWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
         main_window_->setTarget(this);
     }
 
@@ -73,7 +73,7 @@ private:
 
     FXApp app_;
     FXMainWindow *main_window_;
-    FXLibcanvasWindow *libcanvas_window_;
+    FXElpWindow *libcanvas_window_;
 };
 
 FXDEFMAP(FoxWindow) FoxWindowMap[] = {

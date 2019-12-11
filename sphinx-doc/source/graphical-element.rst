@@ -2,7 +2,7 @@
 Graphical Elements
 ==================
 
-.. cpp:namespace:: libcanvas
+.. cpp:namespace:: elp
 
 .. cpp:enum:: Color
 

@@ -38,10 +38,10 @@
 #include "libcanvas_c_forward.h"
 
 namespace FX {
-    class FXLibcanvasWindow;
+    class FXElpWindow;
 }
 
-namespace libcanvas {
+namespace elp {
 
 typedef uint32_t Color;
 
@@ -95,11 +95,11 @@ public:
     Object& operator=(const Object& that);
     Object& operator=(Object&& that);
 protected:
-    Object(canvas_object *object_impl);
-    canvas_object *object_impl_;
+    Object(elp_object *object_impl);
+    elp_object *object_impl_;
 
     // Friend declaration needed because Plot::Add method needs to
-    // have access to inner canvas_object pointer, the object_impl_ field.
+    // have access to inner elp_object pointer, the object_impl_ field.
     friend class Plot;
     friend class Markers;
 
@@ -121,8 +121,8 @@ public:
     void ClosePolygon();
 
 protected:
-    Path(canvas_object *object_impl) : Object(object_impl) { }
-    canvas_path *PathImpl() { return (canvas_path *) object_impl_; }
+    Path(elp_object *object_impl) : Object(object_impl) { }
+    elp_path *PathImpl() { return (elp_path *) object_impl_; }
 };
 
 // FIXME to be changed or improved: it would be better if CurvePath was
@@ -141,8 +141,8 @@ public:
     void ClosePolygon();
 
 protected:
-    CurvePath(canvas_object *object) : Object(object) { }
-    canvas_curve *CurveImpl() { return (canvas_curve *) object_impl_; }
+    CurvePath(elp_object *object) : Object(object) { }
+    elp_curve *CurveImpl() { return (elp_curve *) object_impl_; }
 };
 
 class DashPath : public Path {
@@ -154,8 +154,8 @@ public:
     void AddDash(double a, double b);
 
 protected:
-    DashPath(canvas_object *object_impl) : Path(object_impl) { }
-    canvas_dashed *DashedImpl() { return (canvas_dashed *) object_impl_; }
+    DashPath(elp_object *object_impl) : Path(object_impl) { }
+    elp_dashed *DashedImpl() { return (elp_dashed *) object_impl_; }
 };
 
 class Polygon : public Path {
@@ -217,10 +217,10 @@ public:
 private:
     void UpdateWindowsAndCommitChanges();
 
-    canvas_plot plot_impl_;
+    elp_plot plot_impl_;
 
     friend class Window;
-    friend class FX::FXLibcanvasWindow;
+    friend class FX::FXElpWindow;
 };
 
 class Window {

@@ -1,7 +1,7 @@
 #ifndef LIBCANVAS_GENERATOR_H_
 #define LIBCANVAS_GENERATOR_H_
 
-namespace libcanvas {
+namespace elp {
 
 template <typename Function, typename PathType = Path>
 void FxLineDraw(PathType& line, double x0, double x1, Function f, int sampling_intervals = 128) {

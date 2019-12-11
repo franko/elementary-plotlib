@@ -1,7 +1,7 @@
 Windows
 =======
 
-.. cpp:namespace:: libcanvas
+.. cpp:namespace:: elp
 
 Window's flags
 --------------

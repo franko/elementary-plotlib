@@ -171,14 +171,14 @@ public:
         Renderer(ren_buf, bgcol), ras(), sl()
     { }
 
-    void draw(canvas_object& vs, agg::rgba8 c)
+    void draw(elp_object& vs, agg::rgba8 c)
     {
         this->add_path(this->ras, vs);
         this->color(c);
         this->render_scanlines(this->ras, this->sl);
     }
 
-    void draw_noaa(canvas_object& vs, agg::rgba8 c)
+    void draw_noaa(elp_object& vs, agg::rgba8 c)
     {
         agg::renderer_base<PixelNoSub> rb(this->pixel_buffer);
         agg::renderer_scanline_bin_solid<agg::renderer_base<PixelNoSub>> ren_bin(rb);
@@ -188,7 +188,7 @@ public:
         agg::render_scanlines(this->ras, sl_bin, ren_bin);
     }
 
-    void draw_outline_noaa(canvas_object& vs, agg::rgba8 c)
+    void draw_outline_noaa(elp_object& vs, agg::rgba8 c)
     {
         typedef agg::renderer_primitives<agg::renderer_base<PixelNoSub>> renderer_prim;
         renderer_prim ren_prim(Renderer::renderer_base);
@@ -199,9 +199,9 @@ public:
 };
 
 struct virtual_canvas {
-    virtual void draw(canvas_object& vs, agg::rgba8 c) = 0;
-    virtual void draw_outline_noaa(canvas_object& vs, agg::rgba8 c) = 0;
-    virtual void draw_noaa(canvas_object& vs, agg::rgba8 c) = 0;
+    virtual void draw(elp_object& vs, agg::rgba8 c) = 0;
+    virtual void draw_outline_noaa(elp_object& vs, agg::rgba8 c) = 0;
+    virtual void draw_noaa(elp_object& vs, agg::rgba8 c) = 0;
     virtual void clip_box(const agg::rect_base<int>& clip) = 0;
     virtual void reset_clipping() = 0;
     virtual ~virtual_canvas() { }

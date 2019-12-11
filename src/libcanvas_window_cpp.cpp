@@ -6,7 +6,7 @@
 #include "plot_agent.h"
 #include "window.h"
 
-namespace libcanvas {
+namespace elp {
 
 Window::Window() : window_impl_{(WindowImpl *) new graphics::window()} {
 }

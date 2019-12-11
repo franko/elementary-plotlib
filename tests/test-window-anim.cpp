@@ -4,7 +4,7 @@
 #include "libcanvas_utils.h"
 #include "libcanvas.h"
 
-using namespace libcanvas;
+using namespace elp;
 
 void Rotate(const double a, double& x, double& y) {
     double x_tmp = x * std::cos(a) + y * std::sin(a);

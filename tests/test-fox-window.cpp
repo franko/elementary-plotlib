@@ -3,7 +3,7 @@
 
 #include "FXLibcanvasWindow.h"
 
-using namespace libcanvas;
+using namespace elp;
 
 template <typename Function>
 void AddFunction(Plot& plot, double x0, double x1, Function f, Color color, int n = 512) {
@@ -26,11 +26,11 @@ void RunFox(FXApp *app, FXMainWindow *win) {
 int main(int argc, char *argv[]) {
     InitializeFonts();
 
-    auto app = new FXApp("libcanvas", "libcanvas");
+    auto app = new FXApp("libelplot", "libelplot");
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto window = new FXLibcanvasWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+    auto window = new FXElpWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     Plot plot(Plot::ShowUnits | Plot::AutoLimits);
     plot.SetClipMode(false);

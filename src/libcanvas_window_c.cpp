@@ -7,20 +7,20 @@
 #include "window.h"
 #include "libcanvas_c_forward.h"
 
-canvas_window *canvas_window_new() {
-    return (canvas_window *) new graphics::window{};
+elp_window *elp_window_new() {
+    return (elp_window *) new graphics::window{};
 }
 
-canvas_window *canvas_window_new_with_layout(const char *fmt) {
-    return (canvas_window *) new graphics::window{fmt};
+elp_window *elp_window_new_with_layout(const char *fmt) {
+    return (elp_window *) new graphics::window{fmt};
 }
 
-void canvas_window_set_layout(canvas_window *win_, const char *fmt) {
+void elp_window_set_layout(elp_window *win_, const char *fmt) {
     graphics::window *win = (graphics::window *) win_;
     win->set_layout(fmt);
 }
 
-int canvas_window_attach(canvas_window *win_, canvas_plot *plot, const char* slot_str) {
+int elp_window_attach(elp_window *win_, elp_plot *plot, const char* slot_str) {
     graphics::window *win = (graphics::window *) win_;
     graphics::plot *p = plot->plot;
     int index = win->attach(p, slot_str);
@@ -29,22 +29,22 @@ int canvas_window_attach(canvas_window *win_, canvas_plot *plot, const char* slo
     return index;
 }
 
-void canvas_window_slot_refresh(canvas_window *win_, unsigned index) {
+void elp_window_slot_refresh(elp_window *win_, unsigned index) {
     graphics::window *win = (graphics::window *) win_;
     win->slot_refresh(index);
 }
 
-void canvas_window_start(canvas_window *win_, unsigned width, unsigned height, unsigned flags) {
+void elp_window_start(elp_window *win_, unsigned width, unsigned height, unsigned flags) {
     graphics::window *win = (graphics::window *) win_;
     win->start(width, height, flags);
 }
 
-void canvas_window_wait(canvas_window *win_) {
+void elp_window_wait(elp_window *win_) {
     graphics::window *win = (graphics::window *) win_;
     win->wait();
 }
 
-void canvas_window_free(canvas_window *win_) {
+void elp_window_free(elp_window *win_) {
     graphics::window *win = (graphics::window *) win_;
     delete win;
 }

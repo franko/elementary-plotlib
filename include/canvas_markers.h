@@ -1,9 +1,9 @@
 #include "canvas_path.h"
 #include "my_conv_simple_marker.h"
 
-class canvas_markers : public canvas_path {
+class elp_markers : public elp_path {
 public:
-    canvas_markers(double size, canvas_object* sym) : canvas_path(),
+    elp_markers(double size, elp_object* sym) : elp_path(),
         m_marker_conv(m_path_scaling, *sym), m_size(size), m_scale(m_size), m_symbol(sym) {
         // we need to apply the scale transform here to ensure that
         // any call to bounding_box have the correct informations about
@@ -11,7 +11,7 @@ public:
         m_symbol->apply_transform(m_scale, 1.0);
     }
 
-    ~canvas_markers() override {
+    ~elp_markers() override {
         delete m_symbol;
     }
 
@@ -28,9 +28,9 @@ public:
         return m_marker_conv.vertex(x, y);
     }
 
-    canvas_object *copy() const override {
-        canvas_object *new_symbol = m_symbol->copy();
-        canvas_markers *new_object = new canvas_markers(m_size, new_symbol);
+    elp_object *copy() const override {
+        elp_object *new_symbol = m_symbol->copy();
+        elp_markers *new_object = new elp_markers(m_size, new_symbol);
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }
@@ -93,8 +93,8 @@ private:
 
 
 private:
-    my::conv_simple_marker<agg::conv_transform<agg::path_storage>, canvas_object> m_marker_conv;
+    my::conv_simple_marker<agg::conv_transform<agg::path_storage>, elp_object> m_marker_conv;
     double m_size;
     agg::trans_affine_scaling m_scale;
-    canvas_object* m_symbol;
+    elp_object* m_symbol;
 };

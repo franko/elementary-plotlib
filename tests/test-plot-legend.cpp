@@ -1,7 +1,7 @@
 #include <cmath>
 
 #include "libcanvas.h"
-using namespace libcanvas;
+using namespace elp;
 
 template <typename Function>
 void AddFunction(Plot& p, double x0, double x1, Function f, Color color, int n = 512) {

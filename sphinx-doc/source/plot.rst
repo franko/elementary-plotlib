@@ -1,7 +1,7 @@
 Plot
 ====
 
-.. cpp:namespace:: libcanvas
+.. cpp:namespace:: elp
 
 .. cpp:class:: Plot
 

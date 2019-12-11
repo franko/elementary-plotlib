@@ -4,17 +4,17 @@ Windows - C API
 Window's flags
 --------------
 
-.. c:macro:: canvas_window_resize
+.. c:macro:: elp_window_resize
 
-.. c:type:: canvas_window
+.. c:type:: elp_window
 
   A window that can accommodate one or more plots to be shown on the screen.
 
-  .. c:function:: canvas_window *canvas_window_new()
+  .. c:function:: elp_window *elp_window_new()
 
   Create an empty window with a single slot.
 
-  .. c:function:: canvas_window *canvas_window_new_with_layout(const char *fmt)
+  .. c:function:: elp_window *elp_window_new_with_layout(const char *fmt)
 
   Create an empty window subdivided accordingly to the ``layout`` string.
 
@@ -34,13 +34,13 @@ Window's flags
   For example to accommodate two plots horizontally use the layout string ``h..``.
   To subdivide a window in a 2x2 grid it can be used the layout string ``h(v..)(v..)``.
 
-  .. c:function:: void canvas_window_set_layout(canvas_window *win, const char *layout)
+  .. c:function:: void elp_window_set_layout(elp_window *win, const char *layout)
 
-    Set the window's layout using the format string `layout` like when using the constructor :c:func:`canvas_window_new_with_layout(const char *layout)`.
+    Set the window's layout using the format string `layout` like when using the constructor :c:func:`elp_window_new_with_layout(const char *layout)`.
     Can be used only if the windows is not yet running.
     If the window is already running the call has no effect.
 
-  .. c:function:: int canvas_window_attach(canvas_window *win, canvas_plot *plot, const char* slot_str)
+  .. c:function:: int elp_window_attach(elp_window *win, elp_plot *plot, const char* slot_str)
 
     Attach the given plot inside a window using ``slot`` to address the slot.
     Return an integer index that can be used for the :cpp:func:`Window::SlotRefresh` function.
@@ -53,17 +53,17 @@ Window's flags
     For a layout with nested subdivisions, for example, ``h(v..)(v..)`` the string ``1,2`` will address the slot in the first column and the second row.
 
 
-  .. c:function:: void canvas_window_slot_refresh(canvas_window *win, unsigned index)
+  .. c:function:: void elp_window_slot_refresh(elp_window *win, unsigned index)
 
     Incrementally update the image of the window for the plot in the slot identified by ``index``.
     Only the elements on the plot marked as pending will be drawn.
 
 
-  .. c:function:: void canvas_window_start(canvas_window *win, unsigned width, unsigned height, unsigned flags)
+  .. c:function:: void elp_window_start(elp_window *win, unsigned width, unsigned height, unsigned flags)
 
     Show the window on the screen with the given width and height.
     Thhe flags currently accept only the :cpp:enumerator:`WindowResize`.
 
-  .. c:function:: void canvas_window_wait(canvas_window *win)
+  .. c:function:: void elp_window_wait(elp_window *win)
 
     Blocks waiting until the window is closed.

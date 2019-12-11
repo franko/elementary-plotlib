@@ -1,7 +1,7 @@
 #include "libcanvas.h"
 #include "libcanvas_utils.h"
 
-using namespace libcanvas;
+using namespace elp;
 
 int main() {
     InitializeFonts();

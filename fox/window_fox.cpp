@@ -2,10 +2,10 @@
 #include "FXLibcanvasWindow.h"
 #include "debug_priv.h"
 
-window_fox::window_fox(FXLibcanvasWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
+window_fox::window_fox(FXElpWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
 {
     m_surface.attach_window(this);
-    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, FXLibcanvasWindow::ID_UPDATE_REGION, nullptr);
+    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, FXElpWindow::ID_UPDATE_REGION, nullptr);
 }
 
 window_fox::~window_fox() {

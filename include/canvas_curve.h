@@ -9,9 +9,9 @@
 
 #include "canvas_path.h"
 
-class canvas_curve : public canvas_path_base {
+class elp_curve : public elp_path_base {
 public:
-    canvas_curve() : canvas_path_base(), m_path_curve(m_path), m_scaling_matrix(), m_path_scaling(m_path_curve, m_scaling_matrix) { }
+    elp_curve() : elp_path_base(), m_path_curve(m_path), m_scaling_matrix(), m_path_scaling(m_path_curve, m_scaling_matrix) { }
 
     virtual void apply_transform(const agg::trans_affine& m, double as) {
         m_scaling_matrix = m;
@@ -26,8 +26,8 @@ public:
         return m_path_scaling.vertex(x, y);
     }
 
-    virtual canvas_object *copy() const {
-        canvas_curve *new_object = new canvas_curve{};
+    virtual elp_object *copy() const {
+        elp_curve *new_object = new elp_curve{};
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }
