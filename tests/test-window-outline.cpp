@@ -1,7 +1,7 @@
 #include <cmath>
 #include <memory>
 
-#include "libcanvas.h"
+#include "libelplot.h"
 
 using namespace elp;
 

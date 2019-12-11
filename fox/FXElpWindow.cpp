@@ -1,4 +1,4 @@
-#include "FXLibcanvasWindow.h"
+#include "FXElpWindow.h"
 #include "window_fox.h"
 #include "window_flags.h"
 #include "plot_agent.h"
@@ -56,7 +56,7 @@ FXElpWindow::~FXElpWindow() {
 }
 
 void FXElpWindow::position(FXint x, FXint y, FXint w, FXint h) {
-    debug_log(1, "FXLibcanvasWindow::position: %d %d", w, h);
+    debug_log(1, "FXElpWindow::position: %d %d", w, h);
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->on_resize(w, h);
     FXWindow::position(x, y, w, h);
@@ -83,7 +83,7 @@ long FXElpWindow::onPaint(FXObject *, FXSelector, void *ptr) {
 }
 
 long FXElpWindow::onMap(FXObject *, FXSelector, void *) {
-    debug_log(1, "FXLibcanvasWindow: map event");
+    debug_log(1, "FXElpWindow: map event");
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->set_thread_id();
     window_impl->set_window_status(graphics::window_running);

@@ -1,4 +1,4 @@
-#include "libcanvas.h"
+#include "libelplot.h"
 
 int main() {
     elp_initialize_fonts();

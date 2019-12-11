@@ -1,5 +1,5 @@
-#ifndef LIBCANVAS_DEBUG_H_
-#define LIBCANVAS_DEBUG_H_
+#ifndef LIBELPLOT_DEBUG_H_
+#define LIBELPLOT_DEBUG_H_
 
 #ifdef WIN32
 #include <synchapi.h>

@@ -1,5 +1,5 @@
-#ifndef LIBCANVAS_GENERATOR_H_
-#define LIBCANVAS_GENERATOR_H_
+#ifndef LIBELPLOT_GENERATOR_H_
+#define LIBELPLOT_GENERATOR_H_
 
 namespace elp {
 

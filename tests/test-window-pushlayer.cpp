@@ -1,5 +1,5 @@
-#include "libcanvas.h"
-#include "libcanvas_utils.h"
+#include "libelplot.h"
+#include "libelplot_utils.h"
 
 using namespace elp;
 

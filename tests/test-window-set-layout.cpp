@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "libcanvas.h"
+#include "libelplot.h"
 
 using namespace elp;
 

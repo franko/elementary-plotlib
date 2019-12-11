@@ -1,6 +1,6 @@
 #include <random>
 
-#include "libcanvas.h"
+#include "libelplot.h"
 
 using namespace elp;
 

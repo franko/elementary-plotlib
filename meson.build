@@ -1,4 +1,4 @@
-project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
+project('libelplot', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
 
 # ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
 #  DEFS += -DDISABLE_GAMMA_CORR
@@ -8,33 +8,33 @@ project('libcanvas', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99
 #  DEFS += -DDISABLE_SUBPIXEL_AA
 # endif
 
-libcanvas_cflags = []
+libelplot_cflags = []
 
 host_system = host_machine.system()
 host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
 
 if host_system == 'windows'
-    libcanvas_cflags += '-DWIN32'
+    libelplot_cflags += '-DWIN32'
 elif host_system == 'cygwin'
-    libcanvas_cflags += '-DCYGWIN'
+    libelplot_cflags += '-DCYGWIN'
 endif
 
 debug_build = get_option('buildtype') != 'release'
 cc = meson.get_compiler('cpp')
 
 if debug_build
-    libcanvas_cflags += '-DLIBCANVAS_DEBUG'
-    libcanvas_cflags += '-DLIBCANVAS_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
+    libelplot_cflags += '-Dlibelplot_DEBUG'
+    libelplot_cflags += '-Dlibelplot_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
 endif
 
-libcanvas_include = include_directories('include')
-install_headers('include/libcanvas_cpp.h')
-install_headers('include/libcanvas_c.h')
-install_headers('include/libcanvas.h')
-install_headers('include/libcanvas_constants.h')
-install_headers('include/libcanvas_generator.h')
-install_headers('include/libcanvas_c_forward.h')
-install_headers('include/FXLibcanvasWindow.h')
+libelplot_include = include_directories('include')
+install_headers('include/libelplot_cpp.h')
+install_headers('include/libelplot_c.h')
+install_headers('include/libelplot.h')
+install_headers('include/libelplot_constants.h')
+install_headers('include/libelplot_generator.h')
+install_headers('include/libelplot_c_forward.h')
+install_headers('include/FXElpWindow.h')
 
 subdir('src')
 if host_system == 'linux'
@@ -47,11 +47,11 @@ endif
 
 pkg = import('pkgconfig')
 
-pkg.generate(libcanvaswin,
-    filebase : 'libcanvas',
-    name : 'Libcanvas',
-    description : 'The Libcanvas library',
-    url : 'github.com/franko/libcanvas',
+pkg.generate(libelplotwin,
+    filebase : 'libelplot',
+    name : 'libelplot',
+    description : 'The libelplot library',
+    url : 'github.com/franko/libelplot',
 )
 
 fox_dep = dependency('fox', required: false)

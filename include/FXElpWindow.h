@@ -3,7 +3,7 @@
 #include <fx.h>
 
 // We include here only the public interface libcanvas header.
-#include "libcanvas.h"
+#include "libelplot.h"
 
 namespace FX {
 

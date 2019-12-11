@@ -1,5 +1,5 @@
 #include "window_fox.h"
-#include "FXLibcanvasWindow.h"
+#include "FXElpWindow.h"
 #include "debug_priv.h"
 
 window_fox::window_fox(FXElpWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)

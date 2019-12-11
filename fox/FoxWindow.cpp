@@ -1,7 +1,7 @@
 #include <thread>
 #include <cstring>
 
-#include "FXLibcanvasWindow.h"
+#include "FXElpWindow.h"
 
 // the following are private headers.
 #include "plot_agent.h"
@@ -31,24 +31,24 @@ public:
 
         app_.init(argc_, argv_);
         main_window_ = new FXMainWindow(&app_, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 0, 0);
-        libcanvas_window_ = new FXElpWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+        elp_window_ = new FXElpWindow(main_window_, split_str, LAYOUT_FILL_X|LAYOUT_FILL_Y);
         main_window_->setTarget(this);
     }
 
     bool isRunning() const {
-        return libcanvas_window_ != nullptr;
+        return elp_window_ != nullptr;
     }
 
     int Attach(Plot& p, const char *slot_str) {
         if (isRunning()) {
-            return libcanvas_window_->Attach(p, slot_str);
+            return elp_window_->Attach(p, slot_str);
         }
         return -1;
     }
 
     void SlotRefresh(unsigned index) {
         if (isRunning()) {
-            libcanvas_window_->SlotRefresh(index);
+            elp_window_->SlotRefresh(index);
         }
     }
 
@@ -60,7 +60,7 @@ public:
 
     void Wait() {
         if (isRunning()) {
-            libcanvas_window_->Wait();
+            elp_window_->Wait();
         }
     }
 
@@ -73,7 +73,7 @@ private:
 
     FXApp app_;
     FXMainWindow *main_window_;
-    FXElpWindow *libcanvas_window_;
+    FXElpWindow *elp_window_;
 };
 
 FXDEFMAP(FoxWindow) FoxWindowMap[] = {
@@ -86,7 +86,7 @@ long FoxWindow::onClose(FXObject *, FXSelector, void *) {
     // We set the main window's and graphics window's pointer to null to mean
     // that the windows is closed.
     main_window_ = nullptr;
-    libcanvas_window_ = nullptr;
+    elp_window_ = nullptr;
     return 0;
 }
 

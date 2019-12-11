@@ -1,8 +1,8 @@
 #include <cmath>
 #include <random>
 
-#include "libcanvas_utils.h"
-#include "libcanvas.h"
+#include "libelplot_utils.h"
+#include "libelplot.h"
 
 using namespace elp;
 

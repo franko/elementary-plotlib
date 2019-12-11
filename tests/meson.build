@@ -30,20 +30,20 @@ fox_tests = [
 
 foreach test : window_tests
     executable(test['name'], test['sources'],
-        include_directories: libcanvas_include,
+        include_directories: libelplot_include,
         dependencies: [agg_dep, freetype_dep, thread_dep],
-        cpp_args: libcanvas_cflags,
-        link_with: libcanvaswin,
+        cpp_args: libelplot_cflags,
+        link_with: libelplotwin,
         gui_app: false)
 endforeach
 
 if fox_dep.found()
     foreach test : fox_tests
         executable(test['name'], test['sources'],
-            include_directories: libcanvas_include,
+            include_directories: libelplot_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
-            cpp_args: libcanvas_cflags,
-            link_with: [libcanvas, libcanvasfox],
+            cpp_args: libelplot_cflags,
+            link_with: [libelplot, libelplotfox],
             gui_app: false)
     endforeach
 endif

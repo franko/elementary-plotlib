@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Libcanvas'
+project = 'Libelplot'
 copyright = '2019, Francesco Abbate'
 author = 'Francesco Abbate'
 

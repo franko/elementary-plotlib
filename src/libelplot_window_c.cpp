@@ -1,11 +1,11 @@
 // public declarations header.
-#include "libcanvas_c.h"
+#include "libelplot_c.h"
 
 // the following are private headers.
 #include "plot.h"
 #include "plot_agent.h"
 #include "window.h"
-#include "libcanvas_c_forward.h"
+#include "libelplot_c_forward.h"
 
 elp_window *elp_window_new() {
     return (elp_window *) new graphics::window{};

@@ -1,17 +1,17 @@
 #pragma once
 
-#ifdef LIBCANVAS_DEBUG
+#ifdef LIBELPLOT_DEBUG
 #include <cstdio>
 #include <cstdarg>
 #endif
 
-#ifndef LIBCANVAS_DEBUG_LEVEL
-#define LIBCANVAS_DEBUG_LEVEL 1
+#ifndef LIBELPLOT_DEBUG_LEVEL
+#define LIBELPLOT_DEBUG_LEVEL 1
 #endif
 
-#ifdef LIBCANVAS_DEBUG
+#ifdef LIBELPLOT_DEBUG
 inline void debug_log(int level, const char *fmt, ...) {
-    if (level >= LIBCANVAS_DEBUG_LEVEL) {
+    if (level >= LIBELPLOT_DEBUG_LEVEL) {
         va_list args;
         va_start(args, fmt);
         vfprintf(stderr, fmt, args);

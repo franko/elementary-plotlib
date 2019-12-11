@@ -1,5 +1,5 @@
 /*
-** Libcanvas -- a plotting library for C++. https://github.com/franko/libcanvas
+** Libelplot -- a plotting library for C++. https://github.com/franko/libcanvas
 **
 ** Copyright (C) 2018-2019 Francesco Abbate. All rights reserved.
 **
@@ -25,15 +25,15 @@
 ** [ MIT license: http://www.opensource.org/licenses/mit-license.php ]
 */
 
-#ifndef LIBCANVAS_H_
-#define LIBCANVAS_H_
+#ifndef LIBELPLOT_H_
+#define LIBELPLOT_H_
 
 #ifdef __cplusplus
-#include "libcanvas_cpp.h"
-#include "libcanvas_constants.h"
-#include "libcanvas_generator.h"
+#include "libelplot_cpp.h"
+#include "libelplot_constants.h"
+#include "libelplot_generator.h"
 #else
-#include "libcanvas_c.h"
+#include "libelplot_c.h"
 #endif
 
 #endif

@@ -1,5 +1,5 @@
 // public declarations header.
-#include "libcanvas.h"
+#include "libelplot.h"
 
 // the following are private headers.
 #include "plot.h"

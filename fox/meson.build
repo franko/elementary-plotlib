@@ -1,15 +1,15 @@
-libcanvasfoxwin_src = ['FXLibcanvasWindow.cpp', 'window_fox.cpp', 'FoxWindow.cpp']
+libelplotfoxwin_src = ['FXElpWindow.cpp', 'window_fox.cpp', 'FoxWindow.cpp']
 
-libcanvasfox = static_library('canvasfox', libcanvasfoxwin_src,
-    include_directories: libcanvas_include,
-    cpp_args: libcanvas_cflags,
-    dependencies: [libcanvas_dep, agg_dep, freetype_dep, thread_dep, fox_dep],
+libelplotfox = static_library('canvasfox', libelplotfoxwin_src,
+    include_directories: libelplot_include,
+    cpp_args: libelplot_cflags,
+    dependencies: [libelplot_dep, agg_dep, freetype_dep, thread_dep, fox_dep],
     install: true
 )
 
-pkg.generate(libcanvasfox,
-    filebase : 'libcanvasfox',
-    name : 'Libcanvasfox',
-    description : 'The FOX Libcanvas library',
-    url : 'github.com/franko/libcanvas',
+pkg.generate(libelplotfox,
+    filebase : 'libelplotfox',
+    name : 'libelplotfox',
+    description : 'The FOX libelplot library',
+    url : 'github.com/franko/libelplot',
 )

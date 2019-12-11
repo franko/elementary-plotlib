@@ -1,8 +1,8 @@
 // public declarations header.
-#include "libcanvas_c.h"
+#include "libelplot_c.h"
 
 // the following are private headers.
-#include "libcanvas_c_forward.h"
+#include "libelplot_c_forward.h"
 #include "canvas_svg.h"
 #include "canvas_object.h"
 #include "canvas_path.h"

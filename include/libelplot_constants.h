@@ -1,5 +1,5 @@
-#ifndef LIBCANVAS_CONSTANTS_H_
-#define LIBCANVAS_CONSTANTS_H_
+#ifndef LIBELPLOT_CONSTANTS_H_
+#define LIBELPLOT_CONSTANTS_H_
 
 namespace elp { namespace math {
 

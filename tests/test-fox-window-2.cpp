@@ -1,8 +1,8 @@
 #include <cmath>
 #include <thread>
 
-#include "FXLibcanvasWindow.h"
-#include "libcanvas_utils.h"
+#include "FXElpWindow.h"
+#include "libelplot_utils.h"
 
 using namespace elp;
 

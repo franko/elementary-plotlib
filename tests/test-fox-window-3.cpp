@@ -1,7 +1,7 @@
 #include <cmath>
 #include <random>
 
-#include "FXLibcanvasWindow.h"
+#include "FXElpWindow.h"
 
 using namespace elp;
 
