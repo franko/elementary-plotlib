@@ -37,14 +37,14 @@ int main() {
     srand(193);
     struct bm_generator gen[1] = {{false, 0.0}};
 
-    elp_markers *markers = elp_markers_new(6, canvas_marker_symbol_by_index(1));
+    elp_markers *markers = elp_markers_new(6, elp_marker_symbol_by_index(1));
     const double x0 = 0.0001, x1 = 8 * 2 * 3.14153265359;
     const int n_markers = 23;
     for (int i = 0; i < n_markers; i++) {
         const double x = x0 + i * (x1 - x0) / (n_markers - 1);
         elp_path_line_to(markers_as_path(markers), x, xfsin(x) + box_muller(gen, 0.0, 0.02));
     }    
-    elp_plot_add(plot, markers_as_object(markers), canvas_color_blue, 1.5, canvas_color_none, elp_stroke);
+    elp_plot_add(plot, markers_as_object(markers), elp_color_blue, 1.5, elp_color_none, elp_stroke);
 
     elp_path *line = elp_path_new();
     const int n_line = 256;
@@ -52,7 +52,7 @@ int main() {
         const double x = x0 + i * (x1 - x0) / (n_line - 1);
         elp_path_line_to(line, x, xfsin(x));
     }
-    elp_plot_add(plot, path_as_object(line), canvas_color_red, 1.5, canvas_color_none, elp_stroke);
+    elp_plot_add(plot, path_as_object(line), elp_color_red, 1.5, elp_color_none, elp_stroke);
 
     elp_plot_set_title(plot, "Function plot example");
     elp_plot_set_x_axis_title(plot, "x variable");

@@ -25,7 +25,7 @@ int main() {
         const double x = x0 + i * (x1 - x0) / (n - 1);
         elp_path_line_to(dashed_as_path(spath), x, xfsin(x));
     }
-    elp_plot_add(plot, dashed_as_object(spath), canvas_color_blue, 1.5, canvas_color_none, elp_stroke);
+    elp_plot_add(plot, dashed_as_object(spath), elp_color_blue, 1.5, elp_color_none, elp_stroke);
 
     elp_plot_set_title(plot, "Function plot example");
     elp_plot_set_x_axis_title(plot, "x variable");
@@ -42,7 +42,7 @@ int main() {
         const double x = x0 + i * (x1 - x0) / (n - 1);
         elp_path_line_to(dashed_as_path(cpath), x, xfcos(x));
     }
-    elp_plot_add(plot, dashed_as_object(cpath), canvas_color_red, 1.5, canvas_color_none, elp_stroke);
+    elp_plot_add(plot, dashed_as_object(cpath), elp_color_red, 1.5, elp_color_none, elp_stroke);
     elp_window_wait(window);
 
     elp_window_free(window);

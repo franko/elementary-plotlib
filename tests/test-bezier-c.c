@@ -14,7 +14,7 @@ int main() {
     elp_curve_curve3(heart, 10, 40, 10, 70);
     elp_curve_close_polygon(heart);
 
-    elp_plot_add(plot, curve_as_object(heart), canvas_color_red, 2.5, 0xE40000FF, elp_stroke | elp_fill);
+    elp_plot_add(plot, curve_as_object(heart), elp_color_red, 2.5, 0xE40000FF, elp_stroke | elp_fill);
 
     elp_window *window = elp_window_new();
     elp_window_attach(window, plot, "");

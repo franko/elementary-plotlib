@@ -14,7 +14,7 @@
 #include "window.h"
 #include "markers.h"
 
-static agg::rgba8 ColorToRgba8(const canvas_color& c) {
+static agg::rgba8 ColorToRgba8(const elp_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
 }
 
@@ -110,11 +110,11 @@ void elp_dashed_add_dash(elp_dashed *path, double dash_len, double gap_len) {
     path->add_dash(dash_len, gap_len);
 }
 
-elp_object *canvas_marker_symbol_by_index(int index) {
+elp_object *elp_marker_symbol_by_index(int index) {
     return new_marker_symbol(index);
 }
 
-elp_object *canvas_marker_symbol_by_name(const char *name) {
+elp_object *elp_marker_symbol_by_name(const char *name) {
     return new_marker_symbol(name);
 }
 
@@ -176,7 +176,7 @@ void elp_plot_set_label_angle(elp_plot *plot_object, int axis, float angle) {
     graphics::plot *p = (graphics::plot *) plot_object->plot;
     {
         graphics::plot::drawing_context dc(*p);
-        p->set_axis_labels_angle(axis == canvas_x_axis ? graphics::x_axis : graphics::y_axis, angle);
+        p->set_axis_labels_angle(axis == elp_x_axis ? graphics::x_axis : graphics::y_axis, angle);
     }
     plot_update_windows_and_commit(plot_object);
 }
@@ -185,7 +185,7 @@ void elp_plot_enable_label_format(elp_plot *plot_object, int axis, const char *f
     graphics::plot *p = (graphics::plot *) plot_object->plot;
     {
         graphics::plot::drawing_context dc(*p);
-        p->enable_label_format(axis == canvas_x_axis ? graphics::x_axis : graphics::y_axis, fmt);
+        p->enable_label_format(axis == elp_x_axis ? graphics::x_axis : graphics::y_axis, fmt);
     }
     plot_update_windows_and_commit(plot_object);
 }
@@ -247,7 +247,7 @@ void elp_plot_commit_pending_draw(elp_plot *plot_object) {
 }
 
 // The plot takes implicitly the ownership of the object.
-void elp_plot_add(elp_plot *plot_object, elp_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags) {
+void elp_plot_add(elp_plot *plot_object, elp_object *obj, elp_color stroke_color, float stroke_width, elp_color fill_color, int flags) {
     graphics::plot *p = plot_object->plot;
     {
         graphics::plot::drawing_context dc(*p);

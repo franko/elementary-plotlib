@@ -42,7 +42,7 @@ enum {
     elp_window_process_all_keys  = 8,
 };
 
-enum { canvas_color_red = 0xB40000FF, canvas_color_green = 0x00CC00ff, canvas_color_blue = 0x0000B4FF, canvas_color_yellow = 0xF5FE00FF, canvas_color_black = 0x000000FF, canvas_color_gray = 0xBBBBBBFF, canvas_color_white = 0xFFFFFFFF, canvas_color_none = 0 };
+enum { elp_color_red = 0xB40000FF, elp_color_green = 0x00CC00ff, elp_color_blue = 0x0000B4FF, elp_color_yellow = 0xF5FE00FF, elp_color_black = 0x000000FF, elp_color_gray = 0xBBBBBBFF, elp_color_white = 0xFFFFFFFF, elp_color_none = 0 };
 
 enum {
     elp_fill    = 1 << 0,
@@ -64,13 +64,13 @@ enum {
 };
 
 enum {
-    canvas_x_axis = 0,
-    canvas_y_axis = 1,
+    elp_x_axis = 0,
+    elp_y_axis = 1,
 };
 
-typedef uint32_t canvas_color;
+typedef uint32_t elp_color;
 
-struct canvas_rectangle {
+struct elp_rectangle {
     float x1, y1, x2, y2;
 };
 
@@ -125,8 +125,8 @@ void elp_dashed_add_dash(elp_dashed *path, double dash_len, double gap_len);
 void elp_dashed_free(elp_dashed *path);
 elp_dashed *elp_dashed_copy(const elp_dashed *path);
 
-elp_object *canvas_marker_symbol_by_index(int index);
-elp_object *canvas_marker_symbol_by_name(const char *name);
+elp_object *elp_marker_symbol_by_index(int index);
+elp_object *elp_marker_symbol_by_name(const char *name);
 elp_markers *elp_markers_new(double size, elp_object *marker_symbol);
 elp_markers *elp_markers_copy(const elp_markers *markers);
 void elp_markers_free(elp_markers *markers);
@@ -145,7 +145,7 @@ void elp_plot_commit_pending_draw(elp_plot *plot_object);
 bool elp_plot_push_layer(elp_plot *plot);
 bool elp_plot_pop_layer(elp_plot *plot);
 void elp_plot_clear_layer(elp_plot *plot);
-void elp_plot_add(elp_plot *plot, elp_object *obj, canvas_color stroke_color, float stroke_width, canvas_color fill_color, int flags);
+void elp_plot_add(elp_plot *plot, elp_object *obj, elp_color stroke_color, float stroke_width, elp_color fill_color, int flags);
 // TODO: add function to add a legend
 int elp_plot_write_svg(elp_plot *plot, const char *filename, double width, double height);
 
