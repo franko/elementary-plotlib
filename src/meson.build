@@ -7,7 +7,7 @@ libelplot_api_src = ['libelplot_c.cpp', 'libelplot_cpp.cpp']
 
 libelplotwin_api_src = files('libelplot_window_c.cpp', 'libelplot_window_cpp.cpp')
 
-libelplot = static_library('canvas',
+libelplot = library('elplot',
     libelplot_src + libelplot_api_src,
     c_args: libelplot_cflags,
     cpp_args: libelplot_cflags,

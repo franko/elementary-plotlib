@@ -31,9 +31,9 @@ fox_tests = [
 foreach test : window_tests
     executable(test['name'], test['sources'],
         include_directories: libelplot_include,
-        dependencies: [agg_dep, freetype_dep, thread_dep],
+        dependencies: libelplot_dep,
         cpp_args: libelplot_cflags,
-        link_with: libelplotwin,
+        link_with: [libelplotwin, libelplot],
         gui_app: false)
 endforeach
 
@@ -43,7 +43,7 @@ if fox_dep.found()
             include_directories: libelplot_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
             cpp_args: libelplot_cflags,
-            link_with: [libelplot, libelplotfox],
+            link_with: [libelplotfox, libelplot],
             gui_app: false)
     endforeach
 endif
