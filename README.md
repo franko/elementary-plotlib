@@ -1,4 +1,4 @@
-Libcanvas — *A C++ library for high-quality plots and animations*
+Elementary Plot Library — *A C/C++ library for high-quality plots and animations*
 
 Looking for an open-source library that gives you a simple API to easily
 create high-quality plots on major desktop platforms? Do you need to pop
@@ -10,7 +10,7 @@ Do you need integration with the FOX toolkit?
 
 **Beauty of simplicity**
 
-Simple C++ API to easily create and display plots with a few lines of code. Create animations with simple layer-based functions by adding elements.
+Simple C and C++ API to easily create and display plots with a few lines of code. Create animations with simple layer-based functions by adding elements.
 
 **With batteries included**
 
@@ -26,16 +26,16 @@ The library is thought to be integrated with existing GUI toolkits with minimal 
 
 **Documentation available**
 
-The [Libcanvas' reference manual](http://franko.github.io/libcanvas/) for the new API is available.
+The [Elementary Plotlib reference manual](http://franko.github.io/elementary-plotlib/) for the new API is available.
 
 Examples
 ========
 
 Here an example of a plot with a function and some markers.
 
-![Plot of function with markers](https://github.com/franko/libcanvas/blob/master/sphinx-doc/source/plot-function-example.png)
+![Plot of function with markers](https://github.com/franko/elementary-plotlib/blob/master/sphinx-doc/source/plot-function-example.png)
 
-The corresponding source code is available [here](https://github.com/franko/libcanvas/blob/master/tests/test-window-function.cpp).
+The corresponding source code is available [here](https://github.com/franko/elementary-plotlib/blob/master/tests/test-window-function.cpp).
 
 Features and Usage
 ---
@@ -58,7 +58,6 @@ To build the library and the examples use the following command:
 > meson build
 > ninja -C build
 ```
-As an alternative to Meson there is also a basic support for CMake but it is not currently updated and is not recommended.
 
 Rendering of graphical elements
 ----
@@ -74,11 +73,11 @@ Current status
 The libcanvas library is quite solid in its core since it was used previously in two other projects.
 Its current status is 1.0 pre-release.
 
-A clean and simple C++ API is now available to make the utilisation of the library super-simple and to isolate from the implementation details.
+A clean and simple C and C++ API is now available to make the utilisation of the library super-simple and to isolate from the implementation details.
 
 The library currently works on Windows and GNU/Linux system.
 
-The documentation for the library is available in the form of a [reference manual](http://franko.github.io/libcanvas/).
+The documentation for the library is available in the form of a [reference manual](http://franko.github.io/elementary-plotlib/).
 
 If you use the library expect to find bugs because the library was recently over-hauled and it is not largely tested.
 
@@ -102,8 +101,8 @@ More Screenshots
 
 Below an example that show a customized pipeline to render a path:
 
-![Plot custom pipeline](https://github.com/franko/libcanvas/blob/master/doc/libcanvas-custom-pipeline.png)
+![Plot custom pipeline](https://github.com/franko/elementary-plotlib/blob/master/doc/libcanvas-custom-pipeline.png)
 
 Another example to show different rendering options:
 
-![Plot custom pipeline](https://github.com/franko/libcanvas/blob/master/doc/libcanvas-rendering-options.png).
+![Plot custom pipeline](https://github.com/franko/elementary-plotlib/blob/master/doc/libcanvas-rendering-options.png).
