@@ -9,18 +9,18 @@
 
 namespace graphics {
 
-/* Provides a partial implementation of the interface 'display_window'
+/* Extend the interface 'display_window'
  * by providing a mutex for lock/unlock methods and a status variable
  * with the related methods to query/set status and issue a request. */
 class display_window_status : public display_window {
 public:
-    void lock() override {
+    void lock() {
         m_mutex.lock();
     }
-    void unlock() override {
+    void unlock() {
         m_mutex.unlock();
     }
-    int status() override {
+    int status() {
         return m_window_status.value();
     }
     void set_status(window_status_e new_status) {
