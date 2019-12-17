@@ -155,7 +155,7 @@ public:
 
     enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
 
-    enum { show_units = 1 << 0, auto_limits = 1 << 1 };
+    enum { show_units = 1 << 0, auto_limits = 1 << 1, clip_region = 1 << 2 };
 
     class drawing_context {
     public:
@@ -170,7 +170,7 @@ public:
     };
 
     plot(unsigned flags) :
-        m_drawing_queue(0), m_clip_flag(true), m_need_redraw(true),
+        m_drawing_queue(0), m_clip_flag(flags & clip_region), m_need_redraw(true),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
         m_auto_limits(flags & auto_limits),
         m_bbox_updated(true), m_enlarged_layer(false)

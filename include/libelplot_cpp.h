@@ -187,7 +187,7 @@ public:
 
 class Plot {
 public:
-    enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1 };
+    enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1, ClipRegion = 1 << 2 };
     enum Placement { Right = 0, Left = 1, Bottom = 2, Top = 3 };
 
     Plot() : Plot(ShowUnits | AutoLimits) { }

@@ -7,8 +7,7 @@ using namespace elp;
 int main() {
     InitializeFonts();
 
-    Plot plot(Plot::ShowUnits | Plot::AutoLimits);
-    plot.SetClipMode(false);
+    Plot plot;
 
     const double x0 = 0.0001, x1 = 8 * math::Tau();
     DashPath line{8, 4};

@@ -8,8 +8,7 @@ using namespace elp;
 int main() {
     InitializeFonts();
 
-    Plot plot(Plot::ShowUnits | Plot::AutoLimits);
-    plot.SetClipMode(false);
+    Plot plot;
 
     std::random_device r;
     std::default_random_engine e1(r());

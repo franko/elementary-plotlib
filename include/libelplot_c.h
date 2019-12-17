@@ -53,7 +53,8 @@ enum {
 
 enum {
     elp_plot_show_units = 1 << 0,
-    elp_plot_auto_limits = 1 << 1
+    elp_plot_auto_limits = 1 << 1,
+    elp_plot_clip_region = 1 << 2
 };
 
 enum {
