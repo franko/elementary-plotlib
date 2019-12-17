@@ -2,33 +2,22 @@
 
 #include <fx.h>
 
-#include "render_config.h"
-#include "window_surface.h"
-#include "status_notifier.h"
-#include "window_flags.h"
-#include "update_region_info.h"
 #include "debug_priv.h"
+#include "display_window_status.h"
+#include "update_region_info.h"
+#include "window_surface.h"
 
 namespace FX {
     class FXElpWindow;
 }
 
-class window_fox : public graphics::display_window {
+class window_fox : public graphics::display_window_status {
 public:
     window_fox(FXElpWindow *canvas, const char *split_str);
     ~window_fox();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
-
-    virtual void lock()   { m_mutex.lock();   }
-    virtual void unlock() { m_mutex.unlock(); }
-    virtual int status() { return m_window_status.value(); }
-
-    int set_notify_request(notify_request<graphics::window_status_e>& request) {
-        std::lock_guard<std::mutex> lk(m_mutex);
-        return m_window_status.set_notify_request(request);
-    }
 
     void set_thread_id() {
         m_window_thread_id = std::this_thread::get_id();
@@ -53,7 +42,7 @@ public:
     }
 
     void set_window_status(graphics::window_status_e win_status) {
-        m_window_status.set(win_status);
+        set_status(win_status);
     }
 
     int attach(graphics::plot* p, const char* slot_str) {
@@ -76,7 +65,5 @@ private:
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.
-    std::mutex m_mutex;
-    status_notifier<graphics::window_status_e> m_window_status;
     graphics::window_surface m_surface;
 };

@@ -61,7 +61,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     if (unlikely(!m_connection.init()))
         return false;
 
-    m_window_status.set(graphics::window_starting);
+    set_status(graphics::window_starting);
     x_connection *xc = &this->m_connection;
 
     unsigned long r_mask = xc->visual->red_mask;
@@ -217,7 +217,7 @@ bool xwindow::init(unsigned width, unsigned height, unsigned flags)
     resize(width, height);
     m_window_surface.render();
 
-    m_window_status.set(graphics::window_running);
+    set_status(graphics::window_running);
 
     return true;
 }
@@ -299,7 +299,7 @@ void xwindow::close()
 {
     free_x_resources();
     close_connections();
-    m_window_status.set(graphics::window_closed);
+    set_status(graphics::window_closed);
 }
 
 void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)

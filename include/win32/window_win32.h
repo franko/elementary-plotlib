@@ -1,21 +1,15 @@
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-
 #include <windows.h>
 
 #include <agg_basics.h>
 #include <agg_rendering_buffer.h>
 
-#include "win32/agg_win32_bmp.h"
+#include "display_window_status.h"
 #include "strpp.h"
-#include "render_config.h"
-#include "window_surface.h"
-#include "status_notifier.h"
-#include "window_flags.h"
 #include "update_region_info.h"
+#include "win32/agg_win32_bmp.h"
+#include "window_surface.h"
 
-class window_win32 : public graphics::display_window {
+class window_win32 : public graphics::display_window_status {
 public:
     window_win32(graphics::window_surface& window_surface);
     ~window_win32();
@@ -24,15 +18,6 @@ public:
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
-
-    virtual void lock()   { m_mutex.lock();   }
-    virtual void unlock() { m_mutex.unlock(); }
-    virtual int status() { return m_window_status.value(); }
-
-    int set_notify_request(notify_request<graphics::window_status_e>& request) {
-        std::lock_guard<std::mutex> lk(m_mutex);
-        return m_window_status.set_notify_request(request);
-    }
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -50,9 +35,7 @@ private:
     HWND          m_hwnd;
 
     str m_caption;
-    std::mutex m_mutex;
     update_region_info m_update_region;
-    status_notifier<graphics::window_status_e> m_window_status;
     graphics::window_surface& m_window_surface;
 
     static void get_module_instance();

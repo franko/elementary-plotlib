@@ -1,22 +1,16 @@
 #pragma once
 
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-
+#include "display_window_status.h"
 // Used for declarations of window_flag_e and pix_format_e enums.
 // Not used for platform_support class which is not used in this project.
 #include "platform/agg_platform_support.h"
-
+#include "strpp.h"
+#include "update_region_info.h"
+#include "window_surface.h"
 #include "xwindow/x_connection.h"
 #include "xwindow/x_image.h"
-#include "strpp.h"
-#include "window_surface.h"
-#include "status_notifier.h"
-#include "window_flags.h"
-#include "update_region_info.h"
 
-class xwindow : public graphics::display_window {
+class xwindow : public graphics::display_window_status {
 public:
     enum xevent_mask_e
     {
@@ -30,15 +24,6 @@ public:
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
-
-    virtual void lock()   { m_mutex.lock();   }
-    virtual void unlock() { m_mutex.unlock(); }
-    virtual int status() { return m_window_status.value(); }
-
-    int set_notify_request(notify_request<graphics::window_status_e>& request) {
-        std::lock_guard<std::mutex> lk(m_mutex);
-        return m_window_status.set_notify_request(request);
-    }
 
 private:
     bool init(unsigned width, unsigned height, unsigned flags);
@@ -67,10 +52,8 @@ private:
     x_connection         m_connection;
     x_image*             m_draw_img;
     str                  m_caption;
-    std::mutex           m_mutex;
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
-    status_notifier<graphics::window_status_e> m_window_status;
     graphics::window_surface& m_window_surface;
 
     static bool need_initialize;

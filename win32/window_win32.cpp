@@ -110,7 +110,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         HDC paintDC = ::BeginPaint(hWnd, &ps);
         m_window_surface.draw();
         ::EndPaint(hWnd, &ps);
-        m_window_status.set(graphics::window_running);
+        set_status(graphics::window_running);
         break;
     }
 
@@ -207,14 +207,14 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 
 int window_win32::run() {
     MSG msg;
-    m_window_status.set(graphics::window_starting);
+    set_status(graphics::window_starting);
     debug_log(1, "window run");
     for(;;) {
         bool status;
-        if (m_window_status.value() == graphics::window_running) {
-            m_mutex.unlock();
+        if (this->status() == graphics::window_running) {
+            this->unlock();
             status = ::GetMessage(&msg, 0, 0, 0);
-            m_mutex.lock();
+            this->lock();
         } else {
             status = ::GetMessage(&msg, 0, 0, 0);
         }
@@ -226,7 +226,7 @@ int window_win32::run() {
         ::DispatchMessage(&msg);
     }
     debug_log(1, "window run exit");
-    m_window_status.set(graphics::window_closed);
+    set_status(graphics::window_closed);
     return (int)msg.wParam;
 }
 
