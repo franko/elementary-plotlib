@@ -4,6 +4,7 @@
 #include <agg_rendering_buffer.h>
 #include <agg_trans_affine.h>
 
+#include "display_window.h"
 #include "image_buf.h"
 #include "window_part.h"
 #include "canvas.h"
@@ -11,17 +12,6 @@
 #include "plot.h"
 
 namespace graphics {
-
-typedef image_gen<pixel_size, flip_y> image;
-
-struct display_window {
-    virtual void update_region(image& img, const agg::rect_i& r) = 0;
-    virtual void update_region_request(image& img, const agg::rect_i& r) = 0;
-    virtual void lock() = 0;
-    virtual void unlock() = 0;
-    virtual int status() = 0;
-    virtual ~display_window() { };
-};
 
 struct plot_ref {
     plot_ref(): plot_ptr(NULL), have_save_img(false) {}
