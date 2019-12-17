@@ -41,10 +41,6 @@ public:
         m_surface.render();
     }
 
-    void set_window_status(graphics::window_status_e win_status) {
-        set_status(win_status);
-    }
-
     int attach(graphics::plot* p, const char* slot_str) {
         return m_surface.attach(p, slot_str);
     }

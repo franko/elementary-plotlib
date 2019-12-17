@@ -52,7 +52,7 @@ void FXElpWindow::Wait() {
 
 FXElpWindow::~FXElpWindow() {
     window_fox *window_impl = (window_fox *) m_window_impl;
-    window_impl->set_window_status(graphics::window_closed);
+    window_impl->set_status(graphics::window_closed);
 }
 
 void FXElpWindow::position(FXint x, FXint y, FXint w, FXint h) {
@@ -64,7 +64,7 @@ void FXElpWindow::position(FXint x, FXint y, FXint w, FXint h) {
 
 void FXElpWindow::create() {
     window_fox *window_impl = (window_fox *) m_window_impl;
-    window_impl->set_window_status(graphics::window_starting);
+    window_impl->set_status(graphics::window_starting);
     FXWindow::create();
 }
 
@@ -86,6 +86,6 @@ long FXElpWindow::onMap(FXObject *, FXSelector, void *) {
     debug_log(1, "FXElpWindow: map event");
     window_fox *window_impl = (window_fox *) m_window_impl;
     window_impl->set_thread_id();
-    window_impl->set_window_status(graphics::window_running);
+    window_impl->set_status(graphics::window_running);
     return 1;
 }
