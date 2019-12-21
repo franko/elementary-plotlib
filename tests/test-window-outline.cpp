@@ -6,8 +6,7 @@
 using namespace elp;
 
 Plot CreateFunctionPlot(const char *title, unsigned flags) {
-    Plot p(Plot::ShowUnits | Plot::AutoLimits);
-    p.SetClipMode(false);
+    Plot p;
     p.SetTitle(title);
     const double x0 = math::Tau() / 4, x1 = 8 * math::Tau();
     auto fsin = [](double x) { return std::sin(x) / x; };

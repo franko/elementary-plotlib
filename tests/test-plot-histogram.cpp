@@ -20,7 +20,7 @@ void GenHistogram(Plot& plot, RandomEngine &e, ParentDistDensity parent_df, doub
 int main() {
     InitializeFonts();
 
-    Plot plot(Plot::ShowUnits | Plot::AutoLimits);
+    Plot plot;
     plot.SetTitle("Gaussian distribution example");
 
     std::random_device r;
