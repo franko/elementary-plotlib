@@ -4,47 +4,47 @@
 // the following are private headers.
 #include "plot.h"
 #include "plot_agent.h"
-#include "window.h"
+#include "window_platform_native.h"
 
 namespace elp {
 
-Window::Window() : window_impl_{(WindowImpl *) new graphics::window()} {
+class WindowImpl : public graphics::window_platform_native {
+    using window_base = graphics::window_platform_native;
+public:
+    using window_base::window_base;
+};
+
+Window::Window() : window_impl_{new WindowImpl()} {
 }
 
-Window::Window(const char *fmt) : window_impl_{(WindowImpl *) new graphics::window(fmt)} {
+Window::Window(const char *fmt) : window_impl_{new WindowImpl(fmt)} {
 }
 
 Window::~Window() {
-    graphics::window *win = (graphics::window *) window_impl_;
-    delete win;
+    delete window_impl_;
 }
 
 void Window::SetLayout(const char *fmt) {
-    graphics::window *win = (graphics::window *) window_impl_;
-    win->set_layout(fmt);    
+    window_impl_->set_layout(fmt);    
 }
 
 int Window::Attach(Plot& plot, const char* slot_str) {
-    graphics::window *win = (graphics::window *) window_impl_;
     graphics::plot *p = plot.plot_impl_.plot;
-    int index = win->attach(p, slot_str);
+    int index = window_impl_->attach(p, slot_str);
     graphics::plot_agent *agent = plot.plot_impl_.plot_agent;
-    agent->add_window(win->window_surface(), index);
+    agent->add_window(window_impl_->get_window_surface(), index);
     return index;
 }
 
 void Window::SlotRefresh(unsigned index) {
-    graphics::window *win = (graphics::window *) window_impl_;
-    win->slot_refresh(index);
+    window_impl_->slot_refresh(index);
 }
 
 void Window::Start(unsigned width, unsigned height, unsigned flags) {
-    graphics::window *win = (graphics::window *) window_impl_;
-    win->start(width, height, flags);
+    window_impl_->start(width, height, flags);
 }
 
 void Window::Wait() {
-    graphics::window *win = (graphics::window *) window_impl_;
-    win->wait();
+    window_impl_->wait();
 }
 }

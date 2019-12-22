@@ -6,13 +6,14 @@
 #include "plot_agent.h"
 #include "window.h"
 #include "libelplot_c_forward.h"
+#include "window_platform_native.h"
 
 elp_window *elp_window_new() {
-    return (elp_window *) new graphics::window{};
+    return (elp_window *) new graphics::window_platform_native{};
 }
 
 elp_window *elp_window_new_with_layout(const char *fmt) {
-    return (elp_window *) new graphics::window{fmt};
+    return (elp_window *) new graphics::window_platform_native{fmt};
 }
 
 void elp_window_set_layout(elp_window *win_, const char *fmt) {
@@ -25,7 +26,7 @@ int elp_window_attach(elp_window *win_, elp_plot *plot, const char* slot_str) {
     graphics::plot *p = plot->plot;
     int index = win->attach(p, slot_str);
     graphics::plot_agent *agent = (graphics::plot_agent *) plot->plot_agent;
-    agent->add_window(win->window_surface(), index);
+    agent->add_window(win->get_window_surface(), index);
     return index;
 }
 

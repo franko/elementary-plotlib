@@ -223,10 +223,12 @@ private:
     friend class FX::FXElpWindow;
 };
 
+class WindowImpl;
+
 class Window {
 public:
     Window();
-    Window(const char *fmt);
+    Window(const char *layout);
     ~Window();
 
     int Attach(Plot& plot, const char* slot_str);
@@ -236,11 +238,9 @@ public:
     void Wait();
 
 private:
-    struct WindowImpl;
     WindowImpl *window_impl_;
 };
 
-// TODO: document initialize fonts function
 void InitializeFonts();
 }
 
