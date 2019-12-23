@@ -23,7 +23,7 @@ public:
         }
     }
 
-    int set_notify_request(notify_request<StatusOrderedEnum>& request) {
+    request_error_e set_notify_request(notify_request<StatusOrderedEnum>& request) {
         if (m_request_pending) {
             return request_error_pending;
         }

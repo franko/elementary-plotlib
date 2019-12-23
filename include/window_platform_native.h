@@ -16,25 +16,15 @@ void run_window(Window *window, unsigned width, unsigned height, unsigned flags)
 }
 
 template <typename Window>
-void wait_until_notification(Window *window, graphics::window_status_e notify_status) {
-    notify_request<graphics::window_status_e> req{notify_status};
-    int retval = window->set_notify_request(req);
-    if (retval == request_success) {
-        req.wait();
-    } else if (retval == request_satisfied) {
-        debug_log(1, "request already satisfied");
-    } else {
-        debug_log(1, "error sending request: %d", retval);
-    }
-}
-
-template <typename Window>
 void start_window(Window *window, unsigned width, unsigned height, unsigned flags) {
     window->lock();
     std::thread wt(run_window<Window>, window, width, height, flags);
     window->unlock();
     wt.detach();
-    wait_until_notification(window, graphics::window_running);
+    request_error_e status = window->wait_until_notification(graphics::window_running);
+    if (status != request_satisfied && status != request_success) {
+        debug_log(1, "error starting window, error code: %d", int(status));
+    }
 }
 
 template <typename Window>
@@ -67,7 +57,10 @@ public:
     }
 
     void wait() override {
-        wait_until_notification(&m_window, graphics::window_closed);
+        request_error_e status = m_window.wait_until_notification(graphics::window_closed);
+        if (status != request_satisfied && status != request_success) {
+            debug_log(1, "error while waiting window's closing, error code: %d", int(status));
+        }
     }
 
     graphics::window_surface *get_window_surface() override {

@@ -39,10 +39,9 @@ void FXElpWindow::SlotRefresh(unsigned index) {
 }
 
 void FXElpWindow::Wait() {
-    notify_request<graphics::window_status_e> req{graphics::window_closed};
-    int retval = m_window_impl->set_notify_request(req);
-    if (retval == request_success) {
-        req.wait();
+    request_error_e status = m_window_impl->wait_until_notification(graphics::window_closed);
+    if (status != request_satisfied && status != request_success) {
+        debug_log(1, "FXElpWindow::Wait error waiting window's closing %d", int(status));
     }
 }
 
