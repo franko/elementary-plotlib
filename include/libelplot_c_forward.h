@@ -4,6 +4,7 @@ class elp_object;
 class elp_path;
 class elp_curve;
 class elp_dashed;
+class elp_window;
 
 namespace graphics {
     class plot;

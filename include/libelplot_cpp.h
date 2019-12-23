@@ -223,8 +223,6 @@ private:
     friend class FX::FXElpWindow;
 };
 
-class WindowImpl;
-
 class Window {
 public:
     Window();
@@ -238,7 +236,7 @@ public:
     void Wait();
 
 private:
-    WindowImpl *window_impl_;
+    elp_window *window_impl_;
 };
 
 void InitializeFonts();

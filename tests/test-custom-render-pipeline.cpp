@@ -57,7 +57,7 @@ int main()
 {
     graphics::initialize_fonts();
 
-    graphics::window_platform_native win;
+    elp_window_native win;
     graphics::plot p(graphics::plot::show_units);
     p.set_limits({-0.7, -0.3, 0.7, 1.1});
 

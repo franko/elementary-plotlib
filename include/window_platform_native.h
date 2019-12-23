@@ -38,7 +38,7 @@ void start_window(Window *window, unsigned width, unsigned height, unsigned flag
 }
 
 template <typename Window>
-class window_gen : public graphics::window {
+class window_gen : public elp_window {
 public:
     window_gen(): m_surface(nullptr), m_window(m_surface) {
         m_surface.attach_window(&m_window);
@@ -81,12 +81,8 @@ private:
 
 #if defined (WIN32) || defined (CYGWIN)
 #include "win32/window_win32.h"
-namespace graphics {
-typedef window_gen<window_win32> window_platform_native;
-}
+typedef window_gen<window_win32> elp_window_native;
 #else
 #include "xwindow/xwindow.h"
-namespace graphics {
-typedef window_gen<xwindow> window_platform_native;
-}
+typedef window_gen<xwindow> elp_window_native;
 #endif

@@ -5,6 +5,8 @@
 // We include here only the public interface libcanvas header.
 #include "libelplot.h"
 
+class window_fox;
+
 namespace FX {
 
 class FXElpWindow : public FXWindow {
@@ -37,7 +39,6 @@ public:
     };
 
 private:
-    struct WindowImpl;
-    WindowImpl *m_window_impl;
+    window_fox *m_window_impl;
 };
 }

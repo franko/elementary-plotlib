@@ -8,16 +8,10 @@
 
 namespace elp {
 
-class WindowImpl : public graphics::window_platform_native {
-    using window_base = graphics::window_platform_native;
-public:
-    using window_base::window_base;
-};
-
-Window::Window() : window_impl_{new WindowImpl()} {
+Window::Window() : window_impl_(new elp_window_native()) {
 }
 
-Window::Window(const char *fmt) : window_impl_{new WindowImpl(fmt)} {
+Window::Window(const char *layout) : window_impl_{new elp_window_native(layout)} {
 }
 
 Window::~Window() {
