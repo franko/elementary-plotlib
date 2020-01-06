@@ -5,27 +5,15 @@
 #include "debug_priv.h"
 #include "display_window_status.h"
 #include "update_region_info.h"
+#include "window_fox_kernel.h"
 #include "window_surface.h"
+#include "FXElpWindow.h"
 
-namespace FX {
-    class FXElpWindow;
-}
-
-class window_fox : public graphics::display_window_status {
+class window_fox : public window_fox_kernel {
 public:
-    window_fox(FXElpWindow *canvas, const char *split_str);
-    ~window_fox();
-
-    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
-    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
-
-    void set_thread_id() {
-        m_window_thread_id = std::this_thread::get_id();
-    }
-
-    void call_update_region() {
-        update_region(*m_update_region.img, m_update_region.r);
-        m_update_notify.notify();
+    window_fox(FXElpWindow *canvas, const char *split_str): window_fox_kernel(), m_surface(split_str) {
+        bind_drawable(canvas, FXSEL(SEL_IO_READ, FXElpWindow::ID_UPDATE_REGION));
+        m_surface.attach_window(this);
     }
 
     void draw(FXEvent *ev) {
@@ -54,12 +42,5 @@ public:
     }
 
 private:
-    FXApp *app();
-
-    FXElpWindow *m_plot_canvas;
-    FXGUISignal *m_gui_signal;
-    update_region_info   m_update_region;
-    update_region_notify m_update_notify;
-    std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.
     graphics::window_surface m_surface;
 };

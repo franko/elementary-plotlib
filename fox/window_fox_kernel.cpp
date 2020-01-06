@@ -1,22 +1,26 @@
-#include "window_fox.h"
-#include "FXElpWindow.h"
+#include "window_fox_kernel.h"
 #include "debug_priv.h"
 
-window_fox::window_fox(FXElpWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
-{
-    m_surface.attach_window(this);
-    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, FXElpWindow::ID_UPDATE_REGION, nullptr);
+window_fox_kernel::window_fox_kernel():
+        m_drawable(nullptr), m_gui_signal(nullptr), m_update_selector(0) {
 }
 
-window_fox::~window_fox() {
+window_fox_kernel::~window_fox_kernel() {
     delete m_gui_signal;
 }
 
-FXApp *window_fox::app() {
-    return m_plot_canvas->getApp();
+void window_fox_kernel::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
+    m_drawable = drawable;
+    m_update_selector = update_selector;
+    m_gui_signal = new FXGUISignal(app(), m_drawable, m_update_selector, nullptr);
 }
 
-void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
+
+FXApp *window_fox_kernel::app() {
+    return (m_drawable ? m_drawable->getApp() : nullptr);
+}
+
+void window_fox_kernel::update_region(graphics::image& src_img, const agg::rect_i& r) {
     const unsigned fximage_pixel_size = 4; // 32 bit RGBA format.
     const bool fximage_flipy = true;
     const int width = r.x2 - r.x1, height = r.y2 - r.y1;
@@ -38,11 +42,11 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     FXImage img(app(), fxcolor_buf, IMAGE_KEEP, width, height);
     img.create();
 
-    FXDCWindow dc(m_plot_canvas);
-    dc.drawImage(&img, r.x1, m_plot_canvas->getHeight() - r.y2);
+    FXDCWindow dc(m_drawable);
+    dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
 }
 
-void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
+void window_fox_kernel::update_region_request(graphics::image& img, const agg::rect_i& r) {
     if (std::this_thread::get_id() == m_window_thread_id) {
         // We are running in the thread of the Window's event loop. Just do the
         // drawing operation.
