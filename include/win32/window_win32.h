@@ -3,9 +3,11 @@
 #include <agg_basics.h>
 #include <agg_rendering_buffer.h>
 
+#include "debug_priv.h"
 #include "display_window_status.h"
 #include "strpp.h"
 #include "update_region_info.h"
+#include "start_window.h"
 #include "win32/agg_win32_bmp.h"
 #include "window_surface.h"
 
@@ -14,7 +16,14 @@ public:
     window_win32(graphics::window_surface& window_surface);
     ~window_win32();
 
-    void start(unsigned width, unsigned height, unsigned flags);
+    void start_blocking(unsigned width, unsigned height, unsigned flags);
+
+    void start(unsigned width, unsigned height, unsigned flags) {
+        int status = start_window_new_thread(this, width, height, flags);
+        if (status != 0) {
+            debug_log(1, "error starting window, unknwon error");
+        }
+    }
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);

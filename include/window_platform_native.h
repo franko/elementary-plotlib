@@ -9,25 +9,6 @@
 #include "debug_priv.h"
 
 template <typename Window>
-void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
-    window->lock();
-    window->start(width, height, flags);
-    window->unlock();
-}
-
-template <typename Window>
-void start_window(Window *window, unsigned width, unsigned height, unsigned flags) {
-    window->lock();
-    std::thread wt(run_window<Window>, window, width, height, flags);
-    window->unlock();
-    wt.detach();
-    request_error_e status = window->wait_until_notification(graphics::window_running);
-    if (status != request_satisfied && status != request_success) {
-        debug_log(1, "error starting window, error code: %d", int(status));
-    }
-}
-
-template <typename Window>
 class window_gen : public elp_window {
 public:
     window_gen(): m_surface(nullptr), m_window(m_surface) {
@@ -53,7 +34,7 @@ public:
     }
 
     void start(unsigned width, unsigned height, unsigned flags) override {
-        start_window(&m_window, width, height, flags);
+        m_window.start(width, height, flags);
     }
 
     void wait() override {

@@ -237,7 +237,7 @@ void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r)
     ::ReleaseDC(m_hwnd, dc);
 }
 
-void window_win32::start(unsigned width, unsigned height, unsigned flags) {
+void window_win32::start_blocking(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
 }
