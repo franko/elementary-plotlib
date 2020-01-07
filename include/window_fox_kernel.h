@@ -29,7 +29,6 @@ private:
     FXApp *app();
     FXDrawable *m_drawable;
     FXGUISignal *m_gui_signal;
-    FXSelector m_update_selector;
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.

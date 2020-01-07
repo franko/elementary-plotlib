@@ -2,7 +2,7 @@
 #include "debug_priv.h"
 
 window_fox_kernel::window_fox_kernel():
-        m_drawable(nullptr), m_gui_signal(nullptr), m_update_selector(0) {
+        m_drawable(nullptr), m_gui_signal(nullptr) {
 }
 
 window_fox_kernel::~window_fox_kernel() {
@@ -11,8 +11,7 @@ window_fox_kernel::~window_fox_kernel() {
 
 void window_fox_kernel::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
     m_drawable = drawable;
-    m_update_selector = update_selector;
-    m_gui_signal = new FXGUISignal(app(), m_drawable, m_update_selector, nullptr);
+    m_gui_signal = new FXGUISignal(app(), m_drawable, update_selector, nullptr);
 }
 
 
