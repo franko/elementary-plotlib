@@ -14,6 +14,8 @@ public:
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
 
+    void start(unsigned width, unsigned height, unsigned flags);
+
     void set_thread_id() {
         m_window_thread_id = std::this_thread::get_id();
     }
@@ -24,11 +26,12 @@ public:
     }
 
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);
+    void bind_window_environment(FXObject *env_object, FXSelector start_selector);
 
 private:
     FXApp *app();
     FXDrawable *m_drawable;
-    FXGUISignal *m_gui_signal;
+    FXGUISignal *m_update_signal, *m_start_signal;
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.

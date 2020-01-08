@@ -2,16 +2,17 @@
 #include "debug_priv.h"
 
 window_fox_kernel::window_fox_kernel():
-        m_drawable(nullptr), m_gui_signal(nullptr) {
+        m_drawable(nullptr), m_update_signal(nullptr), m_start_signal(nullptr) {
 }
 
 window_fox_kernel::~window_fox_kernel() {
-    delete m_gui_signal;
+    delete m_update_signal;
+    delete m_start_signal;
 }
 
 void window_fox_kernel::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
     m_drawable = drawable;
-    m_gui_signal = new FXGUISignal(app(), m_drawable, update_selector, nullptr);
+    m_update_signal = new FXGUISignal(app(), m_drawable, update_selector, nullptr);
 }
 
 
@@ -57,8 +58,28 @@ void window_fox_kernel::update_region_request(graphics::image& img, const agg::r
         debug_log(1, "update_region request from secondary thread");
         m_update_notify.prepare();
         m_update_region.prepare(img, r);
-        m_gui_signal->signal();
+        m_update_signal->signal();
         m_update_notify.wait();
         m_update_region.clear();
+    }
+}
+
+void window_fox_kernel::bind_window_environment(FXObject *env_object, FXSelector start_selector) {
+    if (! m_drawable) {
+        debug_log(0, "error: calling bind_window_environement without a drawable");
+        return;
+    }
+    m_start_signal = new FXGUISignal(app(), env_object, start_selector, this);
+}
+
+void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
+    if (! m_start_signal) {
+        debug_log(0, "error: cannot start fox window, no hosting environment");
+        return;
+    }
+    m_start_signal->signal();
+    request_error_e status = wait_until_notification(graphics::window_running);
+    if (!(status == request_satisfied || status == request_success)) {
+        debug_log(1, "error starting window, return code: %d", int(status));
     }
 }
