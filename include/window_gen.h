@@ -9,11 +9,13 @@
 template <typename Window>
 class window_gen : public elp_window {
 public:
-    window_gen(): m_surface(nullptr), m_window(m_surface) {
+    template <typename... Args>
+    window_gen(Args&&... args): m_surface(nullptr), m_window(m_surface, std::forward<Args>(args)...) {
         m_surface.attach_window(&m_window);
     }
 
-    window_gen(const char *fmt): m_surface(fmt), m_window(m_surface) {
+    template <typename... Args>
+    window_gen(const char *fmt, Args&&... args): m_surface(fmt), m_window(m_surface, std::forward<Args>(args)...) {
         m_surface.attach_window(&m_window);
     }
 
