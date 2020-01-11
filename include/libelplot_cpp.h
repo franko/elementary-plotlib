@@ -227,6 +227,7 @@ class Window {
 public:
     Window();
     Window(const char *layout);
+    Window(elp_window *window_impl);
     ~Window();
 
     int Attach(Plot& plot, const char* slot_str);

@@ -1,8 +1,11 @@
 #include "window_fox_kernel.h"
 #include "debug_priv.h"
 
-window_fox_kernel::window_fox_kernel():
-        m_drawable(nullptr), m_update_signal(nullptr), m_start_signal(nullptr) {
+window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface):
+        m_drawable(nullptr),
+        m_update_signal(nullptr),
+        m_start_signal(nullptr),
+        m_window_surface(window_surface) {
 }
 
 window_fox_kernel::~window_fox_kernel() {

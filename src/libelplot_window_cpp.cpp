@@ -14,6 +14,9 @@ Window::Window() : window_impl_(new elp_window_native()) {
 Window::Window(const char *layout) : window_impl_{new elp_window_native(layout)} {
 }
 
+Window::Window(elp_window *window_impl_) : window_impl_(window_impl_) {
+}
+
 Window::~Window() {
     delete window_impl_;
 }

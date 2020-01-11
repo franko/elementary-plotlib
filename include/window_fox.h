@@ -11,22 +11,9 @@
 
 class window_fox : public window_fox_kernel {
 public:
-    window_fox(FXElpWindow *canvas, const char *split_str): window_fox_kernel(), m_surface(split_str) {
-        bind_drawable(canvas, FXSEL(SEL_IO_READ, FXElpWindow::ID_UPDATE_REGION));
+    window_fox(FXElpWindow *canvas, const char *split_str): window_fox_kernel(m_surface), m_surface(split_str) {
+        bind_drawable(canvas, FXElpWindow::ID_UPDATE_REGION);
         m_surface.attach_window(this);
-    }
-
-    void draw(FXEvent *ev) {
-        debug_log(1, "window_fox: calling draw on target");
-        m_surface.draw();
-    }
-
-    void on_resize(FXint w, FXint h) {
-        if (w <= 0 || h <= 0) return;
-        debug_log(1, "window_fox: calling resize on target %d %d", w, h);
-        m_surface.resize(unsigned(w), unsigned(h));
-        debug_log(1, "window_fox: calling render on target");
-        m_surface.render();
     }
 
     int attach(graphics::plot* p, const char* slot_str) {
