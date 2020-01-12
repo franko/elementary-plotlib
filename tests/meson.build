@@ -43,7 +43,7 @@ if fox_dep.found()
             include_directories: libelplot_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
             cpp_args: libelplot_cflags,
-            link_with: [libelplotfox, libelplot],
+            link_with: [libelplotfox, libelplotwin, libelplot],
             gui_app: false)
     endforeach
 endif

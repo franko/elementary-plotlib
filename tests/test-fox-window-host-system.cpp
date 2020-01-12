@@ -37,6 +37,7 @@ FXDEFMAP(PlotWindow) PlotWindowMap[] = {
 FXIMPLEMENT(PlotWindow, FXMainWindow, PlotWindowMap, ARRAYNUMBER(PlotWindowMap))
 
 long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
+    fprintf(stderr, "PlotWindow::onElemWindowStart\n");
     window_fox_kernel *elem_win = (window_fox_kernel *) ptr;
     FXApp *app = getApp();
     auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
@@ -47,12 +48,12 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
     return 1;
 }
 
-long PlotWindow::onNewWindowCmd(FXObject *sender, FXSelector, void *) {
+long PlotWindow::onNewWindowCmd(FXObject *, FXSelector, void *) {
     // TODO: create a derivate class of window_gen<window_fox_kernel> that
     // calls on constructor bind_window_environment and remove the newly
     // introduced 'window' method of window_gen.
     auto window_impl_ptr = new window_gen<window_fox_kernel>();
-    window_impl_ptr->window().bind_window_environment(this, PlotWindow::ID_PLOT_WINDOW_START);
+    window_impl_ptr->window().bind_window_environment(getApp(), this, PlotWindow::ID_PLOT_WINDOW_START);
     Window win(window_impl_ptr);
     // FIX the handling of width, height
     win.Start(0, 0, 0);
@@ -87,5 +88,6 @@ int main(int argc, char *argv[]) {
     auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 320, 320);
     new FXButton(main_window, "New Plot", nullptr, main_window, PlotWindow::ID_NEW_WINDOW);
     app.create();
+    main_window->show(PLACEMENT_SCREEN);
     return app.run();
 }

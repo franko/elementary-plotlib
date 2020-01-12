@@ -15,12 +15,7 @@ window_fox_kernel::~window_fox_kernel() {
 
 void window_fox_kernel::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
     m_drawable = drawable;
-    m_update_signal = new FXGUISignal(app(), m_drawable, update_selector, nullptr);
-}
-
-
-FXApp *window_fox_kernel::app() {
-    return (m_drawable ? m_drawable->getApp() : nullptr);
+    m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
 }
 
 void window_fox_kernel::update_region(graphics::image& src_img, const agg::rect_i& r) {
@@ -41,8 +36,9 @@ void window_fox_kernel::update_region(graphics::image& src_img, const agg::rect_
 
     rendering_buffer_copy(fxcolor_image, agg::pix_format_rgba32, src_view, (agg::pix_format_e) graphics::pixel_format);
 
+    FXApp *app = m_drawable->getApp();
     FXColor *fxcolor_buf = (FXColor *) fxcolor_image.buf();
-    FXImage img(app(), fxcolor_buf, IMAGE_KEEP, width, height);
+    FXImage img(app, fxcolor_buf, IMAGE_KEEP, width, height);
     img.create();
 
     FXDCWindow dc(m_drawable);
@@ -67,24 +63,31 @@ void window_fox_kernel::update_region_request(graphics::image& img, const agg::r
     }
 }
 
-void window_fox_kernel::bind_window_environment(FXObject *env_object, FXSelector start_selector) {
+void window_fox_kernel::bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector) {
+#if 0
     if (! m_drawable) {
         debug_log(0, "error: calling bind_window_environement without a drawable");
         return;
     }
-    m_start_signal = new FXGUISignal(app(), env_object, start_selector, this);
+#endif
+    m_start_signal = new FXGUISignal(app, env_object, start_selector, this);
 }
 
 void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
+    fprintf(stderr, "window_fox_kernel::start %p\n", m_start_signal);
     if (! m_start_signal) {
         debug_log(0, "error: cannot start fox window, no hosting environment");
         return;
     }
+    fprintf(stderr, "sending signal\n"); fflush(stderr);
     m_start_signal->signal();
+    fprintf(stderr, "signal done\n"); fflush(stderr);
+#if 0
     if (std::this_thread::get_id() != m_window_thread_id) {
         request_error_e status = wait_until_notification(graphics::window_running);
         if (!(status == request_satisfied || status == request_success)) {
             debug_log(1, "error starting window, return code: %d", int(status));
         }
     }
+#endif
 }

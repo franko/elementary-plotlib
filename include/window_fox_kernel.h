@@ -36,10 +36,9 @@ public:
     }
 
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);
-    void bind_window_environment(FXObject *env_object, FXSelector start_selector);
+    void bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector);
 
 private:
-    FXApp *app();
     FXDrawable *m_drawable;
     FXGUISignal *m_update_signal, *m_start_signal;
     update_region_info   m_update_region;
