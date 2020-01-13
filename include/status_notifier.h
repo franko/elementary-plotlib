@@ -16,14 +16,17 @@ public:
     // Set the status and send notification to requester, if there is one and
     // is waiting for the given code.
     void set(StatusOrderedEnum new_status) {
+        m_mutex.lock();
         m_status = new_status;
         if (m_request_pending && m_request_pending->value() == new_status) {
             m_request_pending->notify();
             m_request_pending = nullptr;
         }
+        m_mutex.unlock();
     }
 
     request_error_e set_notify_request(notify_request<StatusOrderedEnum>& request) {
+        m_mutex.lock();
         if (m_request_pending) {
             return request_error_pending;
         }
@@ -31,10 +34,12 @@ public:
             return request_satisfied;
         }
         m_request_pending = &request;
+        m_mutex.unlock();
         return request_success;
     }
 
 private:
     StatusOrderedEnum m_status;
     notify_request<StatusOrderedEnum> *m_request_pending;
+    std::mutex m_mutex;
 };
