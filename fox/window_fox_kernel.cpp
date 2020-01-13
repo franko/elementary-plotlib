@@ -82,12 +82,9 @@ void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
     fprintf(stderr, "sending signal\n"); fflush(stderr);
     m_start_signal->signal();
     fprintf(stderr, "signal done\n"); fflush(stderr);
-#if 0
-    if (std::this_thread::get_id() != m_window_thread_id) {
-        request_error_e status = wait_until_notification(graphics::window_running);
-        if (!(status == request_satisfied || status == request_success)) {
-            debug_log(1, "error starting window, return code: %d", int(status));
-        }
+    request_error_e status = wait_until_notification(graphics::window_running);
+    if (!(status == request_satisfied || status == request_success)) {
+        debug_log(1, "error starting window, return code: %d", int(status));
     }
-#endif
+    fprintf(stderr, "window's creation done\n"); fflush(stderr);
 }

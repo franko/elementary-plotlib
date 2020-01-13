@@ -1,6 +1,8 @@
 #include <cmath>
+#include <thread>
 
 #include "libelplot.h"
+#include "libelplot_utils.h"
 #include "FXElemPlotWindow.h"
 #include "window_fox_kernel.h"
 #include "window_gen.h"
@@ -20,23 +22,25 @@ public:
     }
 
     long onElemWindowStart(FXObject *, FXSelector, void *);
-    long onNewWindowCmd(FXObject *, FXSelector, void *);
+    // long onNewWindowCmd(FXObject *, FXSelector, void *);
 
     enum {
         ID_PLOT_WINDOW_START = FXApp::ID_LAST,
-        ID_NEW_WINDOW,
+        // ID_NEW_WINDOW,
         ID_LAST,
     };
 };
 
 FXDEFMAP(PlotWindow) PlotWindowMap[] = {
     FXMAPFUNC(SEL_IO_READ, PlotWindow::ID_PLOT_WINDOW_START, PlotWindow::onElemWindowStart),
-    FXMAPFUNC(SEL_COMMAND, PlotWindow::ID_NEW_WINDOW, PlotWindow::onNewWindowCmd),
+    // FXMAPFUNC(SEL_COMMAND, PlotWindow::ID_NEW_WINDOW, PlotWindow::onNewWindowCmd),
 };
 
 FXIMPLEMENT(PlotWindow, FXMainWindow, PlotWindowMap, ARRAYNUMBER(PlotWindowMap))
 
 long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
+    // TODO: here the userdata should provide the window_fox_kernel pointer
+    // and the window width, height and flags.
     fprintf(stderr, "PlotWindow::onElemWindowStart\n");
     window_fox_kernel *elem_win = (window_fox_kernel *) ptr;
     FXApp *app = getApp();
@@ -45,18 +49,6 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
     elem_win->bind_drawable(plot_win, FXElemPlotWindow::ID_UPDATE_REGION);
     main_win->create();
     main_win->show(PLACEMENT_SCREEN);
-    return 1;
-}
-
-long PlotWindow::onNewWindowCmd(FXObject *, FXSelector, void *) {
-    // TODO: create a derivate class of window_gen<window_fox_kernel> that
-    // calls on constructor bind_window_environment and remove the newly
-    // introduced 'window' method of window_gen.
-    auto window_impl_ptr = new window_gen<window_fox_kernel>();
-    window_impl_ptr->window().bind_window_environment(getApp(), this, PlotWindow::ID_PLOT_WINDOW_START);
-    Window win(window_impl_ptr);
-    // FIX the handling of width, height
-    win.Start(0, 0, 0);
     return 1;
 }
 
@@ -81,12 +73,31 @@ Plot CreateNewPlot() {
     return plot;
 }
 
+void WorkerThreadStart(FXApp *app, FXObject *host_object, FXSelector start_sel) {
+    InitializeFonts();
+    for (int i = 0; i < 4; i++) {
+        utils::Sleep(3);
+        fprintf(stderr, "creating plot: %d\n", i + 1);
+        Plot plot = CreateNewPlot();
+        auto window_impl_ptr = new window_gen<window_fox_kernel>();
+        window_impl_ptr->window().bind_window_environment(app, host_object, start_sel);
+        Window win(window_impl_ptr);
+        win.Attach(plot, "");
+        // FIX the handling of width, height
+        win.Start(0, 0, 0);
+        // do not need to Wait on window here ?
+    }
+}
+
 int main(int argc, char *argv[]) {
     FXApp app("Plot Windows", "libelplot");
     app.init(argc, argv);
-    InitializeFonts();
     auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 320, 320);
-    new FXButton(main_window, "New Plot", nullptr, main_window, PlotWindow::ID_NEW_WINDOW);
+    new FXLabel(main_window, "Window Plot demonstrator");
+
+    std::thread worker_thread(WorkerThreadStart, &app, main_window, PlotWindow::ID_PLOT_WINDOW_START);
+    worker_thread.detach();
+
     app.create();
     main_window->show(PLACEMENT_SCREEN);
     return app.run();
