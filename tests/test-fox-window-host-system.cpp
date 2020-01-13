@@ -22,18 +22,15 @@ public:
     }
 
     long onElemWindowStart(FXObject *, FXSelector, void *);
-    // long onNewWindowCmd(FXObject *, FXSelector, void *);
 
     enum {
         ID_PLOT_WINDOW_START = FXApp::ID_LAST,
-        // ID_NEW_WINDOW,
         ID_LAST,
     };
 };
 
 FXDEFMAP(PlotWindow) PlotWindowMap[] = {
     FXMAPFUNC(SEL_IO_READ, PlotWindow::ID_PLOT_WINDOW_START, PlotWindow::onElemWindowStart),
-    // FXMAPFUNC(SEL_COMMAND, PlotWindow::ID_NEW_WINDOW, PlotWindow::onNewWindowCmd),
 };
 
 FXIMPLEMENT(PlotWindow, FXMainWindow, PlotWindowMap, ARRAYNUMBER(PlotWindowMap))
@@ -41,7 +38,6 @@ FXIMPLEMENT(PlotWindow, FXMainWindow, PlotWindowMap, ARRAYNUMBER(PlotWindowMap))
 long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
     // TODO: here the userdata should provide the window_fox_kernel pointer
     // and the window width, height and flags.
-    fprintf(stderr, "PlotWindow::onElemWindowStart\n");
     window_fox_kernel *elem_win = (window_fox_kernel *) ptr;
     FXApp *app = getApp();
     auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
@@ -75,18 +71,15 @@ Plot CreateNewPlot() {
 
 void WorkerThreadStart(FXApp *app, FXObject *host_object, FXSelector start_sel) {
     InitializeFonts();
-    for (int i = 0; i < 4; i++) {
-        utils::Sleep(3);
-        fprintf(stderr, "creating plot: %d\n", i + 1);
-        Plot plot = CreateNewPlot();
-        auto window_impl_ptr = new window_gen<window_fox_kernel>();
-        window_impl_ptr->window().bind_window_environment(app, host_object, start_sel);
-        Window win(window_impl_ptr);
-        win.Attach(plot, "");
-        // FIX the handling of width, height
-        win.Start(0, 0, 0);
-        // do not need to Wait on window here ?
-    }
+    utils::Sleep(3);
+    Plot plot = CreateNewPlot();
+    auto window_impl_ptr = new window_gen<window_fox_kernel>();
+    window_impl_ptr->window().bind_window_environment(app, host_object, start_sel);
+    Window win(window_impl_ptr);
+    win.Attach(plot, "");
+    // FIXME: the handling of width, height
+    win.Start(0, 0, 0);
+    win.Wait();
 }
 
 int main(int argc, char *argv[]) {
