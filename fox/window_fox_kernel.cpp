@@ -69,30 +69,20 @@ void window_fox_kernel::update_region_request(graphics::image& img, const agg::r
 }
 
 void window_fox_kernel::bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector) {
-#if 0
-    if (! m_drawable) {
-        debug_log(0, "error: calling bind_window_environement without a drawable");
-        return;
-    }
-#endif
     m_start_signal = new FXGUISignal(app, env_object, start_selector, nullptr);
 }
 
 void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
     window_fox_start_data data{this, width, height, flags};
-    fprintf(stderr, "window_fox_kernel::start %p\n", m_start_signal);
     if (! m_start_signal) {
         debug_log(0, "error: cannot start fox window, no hosting environment");
         return;
     }
-    fprintf(stderr, "sending signal\n"); fflush(stderr);
     m_start_signal->setData(&data);
     m_start_signal->signal();
-    fprintf(stderr, "signal done\n"); fflush(stderr);
     request_error_e status = wait_until_notification(graphics::window_running);
     if (!(status == request_satisfied || status == request_success)) {
         debug_log(1, "error starting window, return code: %d", int(status));
     }
     m_start_signal->setData(nullptr);
-    fprintf(stderr, "window's creation done\n"); fflush(stderr);
 }
