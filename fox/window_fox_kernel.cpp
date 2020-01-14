@@ -70,16 +70,18 @@ void window_fox_kernel::bind_window_environment(FXApp *app, FXObject *env_object
         return;
     }
 #endif
-    m_start_signal = new FXGUISignal(app, env_object, start_selector, this);
+    m_start_signal = new FXGUISignal(app, env_object, start_selector, nullptr);
 }
 
 void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
+    window_fox_start_data data{this, width, height, flags};
     fprintf(stderr, "window_fox_kernel::start %p\n", m_start_signal);
     if (! m_start_signal) {
         debug_log(0, "error: cannot start fox window, no hosting environment");
         return;
     }
     fprintf(stderr, "sending signal\n"); fflush(stderr);
+    m_start_signal->setData(&data);
     m_start_signal->signal();
     fprintf(stderr, "signal done\n"); fflush(stderr);
     request_error_e status = wait_until_notification(graphics::window_running);

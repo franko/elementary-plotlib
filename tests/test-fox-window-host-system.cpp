@@ -36,13 +36,16 @@ FXDEFMAP(PlotWindow) PlotWindowMap[] = {
 FXIMPLEMENT(PlotWindow, FXMainWindow, PlotWindowMap, ARRAYNUMBER(PlotWindowMap))
 
 long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
-    // TODO: here the userdata should provide the window_fox_kernel pointer
-    // and the window width, height and flags.
-    window_fox_kernel *elem_win = (window_fox_kernel *) ptr;
+    window_fox_start_data *message_data = (window_fox_start_data *) ptr;
     FXApp *app = getApp();
-    auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto plot_win = new FXElemPlotWindow(main_win, elem_win, LAYOUT_FILL_X | LAYOUT_FILL_Y);
-    elem_win->bind_drawable(plot_win, FXElemPlotWindow::ID_UPDATE_REGION);
+    // PROBLEM: the logic of resize is demanded to the client application.
+    FXuint main_window_options = (DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_SHRINKABLE|DECOR_MENU);
+    if (message_data->flags & WindowResize) {
+        main_window_options |= DECOR_STRETCHABLE;
+    }
+    auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, main_window_options, 0, 0, message_data->width, message_data->height);
+    auto plot_win = new FXElemPlotWindow(main_win, message_data->window, LAYOUT_FILL_X | LAYOUT_FILL_Y);
+    message_data->window->bind_drawable(plot_win, FXElemPlotWindow::ID_UPDATE_REGION);
     main_win->create();
     main_win->show(PLACEMENT_SCREEN);
     return 1;
@@ -77,8 +80,7 @@ void WorkerThreadStart(FXApp *app, FXObject *host_object, FXSelector start_sel) 
     window_impl_ptr->window().bind_window_environment(app, host_object, start_sel);
     Window win(window_impl_ptr);
     win.Attach(plot, "");
-    // FIXME: the handling of width, height
-    win.Start(0, 0, 0);
+    win.Start(640, 480, WindowResize);
     win.Wait();
 }
 
