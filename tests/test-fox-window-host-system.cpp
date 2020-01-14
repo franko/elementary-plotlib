@@ -4,8 +4,7 @@
 #include "libelplot.h"
 #include "libelplot_utils.h"
 #include "FXElemPlotWindow.h"
-#include "window_fox_kernel.h"
-#include "window_gen.h"
+#include "window_platform_fox.h"
 
 using namespace elp;
 
@@ -37,6 +36,10 @@ FXIMPLEMENT(PlotWindow, FXMainWindow, PlotWindowMap, ARRAYNUMBER(PlotWindowMap))
 
 long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
     window_fox_start_data *message_data = (window_fox_start_data *) ptr;
+    if (!message_data) {
+        fprintf(stderr, "internal error: no message data with window's start signale\n");
+        return 1;
+    }
     FXApp *app = getApp();
     // PROBLEM: the logic of resize is demanded to the client application.
     FXuint main_window_options = (DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_SHRINKABLE|DECOR_MENU);
@@ -76,9 +79,7 @@ void WorkerThreadStart(FXApp *app, FXObject *host_object, FXSelector start_sel) 
     InitializeFonts();
     utils::Sleep(3);
     Plot plot = CreateNewPlot();
-    auto window_impl_ptr = new window_gen<window_fox_kernel>();
-    window_impl_ptr->window().bind_window_environment(app, host_object, start_sel);
-    Window win(window_impl_ptr);
+    Window win(new elp_window_fox(app, host_object, start_sel));
     win.Attach(plot, "");
     win.Start(640, 480, WindowResize);
     win.Wait();

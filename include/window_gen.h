@@ -47,11 +47,6 @@ public:
     graphics::window_surface *get_window_surface() override {
         return &m_surface;
     }
-
-    Window& window() {
-        return m_window;
-    }
-
 private:
     graphics::window_surface m_surface;
     Window m_window;

@@ -9,6 +9,7 @@
 class window_fox_kernel : public graphics::display_window_status {
 public:
     window_fox_kernel(graphics::window_surface& window_surface);
+    window_fox_kernel(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector);
     ~window_fox_kernel();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);

@@ -8,6 +8,11 @@ window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface):
         m_window_surface(window_surface) {
 }
 
+window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector):
+        window_fox_kernel(window_surface) {
+    bind_window_environment(app, env_object, start_selector);
+}
+
 window_fox_kernel::~window_fox_kernel() {
     delete m_update_signal;
     delete m_start_signal;
@@ -88,5 +93,6 @@ void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
     if (!(status == request_satisfied || status == request_success)) {
         debug_log(1, "error starting window, return code: %d", int(status));
     }
+    m_start_signal->setData(nullptr);
     fprintf(stderr, "window's creation done\n"); fflush(stderr);
 }
