@@ -1,5 +1,5 @@
 #include "FXElemPlotWindow.h"
-#include "window_fox_kernel.h"
+#include "window_fox.h"
 
 FXDEFMAP(FXElemPlotWindow) FXElemPlotWindowMap[] = {
     FXMAPFUNC(SEL_MAP, 0, FXElemPlotWindow::onMap),
@@ -9,7 +9,7 @@ FXDEFMAP(FXElemPlotWindow) FXElemPlotWindowMap[] = {
 
 FXIMPLEMENT(FXElemPlotWindow,FXWindow,FXElemPlotWindowMap,ARRAYNUMBER(FXElemPlotWindowMap))
 
-FXElemPlotWindow::FXElemPlotWindow(FXComposite* p, window_fox_kernel *win, FXuint opts, FXint x, FXint y, FXint w, FXint h):
+FXElemPlotWindow::FXElemPlotWindow(FXComposite* p, window_fox *win, FXuint opts, FXint x, FXint y, FXint w, FXint h):
     FXWindow(p, opts, x, y, w, h), m_window(win)
 {
     flags |= FLAG_SHOWN;

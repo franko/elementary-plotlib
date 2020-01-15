@@ -1,36 +1,36 @@
-#include "window_fox_kernel.h"
+#include "window_fox.h"
 #include "debug_priv.h"
 #include "FXElemPlotWindow.h"
 
-window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface):
+window_fox::window_fox(graphics::window_surface& window_surface):
         m_drawable(nullptr),
         m_update_signal(nullptr),
         m_start_signal(nullptr),
         m_window_surface(window_surface) {
 }
 
-window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector):
-        window_fox_kernel(window_surface) {
+window_fox::window_fox(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector):
+        window_fox(window_surface) {
     bind_window_environment(app, env_object, start_selector);
 }
 
-window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window):
-        window_fox_kernel(window_surface) {
+window_fox::window_fox(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window):
+        window_fox(window_surface) {
     elem_window->setWindowFox(this);
     bind_drawable(elem_window, FXElemPlotWindow::ID_UPDATE_REGION);
 }
 
-window_fox_kernel::~window_fox_kernel() {
+window_fox::~window_fox() {
     delete m_update_signal;
     delete m_start_signal;
 }
 
-void window_fox_kernel::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
+void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
     m_drawable = drawable;
     m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
 }
 
-void window_fox_kernel::update_region(graphics::image& src_img, const agg::rect_i& r) {
+void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     const unsigned fximage_pixel_size = 4; // 32 bit RGBA format.
     const bool fximage_flipy = true;
     const int width = r.x2 - r.x1, height = r.y2 - r.y1;
@@ -57,7 +57,7 @@ void window_fox_kernel::update_region(graphics::image& src_img, const agg::rect_
     dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
 }
 
-void window_fox_kernel::update_region_request(graphics::image& img, const agg::rect_i& r) {
+void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
     if (std::this_thread::get_id() == m_window_thread_id) {
         // We are running in the thread of the Window's event loop. Just do the
         // drawing operation.
@@ -75,11 +75,11 @@ void window_fox_kernel::update_region_request(graphics::image& img, const agg::r
     }
 }
 
-void window_fox_kernel::bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector) {
+void window_fox::bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector) {
     m_start_signal = new FXGUISignal(app, env_object, start_selector, nullptr);
 }
 
-void window_fox_kernel::start(unsigned width, unsigned height, unsigned flags) {
+void window_fox::start(unsigned width, unsigned height, unsigned flags) {
     window_fox_start_data data{this, width, height, flags};
     if (! m_start_signal) {
         debug_log(0, "error: cannot start fox window, no hosting environment");

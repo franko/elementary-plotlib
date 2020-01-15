@@ -5,7 +5,7 @@
 // We include here only the public interface libcanvas header.
 #include "libelplot.h"
 
-class window_fox_kernel;
+class window_fox;
 
 namespace FX {
 
@@ -17,10 +17,10 @@ private:
     FXElemPlotWindow(const FXElemPlotWindow&);
     FXElemPlotWindow &operator=(const FXElemPlotWindow&);
 public:
-    FXElemPlotWindow(FXComposite* p, window_fox_kernel *win = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    FXElemPlotWindow(FXComposite* p, window_fox *win = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
     ~FXElemPlotWindow();
 
-    void setWindowFox(window_fox_kernel *win) {
+    void setWindowFox(window_fox *win) {
         m_window = win;
     }
 
@@ -37,6 +37,6 @@ public:
     };
 
 private:
-    window_fox_kernel *m_window;
+    window_fox *m_window;
 };
 }

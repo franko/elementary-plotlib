@@ -10,12 +10,12 @@ namespace FX {
 class FXElemPlotWindow;
 }
 
-class window_fox_kernel : public graphics::display_window_status {
+class window_fox : public graphics::display_window_status {
 public:
-    window_fox_kernel(graphics::window_surface& window_surface);
-    window_fox_kernel(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window);
-    window_fox_kernel(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector);
-    ~window_fox_kernel();
+    window_fox(graphics::window_surface& window_surface);
+    window_fox(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window);
+    window_fox(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector);
+    ~window_fox();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
@@ -54,7 +54,7 @@ private:
 };
 
 struct window_fox_start_data {
-    window_fox_kernel *window;
+    window_fox *window;
     unsigned width;
     unsigned height;
     unsigned flags;
