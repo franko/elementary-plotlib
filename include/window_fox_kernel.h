@@ -6,9 +6,14 @@
 #include "display_window_status.h"
 #include "update_region_info.h"
 
+namespace FX {
+class FXElemPlotWindow;
+}
+
 class window_fox_kernel : public graphics::display_window_status {
 public:
     window_fox_kernel(graphics::window_surface& window_surface);
+    window_fox_kernel(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window);
     window_fox_kernel(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector);
     ~window_fox_kernel();
 

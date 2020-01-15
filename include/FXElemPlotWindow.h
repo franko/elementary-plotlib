@@ -20,6 +20,10 @@ public:
     FXElemPlotWindow(FXComposite* p, window_fox_kernel *win = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
     ~FXElemPlotWindow();
 
+    void setWindowFox(window_fox_kernel *win) {
+        m_window = win;
+    }
+
     void position(FXint x, FXint y, FXint w, FXint h) override;
     void create() override;
 

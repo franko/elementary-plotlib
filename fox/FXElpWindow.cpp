@@ -1,80 +1,28 @@
 #include "FXElpWindow.h"
-#include "window_fox.h"
-#include "window_flags.h"
-#include "plot_agent.h"
-#include "debug_priv.h"
+#include "window_platform_fox.h"
 
-#include "rendering_buffer_utils.h"
+FXDEFMAP(FXElpWindow) FXElpWindowMap[] = {};
 
-FXDEFMAP(FXElpWindow) GraphicsWindowMap[] = {
-    FXMAPFUNC(SEL_MAP,     0,                            FXElpWindow::onMap),
-    FXMAPFUNC(SEL_PAINT,   0,                            FXElpWindow::onPaint),
-    FXMAPFUNC(SEL_IO_READ, FXElpWindow::ID_UPDATE_REGION, FXElpWindow::onUpdateRegion),
-};
-
-FXIMPLEMENT(FXElpWindow,FXWindow,GraphicsWindowMap,ARRAYNUMBER(GraphicsWindowMap))
+FXIMPLEMENT(FXElpWindow,FXElemPlotWindow,FXElpWindowMap,ARRAYNUMBER(FXElpWindowMap))
 
 FXElpWindow::FXElpWindow(FXComposite* p, const char *split_str, FXuint opts, FXint x, FXint y, FXint w, FXint h):
-    FXWindow(p, opts, x, y, w, h), m_window_impl(new window_fox(this, split_str))
+    FXElemPlotWindow(p, nullptr, opts, x, y, w, h),
+    m_window(new elp_window_fox(split_str, this))
 {
-    flags |= FLAG_SHOWN;
 }
 
 int FXElpWindow::Attach(elp::Plot& p, const char* slot_str) {
-    graphics::plot *plot_impl = p.plot_impl_.plot;
-    int index = m_window_impl->attach(plot_impl, slot_str);
-    graphics::plot_agent *agent = p.plot_impl_.plot_agent;
-    agent->add_window(m_window_impl->get_window_surface(), index);
-    return index;
+    return m_window.Attach(p, slot_str);
 }
 
 void FXElpWindow::SetLayout(const char *fmt) {
-    if (m_window_impl->status() == graphics::window_not_started) {
-        m_window_impl->get_window_surface()->split(fmt);
-    }
+    m_window.SetLayout(fmt);
 }
 
 void FXElpWindow::SlotRefresh(unsigned index) {
-    m_window_impl->slot_refresh(index);
+    m_window.SlotRefresh(index);
 }
 
 void FXElpWindow::Wait() {
-    request_error_e status = m_window_impl->wait_until_notification(graphics::window_closed);
-    if (status != request_satisfied && status != request_success) {
-        debug_log(1, "FXElpWindow::Wait error waiting window's closing %d", int(status));
-    }
-}
-
-FXElpWindow::~FXElpWindow() {
-    m_window_impl->set_status(graphics::window_closed);
-}
-
-void FXElpWindow::position(FXint x, FXint y, FXint w, FXint h) {
-    debug_log(1, "FXElpWindow::position: %d %d", w, h);
-    m_window_impl->on_resize(w, h);
-    FXWindow::position(x, y, w, h);
-}
-
-void FXElpWindow::create() {
-    m_window_impl->set_status(graphics::window_starting);
-    FXWindow::create();
-}
-
-long FXElpWindow::onUpdateRegion(FXObject *, FXSelector, void *) {
-    m_window_impl->call_update_region();
-    return 1;
-}
-
-long FXElpWindow::onPaint(FXObject *, FXSelector, void *ptr) {
-    FXEvent *ev=(FXEvent*)ptr;
-    debug_log(1, "paint event");
-    m_window_impl->draw(ev);
-    return 1;
-}
-
-long FXElpWindow::onMap(FXObject *, FXSelector, void *) {
-    debug_log(1, "FXElpWindow: map event");
-    m_window_impl->set_thread_id();
-    m_window_impl->set_status(graphics::window_running);
-    return 1;
+    m_window.Wait();
 }

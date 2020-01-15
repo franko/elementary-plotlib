@@ -1,5 +1,6 @@
 #include "window_fox_kernel.h"
 #include "debug_priv.h"
+#include "FXElemPlotWindow.h"
 
 window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface):
         m_drawable(nullptr),
@@ -11,6 +12,12 @@ window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface):
 window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector):
         window_fox_kernel(window_surface) {
     bind_window_environment(app, env_object, start_selector);
+}
+
+window_fox_kernel::window_fox_kernel(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window):
+        window_fox_kernel(window_surface) {
+    elem_window->setWindowFox(this);
+    bind_drawable(elem_window, FXElemPlotWindow::ID_UPDATE_REGION);
 }
 
 window_fox_kernel::~window_fox_kernel() {

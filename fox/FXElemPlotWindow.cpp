@@ -16,6 +16,7 @@ FXElemPlotWindow::FXElemPlotWindow(FXComposite* p, window_fox_kernel *win, FXuin
 }
 
 FXElemPlotWindow::~FXElemPlotWindow() {
+    m_window->set_status(graphics::window_closed);
 }
 
 void FXElemPlotWindow::position(FXint x, FXint y, FXint w, FXint h) {
