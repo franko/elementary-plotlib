@@ -4,11 +4,11 @@
 
 // We include here only the public interface libcanvas header.
 #include "libelplot.h"
-#include "FXElemPlotWindow.h"
+#include "FXElemBaseWindow.h"
 
 namespace FX {
 
-class FXElpWindow : public FXElemPlotWindow {
+class FXElpWindow : public FXElemBaseWindow {
     FXDECLARE(FXElpWindow)
 protected:
     FXElpWindow() { }

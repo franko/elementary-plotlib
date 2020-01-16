@@ -3,10 +3,10 @@
 
 FXDEFMAP(FXElpWindow) FXElpWindowMap[] = {};
 
-FXIMPLEMENT(FXElpWindow,FXElemPlotWindow,FXElpWindowMap,ARRAYNUMBER(FXElpWindowMap))
+FXIMPLEMENT(FXElpWindow,FXElemBaseWindow,FXElpWindowMap,ARRAYNUMBER(FXElpWindowMap))
 
 FXElpWindow::FXElpWindow(FXComposite* p, const char *split_str, FXuint opts, FXint x, FXint y, FXint w, FXint h):
-    FXElemPlotWindow(p, nullptr, opts, x, y, w, h),
+    FXElemBaseWindow(p, nullptr, opts, x, y, w, h),
     m_window(new elp_window_fox(split_str, this))
 {
 }

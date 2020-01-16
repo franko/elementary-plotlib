@@ -7,13 +7,13 @@
 #include "update_region_info.h"
 
 namespace FX {
-class FXElemPlotWindow;
+class FXElemBaseWindow;
 }
 
 class window_fox : public graphics::display_window_status {
 public:
     window_fox(graphics::window_surface& window_surface);
-    window_fox(graphics::window_surface& window_surface, FXElemPlotWindow *elem_window);
+    window_fox(graphics::window_surface& window_surface, FXElemBaseWindow *elem_window);
     window_fox(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector);
     ~window_fox();
 

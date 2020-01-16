@@ -3,7 +3,7 @@
 
 #include "libelplot.h"
 #include "libelplot_utils.h"
-#include "FXElemPlotWindow.h"
+#include "FXElemBaseWindow.h"
 #include "window_platform_fox.h"
 
 using namespace elp;
@@ -47,8 +47,8 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
         main_window_options |= DECOR_STRETCHABLE;
     }
     auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, main_window_options, 0, 0, message_data->width, message_data->height);
-    auto plot_win = new FXElemPlotWindow(main_win, message_data->window, LAYOUT_FILL_X | LAYOUT_FILL_Y);
-    message_data->window->bind_drawable(plot_win, FXElemPlotWindow::ID_UPDATE_REGION);
+    auto plot_win = new FXElemBaseWindow(main_win, message_data->window, LAYOUT_FILL_X | LAYOUT_FILL_Y);
+    message_data->window->bind_drawable(plot_win, FXElemBaseWindow::ID_UPDATE_REGION);
     main_win->create();
     main_win->show(PLACEMENT_SCREEN);
     return 1;

@@ -9,16 +9,16 @@ class window_fox;
 
 namespace FX {
 
-class FXElemPlotWindow : public FXWindow {
-    FXDECLARE(FXElemPlotWindow)
+class FXElemBaseWindow : public FXWindow {
+    FXDECLARE(FXElemBaseWindow)
 protected:
-    FXElemPlotWindow(): m_window(nullptr) { }
+    FXElemBaseWindow(): m_window(nullptr) { }
 private:
-    FXElemPlotWindow(const FXElemPlotWindow&);
-    FXElemPlotWindow &operator=(const FXElemPlotWindow&);
+    FXElemBaseWindow(const FXElemBaseWindow&);
+    FXElemBaseWindow &operator=(const FXElemBaseWindow&);
 public:
-    FXElemPlotWindow(FXComposite* p, window_fox *win = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
-    ~FXElemPlotWindow();
+    FXElemBaseWindow(FXComposite* p, window_fox *win = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    ~FXElemBaseWindow();
 
     void setWindowFox(window_fox *win) {
         m_window = win;
