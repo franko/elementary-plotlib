@@ -38,7 +38,7 @@
 #include "libelplot_c_forward.h"
 
 namespace FX {
-    class FXElpWindow;
+    class FXElemWindow;
 }
 
 namespace elp {
@@ -220,7 +220,7 @@ private:
     elp_plot plot_impl_;
 
     friend class Window;
-    friend class FX::FXElpWindow;
+    friend class FX::FXElemWindow;
 };
 
 class Window {

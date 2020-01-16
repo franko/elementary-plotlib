@@ -1,4 +1,4 @@
-libelplotfoxwin_src = ['FXElpWindow.cpp', 'FXElemBaseWindow.cpp', 'window_fox.cpp']
+libelplotfoxwin_src = ['FXElemWindow.cpp', 'FXElemBaseWindow.cpp', 'window_fox.cpp']
 
 libelplotfox = static_library('canvasfox', libelplotfoxwin_src,
     include_directories: libelplot_include,

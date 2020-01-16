@@ -8,15 +8,15 @@
 
 namespace FX {
 
-class FXElpWindow : public FXElemBaseWindow {
-    FXDECLARE(FXElpWindow)
+class FXElemWindow : public FXElemBaseWindow {
+    FXDECLARE(FXElemWindow)
 protected:
-    FXElpWindow() { }
+    FXElemWindow() { }
 private:
-    FXElpWindow(const FXElpWindow&);
-    FXElpWindow &operator=(const FXElpWindow&);
+    FXElemWindow(const FXElemWindow&);
+    FXElemWindow &operator=(const FXElemWindow&);
 public:
-    FXElpWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    FXElemWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
     int Attach(elp::Plot& p, const char* slot_str);
     void SetLayout(const char *fmt);
