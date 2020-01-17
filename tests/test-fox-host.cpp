@@ -54,22 +54,10 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
     return 1;
 }
 
-template <typename Function>
-void AddFunction(Plot& plot, double x0, double x1, Function f, Color color, int n = 512) {
-    Path line;
-    line.MoveTo(x0, f(x0));
-    for (int i = 1; i <= n; i++) {
-        const double x = x0 + i * (x1 - x0) / n;
-        line.LineTo(x, f(x));
-    }
-    plot.Add(std::move(line), color, 1.5, color::None, property::Stroke);
-}
-
 Plot CreateNewPlot() {
-    Plot plot(Plot::ShowUnits | Plot::AutoLimits);
-    plot.SetClipMode(false);
+    Plot plot;
     const double x0 = 0.0001, x1 = 8 * math::Tau();
-    AddFunction(plot, x0, x1, [](double x) { return std::sin(x) / x; }, color::Blue);
+    plot.AddStroke(FxLine(x0, x1, [](double x) { return std::sin(x) / x; }), color::Blue, 1.5);
     plot.SetTitle("Function plot example");
     plot.SetXAxisTitle("x variable");
     return plot;
@@ -78,8 +66,18 @@ Plot CreateNewPlot() {
 void WorkerThreadStart(FXApp *app, FXObject *host_object, FXSelector start_sel) {
     InitializeFonts();
     utils::Sleep(3);
-    Plot plot = CreateNewPlot();
+    // The line below create a new window bound to a specific FOX environment.
+    // When the Start method is called a message with ID 'start_sel' is
+    // sent to host_object, an FXObject, to request the creation of the
+    // window.
+    //
+    // The host_object is responsible for:
+    // - creating a FXElemBaseWindow inside some container.
+    // - call bind_drawable on the window_fox object (sent with the message)
+    //   to bind the window_fox with the FXElemBaseWindow
+    // - create and show the FXElemBaseWindow.
     Window win(new elp_window_fox(app, host_object, start_sel));
+    Plot plot = CreateNewPlot();
     win.Attach(plot, "");
     win.Start(640, 480, WindowResize);
     win.Wait();
