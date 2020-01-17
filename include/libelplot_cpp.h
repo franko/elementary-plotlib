@@ -38,7 +38,7 @@
 #include "libelplot_c_forward.h"
 
 namespace FX {
-    class FXElpWindow;
+    class FXElemWindow;
 }
 
 namespace elp {
@@ -220,13 +220,14 @@ private:
     elp_plot plot_impl_;
 
     friend class Window;
-    friend class FX::FXElpWindow;
+    friend class FX::FXElemWindow;
 };
 
 class Window {
 public:
     Window();
-    Window(const char *fmt);
+    Window(const char *layout);
+    Window(elp_window *window_impl);
     ~Window();
 
     int Attach(Plot& plot, const char* slot_str);
@@ -236,11 +237,9 @@ public:
     void Wait();
 
 private:
-    struct WindowImpl;
-    WindowImpl *window_impl_;
+    elp_window *window_impl_;
 };
 
-// TODO: document initialize fonts function
 void InitializeFonts();
 }
 

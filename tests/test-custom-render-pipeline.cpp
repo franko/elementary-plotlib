@@ -1,7 +1,7 @@
 #include <cmath>
 #include <random>
 
-#include "window.h"
+#include "window_platform_native.h"
 #include "trans.h"
 #include "sg_path.h"
 
@@ -57,7 +57,7 @@ int main()
 {
     graphics::initialize_fonts();
 
-    graphics::window win;
+    elp_window_native win;
     graphics::plot p(graphics::plot::show_units);
     p.set_limits({-0.7, -0.3, 0.7, 1.1});
 

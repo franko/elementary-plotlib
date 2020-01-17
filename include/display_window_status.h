@@ -26,9 +26,17 @@ public:
     void set_status(window_status_e new_status) {
         m_window_status.set(new_status);
     }
-    int set_notify_request(notify_request<window_status_e>& request) {
+    request_error_e set_notify_request(notify_request<window_status_e>& request) {
         std::lock_guard<std::mutex> lock(m_mutex);
         return m_window_status.set_notify_request(request);
+    }
+    request_error_e wait_until_notification(window_status_e notify_status) {
+        notify_request<window_status_e> req{notify_status};
+        request_error_e retval = set_notify_request(req);
+        if (retval == request_success) {
+            req.wait();
+        }
+        return retval;
     }
 private:
     std::mutex m_mutex;

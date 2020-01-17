@@ -1,7 +1,7 @@
 #include <cmath>
 #include <thread>
 
-#include "FXElpWindow.h"
+#include "FXElemWindow.h"
 #include "libelplot_utils.h"
 
 using namespace elp;
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-    auto window = new FXElpWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+    auto window = new FXElemWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     Plot p(Plot::ShowUnits);
     p.SetLimits({-1.0, 0.0, 1.0, 10.0});

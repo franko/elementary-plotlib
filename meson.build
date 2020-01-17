@@ -34,7 +34,7 @@ install_headers('include/libelplot.h')
 install_headers('include/libelplot_constants.h')
 install_headers('include/libelplot_generator.h')
 install_headers('include/libelplot_c_forward.h')
-install_headers('include/FXElpWindow.h')
+install_headers('include/FXElemWindow.h')
 
 subdir('src')
 if host_system == 'linux'

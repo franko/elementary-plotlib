@@ -22,10 +22,10 @@ window_tests = [
 ]
 
 fox_tests = [
-    {'name': 'test-fox-window-0', 'sources': 'test-window.cpp'},
     {'name': 'test-fox-window', 'sources': 'test-fox-window.cpp'},
     {'name': 'test-fox-window-2', 'sources': 'test-fox-window-2.cpp'},
     {'name': 'test-fox-window-3', 'sources': 'test-fox-window-3.cpp'},
+    {'name': 'test-fox-host', 'sources': 'test-fox-host.cpp'},
 ]
 
 foreach test : window_tests
@@ -43,7 +43,7 @@ if fox_dep.found()
             include_directories: libelplot_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
             cpp_args: libelplot_cflags,
-            link_with: [libelplotfox, libelplot],
+            link_with: [libelplotfox, libelplotwin, libelplot],
             gui_app: false)
     endforeach
 endif

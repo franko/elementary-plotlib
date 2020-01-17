@@ -320,7 +320,7 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
               0, 0, x_dst, y_dst, width, height);
 }
 
-void xwindow::start(unsigned width, unsigned height, unsigned flags) {
+void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
     close();

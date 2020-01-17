@@ -1,19 +1,33 @@
 #include "window_fox.h"
-#include "FXElpWindow.h"
 #include "debug_priv.h"
+#include "FXElemBaseWindow.h"
 
-window_fox::window_fox(FXElpWindow *canvas, const char *split_str) : m_plot_canvas(canvas), m_surface(split_str)
-{
-    m_surface.attach_window(this);
-    m_gui_signal = new FXGUISignal(app(), m_plot_canvas, FXElpWindow::ID_UPDATE_REGION, nullptr);
+window_fox::window_fox(graphics::window_surface& window_surface):
+        m_drawable(nullptr),
+        m_update_signal(nullptr),
+        m_start_signal(nullptr),
+        m_window_surface(window_surface) {
+}
+
+window_fox::window_fox(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector):
+        window_fox(window_surface) {
+    bind_window_environment(app, env_object, start_selector);
+}
+
+window_fox::window_fox(graphics::window_surface& window_surface, FXElemBaseWindow *elem_window):
+        window_fox(window_surface) {
+    elem_window->setWindowFox(this);
+    bind_drawable(elem_window, FXElemBaseWindow::ID_UPDATE_REGION);
 }
 
 window_fox::~window_fox() {
-    delete m_gui_signal;
+    delete m_update_signal;
+    delete m_start_signal;
 }
 
-FXApp *window_fox::app() {
-    return m_plot_canvas->getApp();
+void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
+    m_drawable = drawable;
+    m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
 }
 
 void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
@@ -34,12 +48,13 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
 
     rendering_buffer_copy(fxcolor_image, agg::pix_format_rgba32, src_view, (agg::pix_format_e) graphics::pixel_format);
 
+    FXApp *app = m_drawable->getApp();
     FXColor *fxcolor_buf = (FXColor *) fxcolor_image.buf();
-    FXImage img(app(), fxcolor_buf, IMAGE_KEEP, width, height);
+    FXImage img(app, fxcolor_buf, IMAGE_KEEP, width, height);
     img.create();
 
-    FXDCWindow dc(m_plot_canvas);
-    dc.drawImage(&img, r.x1, m_plot_canvas->getHeight() - r.y2);
+    FXDCWindow dc(m_drawable);
+    dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
 }
 
 void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
@@ -54,8 +69,27 @@ void window_fox::update_region_request(graphics::image& img, const agg::rect_i& 
         debug_log(1, "update_region request from secondary thread");
         m_update_notify.prepare();
         m_update_region.prepare(img, r);
-        m_gui_signal->signal();
+        m_update_signal->signal();
         m_update_notify.wait();
         m_update_region.clear();
     }
+}
+
+void window_fox::bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector) {
+    m_start_signal = new FXGUISignal(app, env_object, start_selector, nullptr);
+}
+
+void window_fox::start(unsigned width, unsigned height, unsigned flags) {
+    window_fox_start_data data{this, width, height, flags};
+    if (! m_start_signal) {
+        debug_log(0, "error: cannot start fox window, no hosting environment");
+        return;
+    }
+    m_start_signal->setData(&data);
+    m_start_signal->signal();
+    request_error_e status = wait_until_notification(graphics::window_running);
+    if (!(status == request_satisfied || status == request_success)) {
+        debug_log(1, "error starting window, return code: %d", int(status));
+    }
+    m_start_signal->setData(nullptr);
 }
