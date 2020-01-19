@@ -4,14 +4,23 @@ WORKING_DIRNAME="$(basename "$LIBCANVAS_WORKING_DIR")"
 ORIGIN_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
 echo "$ORIGIN_PATH"
 
-rm -fr "$LIBCANVAS_WORKING_DIR"
-pushd "$(dirname "$LIBCANVAS_WORKING_DIR")"
-git clone git@github.com:/franko/libcanvas -b gh-pages "$WORKING_DIRNAME"
-pushd "$WORKING_DIRNAME"
+if [ -d "$LIBCANVAS_WORKING_DIR" ]; then
+    pushd "$LIBCANVAS_WORKING_DIR"
+    git fetch origin gh-pages
+    git checkout -f gh-pages
+    git reset --hard origin/gh-pages
+else
+    rm -fr "$LIBCANVAS_WORKING_DIR"
+    cd "$(dirname "$LIBCANVAS_WORKING_DIR")"
+    git clone git@github.com:/franko/libcanvas -b gh-pages "$WORKING_DIRNAME"
+    pushd "$WORKING_DIRNAME"
+fi
 
 git rm -frq .
 
-cp -r "$ORIGIN_PATH/sphinx-doc/build/html/." .
+cp -r "$ORIGIN_PATH/sphinx-doc/homepage/build/html/." .
+mkdir manual
+cp -r "$ORIGIN_PATH/sphinx-doc/manual/build/html/." manual
 touch .nojekyll
 git add --all
 
