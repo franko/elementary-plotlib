@@ -12,24 +12,25 @@ enum {
 
 enum {
     elp_plot_show_units = 1 << 0,
-    elp_plot_auto_limits = 1 << 1
+    elp_plot_auto_limits = 1 << 1,
+    elp_plot_clip_region = 1 << 2
 };
 
 enum {
     elp_plot_right  = 0,
-    elp_plot_left   = 1,
+    elp_plot_left   = 1, 
     elp_plot_bottom = 2,
     elp_plot_top    = 3
 };
 
 enum {
-    canvas_x_axis = 0,
-    canvas_y_axis = 1,
+    elp_x_axis = 0,
+    elp_y_axis = 1,
 };
 
 typedef uint32_t elp_color;
 
-struct canvas_rectangle {
+struct elp_rectangle {
     float x1, y1, x2, y2;
 };
 
