@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Graphical Elements &#8212; Libelplot  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plot" href="plot.html" />
+    <link rel="prev" title="Libcanvas Reference Manual" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="graphical-elements">
+<h1>Graphical Elements<a class="headerlink" href="#graphical-elements" title="Permalink to this headline">¶</a></h1>
+<dl class="enum">
+<dt id="_CPPv4N3elp5ColorE">
+<span id="_CPPv3N3elp5ColorE"></span><span id="_CPPv2N3elp5ColorE"></span><em class="property">enum </em><code class="sig-name descname">Color</code><a class="headerlink" href="#_CPPv4N3elp5ColorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Used to express colors in RGBA format. Corresponds to an unsigned 32 bit integer type.
+The R, G, B and A corresponds respectively to the red, green, blue and alpha channel and each takes 8 bit.
+The alpha channel controls the transparency and its values corresponds to zero for completely transparent and 255, <code class="docutils literal notranslate"><span class="pre">0xff</span></code> in hexadecimal, for completely opaque.
+The color can be given directly in hexadecimal format like, for example, <code class="docutils literal notranslate"><span class="pre">0x00ff00ff</span></code> for green, or using the functions <a class="reference internal" href="#_CPPv4N3elp5color3RGBEjjj" title="elp::color::RGB"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">color::RGB()</span></code></a> and <a class="reference internal" href="#_CPPv4N3elp5color4RGBAEjjjj" title="elp::color::RGBA"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">color::RGBA()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp5color4RGBAEjjjj">
+<span id="_CPPv3N3elp5color4RGBAEjjjj"></span><span id="_CPPv2N3elp5color4RGBAEjjjj"></span><span id="elp::color::RGBA__unsigned-i.unsigned-i.unsigned-i.unsigned-i"></span><a class="reference internal" href="#_CPPv4N3elp5ColorE" title="elp::Color">Color</a> <code class="sig-name descname">RGBA</code><span class="sig-paren">(</span>unsigned int <em>r</em>, unsigned int <em>g</em>, unsigned int <em>b</em>, unsigned int <em>a</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp5color4RGBAEjjjj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Form a color from the value of its individual channel.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp5color3RGBEjjj">
+<span id="_CPPv3N3elp5color3RGBEjjj"></span><span id="_CPPv2N3elp5color3RGBEjjj"></span><span id="elp::color::RGB__unsigned-i.unsigned-i.unsigned-i"></span><a class="reference internal" href="#_CPPv4N3elp5ColorE" title="elp::Color">Color</a> <code class="sig-name descname">RGB</code><span class="sig-paren">(</span>unsigned int <em>r</em>, unsigned int <em>g</em>, unsigned int <em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp5color3RGBEjjj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Form a color from the value of its individual channel setting the alpha channel to its maximum value.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color3RedE">
+<span id="_CPPv3N3elp5color3RedE"></span><span id="_CPPv2N3elp5color3RedE"></span><em class="property">enumerator </em><code class="sig-name descname">Red</code><a class="headerlink" href="#_CPPv4N3elp5color3RedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color4BlueE">
+<span id="_CPPv3N3elp5color4BlueE"></span><span id="_CPPv2N3elp5color4BlueE"></span><em class="property">enumerator </em><code class="sig-name descname">Blue</code><a class="headerlink" href="#_CPPv4N3elp5color4BlueE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color5GreenE">
+<span id="_CPPv3N3elp5color5GreenE"></span><span id="_CPPv2N3elp5color5GreenE"></span><em class="property">enumerator </em><code class="sig-name descname">Green</code><a class="headerlink" href="#_CPPv4N3elp5color5GreenE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color6YellowE">
+<span id="_CPPv3N3elp5color6YellowE"></span><span id="_CPPv2N3elp5color6YellowE"></span><em class="property">enumerator </em><code class="sig-name descname">Yellow</code><a class="headerlink" href="#_CPPv4N3elp5color6YellowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color5BlackE">
+<span id="_CPPv3N3elp5color5BlackE"></span><span id="_CPPv2N3elp5color5BlackE"></span><em class="property">enumerator </em><code class="sig-name descname">Black</code><a class="headerlink" href="#_CPPv4N3elp5color5BlackE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color4GrayE">
+<span id="_CPPv3N3elp5color4GrayE"></span><span id="_CPPv2N3elp5color4GrayE"></span><em class="property">enumerator </em><code class="sig-name descname">Gray</code><a class="headerlink" href="#_CPPv4N3elp5color4GrayE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color5WhiteE">
+<span id="_CPPv3N3elp5color5WhiteE"></span><span id="_CPPv2N3elp5color5WhiteE"></span><em class="property">enumerator </em><code class="sig-name descname">White</code><a class="headerlink" href="#_CPPv4N3elp5color5WhiteE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp5color4NoneE">
+<span id="_CPPv3N3elp5color4NoneE"></span><span id="_CPPv2N3elp5color4NoneE"></span><em class="property">enumerator </em><code class="sig-name descname">None</code> = 0<a class="headerlink" href="#_CPPv4N3elp5color4NoneE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="drawing-properties">
+<h2>Drawing Properties<a class="headerlink" href="#drawing-properties" title="Permalink to this headline">¶</a></h2>
+<p>The following are used when adding an element into a plot to specify if should be stroked, filled or possibly both.
+In addition some properties affect the way the object will be drawn on the screen.
+The values are meant to be combined using logical bit operators.</p>
+<dl class="enumerator">
+<dt id="_CPPv4N3elp8property4FillE">
+<span id="_CPPv3N3elp8property4FillE"></span><span id="_CPPv2N3elp8property4FillE"></span><em class="property">enumerator </em><code class="sig-name descname">Fill</code><a class="headerlink" href="#_CPPv4N3elp8property4FillE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Draw each closed polygon with a filling color.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp8property6StrokeE">
+<span id="_CPPv3N3elp8property6StrokeE"></span><span id="_CPPv2N3elp8property6StrokeE"></span><em class="property">enumerator </em><code class="sig-name descname">Stroke</code><a class="headerlink" href="#_CPPv4N3elp8property6StrokeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Draw the stroking of the path or contour.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp8property7OutlineE">
+<span id="_CPPv3N3elp8property7OutlineE"></span><span id="_CPPv2N3elp8property7OutlineE"></span><em class="property">enumerator </em><code class="sig-name descname">Outline</code><a class="headerlink" href="#_CPPv4N3elp8property7OutlineE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Only the outline of the path will be drawn, without anti-aliasing.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N3elp8property5CrispE">
+<span id="_CPPv3N3elp8property5CrispE"></span><span id="_CPPv2N3elp8property5CrispE"></span><em class="property">enumerator </em><code class="sig-name descname">Crisp</code><a class="headerlink" href="#_CPPv4N3elp8property5CrispE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N3elp6ObjectE">
+<span id="_CPPv3N3elp6ObjectE"></span><span id="_CPPv2N3elp6ObjectE"></span><span id="elp::Object"></span><em class="property">class </em><code class="sig-name descname">Object</code><a class="headerlink" href="#_CPPv4N3elp6ObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A graphical element that can be added to a plot. An instance of the <a class="reference internal" href="#_CPPv4N3elp6ObjectE" title="elp::Object"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Object</span></code></a> cannot be directly created but it is the base class of other elements like, for example, a <a class="reference internal" href="#_CPPv4N3elp4PathE" title="elp::Path"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Path</span></code></a>. It is a copyable and movable.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N3elp4PathE">
+<span id="_CPPv3N3elp4PathE"></span><span id="_CPPv2N3elp4PathE"></span><span id="elp::Path"></span><em class="property">class </em><code class="sig-name descname">Path</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a><a class="headerlink" href="#_CPPv4N3elp4PathE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A graphical path that can contain polygonal paths, open or closed. It is a copyable and movable object.</p>
+<dl class="function">
+<dt id="_CPPv4N3elp4Path4PathEv">
+<span id="_CPPv3N3elp4Path4PathEv"></span><span id="_CPPv2N3elp4Path4PathEv"></span><span id="elp::Path::Path"></span><code class="sig-name descname">Path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Path4PathEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a new empty path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp4Path6MoveToEdd">
+<span id="_CPPv3N3elp4Path6MoveToEdd"></span><span id="_CPPv2N3elp4Path6MoveToEdd"></span><span id="elp::Path::MoveTo__double.double"></span>void <code class="sig-name descname">MoveTo</code><span class="sig-paren">(</span>double <em>x</em>, double <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Path6MoveToEdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Move the path to the given location without a connecting line.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp4Path6LineToEdd">
+<span id="_CPPv3N3elp4Path6LineToEdd"></span><span id="_CPPv2N3elp4Path6LineToEdd"></span><span id="elp::Path::LineTo__double.double"></span>void <code class="sig-name descname">LineTo</code><span class="sig-paren">(</span>double <em>x</em>, double <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Path6LineToEdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a straight line segment up to the given location.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp4Path12ClosePolygonEv">
+<span id="_CPPv3N3elp4Path12ClosePolygonEv"></span><span id="_CPPv2N3elp4Path12ClosePolygonEv"></span><span id="elp::Path::ClosePolygon"></span>void <code class="sig-name descname">ClosePolygon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Path12ClosePolygonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Close the current polygon.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N3elp9CurvePathE">
+<span id="_CPPv3N3elp9CurvePathE"></span><span id="_CPPv2N3elp9CurvePathE"></span><span id="elp::CurvePath"></span><em class="property">class </em><code class="sig-name descname">CurvePath</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a><a class="headerlink" href="#_CPPv4N3elp9CurvePathE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A graphical path similar to the <a class="reference internal" href="#_CPPv4N3elp4PathE" title="elp::Path"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Path</span></code></a> but can additionally contain Bézier and elliptical arcs. More details about how exactly the arcs are drawn can be found from the <a class="reference external" href="https://svgwg.org/specs/paths/#PathElement">official SVG documentation on Paths</a>.</p>
+<p>Please note that the <a class="reference internal" href="#_CPPv4N3elp9CurvePathE" title="elp::CurvePath"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CurvePath</span></code></a> class does not inherit from <a class="reference internal" href="#_CPPv4N3elp4PathE" title="elp::Path"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Path</span></code></a> even if it implements all the methods of the latter.
+This is due to the their internal representation.</p>
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath9CurvePathEv">
+<span id="_CPPv3N3elp9CurvePath9CurvePathEv"></span><span id="_CPPv2N3elp9CurvePath9CurvePathEv"></span><span id="elp::CurvePath::CurvePath"></span><code class="sig-name descname">CurvePath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath9CurvePathEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create an empty path that can contain Bézier and elliptic arcs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath6MoveToEdd">
+<span id="_CPPv3N3elp9CurvePath6MoveToEdd"></span><span id="_CPPv2N3elp9CurvePath6MoveToEdd"></span><span id="elp::CurvePath::MoveTo__double.double"></span>void <code class="sig-name descname">MoveTo</code><span class="sig-paren">(</span>double <em>x</em>, double <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath6MoveToEdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Move the path to the given location without a connecting line.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath6LineToEdd">
+<span id="_CPPv3N3elp9CurvePath6LineToEdd"></span><span id="_CPPv2N3elp9CurvePath6LineToEdd"></span><span id="elp::CurvePath::LineTo__double.double"></span>void <code class="sig-name descname">LineTo</code><span class="sig-paren">(</span>double <em>x</em>, double <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath6LineToEdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a straight line segment up to the given location.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath6Curve3Edddd">
+<span id="_CPPv3N3elp9CurvePath6Curve3Edddd"></span><span id="_CPPv2N3elp9CurvePath6Curve3Edddd"></span><span id="elp::CurvePath::Curve3__double.double.double.double"></span>void <code class="sig-name descname">Curve3</code><span class="sig-paren">(</span>double <em>x_ctrl</em>, double <em>y_ctrl</em>, double <em>x_to</em>, double <em>y_to</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath6Curve3Edddd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a quadratic Bézier curve up to the point <code class="docutils literal notranslate"><span class="pre">(x_to,</span> <span class="pre">y_to)</span></code> with control point <code class="docutils literal notranslate"><span class="pre">(x_ctrl,</span> <span class="pre">y_ctrl)</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath6Curve4Edddddd">
+<span id="_CPPv3N3elp9CurvePath6Curve4Edddddd"></span><span id="_CPPv2N3elp9CurvePath6Curve4Edddddd"></span><span id="elp::CurvePath::Curve4__double.double.double.double.double.double"></span>void <code class="sig-name descname">Curve4</code><span class="sig-paren">(</span>double <em>x_ctrl1</em>, double <em>y_ctrl1</em>, double <em>x_ctrl2</em>, double <em>y_ctrl2</em>, double <em>x_to</em>, double <em>y_to</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath6Curve4Edddddd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a cubic Bézier curve up to the point <code class="docutils literal notranslate"><span class="pre">(x_to,</span> <span class="pre">y_to)</span></code> with control points <code class="docutils literal notranslate"><span class="pre">(x_ctrl1,</span> <span class="pre">y_ctrl1)</span></code> and  <code class="docutils literal notranslate"><span class="pre">(x_ctrl2,</span> <span class="pre">y_ctrl2)</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath5ArcToEdddbbdd">
+<span id="_CPPv3N3elp9CurvePath5ArcToEdddbbdd"></span><span id="_CPPv2N3elp9CurvePath5ArcToEdddbbdd"></span><span id="elp::CurvePath::ArcTo__double.double.double.b.b.double.double"></span>void <code class="sig-name descname">ArcTo</code><span class="sig-paren">(</span>double <em>rx</em>, double <em>ry</em>, double <em>angle</em>, bool <em>large_arc_flag</em>, bool <em>sweep_flag</em>, double <em>x</em>, double <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath5ArcToEdddbbdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add an elliptical path up to the point  <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>. The other parameters are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">(rx,</span> <span class="pre">ry)</span></code>, x and y radius of the ellipse.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>, rotation angle of the ellipse’s x axis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">large_arc_flag</span></code>, if a large angle or small angle arc should be chosen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">sweep_flag</span></code>, if the arc should be drawn in the sense of increasing angles.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp9CurvePath12ClosePolygonEv">
+<span id="_CPPv3N3elp9CurvePath12ClosePolygonEv"></span><span id="_CPPv2N3elp9CurvePath12ClosePolygonEv"></span><span id="elp::CurvePath::ClosePolygon"></span>void <code class="sig-name descname">ClosePolygon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp9CurvePath12ClosePolygonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Close the current polygon.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N3elp7MarkersE">
+<span id="_CPPv3N3elp7MarkersE"></span><span id="_CPPv2N3elp7MarkersE"></span><span id="elp::Markers"></span><em class="property">class </em><code class="sig-name descname">Markers</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv4N3elp4PathE" title="elp::Path">Path</a><a class="headerlink" href="#_CPPv4N3elp7MarkersE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Like a path but instead of drawing a path it draws a marker at each vertex of the path.</p>
+<dl class="function">
+<dt id="_CPPv4N3elp7Markers7MarkersEd6Object">
+<span id="_CPPv3N3elp7Markers7MarkersEd6Object"></span><span id="_CPPv2N3elp7Markers7MarkersEd6Object"></span><span id="elp::Markers::Markers__double.Object"></span><code class="sig-name descname">Markers</code><span class="sig-paren">(</span>double <em>size</em>, <a class="reference internal" href="#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a> <em>marker_symbol</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp7Markers7MarkersEd6Object" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create an empty Markers path that will draw markers of the specified <cite>size</cite>, in pixels, and using an object <cite>marker_symbol</cite> as a marker. The marker symbol should be an object that span a rectangular area of unit side and centered on zero.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp12MarkerSymbolEi">
+<span id="_CPPv3N3elp12MarkerSymbolEi"></span><span id="_CPPv2N3elp12MarkerSymbolEi"></span><span id="elp::MarkerSymbol__i"></span><a class="reference internal" href="#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a> <code class="sig-name descname">MarkerSymbol</code><span class="sig-paren">(</span>int <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp12MarkerSymbolEi" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns a marker symbol from a standard list of symbol.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N3elp4TextE">
+<span id="_CPPv3N3elp4TextE"></span><span id="_CPPv2N3elp4TextE"></span><span id="elp::Text"></span><em class="property">class </em><code class="sig-name descname">Text</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a><a class="headerlink" href="#_CPPv4N3elp4TextE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An object that draws a text label. It is meant to be drawn with a fill color, without stroking.</p>
+<dl class="function">
+<dt id="_CPPv4N3elp4Text4TextEPKcddd">
+<span id="_CPPv3N3elp4Text4TextEPKcddd"></span><span id="_CPPv2N3elp4Text4TextEPKcddd"></span><span id="elp::Text::Text__cCP.double.double.double"></span><code class="sig-name descname">Text</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>text</em>, double <em>size</em> = 10.0, double <em>hjustif</em> = 0.0, double <em>vjustif</em> = 0.0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Text4TextEPKcddd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a text object with the given text. The size corresponds to the text size in pixel. The other parameters represents the horizontal and vertical justification. For the horizontal 0.0 corresponds to left justification and 1.0 to right justification. For the vertical 0.0 corresponds to alignment on the text’s bottom line and 1.0 to the text’s top line.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp4Text8SetAngleEd">
+<span id="_CPPv3N3elp4Text8SetAngleEd"></span><span id="_CPPv2N3elp4Text8SetAngleEd"></span><span id="elp::Text::SetAngle__double"></span>void <code class="sig-name descname">SetAngle</code><span class="sig-paren">(</span>double <em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Text8SetAngleEd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the angle, in radians, for the text orientation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp4Text11SetPositionEdd">
+<span id="_CPPv3N3elp4Text11SetPositionEdd"></span><span id="_CPPv2N3elp4Text11SetPositionEdd"></span><span id="elp::Text::SetPosition__double.double"></span>void <code class="sig-name descname">SetPosition</code><span class="sig-paren">(</span>double <em>x</em>, double <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Text11SetPositionEdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the position of the text.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N3elp8DashPathE">
+<span id="_CPPv3N3elp8DashPathE"></span><span id="_CPPv2N3elp8DashPathE"></span><span id="elp::DashPath"></span><em class="property">class </em><code class="sig-name descname">DashPath</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv4N3elp4PathE" title="elp::Path">Path</a><a class="headerlink" href="#_CPPv4N3elp8DashPathE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A path object but it will be drawn as a dashed lines.</p>
+<dl class="function">
+<dt id="_CPPv4N3elp8DashPath8DashPathENSt16initializer_listIdEE">
+<span id="_CPPv3N3elp8DashPath8DashPathENSt16initializer_listIdEE"></span><span id="_CPPv2N3elp8DashPath8DashPathENSt16initializer_listIdEE"></span><span id="elp::DashPath::DashPath__std::initializer_list:double:"></span><code class="sig-name descname">DashPath</code><span class="sig-paren">(</span>std::initializer_list&lt;double&gt; <em>lst</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp8DashPath8DashPathENSt16initializer_listIdEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a dashed path with the length of the dash and the gap given by the initializer list.
+The given lengths will be used for dashing in the screen coordinates space.
+The number of elements of the initializer list should be a multiple of two so that the elements represents consecutively the length of the dash and the following gap.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N3elp8DashPath7AddDashEdd">
+<span id="_CPPv3N3elp8DashPath7AddDashEdd"></span><span id="_CPPv2N3elp8DashPath7AddDashEdd"></span><span id="elp::DashPath::AddDash__double.double"></span>void <code class="sig-name descname">AddDash</code><span class="sig-paren">(</span>double <em>a</em>, double <em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp8DashPath7AddDashEdd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a dash length and gap after the creation of the object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Libelplot</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Graphical Elements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#drawing-properties">Drawing Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot-c.html">Plot - C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window-c.html">Windows - C API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Libcanvas Reference Manual</a></li>
+      <li>Next: <a href="plot.html" title="next chapter">Plot</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Francesco Abbate.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/graphical-element.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

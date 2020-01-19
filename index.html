@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Libcanvas Reference Manual &#8212; Libcanvas  documentation</title>
+    <title>Welcome to Elementary Plot Library’s Homepage &#8212; Elementary Plot Library&#39;s Homepage  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Graphical Elements" href="graphical-element.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -31,36 +30,70 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="libcanvas-reference-manual">
-<h1>Libcanvas Reference Manual<a class="headerlink" href="#libcanvas-reference-manual" title="Permalink to this headline">¶</a></h1>
-<p>This is the reference documentation for the C++ interface of Libcanvas, a C++ library for high-quality plots and animations.</p>
-<p>In the chapter below you can find the documentation for the classes and functions that are part of the Libcanvas public C++ interface.
-All the classes, functions and enumerators are defined inside the <code class="docutils literal notranslate"><span class="pre">libcanvas</span></code> namespace.</p>
-<p>All the definitions are provided by a single header file, <code class="docutils literal notranslate"><span class="pre">libcanvas.h</span></code>.</p>
-<p>The recommended way to link with Libcanvas is to use the library flags provided by the pkg-config file.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="graphical-element.html#drawing-properties">Drawing Properties</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="window.html#window-s-flags">Window’s flags</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
-</ul>
+  <div class="section" id="welcome-to-elementary-plot-library-s-homepage">
+<h1>Welcome to Elementary Plot Library’s Homepage<a class="headerlink" href="#welcome-to-elementary-plot-library-s-homepage" title="Permalink to this headline">¶</a></h1>
+<p>Elementary Plot Library is a C/C++ library for high-quality plots with a clean and simple C and C++ interface. In addition it provides also support for simple animations.</p>
+<p>The library can be used create plots and show them on the screen directly from C or C++ code.
+It works by adding graphical elements in plots and by attaching the plots to windows to show them on the screen.
+By default each plot automatically handles the scale and show the plotting axis and labels but the behavior of the plot is customizable.</p>
+<p>The library use by default the native windows provided by the hosting system.
+In addition it can be integrated with existing GUI toolkits but currently supports only the FOX toolkit.</p>
+<p>The library is supported on Windows, using MinGW and on Linux.
+It has minimal dependency by requiring only the AGG and freetype2 libraries.</p>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>The Elementary Plot Library <a class="reference external" href="https://franko.github.io/elementary-plotlib/manual/">user manual</a>.</p>
+<p>TODO: add information about how to build the software</p>
+<p>TODO: link to github page</p>
 </div>
+<div class="section" id="a-simple-example">
+<h2>A Simple Example<a class="headerlink" href="#a-simple-example" title="Permalink to this headline">¶</a></h2>
+<p>Here an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;cmath&gt;</span>
+<span class="c1">#include &quot;libelplot.h&quot;</span>
+
+<span class="n">using</span> <span class="n">namespace</span> <span class="n">elp</span><span class="p">;</span>
+
+<span class="nb">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">InitializeFonts</span><span class="p">();</span>
+
+    <span class="n">Plot</span> <span class="n">plot</span><span class="p">;</span>
+    <span class="n">const</span> <span class="n">double</span> <span class="n">x0</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">x1</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">math</span><span class="p">::</span><span class="n">Tau</span><span class="p">();</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">AddStroke</span><span class="p">(</span><span class="n">FxLine</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="p">[](</span><span class="n">double</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">x</span><span class="p">;</span> <span class="p">}),</span> <span class="n">color</span><span class="p">::</span><span class="n">Blue</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">);</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s2">&quot;Function plot example&quot;</span><span class="p">);</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">SetXAxisTitle</span><span class="p">(</span><span class="s2">&quot;x variable&quot;</span><span class="p">);</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">SetYAxisTitle</span><span class="p">(</span><span class="s2">&quot;y variable&quot;</span><span class="p">);</span>
+
+    <span class="n">Window</span> <span class="n">window</span><span class="p">;</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">Attach</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="n">WindowResize</span><span class="p">);</span>
+
+    <span class="n">plot</span><span class="o">.</span><span class="n">AddStroke</span><span class="p">(</span><span class="n">FxLine</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="p">[](</span><span class="n">double</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">x</span><span class="p">;</span> <span class="p">}),</span> <span class="n">color</span><span class="p">::</span><span class="n">Red</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">);</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">Wait</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<p>In the code above we:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><p>initialize the library</p></li>
+<li><p>create a plot</p></li>
+<li><p>add a first line, created with FxLine, to the plot using the blue color</p></li>
+<li><p>set the plot’s title and its axis titles as well</p></li>
+<li><p>create a window</p></li>
+<li><p>attach the plot to the window</p></li>
+<li><p>show the window</p></li>
+<li><p>add a second line to the plot using the red color. The window will be automatically updated.</p></li>
+<li><p>wait until the window is closed</p></li>
 </ul>
+<p>Here how the plot looks like:</p>
+<div class="figure align-default">
+<img alt="_images/plot-function-example.png" src="_images/plot-function-example.png" />
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
 </div>
 
 
@@ -70,7 +103,7 @@ All the classes, functions and enumerators are defined inside the <code class="d
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">Libcanvas</a></h1>
+<h1 class="logo"><a href="#">Elementary Plot Library's Homepage</a></h1>
 
 
 
@@ -80,19 +113,11 @@ All the classes, functions and enumerators are defined inside the <code class="d
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
-</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="graphical-element.html" title="next chapter">Graphical Elements</a></li>
   </ul></li>
 </ul>
 </div>
@@ -119,7 +144,7 @@ All the classes, functions and enumerators are defined inside the <code class="d
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Francesco Abbate.
+      &copy;2020, Francesco Abbate.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>

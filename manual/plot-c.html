@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Plot - C API &#8212; Libelplot  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Windows - C API" href="window-c.html" />
+    <link rel="prev" title="Graphical Elements - C API" href="graphical-element-c.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="plot-c-api">
+<h1>Plot - C API<a class="headerlink" href="#plot-c-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="plot-options">
+<h2>Plot options<a class="headerlink" href="#plot-options" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="macro">
+<dt id="c.elp_plot_show_units">
+<code class="sig-name descname">elp_plot_show_units</code><a class="headerlink" href="#c.elp_plot_show_units" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.elp_plot_auto_limits">
+<code class="sig-name descname">elp_plot_auto_limits</code><a class="headerlink" href="#c.elp_plot_auto_limits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="legend-placement">
+<h2>Legend Placement<a class="headerlink" href="#legend-placement" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="macro">
+<dt id="c.elp_plot_left">
+<code class="sig-name descname">elp_plot_left</code><a class="headerlink" href="#c.elp_plot_left" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.elp_plot_right">
+<code class="sig-name descname">elp_plot_right</code><a class="headerlink" href="#c.elp_plot_right" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.elp_plot_bottom">
+<code class="sig-name descname">elp_plot_bottom</code><a class="headerlink" href="#c.elp_plot_bottom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.elp_plot_top">
+<code class="sig-name descname">elp_plot_top</code><a class="headerlink" href="#c.elp_plot_top" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<dl class="type">
+<dt id="c.elp_plot">
+<code class="sig-name descname">elp_plot</code><a class="headerlink" href="#c.elp_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>A plot is an object that is used to group and display one or more graphical elements. The elements that belong to a plot will share the same coordinates space, we will refer to this latter as the model coordinates space.</p>
+<p>The plot works by displaying on the screen a region of the model coordinates space.
+When in <a class="reference internal" href="#c.elp_plot_auto_limits" title="elp_plot_auto_limits"><code class="xref c c-macro docutils literal notranslate"><span class="pre">elp_plot_auto_limits</span></code></a> the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot’s method <a class="reference internal" href="#c.elp_plot_set_limits" title="elp_plot_set_limits"><code class="xref c c-func docutils literal notranslate"><span class="pre">elp_plot_set_limits()</span></code></a>.</p>
+<p>When shown on the screen the plot will show all the objects it contains using for each of them a combination of stroking and filling.
+The plot will also display the X and Y axis with units and labels if the option <a class="reference internal" href="#c.elp_plot_show_units" title="elp_plot_show_units"><code class="xref c c-macro docutils literal notranslate"><span class="pre">elp_plot_show_units</span></code></a> is used.</p>
+<p>The elements that belongs to a plot are organized in incremental <em>layers</em> of visualization that contains one or more graphical elements.
+Layers and be added or removed from a plot in an incremental fashion.</p>
+<p>Examples of a plot that contains two Path objects, drawn with different colors.</p>
+<div class="figure align-default">
+<img alt="_images/plot-function-example.png" src="_images/plot-function-example.png" />
+</div>
+<dl class="function">
+<dt id="c.elp_plot_new">
+<a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a> *<code class="sig-name descname">elp_plot_new</code><span class="sig-paren">(</span>unsigned int<em> flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new empty plot with options given by <code class="docutils literal notranslate"><span class="pre">flags</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_free">
+void <code class="sig-name descname">elp_plot_free</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free the plot.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_set_title">
+void <code class="sig-name descname">elp_plot_set_title</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, const char<em> *title</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_set_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the plot’s title.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_set_x_axis_title">
+void <code class="sig-name descname">elp_plot_set_x_axis_title</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, const char<em> *title</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_set_x_axis_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the X axis title.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_set_y_axis_title">
+void <code class="sig-name descname">elp_plot_set_y_axis_title</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, const char<em> *title</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_set_y_axis_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Y axis title.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_set_clip_mode">
+void <code class="sig-name descname">elp_plot_set_clip_mode</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, bool<em> flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_set_clip_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the clip mode. If true all the pixel drawn for the graphics elements are clipped in the plotting area.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_set_limits">
+void <code class="sig-name descname">elp_plot_set_limits</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, float<em> x0</em>, float<em> y0</em>, float<em> x1</em>, float<em> y1</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_set_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly set the plotting limits, along the two axis. Attention if the plot is in auto limits the limits will be changed when adding new objects.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_set_label_angle">
+void <code class="sig-name descname">elp_plot_set_label_angle</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, int<em> axis</em>, float<em> angle</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_set_label_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the angle in radians for the labels of the X axis.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_enable_label_format">
+void <code class="sig-name descname">elp_plot_enable_label_format</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, int<em> axis</em>, const char<em> *fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_enable_label_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the format to be used to write the label for the given axis. Follow the same format of the printf function but accepts only specifiers for integer and floating point numbers.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_commit_pending_draw">
+void <code class="sig-name descname">elp_plot_commit_pending_draw</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot_object</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_commit_pending_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all pending changes as done and they are added to the plot elements.
+<strong>Should not be used</strong> as plots includes now a mechanism to perform this operation automatically.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_add">
+void <code class="sig-name descname">elp_plot_add</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, <a class="reference internal" href="graphical-element-c.html#c.elp_object" title="elp_object">elp_object</a><em> *obj</em>, <a class="reference internal" href="graphical-element-c.html#c.elp_color" title="elp_color">elp_color</a><em> stroke_color</em>, float<em> stroke_width</em>, <a class="reference internal" href="graphical-element-c.html#c.elp_color" title="elp_color">elp_color</a><em> fill_color</em>, int<em> flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a graphical object to the plot by specifying the stroke color, line’s width and fill color.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_push_layer">
+bool <code class="sig-name descname">elp_plot_push_layer</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_push_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new empty layer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_pop_layer">
+bool <code class="sig-name descname">elp_plot_pop_layer</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_pop_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discard the current layer with all its content. The previous layer will become the current one. If the plot has only one layer the operation has no effect.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_add_legend">
+void <code class="sig-name descname">elp_plot_add_legend</code><span class="sig-paren">(</span>canavs_plot<em> *plot</em>, canavs_plot<em> *legend</em>, int<em> legend_location</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_add_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new plot as a legend in the given location.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.elp_plot_write_svg">
+int <code class="sig-name descname">elp_plot_write_svg</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, const char<em> *filename</em>, double<em> width</em>, double<em> height</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_plot_write_svg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the plot as a SVG file with the given filename, width and height.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Libelplot</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot - C API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#plot-options">Plot options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#legend-placement">Legend Placement</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="window-c.html">Windows - C API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="graphical-element-c.html" title="previous chapter">Graphical Elements - C API</a></li>
+      <li>Next: <a href="window-c.html" title="next chapter">Windows - C API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Francesco Abbate.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/plot-c.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
