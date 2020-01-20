@@ -6,6 +6,7 @@ Plot options
 
   .. c:macro:: elp_plot_show_units
   .. c:macro:: elp_plot_auto_limits
+  .. c:macro:: elp_plot_clip_region
 
 Legend Placement
 ----------------

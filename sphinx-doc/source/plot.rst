@@ -24,6 +24,7 @@ Plot
 
   .. cpp:enumerator:: ShowUnits
   .. cpp:enumerator:: AutoLimits
+  .. cpp:enumerator:: ClipRegion
 
   **Legend Placement**
 
