@@ -34,40 +34,99 @@
             
   <div class="section" id="fox-toolkit-integration">
 <h1>FOX toolkit integration<a class="headerlink" href="#fox-toolkit-integration" title="Permalink to this headline">¶</a></h1>
-<p>The Libcanvas library can be used inside a <a class="reference external" href="http://fox-toolkit.org/">FOX Toolkit</a> application using a special class <a class="reference internal" href="#_CPPv4N2FX11FXElpWindowE" title="FX::FXElpWindow"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FX::FXElpWindow</span></code></a> declared in the header file <code class="docutils literal notranslate"><span class="pre">FXElpWindow.h</span></code>.</p>
-<p>The <a class="reference internal" href="#_CPPv4N2FX11FXElpWindowE" title="FX::FXElpWindow"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FX::FXElpWindow</span></code></a> inherit from <code class="docutils literal notranslate"><span class="pre">FX::FXWindow</span></code> and can be used as an ordinary FOX Window in every respect.
-In addition the class implements the method <a class="reference internal" href="#_CPPv4N2FX11FXElpWindow6AttachERN3elp4PlotEPKc" title="FX::FXElpWindow::Attach"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">FX::FXElpWindow::Attach()</span></code></a> to bind a plot, like it can be done with a <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a>.</p>
-<p>The plots themselves can be created and modified using the standard Libcanvas functions.</p>
+<p>The Elementary Plot library can be used inside a <a class="reference external" href="http://fox-toolkit.org/">FOX Toolkit</a> application using a special class <a class="reference internal" href="#_CPPv4N2FX12FXElemWindowE" title="FX::FXElemWindow"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FX::FXElemWindow</span></code></a> declared in the header file <code class="docutils literal notranslate"><span class="pre">FXElemWindow.h</span></code>.</p>
+<p>The <a class="reference internal" href="#_CPPv4N2FX12FXElemWindowE" title="FX::FXElemWindow"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FX::FXElemWindow</span></code></a> inherit from <code class="docutils literal notranslate"><span class="pre">FX::FXElemBaseWindow</span></code> which in turns inherits from <code class="docutils literal notranslate"><span class="pre">FX::FXWindow</span></code> and it can be used as an ordinary FOX Window in every respect.
+In addition the class implements the method <a class="reference internal" href="#_CPPv4N2FX12FXElemWindow6AttachERN3elp4PlotEPKc" title="FX::FXElemWindow::Attach"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">FX::FXElemWindow::Attach()</span></code></a> to bind a plot, like it can be done with a <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a>.</p>
+<p>The plots themselves can be created and modified using the standard C++ API of the Elementary Plot Library.</p>
 <p>Once a plot is bound to a window the application will be automatically updated for any plot’s modification, without the need of any explicit action.</p>
 <dl class="class">
-<dt id="_CPPv4N2FX11FXElpWindowE">
-<span id="_CPPv3N2FX11FXElpWindowE"></span><span id="_CPPv2N2FX11FXElpWindowE"></span><span id="FX::FXElpWindow"></span><em class="property">class </em><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXElpWindow</code> : <em class="property">public</em> FX::FXWindow<a class="headerlink" href="#_CPPv4N2FX11FXElpWindowE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>FOX toolkit class used to display one or more Libcanvas plots.</p>
+<dt id="_CPPv4N2FX12FXElemWindowE">
+<span id="_CPPv3N2FX12FXElemWindowE"></span><span id="_CPPv2N2FX12FXElemWindowE"></span><span id="FX::FXElemWindow"></span><em class="property">class </em><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXElemWindow</code> : <em class="property">public</em> FX::FXElemBaseWindow<a class="headerlink" href="#_CPPv4N2FX12FXElemWindowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>FOX toolkit class used to display one or more Elementary Plot plots.</p>
 <dl class="function">
-<dt id="_CPPv4N2FX11FXElpWindow2FX11FXElpWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint">
-<span id="_CPPv3N2FX11FXElpWindow2FX11FXElpWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint"></span><span id="_CPPv2N2FX11FXElpWindow2FX11FXElpWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint"></span><span id="FX::FXElpWindow::FX::FXElpWindow__FX::FXCompositeP.cCP.FXuint.FXint.FXint.FXint.FXint"></span><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXElpWindow</code><span class="sig-paren">(</span>FX::FXComposite *<em>p</em>, <em class="property">const</em> char *<em>plot_layout</em> = nullptr, FXuint <em>opts</em> = FRAME_NORMAL, FXint <em>x</em> = 0, FXint <em>y</em> = 0, FXint <em>w</em> = 0, FXint <em>h</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX11FXElpWindow2FX11FXElpWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N2FX12FXElemWindow2FX12FXElemWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint">
+<span id="_CPPv3N2FX12FXElemWindow2FX12FXElemWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint"></span><span id="_CPPv2N2FX12FXElemWindow2FX12FXElemWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint"></span><span id="FX::FXElemWindow::FX::FXElemWindow__FX::FXCompositeP.cCP.FXuint.FXint.FXint.FXint.FXint"></span><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXElemWindow</code><span class="sig-paren">(</span>FX::FXComposite *<em>p</em>, <em class="property">const</em> char *<em>plot_layout</em> = nullptr, FXuint <em>opts</em> = FRAME_NORMAL, FXint <em>x</em> = 0, FXint <em>y</em> = 0, FXint <em>w</em> = 0, FXint <em>h</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX12FXElemWindow2FX12FXElemWindowEPN2FX11FXCompositeEPKc6FXuint5FXint5FXint5FXint5FXint" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Ordinary FOX constructor with the addition of <code class="docutils literal notranslate"><span class="pre">plot_layout</span></code> used to subdivide the windows in multiple plotting slots.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N2FX11FXElpWindow6AttachERN3elp4PlotEPKc">
-<span id="_CPPv3N2FX11FXElpWindow6AttachERN3elp4PlotEPKc"></span><span id="_CPPv2N2FX11FXElpWindow6AttachERN3elp4PlotEPKc"></span><span id="FX::FXElpWindow::Attach__elp::PlotR.cCP"></span>int <code class="sig-name descname">Attach</code><span class="sig-paren">(</span>elp::<a class="reference internal" href="plot.html#_CPPv4N3elp4PlotE" title="elp::Plot">Plot</a> &amp;<em>p</em>, <em class="property">const</em> char *<em>slot_str</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX11FXElpWindow6AttachERN3elp4PlotEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N2FX12FXElemWindow6AttachERN3elp4PlotEPKc">
+<span id="_CPPv3N2FX12FXElemWindow6AttachERN3elp4PlotEPKc"></span><span id="_CPPv2N2FX12FXElemWindow6AttachERN3elp4PlotEPKc"></span><span id="FX::FXElemWindow::Attach__elp::PlotR.cCP"></span>int <code class="sig-name descname">Attach</code><span class="sig-paren">(</span>elp::<a class="reference internal" href="plot.html#_CPPv4N3elp4PlotE" title="elp::Plot">Plot</a> &amp;<em>p</em>, <em class="property">const</em> char *<em>slot_str</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX12FXElemWindow6AttachERN3elp4PlotEPKc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Act like the method <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a> of the <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a> class to bind a plot to a given slot.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N2FX11FXElpWindow11SlotRefreshEj">
-<span id="_CPPv3N2FX11FXElpWindow11SlotRefreshEj"></span><span id="_CPPv2N2FX11FXElpWindow11SlotRefreshEj"></span><span id="FX::FXElpWindow::SlotRefresh__unsigned"></span>void <code class="sig-name descname">SlotRefresh</code><span class="sig-paren">(</span>unsigned <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX11FXElpWindow11SlotRefreshEj" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N2FX12FXElemWindow11SlotRefreshEj">
+<span id="_CPPv3N2FX12FXElemWindow11SlotRefreshEj"></span><span id="_CPPv2N2FX12FXElemWindow11SlotRefreshEj"></span><span id="FX::FXElemWindow::SlotRefresh__unsigned"></span>void <code class="sig-name descname">SlotRefresh</code><span class="sig-paren">(</span>unsigned <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX12FXElemWindow11SlotRefreshEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Act like the <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a>’s method of the same name.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N2FX11FXElpWindow4WaitEv">
-<span id="_CPPv3N2FX11FXElpWindow4WaitEv"></span><span id="_CPPv2N2FX11FXElpWindow4WaitEv"></span><span id="FX::FXElpWindow::Wait"></span>void <code class="sig-name descname">Wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX11FXElpWindow4WaitEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N2FX12FXElemWindow9SetLayoutEPKc">
+<span id="_CPPv3N2FX12FXElemWindow9SetLayoutEPKc"></span><span id="_CPPv2N2FX12FXElemWindow9SetLayoutEPKc"></span><span id="FX::FXElemWindow::SetLayout__cCP"></span>void <code class="sig-name descname">SetLayout</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX12FXElemWindow9SetLayoutEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Change the plot’s layout of the window.
+It works only if the window is not yet started.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N2FX12FXElemWindow4WaitEv">
+<span id="_CPPv3N2FX12FXElemWindow4WaitEv"></span><span id="_CPPv2N2FX12FXElemWindow4WaitEv"></span><span id="FX::FXElemWindow::Wait"></span>void <code class="sig-name descname">Wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2FX12FXElemWindow4WaitEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Act like the <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a>’s method of the same name.
 Normally not needed in classic FOX applications.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N2FX16FXElemBaseWindowE">
+<span id="_CPPv3N2FX16FXElemBaseWindowE"></span><span id="_CPPv2N2FX16FXElemBaseWindowE"></span><span id="FX::FXElemBaseWindow"></span><em class="property">class </em><code class="sig-prename descclassname">FX<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FXElemBaseWindow</code> : <em class="property">public</em> FX::FXWindow<a class="headerlink" href="#_CPPv4N2FX16FXElemBaseWindowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>FOX toolkit class that provide support for and <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a>.
+It is used for the implementation and should not be used directly.</p>
+</dd></dl>
+
+<dl class="struct">
+<dt id="_CPPv421window_fox_start_data">
+<span id="_CPPv321window_fox_start_data"></span><span id="_CPPv221window_fox_start_data"></span><span id="window_fox_start_data"></span><em class="property">struct </em><code class="sig-name descname">window_fox_start_data</code><a class="headerlink" href="#_CPPv421window_fox_start_data" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Contains the following field:</p>
+<ul class="simple">
+<li><p><cite>window_fox *window</cite></p></li>
+<li><p><cite>unsigned width</cite></p></li>
+<li><p><cite>unsigned height</cite></p></li>
+<li><p><cite>unsigned flags</cite></p></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414elp_window_foxP5FXAppP8FXObject6FXuint">
+<span id="_CPPv314elp_window_foxP5FXAppP8FXObject6FXuint"></span><span id="_CPPv214elp_window_foxP5FXAppP8FXObject6FXuint"></span><span id="elp_window_fox__FXAppP.FXObjectP.FXuint"></span>elp_window *<code class="sig-name descname">elp_window_fox</code><span class="sig-paren">(</span>FXApp *<em>app</em>, FXObject *<em>host_object</em>, FXuint <em>start_sel</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414elp_window_foxP5FXAppP8FXObject6FXuint" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a new object that can be passed to <a class="reference internal" href="#_CPPv4N2FX12FXElemWindow6AttachERN3elp4PlotEPKc" title="FX::FXElemWindow::Attach"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">FX::FXElemWindow::Attach()</span></code></a> to create a <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a>.
+It should be used on a worker thread to create a <a class="reference internal" href="window.html#_CPPv4N3elp6WindowE" title="elp::Window"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">elp::Window</span></code></a> that is started in the FOX GUI thread.
+The arguments represent in the order: the FXApp, an FXObject which is responsible to create a FXElemBaseWindow.
+The FXObject <cite>host_object</cite> will receive a signal SEL_IO_READ with id <cite>start_sel</cite>.</p>
+<p>Here an example of how the handler should be done:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">long</span> <span class="n">SomeClass</span><span class="p">::</span><span class="n">onElemWindowStart</span><span class="p">(</span><span class="n">FXObject</span> <span class="o">*</span><span class="p">,</span> <span class="n">FXSelector</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">window_fox_start_data</span> <span class="o">*</span><span class="n">message_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_fox_start_data</span> <span class="o">*</span><span class="p">)</span> <span class="n">ptr</span><span class="p">;</span>
+    <span class="n">FXApp</span> <span class="o">*</span><span class="n">app</span> <span class="o">=</span> <span class="n">getApp</span><span class="p">();</span>
+    <span class="n">FXuint</span> <span class="n">main_window_options</span> <span class="o">=</span> <span class="p">(</span><span class="n">DECOR_TITLE</span><span class="o">|</span><span class="n">DECOR_MINIMIZE</span><span class="o">|</span><span class="n">DECOR_MAXIMIZE</span><span class="o">|</span><span class="n">DECOR_CLOSE</span><span class="o">|</span><span class="n">DECOR_BORDER</span><span class="o">|</span><span class="n">DECOR_SHRINKABLE</span><span class="o">|</span><span class="n">DECOR_MENU</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">message_data</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">WindowResize</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">main_window_options</span> <span class="o">|=</span> <span class="n">DECOR_STRETCHABLE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">auto</span> <span class="n">main_win</span> <span class="o">=</span> <span class="n">new</span> <span class="n">FXMainWindow</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="s2">&quot;Plot Window&quot;</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="n">main_window_options</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">message_data</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">,</span> <span class="n">message_data</span><span class="o">-&gt;</span><span class="n">height</span><span class="p">);</span>
+    <span class="n">auto</span> <span class="n">plot_win</span> <span class="o">=</span> <span class="n">new</span> <span class="n">FXElemBaseWindow</span><span class="p">(</span><span class="n">main_win</span><span class="p">,</span> <span class="n">message_data</span><span class="o">-&gt;</span><span class="n">window</span><span class="p">,</span> <span class="n">LAYOUT_FILL_X</span> <span class="o">|</span> <span class="n">LAYOUT_FILL_Y</span><span class="p">);</span>
+    <span class="n">message_data</span><span class="o">-&gt;</span><span class="n">window</span><span class="o">-&gt;</span><span class="n">bind_drawable</span><span class="p">(</span><span class="n">plot_win</span><span class="p">,</span> <span class="n">FXElemBaseWindow</span><span class="p">::</span><span class="n">ID_UPDATE_REGION</span><span class="p">);</span>
+    <span class="n">main_win</span><span class="o">-&gt;</span><span class="n">create</span><span class="p">();</span>
+    <span class="n">main_win</span><span class="o">-&gt;</span><span class="n">show</span><span class="p">(</span><span class="n">PLACEMENT_SCREEN</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The notable things are:</p>
+<ul class="simple">
+<li><p>a <a class="reference internal" href="#_CPPv421window_fox_start_data" title="window_fox_start_data"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">window_fox_start_data</span></code></a> message is provided</p></li>
+<li><p>a FXElemBaseWindow is created inside some container</p></li>
+<li><p>bind_drawable is called as in the example above</p></li>
+<li><p>the window is created and shown</p></li>
+</ul>
 </dd></dl>
 
 </div>
