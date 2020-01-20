@@ -1,9 +1,9 @@
 FOX toolkit integration
 =======================
 
-The Libcanvas library can be used inside a `FOX Toolkit <http://fox-toolkit.org/>`_ application using a special class :cpp:class:`FX::FXElemWindow` declared in the header file ``FXElemWindow.h``.
+The Elementary Plot library can be used inside a `FOX Toolkit <http://fox-toolkit.org/>`_ application using a special class :cpp:class:`FX::FXElemWindow` declared in the header file ``FXElemWindow.h``.
 
-The :cpp:class:`FX::FXElemWindow` inherit from ``FX::FXElemBaseWindow`` which in turns inherits from ``FX::FXWindow`` and can be used as an ordinary FOX Window in every respect.
+The :cpp:class:`FX::FXElemWindow` inherit from ``FX::FXElemBaseWindow`` which in turns inherits from ``FX::FXWindow`` and it can be used as an ordinary FOX Window in every respect.
 In addition the class implements the method :cpp:func:`FX::FXElemWindow::Attach` to bind a plot, like it can be done with a :cpp:class:`elp::Window`.
 
 The plots themselves can be created and modified using the standard C++ API of the Elementary Plot Library.
@@ -12,7 +12,7 @@ Once a plot is bound to a window the application will be automatically updated f
 
 .. cpp:class:: FX::FXElemWindow : public FX::FXElemBaseWindow
 
-  FOX toolkit class used to display one or more Libcanvas plots.
+  FOX toolkit class used to display one or more Elementary Plot plots.
 
   .. cpp:function:: FX::FXElemWindow(FX::FXComposite* p, const char *plot_layout = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0)
 
