@@ -40,3 +40,17 @@ private:
     window_fox *m_window;
 };
 }
+
+enum FXElemCreatePolicy {
+    ELEM_CREATE_DEFER = 0,
+    ELEM_CREATE_NOW = 1,
+};
+
+struct FXElemStartMessage {
+    window_fox *window;
+    unsigned width;
+    unsigned height;
+    unsigned flags;
+};
+
+void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreatePolicy create_flag);

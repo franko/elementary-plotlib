@@ -52,10 +52,3 @@ private:
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.
     graphics::window_surface& m_window_surface;
 };
-
-struct window_fox_start_data {
-    window_fox *window;
-    unsigned width;
-    unsigned height;
-    unsigned flags;
-};

@@ -41,7 +41,7 @@ Once a plot is bound to a window the application will be automatically updated f
   FOX toolkit class that provide support for and :cpp:class:`elp::Window`.
   It is used for the implementation and should not be used directly.
 
-.. cpp:struct:: window_fox_start_data
+.. cpp:struct:: FXElemStartMessage
 
   Contains the following field:
   
@@ -50,33 +50,40 @@ Once a plot is bound to a window the application will be automatically updated f
   - `unsigned height`
   - `unsigned flags`
 
-.. cpp:function:: elp_window *elp_window_fox(FXApp *app, FXObject *host_object, FXuint start_sel)
+.. cpp:function:: elp_window *elp_window_fox(FXGUISignal *start_signal)
   
   Create a new object that can be passed to :cpp:func:`FX::FXElemWindow::Attach` to create a :cpp:class:`elp::Window`.
   It should be used on a worker thread to create a :cpp:class:`elp::Window` that is started in the FOX GUI thread.
-  The arguments represent in the order: the FXApp, an FXObject which is responsible to create a FXElemBaseWindow.
-  The FXObject `host_object` will receive a signal SEL_IO_READ with id `start_sel`.
+  The start_signal should be a signal, previously created in the GUI thread, that trigger a request to create a new Elementary Plot window.
+  The method that handle the start_signal should call the function :cpp:func:`FXElemBuildWindow` passing a FXComposite where the Elementary Plot window should be placed.
 
-  Here an example of how the handler should be done::
+  Here an example of how the handler cound be done::
 
     long SomeClass::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
-        window_fox_start_data *message_data = (window_fox_start_data *) ptr;
-        FXApp *app = getApp();
-        FXuint main_window_options = (DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_SHRINKABLE|DECOR_MENU);
-        if (message_data->flags & WindowResize) {
-            main_window_options |= DECOR_STRETCHABLE;
-        }
-        auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, main_window_options, 0, 0, message_data->width, message_data->height);
-        auto plot_win = new FXElemBaseWindow(main_win, message_data->window, LAYOUT_FILL_X | LAYOUT_FILL_Y);
-        message_data->window->bind_drawable(plot_win, FXElemBaseWindow::ID_UPDATE_REGION);
-        main_win->create();
-        main_win->show(PLACEMENT_SCREEN);
-        return 1;
+      FXElemStartMessage *message = (FXElemStartMessage *) ptr;
+      assert(message != nullptr);
+      FXuint main_window_options = (DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_SHRINKABLE|DECOR_MENU);
+      if (message->flags & WindowResize) {
+          main_window_options |= DECOR_STRETCHABLE;
+      }
+      FXMainWindow *main_win = new FXMainWindow(getApp(), "Plot Window", nullptr, nullptr, main_window_options, 0, 0, message->width, message->height);
+      FXElemBuildWindow(main_win, message, ELEM_CREATE_DEFER);
+      main_win->create();
+      main_win->show(PLACEMENT_SCREEN);
+      return 1;
     }
 
   The notable things are:
 
-  - a :cpp:class:`window_fox_start_data` message is provided
-  - a FXElemBaseWindow is created inside some container
-  - bind_drawable is called as in the example above
+  - a :cpp:class:`FXElemStartMessage` message is provided to the handler
+  - the function FXElemBuildWindow is called provide a parent composite window
   - the window is created and shown
+
+  Otherwise, if the Elementary Plot window should be created in an already existing FXComposite parent the handler could be::
+
+    long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
+        FXElemStartMessage *message = (FXElemStartMessage *) ptr;
+        assert(message != nullptr);
+        FXElemBuildWindow(this->frame, message, ELEM_CREATE_NOW);
+        return 1;
+    }

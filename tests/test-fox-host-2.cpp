@@ -18,11 +18,13 @@ private:
 public:
     PlotWindow(FXApp* a, const FXString& name, FXIcon *ic=NULL, FXIcon *mi=NULL, FXuint opts=DECOR_ALL,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=0,FXint pr=0,FXint pt=0,FXint pb=0,FXint hs=0,FXint vs=0):
         FXMainWindow(a, name, ic, mi, opts, x, y, w, h, pl, pr, pt, pb, hs, vs) {
-        m_start_signal = new FXGUISignal(a, this, ID_PLOT_WINDOW_START, nullptr);
+        start_signal = new FXGUISignal(a, this, ID_PLOT_WINDOW_START, nullptr);
+        frame = new FXVerticalFrame(this, LAYOUT_FILL_X|LAYOUT_FILL_Y);
+        new FXLabel(frame, "Window Plot demonstrator");
     }
 
     ~PlotWindow() {
-        delete m_start_signal;
+        delete start_signal;
     }
 
     long onElemWindowStart(FXObject *, FXSelector, void *);
@@ -32,12 +34,8 @@ public:
         ID_LAST,
     };
 
-    FXGUISignal *start_signal() {
-        return m_start_signal;
-    }
-
-private:
-    FXGUISignal *m_start_signal;
+    FXVerticalFrame *frame;
+    FXGUISignal *start_signal;
 };
 
 FXDEFMAP(PlotWindow) PlotWindowMap[] = {
@@ -52,15 +50,7 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
         fprintf(stderr, "internal error: no message data with window's start signal\n");
         return 1;
     }
-    FXApp *app = getApp();
-    FXuint main_window_options = (DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_SHRINKABLE|DECOR_MENU);
-    if (message->flags & WindowResize) {
-        main_window_options |= DECOR_STRETCHABLE;
-    }
-    auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, main_window_options, 0, 0, message->width, message->height);
-    FXElemBuildWindow(main_win, message, ELEM_CREATE_DEFER);
-    main_win->create();
-    main_win->show(PLACEMENT_SCREEN);
+    FXElemBuildWindow(this->frame, message, ELEM_CREATE_NOW);
     return 1;
 }
 
@@ -86,10 +76,9 @@ void WorkerThreadStart(FXGUISignal *start_signal) {
 int main(int argc, char *argv[]) {
     FXApp app("Plot Windows", "libelplot");
     app.init(argc, argv);
-    auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 320, 320);
-    new FXLabel(main_window, "Window Plot demonstrator");
+    auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
 
-    std::thread worker_thread(WorkerThreadStart, main_window->start_signal());
+    std::thread worker_thread(WorkerThreadStart, main_window->start_signal);
     worker_thread.detach();
 
     app.create();

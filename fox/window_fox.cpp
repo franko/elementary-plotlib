@@ -76,7 +76,7 @@ void window_fox::update_region_request(graphics::image& img, const agg::rect_i& 
 }
 
 void window_fox::start(unsigned width, unsigned height, unsigned flags) {
-    window_fox_start_data data{this, width, height, flags};
+    FXElemStartMessage data{this, width, height, flags};
     if (! m_start_signal) {
         debug_log(0, "error: cannot start fox window, no hosting environment");
         return;
