@@ -14,7 +14,7 @@ class window_fox : public graphics::display_window_status {
 public:
     window_fox(graphics::window_surface& window_surface);
     window_fox(graphics::window_surface& window_surface, FXElemBaseWindow *elem_window);
-    window_fox(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector);
+    window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
     virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
@@ -42,11 +42,11 @@ public:
     }
 
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);
-    void bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector);
 
 private:
     FXDrawable *m_drawable;
-    FXGUISignal *m_update_signal, *m_start_signal;
+    FXGUISignal *m_update_signal;
+    FXGUISignal *m_start_signal; // Just a reference, not owned.
     update_region_info   m_update_region;
     update_region_notify m_update_notify;
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.

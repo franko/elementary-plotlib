@@ -9,9 +9,9 @@ window_fox::window_fox(graphics::window_surface& window_surface):
         m_window_surface(window_surface) {
 }
 
-window_fox::window_fox(graphics::window_surface& window_surface, FXApp *app, FXObject *env_object, FXSelector start_selector):
+window_fox::window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal):
         window_fox(window_surface) {
-    bind_window_environment(app, env_object, start_selector);
+    m_start_signal = start_signal;
 }
 
 window_fox::window_fox(graphics::window_surface& window_surface, FXElemBaseWindow *elem_window):
@@ -22,7 +22,7 @@ window_fox::window_fox(graphics::window_surface& window_surface, FXElemBaseWindo
 
 window_fox::~window_fox() {
     delete m_update_signal;
-    delete m_start_signal;
+    // Do not delete m_start_signal since we are not the owner.
 }
 
 void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
@@ -73,10 +73,6 @@ void window_fox::update_region_request(graphics::image& img, const agg::rect_i& 
         m_update_notify.wait();
         m_update_region.clear();
     }
-}
-
-void window_fox::bind_window_environment(FXApp *app, FXObject *env_object, FXSelector start_selector) {
-    m_start_signal = new FXGUISignal(app, env_object, start_selector, nullptr);
 }
 
 void window_fox::start(unsigned width, unsigned height, unsigned flags) {

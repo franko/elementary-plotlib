@@ -18,6 +18,11 @@ private:
 public:
     PlotWindow(FXApp* a, const FXString& name, FXIcon *ic=NULL, FXIcon *mi=NULL, FXuint opts=DECOR_ALL,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=0,FXint pr=0,FXint pt=0,FXint pb=0,FXint hs=0,FXint vs=0):
         FXMainWindow(a, name, ic, mi, opts, x, y, w, h, pl, pr, pt, pb, hs, vs) {
+        m_start_signal = new FXGUISignal(a, this, ID_PLOT_WINDOW_START, nullptr);
+    }
+
+    ~PlotWindow() {
+        delete m_start_signal;
     }
 
     long onElemWindowStart(FXObject *, FXSelector, void *);
@@ -26,6 +31,13 @@ public:
         ID_PLOT_WINDOW_START = FXApp::ID_LAST,
         ID_LAST,
     };
+
+    FXGUISignal *start_signal() {
+        return m_start_signal;
+    }
+
+private:
+    FXGUISignal *m_start_signal;
 };
 
 FXDEFMAP(PlotWindow) PlotWindowMap[] = {
@@ -63,20 +75,10 @@ Plot CreateNewPlot() {
     return plot;
 }
 
-void WorkerThreadStart(FXApp *app, FXObject *host_object, FXSelector start_sel) {
+void WorkerThreadStart(FXGUISignal *start_signal) {
     InitializeFonts();
     utils::Sleep(3);
-    // The line below create a new window bound to a specific FOX environment.
-    // When the Start method is called a message with ID 'start_sel' is
-    // sent to host_object, an FXObject, to request the creation of the
-    // window.
-    //
-    // The host_object is responsible for:
-    // - creating a FXElemBaseWindow inside some container.
-    // - call bind_drawable on the window_fox object (sent with the message)
-    //   to bind the window_fox with the FXElemBaseWindow
-    // - create and show the FXElemBaseWindow.
-    Window win(new elp_window_fox(app, host_object, start_sel));
+    Window win(new elp_window_fox(start_signal));
     Plot plot = CreateNewPlot();
     win.Attach(plot, "");
     win.Start(640, 480, WindowResize);
@@ -89,7 +91,7 @@ int main(int argc, char *argv[]) {
     auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 320, 320);
     new FXLabel(main_window, "Window Plot demonstrator");
 
-    std::thread worker_thread(WorkerThreadStart, &app, main_window, PlotWindow::ID_PLOT_WINDOW_START);
+    std::thread worker_thread(WorkerThreadStart, main_window->start_signal());
     worker_thread.detach();
 
     app.create();
