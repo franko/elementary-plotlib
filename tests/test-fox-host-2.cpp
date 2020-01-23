@@ -77,11 +77,10 @@ int main(int argc, char *argv[]) {
     FXApp app("Plot Windows", "libelplot");
     app.init(argc, argv);
     auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);
-
     std::thread worker_thread(WorkerThreadStart, main_window->start_signal);
-    worker_thread.detach();
-
     app.create();
     main_window->show(PLACEMENT_SCREEN);
-    return app.run();
+    app.run();
+    worker_thread.join();
+    return 0;
 }
