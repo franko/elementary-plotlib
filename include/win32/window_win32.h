@@ -31,7 +31,7 @@ public:
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
-    enum { WM_LIBCANVAS_UPD_REGION = WM_USER };
+    enum { WM_ELEM_UPD_REGION = WM_USER };
 
     bool init(unsigned width, unsigned height, unsigned flags);
     int run();

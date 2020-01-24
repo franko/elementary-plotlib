@@ -121,7 +121,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         ::PostQuitMessage(0);
         break;
 
-    case WM_LIBCANVAS_UPD_REGION:
+    case WM_ELEM_UPD_REGION:
         if (m_update_region.img) {
             update_region(*m_update_region.img, m_update_region.r);
         }
@@ -244,6 +244,6 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
 
 void window_win32::update_region_request(graphics::image& img, const agg::rect_i& r) {
     m_update_region.prepare(img, r);
-    ::SendMessage(m_hwnd, WM_LIBCANVAS_UPD_REGION, 0, 0);
+    ::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0);
     m_update_region.clear();
 }

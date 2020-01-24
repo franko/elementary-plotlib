@@ -1,5 +1,5 @@
 /*
-** Libelplot -- a plotting library for C++. https://github.com/franko/libcanvas
+** Libelplot -- a plotting library for C++. https://github.com/franko/elementary-plotlib
 **
 ** Copyright (C) 2018-2019 Francesco Abbate. All rights reserved.
 **

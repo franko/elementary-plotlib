@@ -18,15 +18,15 @@ Display a native window to display the plot or the animations without thind-part
 
 **High quality plots**
 
-Libcanvas use the Anti-Grain library with subpixel resolution to create high-quality plots. The fonts are rendered using state of the art algorithm for font rendering but only basic text layout is supported.
+the Elementary Plot library use the Anti-Grain library with subpixel resolution to create high-quality plots. The fonts are rendered using state of the art algorithm for font rendering but only basic text layout is supported.
 
 **Integration with existing toolkits**
 
-The library is thought to be integrated with existing GUI toolkits with minimal work. Currently only an implementation for the [FOX Toolkit](http://www.fox-toolkit.org/) is provided but it can be used as an example to integrate libcanvas with other toolkits.
+The library is thought to be integrated with existing GUI toolkits with minimal work. Currently only an implementation for the [FOX Toolkit](http://www.fox-toolkit.org/) is provided but it can be used as an example to integrate the Elementary Plot library with other toolkits.
 
 **Documentation available**
 
-The [Elementary Plotlib reference manual](http://franko.github.io/elementary-plotlib/) for the new API is available.
+The [Elementary Plotlib reference manual](http://franko.github.io/elementary-plotlib/manual/) for the new API is available.
 
 Examples
 ========
@@ -70,7 +70,7 @@ The text drawing is doing using the freetype library. The font system is extreme
 Current status
 ---
 
-The libcanvas library is quite solid in its core since it was used previously in two other projects.
+The Elementary Plot library is quite solid in its core since it was used previously in two other projects.
 Its current status is 1.0 pre-release.
 
 A clean and simple C and C++ API is now available to make the utilisation of the library super-simple and to isolate from the implementation details.

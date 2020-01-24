@@ -2,7 +2,7 @@
 
 #include <fx.h>
 
-// We include here only the public interface libcanvas header.
+// We include here only the public interface elementary plot library header.
 #include "libelplot.h"
 #include "FXElemBaseWindow.h"
 
