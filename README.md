@@ -33,7 +33,7 @@ Examples
 
 Here an example of a plot with a function and some markers.
 
-![Plot of function with markers](https://github.com/franko/elementary-plotlib/blob/master/sphinx-doc/source/plot-function-example.png)
+![Plot of function with markers](https://github.com/franko/elementary-plotlib/blob/master/sphinx-doc/manual/source/plot-function-example.png)
 
 The corresponding source code is available [here](https://github.com/franko/elementary-plotlib/blob/master/tests/test-window-function.cpp).
 
