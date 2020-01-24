@@ -82,6 +82,8 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Welcome to Elementary Plot Library’s Homepage</a><ul>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#building-from-source">Building from source</a></li>
+<li><a class="reference internal" href="#install-instructions">Install instructions</a></li>
 <li><a class="reference internal" href="#a-simple-example">A Simple Example</a></li>
 </ul>
 </li>
@@ -151,19 +153,48 @@
             
   <div class="section" id="welcome-to-elementary-plot-library-s-homepage">
 <h1>Welcome to Elementary Plot Library’s Homepage<a class="headerlink" href="#welcome-to-elementary-plot-library-s-homepage" title="Permalink to this headline">¶</a></h1>
-<p>Elementary Plot Library is a C/C++ library for high-quality plots with a clean and simple C and C++ interface. In addition it provides also support for simple animations.</p>
+<p>Elementary Plot Library is a C/C++ library for high-quality plots with a clean and simple C and C++ interface and provides support for simple animations.</p>
 <p>The library can be used create plots and show them on the screen directly from C or C++ code.
 It works by adding graphical elements in plots and by attaching the plots to windows to show them on the screen.
 By default each plot automatically handles the scale and show the plotting axis and labels but the behavior of the plot is customizable.</p>
 <p>The library use by default the native windows provided by the hosting system.
-In addition it can be integrated with existing GUI toolkits but currently supports only the FOX toolkit.</p>
-<p>The library is supported on Windows, using MinGW and on Linux.
+In addition it can be integrated with existing GUI toolkits. Currently the FOX toolkit is supported.</p>
+<p>The library works on Windows, using MinGW and on Linux.
 It has minimal dependency by requiring only the AGG and freetype2 libraries.</p>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <p>The Elementary Plot Library <a class="reference external" href="https://franko.github.io/elementary-plotlib/manual/">user manual</a>.</p>
-<p>TODO: add information about how to build the software</p>
-<p>TODO: link to github page</p>
+</div>
+<div class="section" id="building-from-source">
+<h2>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this headline">¶</a></h2>
+<p>The source code of the Elementary Plot library is available on github:</p>
+<p><a class="reference external" href="https://github.com/franko/elementary-plotlib">Elementary Plot Library on Github</a></p>
+<p>The software can be compiled and installed using the <a class="reference external" href="https://mesonbuild.com/">Meson build system</a>.</p>
+<p>Before compiling ensure that the required development library are installed on your system.
+The Elementary Plot library requires:</p>
+<ul class="simple">
+<li><p>the AGG library, 2.4 or 2.5</p></li>
+<li><p>the freetype2 library, any recent version since 2.7 should work</p></li>
+<li><p>the FOX library, 1.6, optional, only to build the support for FOX integration</p></li>
+</ul>
+<p>On linux or similar systems you may install the development packages provided by the distribution.</p>
+<p>As an alternative you may use the <a class="reference external" href="https://github.com/franko/lhelper">lhelper package utility</a> which includes ready-to-go recipes for the required libraries.
+It works on unix-like system and on Windows using MSYS2.</p>
+<p>On Windows we recommend using MSYS2 with the mingw-w64 packages to produce fully native Window executable.
+In addition the MSYS2 provides recent versions of the GCC and the Clang compiler.</p>
+</div>
+<div class="section" id="install-instructions">
+<h2>Install instructions<a class="headerlink" href="#install-instructions" title="Permalink to this headline">¶</a></h2>
+<p>Once the required libraries are installed the library can be compiled with meson:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meson</span> <span class="n">setup</span> <span class="n">build</span>
+<span class="n">ninja</span> <span class="o">-</span><span class="n">C</span> <span class="n">build</span>
+<span class="n">ninja</span> <span class="o">-</span><span class="n">C</span> <span class="n">build</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>By default the library will be built as a shared library but it can be changed using the Meson’s ‘default_library’ option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meson</span> <span class="n">setup</span> <span class="o">-</span><span class="n">Ddefault_library</span><span class="o">=</span><span class="n">static</span> <span class="n">build</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="a-simple-example">
 <h2>A Simple Example<a class="headerlink" href="#a-simple-example" title="Permalink to this headline">¶</a></h2>
