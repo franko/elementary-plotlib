@@ -1,0 +1,5 @@
+local p = elem.Path()
+p:MoveTo(0, 0)
+p:LineTo(100, 0)
+p:ClosePolygon()
+print('everything ok!')

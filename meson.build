@@ -60,6 +60,7 @@ if fox_dep.found()
     subdir('fox')
 endif
 
+subdir('lua')
 if get_option('tests')
     subdir('tests')
 endif
