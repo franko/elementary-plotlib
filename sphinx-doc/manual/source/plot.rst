@@ -94,3 +94,29 @@ Plot
   .. cpp:function:: bool WriteSvg(const char *filename, double width, double height)
 
     Write the plot as a SVG file with the given filename, width and height.
+
+
+Drawing Properties
+------------------
+
+The following are used when adding an element into a plot to specify if should be stroked, filled or possibly both.
+In addition some properties affect the way the object will be drawn on the screen.
+The values are meant to be combined using logical bit operators.
+
+.. cpp:namespace-push:: property
+
+.. cpp:enumerator:: Fill
+
+  Draw each closed polygon with a filling color.
+
+.. cpp:enumerator:: Stroke
+
+  Draw the stroking of the path or contour.
+
+.. cpp:enumerator:: Outline
+
+  Only the outline of the path will be drawn, without anti-aliasing.
+
+.. cpp:enumerator:: Crisp
+
+.. cpp:namespace-pop::
