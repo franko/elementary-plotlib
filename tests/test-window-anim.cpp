@@ -29,7 +29,7 @@ int main() {
     InitializeFonts();
 
     Plot plot(Plot::ShowUnits);
-    plot.SetLimits({0.0, 0.0, 100.0, 100.0});
+    plot.SetLimits(0.0, 0.0, 100.0, 100.0);
 
     Window window("h.");
     window.Attach(plot, "1");

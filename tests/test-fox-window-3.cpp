@@ -71,7 +71,7 @@ void PlotExampleApp::addPlot(Plot p) {
 
 Plot CreatePlot() {
     Plot p{Plot::ShowUnits};
-    p.SetLimits({-1.0, -1.0, 1.0, 1.0});
+    p.SetLimits(-1.0, -1.0, 1.0, 1.0);
     Polygon line{{0.0, -0.5}, {0.0, 0.5}, {0.8, 0.0}};
     p.Add(line, color::Red, 2.5, color::Yellow, property::Fill | property::Stroke);
     return p;

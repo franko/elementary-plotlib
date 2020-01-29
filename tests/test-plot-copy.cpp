@@ -7,7 +7,7 @@ int main() {
     InitializeFonts();
 
     Plot *plot = new Plot(Plot::ShowUnits);
-    plot->SetLimits({-1.0, 0.0, 1.0, 10.0});
+    plot->SetLimits(-1.0, 0.0, 1.0, 10.0);
     plot->SetAxisLabelsAngle(xAxis, 3.141592 / 4);
     plot->EnableLabelFormat(xAxis, "%.6f");
 

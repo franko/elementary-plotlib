@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     auto window = new FXElemWindow(main_window, nullptr, LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
     Plot p(Plot::ShowUnits);
-    p.SetLimits({-1.0, 0.0, 1.0, 10.0});
+    p.SetLimits(-1.0, 0.0, 1.0, 10.0);
     p.SetAxisLabelsAngle(xAxis, 3.141592 / 4);
     p.EnableLabelFormat(yAxis, "%.6f");
 

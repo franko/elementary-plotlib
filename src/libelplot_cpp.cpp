@@ -192,8 +192,8 @@ void Plot::SetClipMode(bool flag) {
     plot_impl_.plot->set_clip_mode(flag);
 }
 
-void Plot::SetLimits(const Rectangle& r) {
-    elp_plot_set_limits(&plot_impl_, r.x1, r.y1, r.x2, r.y2);
+void Plot::SetLimits(float x1, float y1, float x2, float y2) {
+    elp_plot_set_limits(&plot_impl_, x1, y1, x2, y2);
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {

@@ -53,9 +53,10 @@ Plot
 
     Set the clip mode. If true all the pixel drawn for the graphics elements are clipped in the plotting area.
 
-  .. cpp:function:: void SetLimits(const Rectangle& r)
+  .. cpp:function:: void SetLimits(float x1, float y1, float x2, float y2)
 
-    Explicitly set the plotting limits, along the two axis. Attention if the plot is in auto limits the limits will be changed when adding new objects.
+    Explicitly set the plotting limits, along the two axis.
+    If the plot is in auto limits mode the limits will be changed when adding new objects.
 
   .. cpp:function:: void SetAxisLabelsAngle(const Axis& axis, float angle)
 

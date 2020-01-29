@@ -16,7 +16,7 @@ void AddFunction(Plot& p, double x0, double x1, Function f, Color color, int n =
 
 Plot CreatePlotLegend() {
     Plot p;
-    p.SetLimits({0.0, -5.0, 16.0, 5.0});
+    p.SetLimits(0.0, -5.0, 16.0, 5.0);
     p.SetClipMode(false);
     p.Add(Path{{0.0, -3.0}, {3.0, -3.0}}, color::Blue, 1.5, color::None, property::Stroke);
     p.Add(Path{{0.0, +3.0}, {3.0, +3.0}}, color::Red,  1.5, color::None, property::Stroke);

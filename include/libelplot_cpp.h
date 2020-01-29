@@ -64,10 +64,6 @@ enum {
     WindowProcessAllKeys  = 8,
 };
 
-struct Rectangle {
-    float x1, y1, x2, y2;
-};
-
 enum Axis {
     xAxis = 0,
     yAxis = 1,
@@ -203,7 +199,7 @@ public:
     void SetXAxisTitle(const char *axis_title);
     void SetYAxisTitle(const char *axis_title);
     void SetClipMode(bool flag);
-    void SetLimits(const Rectangle& r);
+    void SetLimits(float x1, float y1, float x2, float y2);
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();

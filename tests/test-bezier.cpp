@@ -7,7 +7,7 @@ int main() {
     InitializeFonts();
 
     Plot plot(Plot::ShowUnits);
-    plot.SetLimits({0.0, 0.0, 100.0, 100.0});
+    plot.SetLimits(0.0, 0.0, 100.0, 100.0);
 
     CurvePath heart;
     heart.MoveTo(10, 70);
@@ -17,7 +17,7 @@ int main() {
     heart.Curve3(10, 40, 10, 70);
     heart.ClosePolygon();
 
-    plot.Add(heart, color::Red, 2.5, color::None, property::Stroke);
+    plot.Add(heart, color::Red, 2.5, color::RGB(0xD4, 0x40, 0x40));
 
     Window window;
     window.Attach(plot, "");
