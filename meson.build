@@ -1,4 +1,4 @@
-project('libelplot', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++14'])
+project('libelplot', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++17'])
 
 # ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
 #  DEFS += -DDISABLE_GAMMA_CORR
@@ -63,3 +63,5 @@ endif
 if get_option('tests')
     subdir('tests')
 endif
+
+subdir('lua')
