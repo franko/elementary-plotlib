@@ -101,6 +101,9 @@ void CurvePath::ClosePolygon() {
     CurveImpl()->close_polygon();
 }
 
+DashPath::DashPath() : Path{new elp_dashed{}} {
+}
+
 DashPath::DashPath(std::initializer_list<double> lst) : Path{new elp_dashed{}} {
     elp_dashed *dash_object = DashedImpl();
     double prev_len;
