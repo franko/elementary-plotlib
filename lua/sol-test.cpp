@@ -6,15 +6,16 @@ using namespace elp;
 
 int main() {
     sol::state lua;
-    lua.open_libraries(sol::lib::base, sol::lib::math);
-    lua.new_usertype<Object>("Object", sol::constructors<Object()>());
-    lua.new_usertype<Path>("Path", sol::constructors<Path()>(), 
+    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::bit32);
+    auto elem = lua.create_table();
+    elem.new_usertype<Object>("Object", sol::constructors<Object()>());
+    elem.new_usertype<Path>("Path", sol::constructors<Path()>(),
         "MoveTo", &Path::MoveTo, 
         "LineTo", &Path::LineTo,
         "ClosePolygon", &Path::ClosePolygon,
         sol::base_classes, sol::bases<Object>()
     );
-    lua.new_usertype<Plot>("Plot", sol::constructors<Plot(), Plot(unsigned)>(),
+    elem.new_usertype<Plot>("Plot", sol::constructors<Plot(), Plot(unsigned)>(),
         "SetTitle", &Plot::SetTitle,
         "SetXAxisTitle", &Plot::SetXAxisTitle,
         "SetYAxisTitle", &Plot::SetYAxisTitle,
@@ -31,29 +32,31 @@ int main() {
         "AddLegend", &Plot::AddLegend,
         "WriteSvg", &Plot::WriteSvg
     );
-    lua.new_usertype<Window>("Window", sol::constructors<Window()>(),
+    elem.new_usertype<Window>("Window", sol::constructors<Window()>(),
         "Attach", &Window::Attach,
         "SetLayout", &Window::SetLayout,
         "Start", &Window::Start,
         "Wait", &Window::Wait
     );
 
+    // Not yet done:
+    // enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1, ClipRegion = 1 << 2 };
+
+    elem["xAxis"] = xAxis;
+    elem["yAxis"] = yAxis;
+    elem["WindowResize"] = WindowResize;
+
+    auto elem_property = lua.create_table();
+    elem_property["Fill"]    = property::Fill;
+    elem_property["Stroke"]  = property::Stroke;
+    elem_property["Outline"] = property::Outline;
+    elem_property["Crisp"]   = property::Crisp;
+
+    elem["property"] = elem_property;
+    lua["elem"] = elem;
+
     InitializeFonts();
 
-    lua.script(R"(
-        local plot = Plot.new()
-
-        local line = Path.new()
-        line:MoveTo(-0.5, 0)
-        line:LineTo(-0.5, 8.0)
-        line:LineTo(0.5, 4.0)
-        line:ClosePolygon()
-        plot:Add(line, 0xB40000FF, 2.5, 0xF5FE00FF, 3)
-
-        local window = Window.new()
-        window:Attach(plot, "")
-
-        window:Start(640, 480, 1)
-        window:Wait()
-    )");
+    lua.script_file("lua/sol-test.lua");
+    lua.script_file("lua/sol-test-function.lua");
 }
