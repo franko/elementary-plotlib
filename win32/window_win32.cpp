@@ -238,6 +238,7 @@ void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r)
 }
 
 void window_win32::start_blocking(unsigned width, unsigned height, unsigned flags) {
+    lock();
     init(width, height, flags);
     run();
 }

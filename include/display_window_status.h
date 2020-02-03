@@ -14,12 +14,6 @@ namespace graphics {
  * with the related methods to query/set status and issue a request. */
 class display_window_status : public display_window {
 public:
-    void lock() {
-        m_mutex.lock();
-    }
-    void unlock() {
-        m_mutex.unlock();
-    }
     int status() {
         return m_window_status.value();
     }
@@ -37,6 +31,13 @@ public:
             req.wait();
         }
         return retval;
+    }
+protected:
+    void lock() {
+        m_mutex.lock();
+    }
+    void unlock() {
+        m_mutex.unlock();
     }
 private:
     std::mutex m_mutex;
