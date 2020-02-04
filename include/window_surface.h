@@ -38,7 +38,6 @@ public:
 
     bool resize(unsigned ww, unsigned hh);
     void render();
-    void draw();
 
     // redraw all the image buffer for the current plots
     void draw_image_buffer();

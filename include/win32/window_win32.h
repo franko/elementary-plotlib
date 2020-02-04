@@ -25,7 +25,7 @@ public:
         }
     }
 
-    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region(const graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

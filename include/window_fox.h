@@ -17,13 +17,15 @@ public:
     window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
-    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
+    virtual void update_region(const graphics::image& src_img, const agg::rect_i& r);
     virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
 
     void start(unsigned width, unsigned height, unsigned flags);
 
     void draw(FXEvent *ev) {
-        m_window_surface.draw();
+        const graphics::image &surface_image = m_window_surface.get_image();
+        const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
+        update_region(surface_image, r);
     }
 
     void on_resize(FXint w, FXint h) {

@@ -279,7 +279,11 @@ void xwindow::run()
                other expose event will follow */
             if (ev.xexpose.count == 0)
             {
-                m_window_surface.draw();
+                // FIXME: this code is copy & pasted in three different places,
+                // all the window's implementations.
+                const graphics::image &surface_image = m_window_surface.get_image();
+                const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
+                update_region(surface_image, r);
                 break;
             }
 
@@ -302,7 +306,7 @@ void xwindow::close()
     set_status(graphics::window_closed);
 }
 
-void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
+void xwindow::update_region(const graphics::image& src_img, const agg::rect_i& r)
 {
     const unsigned width = r.x2 - r.x1, height = r.y2 - r.y1;
 

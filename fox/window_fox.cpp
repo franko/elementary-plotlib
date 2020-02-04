@@ -30,7 +30,7 @@ void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector)
     m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
 }
 
-void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
+void window_fox::update_region(const graphics::image& src_img, const agg::rect_i& r) {
     const unsigned fximage_pixel_size = 4; // 32 bit RGBA format.
     const bool fximage_flipy = true;
     const int width = r.x2 - r.x1, height = r.y2 - r.y1;

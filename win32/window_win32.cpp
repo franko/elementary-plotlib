@@ -108,7 +108,11 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         debug_log(1, "treating WM_PAINT event");
         PAINTSTRUCT ps;
         HDC paintDC = ::BeginPaint(hWnd, &ps);
-        m_window_surface.draw();
+        // FIXME: this code is copy & pasted in three different places,
+        // all the window's implementations.
+        const graphics::image &surface_image = m_window_surface.get_image();
+        const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
+        update_region(surface_image, r);
         ::EndPaint(hWnd, &ps);
         set_status(graphics::window_running);
         break;
@@ -230,7 +234,7 @@ int window_win32::run() {
     return (int)msg.wParam;
 }
 
-void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
+void window_win32::update_region(const graphics::image& src_img, const agg::rect_i& r) {
     debug_log(1, "update_region: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
