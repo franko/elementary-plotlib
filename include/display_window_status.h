@@ -17,15 +17,16 @@ public:
     int status() {
         return m_window_status.value();
     }
+
+    // Important: this method should be called only from
+    // the window's thread.
     void set_status(window_status_e new_status) {
         m_window_status.set(new_status);
     }
-    request_error_e set_notify_request(notify_request<window_status_e>& request) {
-        return m_window_status.set_notify_request(request);
-    }
+
     request_error_e wait_until_notification(window_status_e notify_status) {
         notify_request<window_status_e> req{notify_status};
-        request_error_e retval = set_notify_request(req);
+        request_error_e retval = m_window_status.set_notify_request(req);
         if (retval == request_success) {
             req.wait();
         }
