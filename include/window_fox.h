@@ -17,8 +17,7 @@ public:
     window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
-    virtual void update_region(const graphics::image& src_img, const agg::rect_i& r);
-    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
+    void update_region_request(graphics::image& img, const agg::rect_i& r) override;
 
     void start(unsigned width, unsigned height, unsigned flags);
 
@@ -46,6 +45,8 @@ public:
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);
 
 private:
+    void update_region(const graphics::image& src_img, const agg::rect_i& r);
+
     FXDrawable *m_drawable;
     FXGUISignal *m_update_signal;
     FXGUISignal *m_start_signal; // Just a reference, not owned.

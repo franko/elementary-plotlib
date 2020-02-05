@@ -25,14 +25,14 @@ public:
         }
     }
 
-    virtual void update_region(const graphics::image& src_img, const agg::rect_i& r);
-    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
+    void update_region_request(graphics::image& img, const agg::rect_i& r) override;
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
     enum { WM_ELEM_UPD_REGION = WM_USER };
 
+    void update_region(const graphics::image& src_img, const agg::rect_i& r);
     bool init(unsigned width, unsigned height, unsigned flags);
     int run();
     void close();

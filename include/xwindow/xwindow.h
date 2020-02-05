@@ -31,10 +31,10 @@ public:
         }
     }
 
-    virtual void update_region(const graphics::image& src_img, const agg::rect_i& r);
-    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
+    void update_region_request(graphics::image& img, const agg::rect_i& r) override;
 
 private:
+    void update_region(const graphics::image& src_img, const agg::rect_i& r);
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
     void close();
