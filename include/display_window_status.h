@@ -33,6 +33,7 @@ public:
         return retval;
     }
 protected:
+    // Lock methods should be called only from window's thread.
     void lock() {
         m_mutex.lock();
     }

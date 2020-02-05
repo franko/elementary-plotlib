@@ -245,6 +245,7 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
     lock();
     init(width, height, flags);
     run();
+    unlock();
 }
 
 void window_win32::update_region_request(graphics::image& img, const agg::rect_i& r) {

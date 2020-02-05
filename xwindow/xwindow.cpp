@@ -329,6 +329,7 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
     init(width, height, flags);
     run();
     close();
+    unlock();
 }
 
 void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
