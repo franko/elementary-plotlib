@@ -1,7 +1,5 @@
 #pragma once
 
-#include <mutex>
-
 #include "display_window.h"
 #include "notify_request.h"
 #include "status_notifier.h"
@@ -32,16 +30,7 @@ public:
         }
         return retval;
     }
-protected:
-    // Lock methods should be called only from window's thread.
-    void lock() {
-        m_mutex.lock();
-    }
-    void unlock() {
-        m_mutex.unlock();
-    }
 private:
-    std::mutex m_mutex;
     status_notifier<window_status_e> m_window_status;
 };
 

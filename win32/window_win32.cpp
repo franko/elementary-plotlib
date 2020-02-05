@@ -216,9 +216,7 @@ int window_win32::run() {
     for(;;) {
         bool status;
         if (this->status() == graphics::window_running) {
-            this->unlock();
             status = ::GetMessage(&msg, 0, 0, 0);
-            this->lock();
         } else {
             status = ::GetMessage(&msg, 0, 0, 0);
         }
@@ -242,10 +240,8 @@ void window_win32::update_region(const graphics::image& src_img, const agg::rect
 }
 
 void window_win32::start_blocking(unsigned width, unsigned height, unsigned flags) {
-    lock();
     init(width, height, flags);
     run();
-    unlock();
 }
 
 void window_win32::update_region_request(graphics::image& img, const agg::rect_i& r) {
