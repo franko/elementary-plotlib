@@ -110,7 +110,8 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         HDC paintDC = ::BeginPaint(hWnd, &ps);
         // FIXME: this code is copy & pasted in three different places,
         // all the window's implementations.
-        const graphics::image &surface_image = m_window_surface.get_image();
+        graphics::window_surface::image_guard guard(m_window_surface);
+        const graphics::image &surface_image = m_window_surface.get_image(guard);
         const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
         update_region(surface_image, r);
         ::EndPaint(hWnd, &ps);

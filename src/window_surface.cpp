@@ -32,6 +32,7 @@ void window_surface::split(const char* split_str)
 
 bool window_surface::resize(unsigned ww, unsigned hh)
 {
+    std::lock_guard<std::mutex> lock(m_image_mutex);
     m_save_img.clear();
 
     for (unsigned k = 0; k < plot_number(); k++)
@@ -52,7 +53,7 @@ void window_surface::draw_image_buffer()
         render_plot_by_index(k);
 }
 
-void window_surface::render_by_ref(plot_ref& ref, const agg::rect_i& r)
+void window_surface::render_by_ref_unprotected(plot_ref& ref, const agg::rect_i& r)
 {
     m_canvas->clear_box(r);
     if (ref.plot_ptr)
@@ -64,34 +65,40 @@ void window_surface::render_by_ref(plot_ref& ref, const agg::rect_i& r)
 
 void window_surface::render_plot_by_index(unsigned index)
 {
+    std::lock_guard<std::mutex> lock(m_image_mutex);
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    render_by_ref(ref, area);
+    render_by_ref_unprotected(ref, area);
 }
 
 opt_rect<int>
-window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
+window_surface::render_drawing_queue_unprotected(plot_ref& ref, const agg::rect_i& box)
 {
     const agg::trans_affine m = affine_matrix(box);
     opt_rect<double> r;
-
     plot::drawing_context dc(*ref.plot_ptr);
     ref.plot_ptr->draw_queue(dc, *m_canvas, m, ref.inf, r);
-
     opt_rect<int> ri;
     if (r.is_defined())
     {
         const agg::rect_d& rx = r.rect();
         ri.set(rx.x1, rx.y1, rx.x2, rx.y2);
     }
-
     return ri;
+}
+
+opt_rect<int>
+window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
+{
+    std::lock_guard<std::mutex> lock(m_image_mutex);
+    return render_drawing_queue_unprotected(ref, box);
 }
 
 opt_rect<int>
 window_surface::render_drawing_queue(unsigned index)
 {
+    std::lock_guard<std::mutex> lock(m_image_mutex);
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
 
@@ -99,7 +106,7 @@ window_surface::render_drawing_queue(unsigned index)
         fatal_exception("call to plot_draw_queue for undefined plot");
 
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    return render_drawing_queue(ref, area);
+    return render_drawing_queue_unprotected(ref, area);
 }
 
 int window_surface::attach(plot* p, const char* slot_str)
@@ -112,6 +119,7 @@ int window_surface::attach(plot* p, const char* slot_str)
 
 bool window_surface::save_plot_image(unsigned index)
 {
+    std::lock_guard<std::mutex> lock(m_image_mutex);
     int ww = get_width(), hh = get_height();
     if (unlikely(!m_save_img.ensure_size(ww, hh))) return false;
 
@@ -123,6 +131,7 @@ bool window_surface::save_plot_image(unsigned index)
 
 bool window_surface::restore_plot_image(unsigned index)
 {
+    std::lock_guard<std::mutex> lock(m_image_mutex);
     if (unlikely(!m_plots[index].have_save_img))
         fatal_exception("window_surface::restore_slot_image invalid restore image");
 
@@ -136,11 +145,6 @@ agg::rect_i window_surface::get_plot_area(unsigned index) const
 {
     int canvas_width = get_width(), canvas_height = get_height();
     return m_part.rect(index, canvas_width, canvas_height);
-}
-
-agg::rect_i window_surface::get_plot_area(unsigned index, int width, int height) const
-{
-    return m_part.rect(index, width, height);
 }
 
 void window_surface::slot_refresh(unsigned index)
@@ -157,7 +161,7 @@ void window_surface::slot_refresh(unsigned index)
     agg::rect_i area = get_plot_area(index);
     if (redraw)
     {
-        update_region_request(m_img, area);
+        m_window->update_region_request(m_img, area);
     }
     else
     {
@@ -167,7 +171,7 @@ void window_surface::slot_refresh(unsigned index)
             const agg::rect_i& ri = r.rect();
             agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
             r_pad.clip(area);
-            update_region_request(m_img, r_pad);
+            m_window->update_region_request(m_img, r_pad);
         }
     }
 }
@@ -178,7 +182,7 @@ window_surface::slot_update(unsigned index)
     render_plot_by_index(index);
     render_drawing_queue(index);
     agg::rect_i area = get_plot_area(index);
-    update_region_request(m_img, area);
+    m_window->update_region_request(m_img, area);
 }
 
 void

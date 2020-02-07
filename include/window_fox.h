@@ -22,7 +22,10 @@ public:
     void start(unsigned width, unsigned height, unsigned flags);
 
     void draw(FXEvent *ev) {
-        const graphics::image &surface_image = m_window_surface.get_image();
+        // FIXME: this code is copy & pasted in three different places,
+        // all the window's implementations.
+        graphics::window_surface::image_guard guard(m_window_surface);
+        const graphics::image &surface_image = m_window_surface.get_image(guard);
         const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
         update_region(surface_image, r);
     }
