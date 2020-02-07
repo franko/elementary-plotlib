@@ -47,12 +47,6 @@ bool window_surface::resize(unsigned ww, unsigned hh)
     return false;
 }
 
-void window_surface::draw_image_buffer()
-{
-    for (unsigned k = 0; k < plot_number(); k++)
-        render_plot_by_index(k);
-}
-
 void window_surface::render_by_ref_unprotected(plot_ref& ref, const agg::rect_i& r)
 {
     m_canvas->clear_box(r);
@@ -174,15 +168,6 @@ void window_surface::slot_refresh(unsigned index)
             m_window->update_region_request(m_img, r_pad);
         }
     }
-}
-
-void
-window_surface::slot_update(unsigned index)
-{
-    render_plot_by_index(index);
-    render_drawing_queue(index);
-    agg::rect_i area = get_plot_area(index);
-    m_window->update_region_request(m_img, area);
 }
 
 void

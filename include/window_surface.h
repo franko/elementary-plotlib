@@ -74,14 +74,6 @@ public:
     const image& get_image(image_guard& guard) { return m_img; }
 
 private:
-    bool canvas_size_match(unsigned ww, unsigned hh)
-    {
-        return (m_img.width() == ww && m_img.height() == hh);
-    }
-
-    // redraw all the image buffer for the current plots
-    void draw_image_buffer();
-
     void render_plot_by_index(unsigned index);
     opt_rect<int> render_drawing_queue(unsigned index);
 
@@ -92,7 +84,6 @@ private:
 
     bool save_plot_image(unsigned index);
     bool restore_plot_image(unsigned index);
-    void slot_update(unsigned index);
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
 
@@ -102,11 +93,6 @@ private:
 
     int get_width()  const { return m_img.width(); }
     int get_height() const { return m_img.height(); }
-
-    bool plot_is_defined(unsigned index) const
-    {
-        return (m_plots[index].plot_ptr != NULL);
-    }
 
     image m_img;
     image m_save_img;
