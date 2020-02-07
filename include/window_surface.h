@@ -65,18 +65,19 @@ public:
     window_surface(const char* split);
     ~window_surface();
 
+    void attach_window(display_window* win) { m_window = win; }
     int attach(plot* p, const char* slot_str);
     void split(const char* split_str);
+    bool resize(unsigned ww, unsigned hh);
+    void render();
+    void slot_refresh(unsigned index);
+    const image& get_image(image_guard& guard) { return m_img; }
 
-    void attach_window(display_window* win) { m_window = win; }
-
+private:
     bool canvas_size_match(unsigned ww, unsigned hh)
     {
         return (m_img.width() == ww && m_img.height() == hh);
     }
-
-    bool resize(unsigned ww, unsigned hh);
-    void render();
 
     // redraw all the image buffer for the current plots
     void draw_image_buffer();
@@ -91,15 +92,10 @@ public:
 
     bool save_plot_image(unsigned index);
     bool restore_plot_image(unsigned index);
-
-    const image& get_image(image_guard& guard) { return m_img; }
-
-    void slot_refresh(unsigned index);
     void slot_update(unsigned index);
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
 
-private:
     void render_by_ref_unprotected(plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue_unprotected(plot_ref& ref, const agg::rect_i& r);
