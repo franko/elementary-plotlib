@@ -34,7 +34,7 @@ struct update_region_notify {
 
     update_region_notify(): completed(false) { }
 
-    void prepare() {
+    void clear() {
         completed = false;
     }
 

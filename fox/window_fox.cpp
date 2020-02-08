@@ -67,7 +67,7 @@ void window_fox::update_region_request(graphics::image& img, const agg::rect_i& 
         // We are on another thread. Interrupt the Window's thread to request
         // the update_region operation.
         debug_log(1, "update_region request from secondary thread");
-        m_update_notify.prepare();
+        m_update_notify.clear();
         m_update_region.prepare(img, r);
         m_update_signal->signal();
         m_update_notify.wait();

@@ -334,7 +334,7 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
 }
 
 void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
-    m_update_notify.prepare();
+    m_update_notify.clear();
     m_update_region.prepare(img, r);
     m_update_notify.completed = false;
     if (send_update_region_event()) {
