@@ -334,19 +334,22 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
 }
 
 void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
+    lock();
     m_update_notify.clear();
     m_update_region.prepare(img, r);
     m_update_notify.completed = false;
     if (send_update_region_event()) {
         // Wait for the notification but only if the message was actually sent.
+        unlock();
         m_update_notify.wait();
+    } else {
+        unlock();
     }
     m_update_region.clear();
 }
 
 // Returns true is the message was actually sent.
 bool xwindow::send_update_region_event() {
-    lock();
     if (status() == graphics::window_running) {
         XClientMessageEvent event;
         event.type = ClientMessage;
@@ -355,7 +358,6 @@ bool xwindow::send_update_region_event() {
         event.message_type = m_update_region_atom;
         event.format = 8;
         Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
-        unlock();
         if (status == BadValue) {
             debug_log(1, "custom event, got BadValue");
         } else if (status == BadWindow) {
@@ -365,6 +367,5 @@ bool xwindow::send_update_region_event() {
         }
         return true;
     }
-    unlock();
     return false;
 }
