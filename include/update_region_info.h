@@ -25,6 +25,10 @@ struct update_region_info {
     void clear() {
         img = nullptr;
     }
+
+    bool defined() const {
+        return (img != nullptr);
+    }
 };
 
 struct update_region_notify {
@@ -32,7 +36,7 @@ struct update_region_notify {
     std::condition_variable condition;
     bool completed;
 
-    update_region_notify(): completed(false) { }
+    update_region_notify(): completed(true) { }
 
     void clear() {
         completed = false;

@@ -45,6 +45,7 @@ private:
 
     str m_caption;
     update_region_info m_update_region;
+    update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
 
     static void get_module_instance();
