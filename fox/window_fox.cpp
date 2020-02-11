@@ -57,21 +57,23 @@ void window_fox::update_region(const graphics::image& src_img, const agg::rect_i
     dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
 }
 
-void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
+update_status window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
     if (std::this_thread::get_id() == m_window_thread_id) {
         // We are running in the thread of the Window's event loop. Just do the
         // drawing operation.
         debug_log(1, "update_region request from window's thread");
         update_region(img, r);
+        return update_status::completed;
     } else {
         // We are on another thread. Interrupt the Window's thread to request
         // the update_region operation.
         debug_log(1, "update_region request from secondary thread");
-        m_update_notify.clear();
+        m_update_notify.start();
         m_update_region.prepare(img, r);
         m_update_signal->signal();
         m_update_notify.wait();
         m_update_region.clear();
+        return m_update_notify.status;
     }
 }
 

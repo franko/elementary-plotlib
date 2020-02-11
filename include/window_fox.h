@@ -5,6 +5,7 @@
 
 #include "display_window_status.h"
 #include "update_region_info.h"
+#include "update_region_notify.h"
 
 namespace FX {
 class FXElemBaseWindow;
@@ -17,7 +18,7 @@ public:
     window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
-    void update_region_request(graphics::image& img, const agg::rect_i& r) override;
+    update_status update_region_request(graphics::image& img, const agg::rect_i& r) override;
 
     void start(unsigned width, unsigned height, unsigned flags);
 
@@ -42,7 +43,7 @@ public:
 
     void call_update_region() {
         update_region(*m_update_region.img, m_update_region.r);
-        m_update_notify.notify();
+        m_update_notify.notify(update_status::completed);
     }
 
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);

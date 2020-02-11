@@ -151,21 +151,26 @@ void window_surface::slot_refresh(unsigned index)
         render_plot_by_index(index);
     }
 
-    opt_rect<int> r = render_drawing_queue(index);
-    agg::rect_i area = get_plot_area(index);
-    if (redraw)
-    {
+    if (redraw) {
+        render_drawing_queue(index);
+        agg::rect_i area = get_plot_area(index);
+        // Ignore the return status because if we have a update_status::retry
+        // it means the plot was re-drawn by the window thread.
         m_window->update_region_request(m_img, area);
-    }
-    else
-    {
-        if (r.is_defined())
-        {
-            const int pad = 4;
-            const agg::rect_i& ri = r.rect();
-            agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
-            r_pad.clip(area);
-            m_window->update_region_request(m_img, r_pad);
+    } else {
+        for (int repeat = 0; repeat < 100; repeat++) {
+            opt_rect<int> r = render_drawing_queue(index);
+            agg::rect_i area = get_plot_area(index);
+            if (r.is_defined()) {
+                const int pad = 4;
+                const agg::rect_i& ri = r.rect();
+                agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
+                r_pad.clip(area);
+                update_status request_status = m_window->update_region_request(m_img, r_pad);
+                if (request_status == update_status::completed) {
+                    break;
+                }
+            }
         }
     }
 }

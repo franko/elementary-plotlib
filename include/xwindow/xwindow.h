@@ -8,6 +8,7 @@
 #include "start_window.h"
 #include "strpp.h"
 #include "update_region_info.h"
+#include "update_region_notify.h"
 #include "window_surface.h"
 #include "xwindow/x_connection.h"
 #include "xwindow/x_image.h"
@@ -31,7 +32,7 @@ public:
         }
     }
 
-    void update_region_request(graphics::image& img, const agg::rect_i& r) override;
+    update_status update_region_request(graphics::image& img, const agg::rect_i& r) override;
 
 private:
     void update_region(const graphics::image& src_img, const agg::rect_i& r);

@@ -1,9 +1,5 @@
 #pragma once
 
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-
 #include <agg_basics.h>
 
 #include "window_surface.h"
@@ -28,31 +24,5 @@ struct update_region_info {
 
     bool defined() const {
         return (img != nullptr);
-    }
-};
-
-struct update_region_notify {
-    std::mutex mutex;
-    std::condition_variable condition;
-    bool completed;
-
-    update_region_notify(): completed(true) { }
-
-    void clear() {
-        completed = false;
-    }
-
-    void notify() {
-        mutex.lock();
-        completed = true;
-        mutex.unlock();
-        condition.notify_one();
-    }
-
-    void wait() {
-        std::unique_lock<std::mutex> lk(mutex);
-        if (!completed) {
-            condition.wait(lk, [this] { return this->completed; });
-        }
     }
 };

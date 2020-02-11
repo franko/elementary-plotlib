@@ -98,9 +98,9 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         debug_log(1, "treating WM_SIZE event width: %d height: %d", width, height);
         m_window_surface.resize(width, height);
         m_window_surface.render();
-        if (!m_update_notify.completed) {
+        if (m_update_notify.status == update_status::waiting) {
             m_update_region.clear();
-            m_update_notify.notify();
+            m_update_notify.notify(update_status::retry);
         }
         break;
     }
@@ -110,18 +110,20 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     case WM_PAINT: {
         debug_log(1, "treating WM_PAINT event");
-        PAINTSTRUCT ps;
-        HDC paintDC = ::BeginPaint(hWnd, &ps);
-        // FIXME: this code is copy & pasted in three different places,
-        // all the window's implementations.
-        graphics::window_surface::image_guard guard(m_window_surface);
-        const graphics::image &surface_image = m_window_surface.get_image(guard);
-        const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
-        update_region(surface_image, r);
-        ::EndPaint(hWnd, &ps);
-        if (!m_update_notify.completed) {
+        {
+            PAINTSTRUCT ps;
+            HDC paintDC = ::BeginPaint(hWnd, &ps);
+            // FIXME: this code is copy & pasted in three different places,
+            // all the window's implementations.
+            graphics::window_surface::image_guard guard(m_window_surface);
+            const graphics::image &surface_image = m_window_surface.get_image(guard);
+            const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
+            update_region(surface_image, r);
+            ::EndPaint(hWnd, &ps);
+        }
+        if (m_update_notify.status == update_status::waiting) {
             m_update_region.clear();
-            m_update_notify.notify();
+            m_update_notify.notify(update_status::retry);
         }
         set_status(graphics::window_running);
         break;
@@ -135,11 +137,13 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_ELEM_UPD_REGION:
-        if (m_update_region.defined()) {
-            update_region(*m_update_region.img, m_update_region.r);
+        if (m_update_notify.status == update_status::waiting) {
+            if (m_update_region.defined()) {
+                update_region(*m_update_region.img, m_update_region.r);
+            }
+            m_update_region.clear();
+            m_update_notify.notify(update_status::completed);
         }
-        m_update_notify.clear();
-        m_update_notify.notify();
         break;
 
     default:
@@ -259,11 +263,11 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
     unlock();
 }
 
-void window_win32::update_region_request(graphics::image& img, const agg::rect_i& r) {
+update_status window_win32::update_region_request(graphics::image& img, const agg::rect_i& r) {
     // The code below is essentially the same than in xwindow.cpp.
     // Unifying the code maybe better.
     lock();
-    m_update_notify.clear();
+    m_update_notify.start();
     m_update_region.prepare(img, r);
     if (::SendNotifyMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0)) {
         unlock();
@@ -272,4 +276,5 @@ void window_win32::update_region_request(graphics::image& img, const agg::rect_i
         unlock();
     }
     m_update_region.clear();
+    return m_update_notify.status;
 }

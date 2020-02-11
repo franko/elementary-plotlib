@@ -7,6 +7,7 @@
 #include "display_window_status.h"
 #include "strpp.h"
 #include "update_region_info.h"
+#include "update_region_notify.h"
 #include "start_window.h"
 #include "win32/agg_win32_bmp.h"
 #include "window_surface.h"
@@ -25,7 +26,7 @@ public:
         }
     }
 
-    void update_region_request(graphics::image& img, const agg::rect_i& r) override;
+    update_status update_region_request(graphics::image& img, const agg::rect_i& r) override;
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

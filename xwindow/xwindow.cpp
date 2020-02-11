@@ -270,10 +270,9 @@ void xwindow::run()
             {
                 resize(width, height);
                 m_window_surface.render();
-                // If there is a pending update image leave as treated.
-                if (!m_update_notify.completed) {
+                if (m_update_notify.status == update_status::waiting) {
                     m_update_region.clear();
-                    m_update_notify.notify();
+                    m_update_notify.notify(update_status::retry);
                 }
             }
         }
@@ -284,15 +283,17 @@ void xwindow::run()
                other expose event will follow */
             if (ev.xexpose.count == 0)
             {
-                // FIXME: this code is copy & pasted in three different places,
-                // all the window's implementations.
-                graphics::window_surface::image_guard guard(m_window_surface);
-                const graphics::image &surface_image = m_window_surface.get_image(guard);
-                const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
-                update_region(surface_image, r);
-                if (!m_update_notify.completed) {
+                {
+                    // FIXME: this code is copy & pasted in three different places,
+                    // all the window's implementations.
+                    graphics::window_surface::image_guard guard(m_window_surface);
+                    const graphics::image &surface_image = m_window_surface.get_image(guard);
+                    const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
+                    update_region(surface_image, r);
+                }
+                if (m_update_notify.status == update_status::waiting) {
                     m_update_region.clear();
-                    m_update_notify.notify();
+                    m_update_notify.notify(update_status::retry);
                 }
                 break;
             }
@@ -301,11 +302,13 @@ void xwindow::run()
             if (ev.xclient.message_type == m_wm_protocols_atom && ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom)) {
                 quit = true;
             } else if (ev.xclient.message_type == m_update_region_atom) {
-                if (m_update_region.defined()) {
-                    update_region(*m_update_region.img, m_update_region.r);
+                if (m_update_notify.status == update_status::waiting) {
+                    if (m_update_region.defined()) {
+                        update_region(*m_update_region.img, m_update_region.r);
+                    }
+                    m_update_region.clear();
+                    m_update_notify.notify(update_status::completed);
                 }
-                m_update_region.clear();
-                m_update_notify.notify();
             }
             break;
         }
@@ -345,9 +348,9 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
     unlock();
 }
 
-void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
+update_status xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
     lock();
-    m_update_notify.clear();
+    m_update_notify.start();
     m_update_region.prepare(img, r);
     if (send_update_region_event()) {
         // Wait for the notification but only if the message was actually sent.
@@ -357,6 +360,7 @@ void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) 
         unlock();
     }
     m_update_region.clear();
+    return m_update_notify.status;
 }
 
 // Returns true is the message was actually sent.
