@@ -41,6 +41,7 @@ protected:
         m_mutex.unlock();
     }
 private:
+    // The mutex before should disappear.
     std::mutex m_mutex;
     status_notifier<window_status_e> m_window_status;
 };

@@ -13,11 +13,13 @@ struct update_region_notify {
     std::mutex mutex;
     std::condition_variable condition;
     update_status status;
+    int plot_index;
 
     update_region_notify(): status(update_status::completed) { }
 
-    void start() {
+    void start(int plot_index_) {
         status = update_status::waiting;
+        plot_index = plot_index_;
     }
 
     void notify(update_status new_status) {

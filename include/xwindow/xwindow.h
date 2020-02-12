@@ -7,7 +7,6 @@
 #include "platform/agg_platform_support.h"
 #include "start_window.h"
 #include "strpp.h"
-#include "update_region_info.h"
 #include "update_region_notify.h"
 #include "window_surface.h"
 #include "xwindow/x_connection.h"
@@ -32,10 +31,10 @@ public:
         }
     }
 
-    update_status update_region_request(graphics::image& img, const agg::rect_i& r) override;
+    update_status update_region_request(int index) override;
 
 private:
-    void update_region(const graphics::image& src_img, const agg::rect_i& r);
+    void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
     void close();
@@ -62,7 +61,6 @@ private:
     x_connection         m_connection;
     x_image*             m_draw_img;
     str                  m_caption;
-    update_region_info   m_update_region;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
 

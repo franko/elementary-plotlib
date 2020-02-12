@@ -9,7 +9,12 @@ namespace graphics {
 typedef image_gen<pixel_size, flip_y> image;
 
 struct display_window {
-    virtual update_status update_region_request(image& img, const agg::rect_i& r) = 0;
+    virtual update_status update_region_request(int index) = 0;
+
+    // should be protected so that it can be called only from the
+    // window's thread.
+    virtual void update_region(const image& img, const agg::rect_i& r) = 0;
+
     virtual ~display_window() { };
 };
 

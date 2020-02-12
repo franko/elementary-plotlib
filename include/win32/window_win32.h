@@ -6,7 +6,6 @@
 #include "debug_priv.h"
 #include "display_window_status.h"
 #include "strpp.h"
-#include "update_region_info.h"
 #include "update_region_notify.h"
 #include "start_window.h"
 #include "win32/agg_win32_bmp.h"
@@ -26,14 +25,14 @@ public:
         }
     }
 
-    update_status update_region_request(graphics::image& img, const agg::rect_i& r) override;
+    void update_region(const graphics::image& img, const agg::rect_i& r) override;
+    update_status update_region_request(int index) override;
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
     enum { WM_ELEM_UPD_REGION = WM_USER };
 
-    void update_region(const graphics::image& src_img, const agg::rect_i& r);
     bool init(unsigned width, unsigned height, unsigned flags);
     int run();
     void close();
@@ -45,7 +44,6 @@ private:
     HWND          m_hwnd;
 
     str m_caption;
-    update_region_info m_update_region;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
 

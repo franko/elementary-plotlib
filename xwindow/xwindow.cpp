@@ -258,6 +258,7 @@ void xwindow::run()
 
         unlock();
         XNextEvent(xc->display, &ev);
+        // Consider locking only the update_status parts.
         lock();
 
         switch(ev.type)
@@ -271,7 +272,6 @@ void xwindow::run()
                 resize(width, height);
                 m_window_surface.render();
                 if (m_update_notify.status == update_status::waiting) {
-                    m_update_region.clear();
                     m_update_notify.notify(update_status::retry);
                 }
             }
@@ -291,10 +291,6 @@ void xwindow::run()
                     const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
                     update_region(surface_image, r);
                 }
-                if (m_update_notify.status == update_status::waiting) {
-                    m_update_region.clear();
-                    m_update_notify.notify(update_status::retry);
-                }
                 break;
             }
 
@@ -303,10 +299,7 @@ void xwindow::run()
                 quit = true;
             } else if (ev.xclient.message_type == m_update_region_atom) {
                 if (m_update_notify.status == update_status::waiting) {
-                    if (m_update_region.defined()) {
-                        update_region(*m_update_region.img, m_update_region.r);
-                    }
-                    m_update_region.clear();
+                    m_window_surface.slot_refresh(m_update_notify.plot_index);
                     m_update_notify.notify(update_status::completed);
                 }
             }
@@ -348,19 +341,18 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
     unlock();
 }
 
-update_status xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
+update_status xwindow::update_region_request(int index) {
     lock();
-    m_update_notify.start();
-    m_update_region.prepare(img, r);
+    m_update_notify.start(index);
     if (send_update_region_event()) {
         // Wait for the notification but only if the message was actually sent.
         unlock();
         m_update_notify.wait();
+        return m_update_notify.status;
     } else {
         unlock();
     }
-    m_update_region.clear();
-    return m_update_notify.status;
+    return update_status::retry;
 }
 
 // Returns true is the message was actually sent.

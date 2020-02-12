@@ -50,6 +50,7 @@ struct plot_ref {
 */
 class window_surface {
 public:
+    // We should no longer need the image_guard stuff.
     class image_guard {
     public:
         image_guard(window_surface& ws): m_window_surface(ws) {
@@ -69,13 +70,20 @@ public:
     int attach(plot* p, const char* slot_str);
     void split(const char* split_str);
     bool resize(unsigned ww, unsigned hh);
-    void render();
-    void slot_refresh(unsigned index);
+    void slot_refresh_request(unsigned index);
     const image& get_image(image_guard& guard) { return m_img; }
 
+    /* The following method can be called from the window's thread
+       and will lock the plot. */
+    void render();
+    void slot_refresh(unsigned index);
+
 private:
-    void render_plot_by_index(unsigned index);
-    opt_rect<int> render_drawing_queue(unsigned index);
+    void render_plot_by_index(plot::drawing_context& dc, unsigned index);
+    opt_rect<int> render_drawing_queue(plot::drawing_context& dc, unsigned index);
+    void render_by_ref_unprotected(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
+    opt_rect<int> render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
+    opt_rect<int> render_drawing_queue_unprotected(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
 
     plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
@@ -86,10 +94,6 @@ private:
     bool restore_plot_image(unsigned index);
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
-
-    void render_by_ref_unprotected(plot_ref& ref, const agg::rect_i& r);
-    opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
-    opt_rect<int> render_drawing_queue_unprotected(plot_ref& ref, const agg::rect_i& r);
 
     int get_width()  const { return m_img.width(); }
     int get_height() const { return m_img.height(); }

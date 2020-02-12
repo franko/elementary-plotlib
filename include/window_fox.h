@@ -4,8 +4,8 @@
 #include <thread>
 
 #include "display_window_status.h"
-#include "update_region_info.h"
 #include "update_region_notify.h"
+#include "window_surface.h"
 
 namespace FX {
 class FXElemBaseWindow;
@@ -18,7 +18,8 @@ public:
     window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
-    update_status update_region_request(graphics::image& img, const agg::rect_i& r) override;
+    update_status update_region_request(int index) override;
+    void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
 
     void start(unsigned width, unsigned height, unsigned flags);
 
@@ -42,19 +43,17 @@ public:
     }
 
     void call_update_region() {
-        update_region(*m_update_region.img, m_update_region.r);
+        m_window_surface.slot_refresh(m_update_notify.plot_index);
         m_update_notify.notify(update_status::completed);
     }
 
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);
 
 private:
-    void update_region(const graphics::image& src_img, const agg::rect_i& r);
 
     FXDrawable *m_drawable;
     FXGUISignal *m_update_signal;
     FXGUISignal *m_start_signal; // Just a reference, not owned.
-    update_region_info   m_update_region;
     update_region_notify m_update_notify;
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.
     graphics::window_surface& m_window_surface;
