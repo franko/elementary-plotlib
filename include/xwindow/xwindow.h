@@ -59,10 +59,9 @@ private:
     Atom                 m_wm_protocols_atom;
     Atom                 m_update_region_atom;
     x_connection         m_connection;
+    x_connection         m_request_connection;
     x_image*             m_draw_img;
     str                  m_caption;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
-
-    static bool need_initialize;
 };

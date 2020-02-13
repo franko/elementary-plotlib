@@ -6,8 +6,6 @@
 #include "debug_priv.h"
 #include "fatal.h"
 
-bool xwindow::need_initialize = true;
-
 // m_sys_format, m_byte_order, m_sys_bpp will be set based on XWindow display on "init" method.
 xwindow::xwindow(graphics::window_surface& window_surface):
     m_sys_format(agg::pix_format_undefined),
@@ -33,6 +31,7 @@ xwindow::~xwindow()
 void xwindow::close_connections()
 {
     m_connection.close();
+    m_request_connection.close();
 }
 
 void xwindow::free_x_resources()
@@ -51,14 +50,11 @@ void xwindow::caption(const str& text)
 
 bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 {
-    if (need_initialize) {
-        XInitThreads();
-        need_initialize = false;
-    }
-
     m_window_flags = flags;
 
     if (unlikely(!m_connection.init()))
+        return false;
+    if (unlikely(!m_request_connection.init()))
         return false;
 
     set_status(graphics::window_starting);
@@ -349,17 +345,17 @@ bool xwindow::send_update_region_event() {
     if (status() == graphics::window_running) {
         XClientMessageEvent event;
         event.type = ClientMessage;
-        event.display = m_connection.display;
+        event.display = m_request_connection.display;
         event.send_event = True;
         event.message_type = m_update_region_atom;
         event.format = 8;
-        Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
+        Status status = XSendEvent(m_request_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
         if (status == BadValue) {
             debug_log(1, "custom event, got BadValue");
         } else if (status == BadWindow) {
             debug_log(1, "custom event, got BadWindow");
         } else {
-            XFlush(m_connection.display);
+            XFlush(m_request_connection.display);
         }
         return true;
     }
