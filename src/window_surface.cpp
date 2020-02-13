@@ -147,6 +147,11 @@ void window_surface::slot_refresh_request(unsigned index) {
     }
 }
 
+void window_surface::update_window_area() {
+    const agg::rect_i r(0, 0, get_width(), get_height());
+    m_window->update_region(m_img, r);
+}
+
 // Add an argument to indicate if only a render_drawing_queue
 // is needed.
 void window_surface::slot_refresh(unsigned index)

@@ -281,16 +281,8 @@ void xwindow::run()
         case Expose:
             /* if count is > 0 then ignore the event because
                other expose event will follow */
-            if (ev.xexpose.count == 0)
-            {
-                {
-                    // FIXME: this code is copy & pasted in three different places,
-                    // all the window's implementations.
-                    graphics::window_surface::image_guard guard(m_window_surface);
-                    const graphics::image &surface_image = m_window_surface.get_image(guard);
-                    const agg::rect_i r(0, 0, surface_image.width(), surface_image.height());
-                    update_region(surface_image, r);
-                }
+            if (ev.xexpose.count == 0) {
+                m_window_surface.update_window_area();
                 break;
             }
 

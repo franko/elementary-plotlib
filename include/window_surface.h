@@ -37,12 +37,9 @@ struct plot_ref {
     To protect the concurrent access to the image and canvas member variables
     a special canvas is used.
 
-    The window_surface::image_guard is used to protect calls to the method
-    get_image().
-
     From the window's implementation the following methods are called:
 
-    resize, render, get_image.
+    resize, render, update_window_area.
 
     From the plot_agent the following methods are called:
 
@@ -50,19 +47,6 @@ struct plot_ref {
 */
 class window_surface {
 public:
-    // We should no longer need the image_guard stuff.
-    class image_guard {
-    public:
-        image_guard(window_surface& ws): m_window_surface(ws) {
-            m_window_surface.m_image_mutex.lock();
-        }
-        ~image_guard() {
-            m_window_surface.m_image_mutex.unlock();
-        }
-    private:
-        window_surface& m_window_surface;
-    };
-
     window_surface(const char* split);
     ~window_surface();
 
@@ -71,12 +55,12 @@ public:
     void split(const char* split_str);
     bool resize(unsigned ww, unsigned hh);
     void slot_refresh_request(unsigned index);
-    const image& get_image(image_guard& guard) { return m_img; }
 
-    /* The following method can be called from the window's thread
+    /* The following method can be called only from the window's thread
        and will lock the plot. */
     void render();
     void slot_refresh(unsigned index);
+    void update_window_area();
 
 private:
     void render_plot_by_index(plot::drawing_context& dc, unsigned index);
