@@ -24,4 +24,11 @@ void plot_agent::update_windows() {
 void plot_agent::clear() {
     linked_windows_.clear();
 }
+
+void plot_agent::clear_pending_flags() {
+    for (unsigned i = 0; i < linked_windows_.size(); i++) {
+        window_index_pair& pair = linked_windows_[i];
+        pair.surface->clear_pending_flags(pair.slot_index);
+    }
+}
 }

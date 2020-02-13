@@ -132,6 +132,7 @@ void window_surface::slot_refresh_request(unsigned index) {
     if (!request_success) {
         debug_log(1, "window_surface::update_region_request fail");
     }
+    m_plots[index].pending_queue = true;
 }
 
 void window_surface::update_window_area() {
@@ -173,6 +174,9 @@ window_surface::render()
         if (current_plot) {
             plot::drawing_context dc(*current_plot);
             render_plot_by_index(dc, k);
+            if (m_plots[k].pending_queue) {
+                render_drawing_queue(dc, k);
+            }
         }
     }
 }
@@ -199,6 +203,10 @@ window_surface::restore_slot_image(unsigned index)
             save_plot_image(index);
         }
     }
+}
+
+void window_surface::clear_pending_flags(int plot_index) {
+    m_plots[plot_index].pending_queue = false;
 }
 
 } /* namespace graphics */

@@ -14,11 +14,14 @@
 namespace graphics {
 
 struct plot_ref {
-    plot_ref(): plot_ptr(NULL), have_save_img(false) {}
+    plot_ref(): plot_ptr(NULL), have_save_img(false), pending_queue(false) {}
 
     plot* plot_ptr;
     plot_render_info inf;
     bool have_save_img;
+    // If true we are between a update_region_request() and a commit_pending_draw():
+    // render the drawing_queue() on render().
+    bool pending_queue;
 };
 
 /* The class window_surface is part of a window. It is declared by window_gen
@@ -38,11 +41,11 @@ struct plot_ref {
 
     From the window's implementation the following methods are called:
 
-    resize, render, update_window_area.
+    resize, render, slot_refresh, update_window_area.
 
     From the plot_agent the following methods are called:
 
-    slot_refresh.
+    slot_refresh_request.
 */
 class window_surface {
 public:
@@ -54,6 +57,7 @@ public:
     void split(const char* split_str);
     bool resize(unsigned ww, unsigned hh);
     void slot_refresh_request(unsigned index);
+    void clear_pending_flags(int plot_index);
 
     /* The following method can be called only from the window's thread
        and will lock the plot. */
