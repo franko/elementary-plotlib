@@ -32,7 +32,6 @@ void window_surface::split(const char* split_str)
 
 bool window_surface::resize(unsigned ww, unsigned hh)
 {
-    std::lock_guard<std::mutex> lock(m_image_mutex);
     m_save_img.clear();
 
     for (unsigned k = 0; k < plot_number(); k++)
@@ -47,7 +46,7 @@ bool window_surface::resize(unsigned ww, unsigned hh)
     return false;
 }
 
-void window_surface::render_by_ref_unprotected(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r)
+void window_surface::render_by_ref(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r)
 {
     m_canvas->clear_box(r);
     if (ref.plot_ptr) {
@@ -57,15 +56,14 @@ void window_surface::render_by_ref_unprotected(plot::drawing_context& dc, plot_r
 
 void window_surface::render_plot_by_index(plot::drawing_context& dc, unsigned index)
 {
-    std::lock_guard<std::mutex> lock(m_image_mutex);
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    render_by_ref_unprotected(dc, ref, area);
+    render_by_ref(dc, ref, area);
 }
 
 opt_rect<int>
-window_surface::render_drawing_queue_unprotected(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& box)
+window_surface::render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& box)
 {
     const agg::trans_affine m = affine_matrix(box);
     opt_rect<double> r;
@@ -80,16 +78,8 @@ window_surface::render_drawing_queue_unprotected(plot::drawing_context& dc, plot
 }
 
 opt_rect<int>
-window_surface::render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& box)
-{
-    std::lock_guard<std::mutex> lock(m_image_mutex);
-    return render_drawing_queue_unprotected(dc, ref, box);
-}
-
-opt_rect<int>
 window_surface::render_drawing_queue(plot::drawing_context& dc, unsigned index)
 {
-    std::lock_guard<std::mutex> lock(m_image_mutex);
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
 
@@ -97,7 +87,7 @@ window_surface::render_drawing_queue(plot::drawing_context& dc, unsigned index)
         fatal_exception("call to plot_draw_queue for undefined plot");
 
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    return render_drawing_queue_unprotected(dc, ref, area);
+    return render_drawing_queue(dc, ref, area);
 }
 
 int window_surface::attach(plot* p, const char* slot_str)
@@ -110,7 +100,6 @@ int window_surface::attach(plot* p, const char* slot_str)
 
 bool window_surface::save_plot_image(unsigned index)
 {
-    std::lock_guard<std::mutex> lock(m_image_mutex);
     int ww = get_width(), hh = get_height();
     if (unlikely(!m_save_img.ensure_size(ww, hh))) return false;
 
@@ -122,7 +111,6 @@ bool window_surface::save_plot_image(unsigned index)
 
 bool window_surface::restore_plot_image(unsigned index)
 {
-    std::lock_guard<std::mutex> lock(m_image_mutex);
     if (unlikely(!m_plots[index].have_save_img))
         fatal_exception("window_surface::restore_slot_image invalid restore image");
 

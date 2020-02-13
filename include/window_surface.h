@@ -3,7 +3,6 @@
 #include <agg_basics.h>
 #include <agg_rendering_buffer.h>
 #include <agg_trans_affine.h>
-#include <mutex>
 
 #include "display_window.h"
 #include "image_buf.h"
@@ -63,11 +62,10 @@ public:
     void update_window_area();
 
 private:
+    void render_by_ref(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
     void render_plot_by_index(plot::drawing_context& dc, unsigned index);
     opt_rect<int> render_drawing_queue(plot::drawing_context& dc, unsigned index);
-    void render_by_ref_unprotected(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
     opt_rect<int> render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
-    opt_rect<int> render_drawing_queue_unprotected(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
 
     plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
@@ -88,7 +86,6 @@ private:
     agg::pod_bvector<plot_ref> m_plots;
     display_window* m_window;
     canvas* m_canvas;
-    std::mutex m_image_mutex;
 };
 
 } /* namespace graphics */
