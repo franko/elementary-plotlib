@@ -3,6 +3,7 @@
 
 #include "util/agg_color_conv_rgb8.h"
 
+#include "debug_priv.h"
 #include "fatal.h"
 #include "colors.h"
 
@@ -127,11 +128,9 @@ agg::rect_i window_surface::get_plot_area(unsigned index) const
 }
 
 void window_surface::slot_refresh_request(unsigned index) {
-    for (int repeat = 0; repeat < 100; repeat++) {
-        update_status request_status = m_window->update_region_request(index);
-        if (request_status == update_status::completed) {
-            return;
-        }
+    bool request_success = m_window->update_region_request(index);
+    if (!request_success) {
+        debug_log(1, "window_surface::update_region_request fail");
     }
 }
 
@@ -152,8 +151,6 @@ void window_surface::slot_refresh(unsigned index)
         render_plot_by_index(dc, index);
         render_drawing_queue(dc, index);
         agg::rect_i area = get_plot_area(index);
-        // Ignore the return status because if we have a update_status::retry
-        // it means the plot was re-drawn by the window thread.
         m_window->update_region(m_img, area);
     } else {
         opt_rect<int> r = render_drawing_queue(dc, index);

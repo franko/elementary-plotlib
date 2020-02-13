@@ -18,7 +18,7 @@ public:
     window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
-    update_status update_region_request(int index) override;
+    bool update_region_request(int index) override;
     void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
 
     void start(unsigned width, unsigned height, unsigned flags);
@@ -39,7 +39,7 @@ public:
 
     void call_update_region() {
         m_window_surface.slot_refresh(m_update_notify.plot_index);
-        m_update_notify.notify(update_status::completed);
+        m_update_notify.notify();
     }
 
     void bind_drawable(FXDrawable *drawable, FXSelector update_selector);

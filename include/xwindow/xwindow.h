@@ -31,7 +31,7 @@ public:
         }
     }
 
-    update_status update_region_request(int index) override;
+    bool update_region_request(int index) override;
 
 private:
     void update_region(const graphics::image& src_img, const agg::rect_i& r) override;

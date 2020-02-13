@@ -258,7 +258,7 @@ void xwindow::run()
 
         unlock();
         XNextEvent(xc->display, &ev);
-        // Consider locking only the update_status parts.
+        // Consider locking only the update_region_notify parts.
         lock();
 
         switch(ev.type)
@@ -271,9 +271,6 @@ void xwindow::run()
             {
                 resize(width, height);
                 m_window_surface.render();
-                if (m_update_notify.status == update_status::waiting) {
-                    m_update_notify.notify(update_status::retry);
-                }
             }
         }
         break;
@@ -290,9 +287,9 @@ void xwindow::run()
             if (ev.xclient.message_type == m_wm_protocols_atom && ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom)) {
                 quit = true;
             } else if (ev.xclient.message_type == m_update_region_atom) {
-                if (m_update_notify.status == update_status::waiting) {
+                if (!m_update_notify.completed) {
                     m_window_surface.slot_refresh(m_update_notify.plot_index);
-                    m_update_notify.notify(update_status::completed);
+                    m_update_notify.notify();
                 }
             }
             break;
@@ -333,18 +330,18 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
     unlock();
 }
 
-update_status xwindow::update_region_request(int index) {
+bool xwindow::update_region_request(int index) {
     lock();
     m_update_notify.start(index);
     if (send_update_region_event()) {
         // Wait for the notification but only if the message was actually sent.
         unlock();
         m_update_notify.wait();
-        return m_update_notify.status;
+        return true;
     } else {
         unlock();
     }
-    return update_status::retry;
+    return false;
 }
 
 // Returns true is the message was actually sent.

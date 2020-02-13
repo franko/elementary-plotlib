@@ -98,9 +98,6 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         debug_log(1, "treating WM_SIZE event width: %d height: %d", width, height);
         m_window_surface.resize(width, height);
         m_window_surface.render();
-        if (m_update_notify.status == update_status::waiting) {
-            m_update_notify.notify(update_status::retry);
-        }
         break;
     }
 
@@ -126,9 +123,9 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_ELEM_UPD_REGION:
-        if (m_update_notify.status == update_status::waiting) {
+        if (!m_update_notify.completed) {
             m_window_surface.slot_refresh(m_update_notify.plot_index);
-            m_update_notify.notify(update_status::completed);
+            m_update_notify.notify();
         }
         break;
 
@@ -249,7 +246,7 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
     unlock();
 }
 
-update_status window_win32::update_region_request(int index) {
+bool window_win32::update_region_request(int index) {
     // The code below is essentially the same than in xwindow.cpp.
     // Unifying the code maybe better.
     lock();
@@ -257,9 +254,9 @@ update_status window_win32::update_region_request(int index) {
     if (::SendNotifyMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0)) {
         unlock();
         m_update_notify.wait();
-        return m_update_notify.status;
+        return true;
     } else {
         unlock();
     }
-    return update_status::retry;
+    return false;
 }

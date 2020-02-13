@@ -26,7 +26,7 @@ public:
     }
 
     void update_region(const graphics::image& img, const agg::rect_i& r) override;
-    update_status update_region_request(int index) override;
+    bool update_region_request(int index) override;
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
