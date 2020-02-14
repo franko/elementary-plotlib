@@ -123,10 +123,12 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_ELEM_UPD_REGION:
+        lock();
         if (!m_update_notify.completed) {
             m_window_surface.slot_refresh(m_update_notify.plot_index);
             m_update_notify.notify();
         }
+        unlock();
         break;
 
     default:
@@ -212,15 +214,7 @@ int window_win32::run() {
     set_status(graphics::window_starting);
     debug_log(1, "window run");
     for(;;) {
-        bool status;
-        if (this->status() == graphics::window_running) {
-            this->unlock();
-            status = ::GetMessage(&msg, 0, 0, 0);
-            this->lock();
-        } else {
-            status = ::GetMessage(&msg, 0, 0, 0);
-        }
-
+        bool status = ::GetMessage(&msg, 0, 0, 0);
         if (!status) {
             break;
         }
@@ -240,10 +234,8 @@ void window_win32::update_region(const graphics::image& src_img, const agg::rect
 }
 
 void window_win32::start_blocking(unsigned width, unsigned height, unsigned flags) {
-    lock();
     init(width, height, flags);
     run();
-    unlock();
 }
 
 bool window_win32::update_region_request(int index) {
