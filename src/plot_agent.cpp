@@ -15,11 +15,20 @@ void plot_agent::add_window(window_surface *surface, int slot_index) {
 void plot_agent::update_windows() {
     for (unsigned i = 0; i < linked_windows_.size(); i++) {
         window_index_pair& pair = linked_windows_[i];
-        pair.surface->slot_refresh(pair.slot_index);
+        // Note: do not use a window_surface for plot_agent
+        // but an opaque structure proxy.
+        pair.surface->slot_refresh_request(pair.slot_index);
     }
 }
 
 void plot_agent::clear() {
     linked_windows_.clear();
+}
+
+void plot_agent::clear_pending_flags() {
+    for (unsigned i = 0; i < linked_windows_.size(); i++) {
+        window_index_pair& pair = linked_windows_[i];
+        pair.surface->clear_pending_flags(pair.slot_index);
+    }
 }
 }

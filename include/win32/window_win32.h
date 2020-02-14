@@ -6,7 +6,6 @@
 #include "debug_priv.h"
 #include "display_window_status.h"
 #include "strpp.h"
-#include "update_region_info.h"
 #include "start_window.h"
 #include "win32/agg_win32_bmp.h"
 #include "window_surface.h"
@@ -25,8 +24,8 @@ public:
         }
     }
 
-    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
-    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
+    void update_region(const graphics::image& img, const agg::rect_i& r) override;
+    bool update_region_request(int index) override;
 
     LRESULT proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -44,8 +43,8 @@ private:
     HWND          m_hwnd;
 
     str m_caption;
-    update_region_info m_update_region;
     graphics::window_surface& m_window_surface;
+    int m_update_plot_index;
 
     static void get_module_instance();
 

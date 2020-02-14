@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "debug_priv.h"
 #include "display_window_status.h"
 // Used for declarations of window_flag_e and pix_format_e enums.
@@ -7,7 +9,7 @@
 #include "platform/agg_platform_support.h"
 #include "start_window.h"
 #include "strpp.h"
-#include "update_region_info.h"
+#include "update_region_notify.h"
 #include "window_surface.h"
 #include "xwindow/x_connection.h"
 #include "xwindow/x_image.h"
@@ -31,10 +33,18 @@ public:
         }
     }
 
-    virtual void update_region(graphics::image& src_img, const agg::rect_i& r);
-    virtual void update_region_request(graphics::image& img, const agg::rect_i& r);
+    bool update_region_request(int index) override;
 
 private:
+    void lock() {
+        m_mutex.lock();
+    }
+
+    void unlock() {
+        m_mutex.unlock();
+    }
+
+    void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
     void close();
@@ -59,11 +69,10 @@ private:
     Atom                 m_wm_protocols_atom;
     Atom                 m_update_region_atom;
     x_connection         m_connection;
+    x_connection         m_request_connection;
     x_image*             m_draw_img;
     str                  m_caption;
-    update_region_info   m_update_region;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
-
-    static bool need_initialize;
+    std::mutex           m_mutex;
 };

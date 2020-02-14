@@ -14,6 +14,7 @@ public:
     void add_window(window_surface *surface, int slot_index);
     void update_windows();
     void clear();
+    void clear_pending_flags();
 private:
     agg::pod_bvector<window_index_pair> linked_windows_;
 };

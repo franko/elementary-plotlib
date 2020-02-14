@@ -3,6 +3,7 @@
 
 #include "util/agg_color_conv_rgb8.h"
 
+#include "debug_priv.h"
 #include "fatal.h"
 #include "colors.h"
 
@@ -46,51 +47,39 @@ bool window_surface::resize(unsigned ww, unsigned hh)
     return false;
 }
 
-void window_surface::draw_image_buffer()
-{
-    for (unsigned k = 0; k < plot_number(); k++)
-        render_plot_by_index(k);
-}
-
-void window_surface::render_by_ref(plot_ref& ref, const agg::rect_i& r)
+void window_surface::render_by_ref(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r)
 {
     m_canvas->clear_box(r);
-    if (ref.plot_ptr)
-    {
-        plot::drawing_context dc(*ref.plot_ptr);
+    if (ref.plot_ptr) {
         ref.plot_ptr->draw(dc, *m_canvas, r, &ref.inf);
     }
 }
 
-void window_surface::render_plot_by_index(unsigned index)
+void window_surface::render_plot_by_index(plot::drawing_context& dc, unsigned index)
 {
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    render_by_ref(ref, area);
+    render_by_ref(dc, ref, area);
 }
 
 opt_rect<int>
-window_surface::render_drawing_queue(plot_ref& ref, const agg::rect_i& box)
+window_surface::render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& box)
 {
     const agg::trans_affine m = affine_matrix(box);
     opt_rect<double> r;
-
-    plot::drawing_context dc(*ref.plot_ptr);
     ref.plot_ptr->draw_queue(dc, *m_canvas, m, ref.inf, r);
-
     opt_rect<int> ri;
     if (r.is_defined())
     {
         const agg::rect_d& rx = r.rect();
         ri.set(rx.x1, rx.y1, rx.x2, rx.y2);
     }
-
     return ri;
 }
 
 opt_rect<int>
-window_surface::render_drawing_queue(unsigned index)
+window_surface::render_drawing_queue(plot::drawing_context& dc, unsigned index)
 {
     int canvas_width = get_width(), canvas_height = get_height();
     plot_ref& ref = m_plots[index];
@@ -99,7 +88,7 @@ window_surface::render_drawing_queue(unsigned index)
         fatal_exception("call to plot_draw_queue for undefined plot");
 
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
-    return render_drawing_queue(ref, area);
+    return render_drawing_queue(dc, ref, area);
 }
 
 int window_surface::attach(plot* p, const char* slot_str)
@@ -138,61 +127,58 @@ agg::rect_i window_surface::get_plot_area(unsigned index) const
     return m_part.rect(index, canvas_width, canvas_height);
 }
 
-agg::rect_i window_surface::get_plot_area(unsigned index, int width, int height) const
-{
-    return m_part.rect(index, width, height);
+void window_surface::slot_refresh_request(unsigned index) {
+    bool request_success = m_window->update_region_request(index);
+    if (!request_success) {
+        debug_log(1, "window_surface::update_region_request fail");
+    }
+    m_plots[index].pending_queue = true;
 }
 
+void window_surface::update_window_area() {
+    const agg::rect_i r(0, 0, get_width(), get_height());
+    m_window->update_region(m_img, r);
+}
+
+// Add an argument to indicate if only a render_drawing_queue
+// is needed.
 void window_surface::slot_refresh(unsigned index)
 {
     if (m_canvas == nullptr) return;
-
+    plot *plot_selected = get_plot(index);
+    plot::drawing_context dc(*plot_selected);
     bool redraw = get_plot(index)->need_redraw();
-    if (redraw)
-    {
-        render_plot_by_index(index);
-    }
-
-    opt_rect<int> r = render_drawing_queue(index);
-    agg::rect_i area = get_plot_area(index);
-    if (redraw)
-    {
-        update_region_request(m_img, area);
-    }
-    else
-    {
-        if (r.is_defined())
-        {
+    if (redraw) {
+        render_plot_by_index(dc, index);
+        render_drawing_queue(dc, index);
+        agg::rect_i area = get_plot_area(index);
+        m_window->update_region(m_img, area);
+    } else {
+        opt_rect<int> r = render_drawing_queue(dc, index);
+        agg::rect_i area = get_plot_area(index);
+        if (r.is_defined()) {
             const int pad = 4;
             const agg::rect_i& ri = r.rect();
             agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
             r_pad.clip(area);
-            update_region_request(m_img, r_pad);
+            m_window->update_region(m_img, r_pad);
         }
     }
 }
 
 void
-window_surface::slot_update(unsigned index)
-{
-    render_plot_by_index(index);
-    render_drawing_queue(index);
-    agg::rect_i area = get_plot_area(index);
-    update_region_request(m_img, area);
-}
-
-void
 window_surface::render()
 {
-    for (unsigned k = 0; k < m_plots.size(); k++)
-        render_plot_by_index(k);
-}
-
-void
-window_surface::draw()
-{
-    const agg::rect_i r(0, 0, get_width(), get_height());
-    m_window->update_region(m_img, r);
+    for (unsigned k = 0; k < m_plots.size(); k++) {
+        plot *current_plot = get_plot(k);
+        if (current_plot) {
+            plot::drawing_context dc(*current_plot);
+            render_plot_by_index(dc, k);
+            if (m_plots[k].pending_queue) {
+                render_drawing_queue(dc, k);
+            }
+        }
+    }
 }
 
 void
@@ -210,9 +196,17 @@ window_surface::restore_slot_image(unsigned index)
     }
     else
     {
-        render_plot_by_index(index);
-        save_plot_image(index);
+        plot *current_plot = get_plot(index);
+        if (current_plot) {
+            plot::drawing_context dc(*current_plot);
+            render_plot_by_index(dc, index);
+            save_plot_image(index);
+        }
     }
+}
+
+void window_surface::clear_pending_flags(int plot_index) {
+    m_plots[plot_index].pending_queue = false;
 }
 
 } /* namespace graphics */

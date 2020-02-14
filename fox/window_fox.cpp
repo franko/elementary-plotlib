@@ -30,7 +30,7 @@ void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector)
     m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
 }
 
-void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
+void window_fox::update_region(const graphics::image& src_img, const agg::rect_i& r) {
     const unsigned fximage_pixel_size = 4; // 32 bit RGBA format.
     const bool fximage_flipy = true;
     const int width = r.x2 - r.x1, height = r.y2 - r.y1;
@@ -57,22 +57,21 @@ void window_fox::update_region(graphics::image& src_img, const agg::rect_i& r) {
     dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
 }
 
-void window_fox::update_region_request(graphics::image& img, const agg::rect_i& r) {
+bool window_fox::update_region_request(int index) {
     if (std::this_thread::get_id() == m_window_thread_id) {
         // We are running in the thread of the Window's event loop. Just do the
         // drawing operation.
         debug_log(1, "update_region request from window's thread");
-        update_region(img, r);
+        m_window_surface.slot_refresh(index);
     } else {
         // We are on another thread. Interrupt the Window's thread to request
         // the update_region operation.
         debug_log(1, "update_region request from secondary thread");
-        m_update_notify.prepare();
-        m_update_region.prepare(img, r);
+        m_update_notify.start(index);
         m_update_signal->signal();
         m_update_notify.wait();
-        m_update_region.clear();
     }
+    return true;
 }
 
 void window_fox::start(unsigned width, unsigned height, unsigned flags) {

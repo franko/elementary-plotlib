@@ -14,71 +14,75 @@
 namespace graphics {
 
 struct plot_ref {
-    plot_ref(): plot_ptr(NULL), have_save_img(false) {}
+    plot_ref(): plot_ptr(NULL), have_save_img(false), pending_queue(false) {}
 
     plot* plot_ptr;
     plot_render_info inf;
     bool have_save_img;
+    // If true we are between a update_region_request() and a commit_pending_draw():
+    // render the drawing_queue() on render().
+    bool pending_queue;
 };
 
+/* The class window_surface is part of a window. It is declared by window_gen
+   and the actual window implementation gets a reference to the window_surface.
+   The plots, in turns, can interact with the window_surface by
+   
+   - drawing on the window_surface image buffer
+   - request to draw the updated image to the window.
+
+    As the plots and the windows run in separate threads it is required to
+    protect the access to the images member variables. The access to the
+    canvas pointer should be protected too because it points to the underlying
+    image.
+
+    To protect the concurrent access to the image and canvas member variables
+    a special canvas is used.
+
+    From the window's implementation the following methods are called:
+
+    resize, render, slot_refresh, update_window_area.
+
+    From the plot_agent the following methods are called:
+
+    slot_refresh_request.
+*/
 class window_surface {
 public:
     window_surface(const char* split);
     ~window_surface();
 
+    void attach_window(display_window* win) { m_window = win; }
     int attach(plot* p, const char* slot_str);
     void split(const char* split_str);
-
-    void attach_window(display_window* win) { m_window = win; }
-
-    bool canvas_size_match(unsigned ww, unsigned hh)
-    {
-        return (m_img.width() == ww && m_img.height() == hh);
-    }
-
     bool resize(unsigned ww, unsigned hh);
+    void slot_refresh_request(unsigned index);
+    void clear_pending_flags(int plot_index);
+
+    /* The following method can be called only from the window's thread
+       and will lock the plot. */
     void render();
-    void draw();
+    void slot_refresh(unsigned index);
+    void update_window_area();
 
-    // redraw all the image buffer for the current plots
-    void draw_image_buffer();
-
-    int get_width()  const { return m_img.width(); }
-    int get_height() const { return m_img.height(); }
-
-    void render_plot_by_index(unsigned index);
-    opt_rect<int> render_drawing_queue(unsigned index);
+private:
+    void render_by_ref(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
+    void render_plot_by_index(plot::drawing_context& dc, unsigned index);
+    opt_rect<int> render_drawing_queue(plot::drawing_context& dc, unsigned index);
+    opt_rect<int> render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
 
     plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
     agg::rect_i get_plot_area(unsigned index) const;
-    agg::rect_i get_plot_area(unsigned index, int width, int height) const;
     unsigned plot_number() const { return m_plots.size(); }
-
-    bool is_ready() const { return (m_canvas != 0); }
 
     bool save_plot_image(unsigned index);
     bool restore_plot_image(unsigned index);
-
-    const image& get_image() { return m_img; }
-
-    void slot_refresh(unsigned index);
-    void slot_update(unsigned index);
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
 
-    void update_region_request(image& img, const agg::rect_i& r) {
-        m_window->update_region_request(img, r);
-    }
-
-private:
-    void render_by_ref(plot_ref& ref, const agg::rect_i& r);
-    opt_rect<int> render_drawing_queue(plot_ref& ref, const agg::rect_i& r);
-
-    bool plot_is_defined(unsigned index) const
-    {
-        return (m_plots[index].plot_ptr != NULL);
-    }
+    int get_width()  const { return m_img.width(); }
+    int get_height() const { return m_img.height(); }
 
     image m_img;
     image m_save_img;

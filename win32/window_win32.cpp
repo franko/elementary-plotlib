@@ -11,7 +11,8 @@ window_win32::window_win32(graphics::window_surface& window_surface) :
     m_sys_bpp(24),
     m_hwnd(0),
     m_caption("Graphics Window"),
-    m_window_surface(window_surface)
+    m_window_surface(window_surface),
+    m_update_plot_index(-1)
 {
 }
 
@@ -107,8 +108,9 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_PAINT: {
         debug_log(1, "treating WM_PAINT event");
         PAINTSTRUCT ps;
-        HDC paintDC = ::BeginPaint(hWnd, &ps);
-        m_window_surface.draw();
+        // Returns a HDC paintDC but is not used.
+        ::BeginPaint(hWnd, &ps);
+        m_window_surface.update_window_area();
         ::EndPaint(hWnd, &ps);
         set_status(graphics::window_running);
         break;
@@ -122,8 +124,9 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_ELEM_UPD_REGION:
-        if (m_update_region.img) {
-            update_region(*m_update_region.img, m_update_region.r);
+        if (m_update_plot_index >= 0) {
+            m_window_surface.slot_refresh(m_update_plot_index);
+            m_update_plot_index = -1;
         }
         break;
 
@@ -210,15 +213,7 @@ int window_win32::run() {
     set_status(graphics::window_starting);
     debug_log(1, "window run");
     for(;;) {
-        bool status;
-        if (this->status() == graphics::window_running) {
-            this->unlock();
-            status = ::GetMessage(&msg, 0, 0, 0);
-            this->lock();
-        } else {
-            status = ::GetMessage(&msg, 0, 0, 0);
-        }
-
+        bool status = ::GetMessage(&msg, 0, 0, 0);
         if (!status) {
             break;
         }
@@ -230,7 +225,7 @@ int window_win32::run() {
     return (int)msg.wParam;
 }
 
-void window_win32::update_region(graphics::image& src_img, const agg::rect_i& r) {
+void window_win32::update_region(const graphics::image& src_img, const agg::rect_i& r) {
     debug_log(1, "update_region: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
@@ -242,8 +237,10 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
     run();
 }
 
-void window_win32::update_region_request(graphics::image& img, const agg::rect_i& r) {
-    m_update_region.prepare(img, r);
-    ::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0);
-    m_update_region.clear();
+bool window_win32::update_region_request(int index) {
+    m_update_plot_index = index;
+    if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0)) {
+        return true;
+    }
+    return false;
 }

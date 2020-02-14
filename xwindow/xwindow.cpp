@@ -6,8 +6,6 @@
 #include "debug_priv.h"
 #include "fatal.h"
 
-bool xwindow::need_initialize = true;
-
 // m_sys_format, m_byte_order, m_sys_bpp will be set based on XWindow display on "init" method.
 xwindow::xwindow(graphics::window_surface& window_surface):
     m_sys_format(agg::pix_format_undefined),
@@ -33,6 +31,7 @@ xwindow::~xwindow()
 void xwindow::close_connections()
 {
     m_connection.close();
+    m_request_connection.close();
 }
 
 void xwindow::free_x_resources()
@@ -51,14 +50,11 @@ void xwindow::caption(const str& text)
 
 bool xwindow::init(unsigned width, unsigned height, unsigned flags)
 {
-    if (need_initialize) {
-        XInitThreads();
-        need_initialize = false;
-    }
-
     m_window_flags = flags;
 
     if (unlikely(!m_connection.init()))
+        return false;
+    if (unlikely(!m_request_connection.init()))
         return false;
 
     set_status(graphics::window_starting);
@@ -258,6 +254,7 @@ void xwindow::run()
 
         unlock();
         XNextEvent(xc->display, &ev);
+        // Consider locking only the update_region_notify parts.
         lock();
 
         switch(ev.type)
@@ -277,18 +274,19 @@ void xwindow::run()
         case Expose:
             /* if count is > 0 then ignore the event because
                other expose event will follow */
-            if (ev.xexpose.count == 0)
-            {
-                m_window_surface.draw();
+            if (ev.xexpose.count == 0) {
+                m_window_surface.update_window_area();
                 break;
             }
 
         case ClientMessage:
             if (ev.xclient.message_type == m_wm_protocols_atom && ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom)) {
                 quit = true;
-            } else if (ev.xclient.message_type == m_update_region_atom && m_update_region.img) {
-                update_region(*m_update_region.img, m_update_region.r);
-                m_update_notify.notify();
+            } else if (ev.xclient.message_type == m_update_region_atom) {
+                if (!m_update_notify.completed) {
+                    m_window_surface.slot_refresh(m_update_notify.plot_index);
+                    m_update_notify.notify();
+                }
             }
             break;
         }
@@ -302,7 +300,7 @@ void xwindow::close()
     set_status(graphics::window_closed);
 }
 
-void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
+void xwindow::update_region(const graphics::image& src_img, const agg::rect_i& r)
 {
     const unsigned width = r.x2 - r.x1, height = r.y2 - r.y1;
 
@@ -321,43 +319,45 @@ void xwindow::update_region(graphics::image& src_img, const agg::rect_i& r)
 }
 
 void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
+    lock();
     init(width, height, flags);
     run();
     close();
+    unlock();
 }
 
-void xwindow::update_region_request(graphics::image& img, const agg::rect_i& r) {
-    m_update_notify.prepare();
-    m_update_region.prepare(img, r);
-    m_update_notify.completed = false;
+bool xwindow::update_region_request(int index) {
+    lock();
+    m_update_notify.start(index);
     if (send_update_region_event()) {
         // Wait for the notification but only if the message was actually sent.
+        unlock();
         m_update_notify.wait();
+        return true;
+    } else {
+        unlock();
     }
-    m_update_region.clear();
+    return false;
 }
 
 // Returns true is the message was actually sent.
 bool xwindow::send_update_region_event() {
-    lock();
     if (status() == graphics::window_running) {
         XClientMessageEvent event;
         event.type = ClientMessage;
-        event.display = m_connection.display;
+        event.display = m_request_connection.display;
         event.send_event = True;
         event.message_type = m_update_region_atom;
         event.format = 8;
-        Status status = XSendEvent(m_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
-        unlock();
+        Status status = XSendEvent(m_request_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
         if (status == BadValue) {
             debug_log(1, "custom event, got BadValue");
         } else if (status == BadWindow) {
             debug_log(1, "custom event, got BadWindow");
         } else {
-            XFlush(m_connection.display);
+            XFlush(m_request_connection.display);
         }
         return true;
     }
-    unlock();
     return false;
 }

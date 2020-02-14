@@ -30,7 +30,7 @@ public:
     }
 
     void slot_refresh(unsigned index) override {
-        m_surface.slot_refresh(index);
+        m_surface.slot_refresh_request(index);
     }
 
     void start(unsigned width, unsigned height, unsigned flags) override {

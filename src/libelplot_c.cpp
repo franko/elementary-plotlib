@@ -22,6 +22,7 @@ static void plot_update_windows_and_commit(elp_plot *plot_object) {
     graphics::plot_agent *agent = plot_object->plot_agent;
     agent->update_windows();
     elp_plot_commit_pending_draw(plot_object);
+    agent->clear_pending_flags();
 }
 
 elp_object *elp_object_copy(const elp_object *obj) {

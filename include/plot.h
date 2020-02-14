@@ -399,7 +399,7 @@ public:
             inf->active_area = layout.plot_active_area;
     }
 
-protected:
+private:
     void draw_virtual_canvas(canvas_type& canvas, plot_layout& layout, const agg::rect_i* r);
     void draw_simple(canvas_type& canvas, plot_layout& layout, const agg::rect_i* r);
 
