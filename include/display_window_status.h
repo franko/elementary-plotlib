@@ -7,9 +7,9 @@
 
 namespace graphics {
 
-/* Extend the interface 'display_window'
- * by providing a mutex for lock/unlock methods and a status variable
- * with the related methods to query/set status and issue a request. */
+/* Extend the interface 'display_window' by providing a status variable
+   and the methods to query or set the window's status and give
+   a notification request. */
 class display_window_status : public display_window {
 public:
     int status() {

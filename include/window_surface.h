@@ -25,42 +25,53 @@ struct plot_ref {
 };
 
 /* The class window_surface is part of a window. It is declared by window_gen
-   and the actual window implementation gets a reference to the window_surface.
-   The plots, in turns, can interact with the window_surface by
-   
-   - drawing on the window_surface image buffer
-   - request to draw the updated image to the window.
+   and the screen window implementation gets a reference to the window_surface.
 
-    As the plots and the windows run in separate threads it is required to
-    protect the access to the images member variables. The access to the
-    canvas pointer should be protected too because it points to the underlying
-    image.
+   The window, including the window surface, run on its own thread. In order
+   to ensure memory safety and avoid race conditions the main thread and
+   the window's thread should interact only using some predefined methods.
 
-    To protect the concurrent access to the image and canvas member variables
-    a special canvas is used.
+   The window contains references to the main thread with the pointers to
+   plots. The interaction of the window's with the plots should be strictly
+   limited.
 
-    From the window's implementation the following methods are called:
+   The principles of the operations are:
 
-    resize, render, slot_refresh, update_window_area.
+   1. the plots referenced from window_surface are rendered on the
+      windows buffer only from the window's thread.
+   2. the paint operations are all done from the window's thread
+   3. when the plots needs to update the window it sends to the
+      window's thread a request by communicating the plot's index
+      relative to the window surface.
+      In response to the request the window's thread will render the
+      plot and paint on the screen (see point 1).
 
-    From the plot_agent the following methods are called:
+   The window screen implementation (window_win32 or xwindow) calls
+   the following window_surface's methods:
 
-    slot_refresh_request.
+   resize, render, slot_refresh, update_window_area.
+
+   From the plot_agent the following methods are called:
+
+   slot_refresh_request, clear_pending_flags.
 */
 class window_surface {
 public:
     window_surface(const char* split);
     ~window_surface();
 
+    /* Methods for initial window's setup. */
     void attach_window(display_window* win) { m_window = win; }
     int attach(plot* p, const char* slot_str);
     void split(const char* split_str);
-    bool resize(unsigned ww, unsigned hh);
+
+    /* The following methods are called from the main thread. */
     void slot_refresh_request(unsigned index);
     void clear_pending_flags(int plot_index);
 
     /* The following method can be called only from the window's thread
        and will lock the plot. */
+    bool resize(unsigned ww, unsigned hh);
     void render();
     void slot_refresh(unsigned index);
     void update_window_area();
