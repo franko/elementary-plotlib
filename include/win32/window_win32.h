@@ -2,6 +2,7 @@
 
 #include <agg_basics.h>
 #include <agg_rendering_buffer.h>
+#include <mutex>
 
 #include "debug_priv.h"
 #include "display_window_status.h"
@@ -37,6 +38,14 @@ private:
     int run();
     void close();
 
+    void lock() {
+        m_mutex.lock();
+    }
+
+    void unlock() {
+        m_mutex.unlock();
+    }
+
     void display_pmap(HDC dc, const agg::rendering_buffer* src, const agg::rect_base<int> *rect = 0);
 
     pix_format_e  m_sys_format;
@@ -46,6 +55,7 @@ private:
     str m_caption;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
+    std::mutex m_mutex;
 
     static void get_module_instance();
 

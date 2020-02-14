@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "debug_priv.h"
 #include "display_window_status.h"
 // Used for declarations of window_flag_e and pix_format_e enums.
@@ -34,6 +36,14 @@ public:
     bool update_region_request(int index) override;
 
 private:
+    void lock() {
+        m_mutex.lock();
+    }
+
+    void unlock() {
+        m_mutex.unlock();
+    }
+
     void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
     bool init(unsigned width, unsigned height, unsigned flags);
     void run();
@@ -64,4 +74,5 @@ private:
     str                  m_caption;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
+    std::mutex           m_mutex;
 };
