@@ -11,7 +11,8 @@ window_win32::window_win32(graphics::window_surface& window_surface) :
     m_sys_bpp(24),
     m_hwnd(0),
     m_caption("Graphics Window"),
-    m_window_surface(window_surface)
+    m_window_surface(window_surface),
+    m_update_plot_index(-1)
 {
 }
 
@@ -123,12 +124,10 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_ELEM_UPD_REGION:
-        lock();
-        if (!m_update_notify.completed) {
-            m_window_surface.slot_refresh(m_update_notify.plot_index);
-            m_update_notify.notify();
+        if (m_update_plot_index >= 0) {
+            m_window_surface.slot_refresh(m_update_plot_index);
+            m_update_plot_index = -1;
         }
-        unlock();
         break;
 
     default:
@@ -239,16 +238,9 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
 }
 
 bool window_win32::update_region_request(int index) {
-    // The code below is essentially the same than in xwindow.cpp.
-    // Unifying the code maybe better.
-    lock();
-    m_update_notify.start(index);
-    if (::SendNotifyMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0)) {
-        unlock();
-        m_update_notify.wait();
+    m_update_plot_index = index;
+    if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0)) {
         return true;
-    } else {
-        unlock();
     }
     return false;
 }
