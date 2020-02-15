@@ -1,9 +1,18 @@
 #include <sol/sol.hpp>
 
 #include "libelplot.h"
+#include "libelplot_utils.h"
 #include "libelplot_lua_cpp.h"
 
 namespace elp {
+
+static unsigned BitOr(sol::variadic_args va) {
+    unsigned r = 0;
+    for (auto v : va) {
+        r = r | v.as<int>();
+    }
+    return r;
+}
 
 void LuaOpenLibrary(lua_State *L) {
     sol::state_view lua(L);
@@ -76,6 +85,12 @@ void LuaOpenLibrary(lua_State *L) {
     elp_property["Stroke"]  = property::Stroke;
     elp_property["Outline"] = property::Outline;
     elp_property["Crisp"]   = property::Crisp;
+
+    auto elp_utils = lua.create_table();
+    elp_utils["Sleep"] = utils::Sleep;
+    elp["utils"] = elp_utils;
+
+    elp["flags"] = BitOr;
 
     elp["property"] = elp_property;
     lua["elp"] = elp;
