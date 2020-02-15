@@ -61,9 +61,16 @@ if fox_dep.found()
 endif
 
 sol_dep = dependency('sol2', required: false)
-luajit_dep  = dependency('luajit', required: false)
 
-enable_lua = (sol_dep.found() and luajit_dep.found())
+luajit_dep  = dependency('luajit', required: false)
+puc_rio_lua_dep = dependency('lua', required: false)
+if luajit_dep.found() or not puc_rio_lua_dep.found()
+    lua_dep = luajit_dep
+else    
+    lua_dep = puc_rio_lua_dep
+endif
+
+enable_lua = (sol_dep.found() and lua_dep.found())
 
 if enable_lua
     libelplot_cflags += '-DELEM_PLOT_USE_LUA'
