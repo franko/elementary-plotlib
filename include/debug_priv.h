@@ -11,7 +11,7 @@
 
 #ifdef LIBELPLOT_DEBUG
 inline void debug_log(int level, const char *fmt, ...) {
-    if (level >= LIBELPLOT_DEBUG_LEVEL) {
+    if (level <= LIBELPLOT_DEBUG_LEVEL) {
         va_list args;
         va_start(args, fmt);
         vfprintf(stderr, fmt, args);

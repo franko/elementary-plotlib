@@ -23,8 +23,8 @@ debug_build = get_option('buildtype') != 'release'
 cc = meson.get_compiler('cpp')
 
 if debug_build
-    libelplot_cflags += '-Dlibelplot_DEBUG'
-    libelplot_cflags += '-Dlibelplot_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
+    libelplot_cflags += '-DLIBELPLOT_DEBUG'
+    libelplot_cflags += '-DLIBELPLOT_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
 endif
 
 libelplot_include = include_directories('include')
