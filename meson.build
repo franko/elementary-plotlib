@@ -60,8 +60,16 @@ if fox_dep.found()
     subdir('fox')
 endif
 
+sol_dep = dependency('sol2', required: false)
+luajit_dep  = dependency('luajit', required: false)
+
+enable_lua = (sol_dep.found() and luajit_dep.found())
+
+if enable_lua
+    libelplot_cflags += '-DELEM_PLOT_USE_LUA'
+    subdir('lua')
+endif
+
 if get_option('tests')
     subdir('tests')
 endif
-
-subdir('lua')

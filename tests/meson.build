@@ -48,3 +48,13 @@ if fox_dep.found()
             gui_app: false)
     endforeach
 endif
+
+if enable_lua
+    executable('lua-test-1', 'lua-test-1.cpp',
+        include_directories: libelplot_include,
+        dependencies: [libelplot_dep, sol_dep, luajit_dep],
+        cpp_args: libelplot_cflags,
+        link_with: [libelplotwin, libelplotlua, libelplot],
+        gui_app: true
+    )
+endif

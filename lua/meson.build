@@ -1,8 +1,9 @@
-sol_dep = dependency('sol2')
-luajit_dep  = dependency('luajit')
+libelplotlua_src = ['libelplot_lua.cpp']
 
-sol_test_1 = executable('sol-test-1',
-	'sol-test.cpp',
-	dependencies: [sol_dep, luajit_dep, libelplot_dep],
-    link_with: [libelplotwin, libelplot],
+libelplotlua = library('elplotlua',
+    libelplotlua_src,
+    cpp_args: libelplot_cflags,
+    include_directories: libelplot_include,
+    dependencies: [agg_dep, freetype_dep, sol_dep, luajit_dep, thread_dep],
+    install: true
 )

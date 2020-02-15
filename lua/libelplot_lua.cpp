@@ -1,21 +1,22 @@
-#define SOL_ALL_SAFETIES_ON 1
-#include "sol/sol.hpp"
+#include <sol/sol.hpp>
+
 #include "libelplot.h"
+#include "libelplot_lua_cpp.h"
 
-using namespace elp;
+namespace elp {
 
-int main() {
-    sol::state lua;
+void LuaOpenLibrary(lua_State *L) {
+    sol::state_view lua(L);
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::bit32);
-    auto elem = lua.create_table();
-    elem.new_usertype<Object>("Object", sol::constructors<Object()>());
-    elem.new_usertype<Path>("Path", sol::constructors<Path()>(),
+    auto elp = lua.create_table();
+    elp.new_usertype<Object>("Object", sol::constructors<Object()>());
+    elp.new_usertype<Path>("Path", sol::constructors<Path()>(),
         "MoveTo", &Path::MoveTo, 
         "LineTo", &Path::LineTo,
         "ClosePolygon", &Path::ClosePolygon,
         sol::base_classes, sol::bases<Object>()
     );
-    elem.new_usertype<CurvePath>("CurvePath", sol::constructors<CurvePath()>(),
+    elp.new_usertype<CurvePath>("CurvePath", sol::constructors<CurvePath()>(),
         "MoveTo", &CurvePath::MoveTo,
         "LineTo", &CurvePath::LineTo,
         "Curve3", &CurvePath::Curve3,
@@ -24,19 +25,19 @@ int main() {
         "ClosePolygon", &CurvePath::ClosePolygon,
         sol::base_classes, sol::bases<Object>()
     );
-    elem.new_usertype<DashPath>("DashPath", sol::constructors<DashPath()>(),
+    elp.new_usertype<DashPath>("DashPath", sol::constructors<DashPath()>(),
         "AddDash", &DashPath::AddDash,
         sol::base_classes, sol::bases<Path, Object>()
     );
-    elem.new_usertype<Markers>("Markers", sol::constructors<Markers(double, Object)>(),
+    elp.new_usertype<Markers>("Markers", sol::constructors<Markers(double, Object)>(),
         sol::base_classes, sol::bases<Path, Object>()
     );
-    elem.new_usertype<Text>("Text", sol::constructors<Text(const char*, double, double, double)>(),
+    elp.new_usertype<Text>("Text", sol::constructors<Text(const char*, double, double, double)>(),
         "SetAngle", &Text::SetAngle,
         "SetPosition", &Text::SetPosition,
         sol::base_classes, sol::bases<Object>()
     );
-    elem.new_usertype<Plot>("Plot", sol::constructors<Plot(), Plot(unsigned)>(),
+    elp.new_usertype<Plot>("Plot", sol::constructors<Plot(), Plot(unsigned)>(),
         "SetTitle", &Plot::SetTitle,
         "SetXAxisTitle", &Plot::SetXAxisTitle,
         "SetYAxisTitle", &Plot::SetYAxisTitle,
@@ -53,7 +54,7 @@ int main() {
         "AddLegend", &Plot::AddLegend,
         "WriteSvg", &Plot::WriteSvg
     );
-    elem.new_usertype<Window>("Window", sol::constructors<Window()>(),
+    elp.new_usertype<Window>("Window", sol::constructors<Window()>(),
         "Attach", &Window::Attach,
         "SetLayout", &Window::SetLayout,
         "Start", &Window::Start,
@@ -64,23 +65,19 @@ int main() {
     plot_flags["ShowUnits"] = Plot::ShowUnits;
     plot_flags["AutoLimits"] = Plot::AutoLimits;
     plot_flags["ClipRegion"] = Plot::ClipRegion;
-    elem["plot"] = plot_flags;
+    elp["plot"] = plot_flags;
 
-    elem["xAxis"] = xAxis;
-    elem["yAxis"] = yAxis;
-    elem["WindowResize"] = WindowResize;
+    elp["xAxis"] = xAxis;
+    elp["yAxis"] = yAxis;
+    elp["WindowResize"] = WindowResize;
 
-    auto elem_property = lua.create_table();
-    elem_property["Fill"]    = property::Fill;
-    elem_property["Stroke"]  = property::Stroke;
-    elem_property["Outline"] = property::Outline;
-    elem_property["Crisp"]   = property::Crisp;
+    auto elp_property = lua.create_table();
+    elp_property["Fill"]    = property::Fill;
+    elp_property["Stroke"]  = property::Stroke;
+    elp_property["Outline"] = property::Outline;
+    elp_property["Crisp"]   = property::Crisp;
 
-    elem["property"] = elem_property;
-    lua["elem"] = elem;
-
-    InitializeFonts();
-
-    lua.script_file("lua/sol-test.lua");
-    lua.script_file("lua/sol-test-function.lua");
+    elp["property"] = elp_property;
+    lua["elp"] = elp;
+}
 }
