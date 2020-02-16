@@ -3,6 +3,8 @@
 
 #ifdef __cplusplus
 #include "libelplot_lua_cpp.h"
+#else
+#include "libelplot_lua_c.h"
 #endif
 
 #endif

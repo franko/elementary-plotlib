@@ -29,6 +29,11 @@ fox_tests = [
     {'name': 'test-fox-host-2', 'sources': 'test-fox-host-2.cpp'},
 ]
 
+lua_tests = [
+    {'name': 'lua-test-1', 'sources': 'lua-test-1.cpp'},
+    {'name': 'lua-test-c-1', 'sources': 'lua-test-c-1.c'},
+]
+
 foreach test : window_tests
     executable(test['name'], test['sources'],
         include_directories: libelplot_include,
@@ -50,11 +55,12 @@ if fox_dep.found()
 endif
 
 if enable_lua
-    executable('lua-test-1', 'lua-test-1.cpp',
-        include_directories: libelplot_include,
-        dependencies: [libelplot_dep, sol_dep, lua_dep],
-        cpp_args: libelplot_cflags,
-        link_with: [libelplotwin, libelplotlua, libelplot],
-        gui_app: true
-    )
+    foreach test : lua_tests
+        executable(test['name'], test['sources'],
+            include_directories: libelplot_include,
+            dependencies: [libelplot_dep, sol_dep, lua_dep],
+            cpp_args: libelplot_cflags,
+            link_with: [libelplotwin, libelplotlua, libelplot],
+            gui_app: false)
+    endforeach
 endif

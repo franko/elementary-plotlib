@@ -1,4 +1,4 @@
-libelplotlua_src = ['libelplot_lua.cpp']
+libelplotlua_src = ['libelplot_lua.cpp', 'libelplot_lua_c.cpp']
 
 libelplotlua = library('elplotlua',
     libelplotlua_src,
