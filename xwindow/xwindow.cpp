@@ -1,7 +1,6 @@
 #include <X11/X.h>
 #include <X11/Xutil.h>
 
-#include "notify_request.h"
 #include "xwindow/xwindow.h"
 #include "debug_priv.h"
 #include "fatal.h"

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "display_window.h"
-#include "notify_request.h"
 #include "status_notifier.h"
 #include "window_flags.h"
 
@@ -22,13 +21,8 @@ public:
         m_window_status.set(new_status);
     }
 
-    request_error_e wait_until_notification(window_status_e notify_status) {
-        notify_request<window_status_e> req{notify_status};
-        request_error_e retval = m_window_status.set_notify_request(req);
-        if (retval == request_success) {
-            req.wait();
-        }
-        return retval;
+    void wait_for_status(window_status_e request) {
+        m_window_status.wait_for_status(request);
     }
 private:
     status_notifier<window_status_e> m_window_status;

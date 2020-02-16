@@ -82,9 +82,6 @@ void window_fox::start(unsigned width, unsigned height, unsigned flags) {
     }
     m_start_signal->setData(&data);
     m_start_signal->signal();
-    request_error_e status = wait_until_notification(graphics::window_running);
-    if (!(status == request_satisfied || status == request_success)) {
-        debug_log(1, "error starting window, return code: %d", int(status));
-    }
+    wait_for_status(graphics::window_running);
     m_start_signal->setData(nullptr);
 }

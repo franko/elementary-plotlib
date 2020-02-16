@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+
 /* The functions below are meant to be used with a Window type that:
    - inherits from display_window_status for the methods lock, unlock
      and wait_until_notification
@@ -19,9 +21,6 @@ template <typename Window>
 int start_window_new_thread(Window *window, unsigned width, unsigned height, unsigned flags) {
     std::thread window_thread(run_window<Window>, window, width, height, flags);
     window_thread.detach();
-    request_error_e status = window->wait_until_notification(graphics::window_running);
-    if (status == request_satisfied || status == request_success) {
-        return 0;
-    }
-    return 1;
+    window->wait_for_status(graphics::window_running);
+    return 0;
 }

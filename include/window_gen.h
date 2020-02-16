@@ -3,7 +3,6 @@
 #include "window.h"
 #include "window_flags.h"
 #include "window_surface.h"
-#include "notify_request.h"
 #include "debug_priv.h"
 
 template <typename Window>
@@ -38,10 +37,7 @@ public:
     }
 
     void wait() override {
-        request_error_e status = m_window.wait_until_notification(graphics::window_closed);
-        if (status != request_satisfied && status != request_success) {
-            debug_log(1, "error while waiting window's closing, error code: %d", int(status));
-        }
+        m_window.wait_for_status(graphics::window_closed);
     }
 
     graphics::window_surface *get_window_surface() override {
