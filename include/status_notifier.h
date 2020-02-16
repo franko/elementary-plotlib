@@ -16,8 +16,8 @@ public:
     // is waiting for the given code.
     void set(StatusOrderedEnum new_status) {
         m_mutex.lock();
+        m_status = new_status;
         if (m_request_pending && m_request_status == new_status) {
-            m_status = new_status;
             m_request_pending = false;
             m_mutex.unlock();
             m_condition.notify_one();
