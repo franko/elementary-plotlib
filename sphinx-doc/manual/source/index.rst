@@ -21,6 +21,7 @@ All the definitions are provided by a single header file, ``libelplot.h``.
    plot.rst
    window.rst
    fox-integration.rst
+   lua-bindings.rst
    graphical-element-c.rst
    plot-c.rst
    window-c.rst
