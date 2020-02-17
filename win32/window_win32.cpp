@@ -1,6 +1,21 @@
 #include "win32/window_win32.h"
 #include "debug_priv.h"
 
+#ifdef LIBELPLOT_DEBUG
+void DebugLogLastError(int debug_level) {
+    DWORD errorMessageID = ::GetLastError();
+    fprintf(stderr, "::GetLastError: %ld\n", errorMessageID);
+    if(errorMessageID == 0) {
+        return;
+    }
+    LPSTR messageBuffer = nullptr;
+    FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+    debug_log(debug_level, messageBuffer);
+    LocalFree(messageBuffer);
+}
+#endif
+
 //------------------------------------------------------------------------
 HINSTANCE window_win32::g_windows_instance = 0;
 int       window_win32::g_windows_cmd_show = 0;
@@ -90,12 +105,12 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch(msg) {
     case WM_CREATE:
-        debug_log(1, "treating WM_CREATE event");
+        debug_log(2, "window_win32::proc treating WM_CREATE event");
         break;
 
     case WM_SIZE: {
         const unsigned width = LOWORD(lParam), height = HIWORD(lParam);
-        debug_log(1, "treating WM_SIZE event width: %d height: %d", width, height);
+        debug_log(2, "window_win32::proc treating WM_SIZE event width: %d height: %d", width, height);
         m_window_surface.resize(width, height);
         m_window_surface.render();
         break;
@@ -105,7 +120,7 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
 
     case WM_PAINT: {
-        debug_log(1, "treating WM_PAINT event");
+        debug_log(2, "window_win32::proc treating WM_PAINT event");
         PAINTSTRUCT ps;
         // Returns a HDC paintDC but is not used.
         ::BeginPaint(hWnd, &ps);
@@ -124,8 +139,11 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     case WM_ELEM_UPD_REGION:
         if (m_update_plot_index >= 0) {
+            debug_log(2, "window_win32::proc performing slot_refresh of slot index: %d", m_update_plot_index);
             m_window_surface.slot_refresh(m_update_plot_index);
             m_update_plot_index = -1;
+        } else {
+            debug_log(2, "window_win32::proc update message but no slot");
         }
         break;
 
@@ -210,7 +228,7 @@ bool window_win32::init(unsigned width, unsigned height, unsigned flags)
 int window_win32::run() {
     MSG msg;
     set_status(graphics::window_starting);
-    debug_log(1, "window run");
+    debug_log(2, "window_win32::run starting");
     for(;;) {
         bool status = ::GetMessage(&msg, 0, 0, 0);
         if (!status) {
@@ -219,13 +237,13 @@ int window_win32::run() {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
     }
-    debug_log(1, "window run exit");
+    debug_log(2, "window_win32::run exit");
     set_status(graphics::window_closed);
     return (int)msg.wParam;
 }
 
 void window_win32::update_region(const graphics::image& src_img, const agg::rect_i& r) {
-    debug_log(1, "update_region: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
+    debug_log(2, "window_win32::update_region %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
     HDC dc = ::GetDC(m_hwnd);
     display_pmap(dc, &src_img, &r);
     ::ReleaseDC(m_hwnd, dc);
@@ -241,5 +259,6 @@ bool window_win32::update_region_request(int index) {
     if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0)) {
         return true;
     }
+    DebugLogLastError(2);
     return false;
 }
