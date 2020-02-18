@@ -6,15 +6,15 @@
 #include "plot_agent.h"
 #include "window_platform_native.h"
 
-namespace elp {
+namespace elem {
 
-Window::Window() : window_impl_(new elp_window_native()) {
+Window::Window() : window_impl_(new elem_window_native()) {
 }
 
-Window::Window(const char *layout) : window_impl_{new elp_window_native(layout)} {
+Window::Window(const char *layout) : window_impl_{new elem_window_native(layout)} {
 }
 
-Window::Window(elp_window *window_impl_) : window_impl_(window_impl_) {
+Window::Window(elem_window *window_impl_) : window_impl_(window_impl_) {
 }
 
 Window::~Window() {

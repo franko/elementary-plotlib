@@ -1,7 +1,7 @@
 #include "libelplot_utils.h"
 #include "libelplot.h"
 
-using namespace elp;;
+using namespace elem;;
 
 int main() {
     InitializeFonts();

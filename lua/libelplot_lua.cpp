@@ -4,7 +4,7 @@
 #include "libelplot_utils.h"
 #include "libelplot_lua_cpp.h"
 
-namespace elp {
+namespace elem {
 
 static unsigned BitOr(sol::variadic_args va) {
     unsigned r = 0;
@@ -17,15 +17,15 @@ static unsigned BitOr(sol::variadic_args va) {
 void LuaOpenLibrary(lua_State *L) {
     sol::state_view lua(L);
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::bit32);
-    auto elp = lua.create_table();
-    elp.new_usertype<Object>("Object", sol::constructors<Object()>());
-    elp.new_usertype<Path>("Path", sol::constructors<Path()>(),
+    auto elem = lua.create_table();
+    elem.new_usertype<Object>("Object", sol::constructors<Object()>());
+    elem.new_usertype<Path>("Path", sol::constructors<Path()>(),
         "MoveTo", &Path::MoveTo, 
         "LineTo", &Path::LineTo,
         "ClosePolygon", &Path::ClosePolygon,
         sol::base_classes, sol::bases<Object>()
     );
-    elp.new_usertype<CurvePath>("CurvePath", sol::constructors<CurvePath()>(),
+    elem.new_usertype<CurvePath>("CurvePath", sol::constructors<CurvePath()>(),
         "MoveTo", &CurvePath::MoveTo,
         "LineTo", &CurvePath::LineTo,
         "Curve3", &CurvePath::Curve3,
@@ -34,19 +34,19 @@ void LuaOpenLibrary(lua_State *L) {
         "ClosePolygon", &CurvePath::ClosePolygon,
         sol::base_classes, sol::bases<Object>()
     );
-    elp.new_usertype<DashPath>("DashPath", sol::constructors<DashPath()>(),
+    elem.new_usertype<DashPath>("DashPath", sol::constructors<DashPath()>(),
         "AddDash", &DashPath::AddDash,
         sol::base_classes, sol::bases<Path, Object>()
     );
-    elp.new_usertype<Markers>("Markers", sol::constructors<Markers(double, Object)>(),
+    elem.new_usertype<Markers>("Markers", sol::constructors<Markers(double, Object)>(),
         sol::base_classes, sol::bases<Path, Object>()
     );
-    elp.new_usertype<Text>("Text", sol::constructors<Text(const char*, double, double, double)>(),
+    elem.new_usertype<Text>("Text", sol::constructors<Text(const char*, double, double, double)>(),
         "SetAngle", &Text::SetAngle,
         "SetPosition", &Text::SetPosition,
         sol::base_classes, sol::bases<Object>()
     );
-    elp.new_usertype<Plot>("Plot", sol::constructors<Plot(), Plot(unsigned)>(),
+    elem.new_usertype<Plot>("Plot", sol::constructors<Plot(), Plot(unsigned)>(),
         "SetTitle", &Plot::SetTitle,
         "SetXAxisTitle", &Plot::SetXAxisTitle,
         "SetYAxisTitle", &Plot::SetYAxisTitle,
@@ -63,7 +63,7 @@ void LuaOpenLibrary(lua_State *L) {
         "AddLegend", &Plot::AddLegend,
         "WriteSvg", &Plot::WriteSvg
     );
-    elp.new_usertype<Window>("Window", sol::constructors<Window()>(),
+    elem.new_usertype<Window>("Window", sol::constructors<Window()>(),
         "Attach", &Window::Attach,
         "SetLayout", &Window::SetLayout,
         "Start", &Window::Start,
@@ -74,25 +74,25 @@ void LuaOpenLibrary(lua_State *L) {
     plot_flags["ShowUnits"] = Plot::ShowUnits;
     plot_flags["AutoLimits"] = Plot::AutoLimits;
     plot_flags["ClipRegion"] = Plot::ClipRegion;
-    elp["plot"] = plot_flags;
+    elem["plot"] = plot_flags;
 
-    elp["xAxis"] = xAxis;
-    elp["yAxis"] = yAxis;
-    elp["WindowResize"] = WindowResize;
+    elem["xAxis"] = xAxis;
+    elem["yAxis"] = yAxis;
+    elem["WindowResize"] = WindowResize;
 
-    auto elp_property = lua.create_table();
-    elp_property["Fill"]    = property::Fill;
-    elp_property["Stroke"]  = property::Stroke;
-    elp_property["Outline"] = property::Outline;
-    elp_property["Crisp"]   = property::Crisp;
+    auto elem_property = lua.create_table();
+    elem_property["Fill"]    = property::Fill;
+    elem_property["Stroke"]  = property::Stroke;
+    elem_property["Outline"] = property::Outline;
+    elem_property["Crisp"]   = property::Crisp;
 
-    auto elp_utils = lua.create_table();
-    elp_utils["Sleep"] = utils::Sleep;
-    elp["utils"] = elp_utils;
+    auto elem_utils = lua.create_table();
+    elem_utils["Sleep"] = utils::Sleep;
+    elem["utils"] = elem_utils;
 
-    elp["flags"] = BitOr;
+    elem["flags"] = BitOr;
 
-    elp["property"] = elp_property;
-    lua["elp"] = elp;
+    elem["property"] = elem_property;
+    lua["elem"] = elem;
 }
 }

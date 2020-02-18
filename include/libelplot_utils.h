@@ -9,7 +9,7 @@
 #include <unistd.h>
 #endif
 
-namespace elp {
+namespace elem {
 namespace utils {
 
 #ifdef WIN32

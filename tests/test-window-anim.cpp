@@ -4,7 +4,7 @@
 #include "libelplot_utils.h"
 #include "libelplot.h"
 
-using namespace elp;
+using namespace elem;
 
 void Rotate(const double a, double& x, double& y) {
     double x_tmp = x * std::cos(a) + y * std::sin(a);

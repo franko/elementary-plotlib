@@ -1,7 +1,7 @@
 Plot
 ====
 
-.. cpp:namespace:: elp
+.. cpp:namespace:: elem
 
 .. cpp:class:: Plot
 

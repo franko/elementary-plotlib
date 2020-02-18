@@ -90,5 +90,5 @@ private:
     int m_current_id;
 };
 
-template <> void canvas_svg::draw<elp_object>(elp_object& vs, agg::rgba8 c);
-template <> void canvas_svg::draw_outline<elp_object>(elp_object& vs, agg::rgba8 c);
+template <> void canvas_svg::draw<elem_object>(elem_object& vs, agg::rgba8 c);
+template <> void canvas_svg::draw_outline<elem_object>(elem_object& vs, agg::rgba8 c);

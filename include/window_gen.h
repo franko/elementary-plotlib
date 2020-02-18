@@ -6,7 +6,7 @@
 #include "debug_priv.h"
 
 template <typename Window>
-class window_gen : public elp_window {
+class window_gen : public elem_window {
 public:
     template <typename... Args>
     window_gen(Args&&... args): m_surface(nullptr), m_window(m_surface, std::forward<Args>(args)...) {

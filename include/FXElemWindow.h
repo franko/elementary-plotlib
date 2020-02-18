@@ -18,12 +18,12 @@ private:
 public:
     FXElemWindow(FXComposite* p, const char *split_str = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 
-    int Attach(elp::Plot& p, const char* slot_str);
+    int Attach(elem::Plot& p, const char* slot_str);
     void SetLayout(const char *fmt);
     void SlotRefresh(unsigned index);
     void Wait();
 
 private:
-    elp::Window m_window;
+    elem::Window m_window;
 };
 }

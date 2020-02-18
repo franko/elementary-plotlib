@@ -1,7 +1,7 @@
 #ifndef LIBELPLOT_GENERATOR_H_
 #define LIBELPLOT_GENERATOR_H_
 
-namespace elp {
+namespace elem {
 
 template <typename Function, typename PathType = Path>
 void FxLineDraw(PathType& line, double x0, double x1, Function f, int sampling_intervals = 128) {

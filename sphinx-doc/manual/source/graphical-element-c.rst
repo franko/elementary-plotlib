@@ -2,7 +2,7 @@
 Graphical Elements - C API
 ==========================
 
-.. c:type:: elp_color 
+.. c:type:: elem_color 
 
   Used to express colors in RGBA format. Corresponds to an unsigned 32 bit integer type.
   The R, G, B and A corresponds respectively to the red, green, blue and alpha channel and each takes 8 bit.
@@ -30,83 +30,83 @@ The following are used when adding an element into a plot to specify if should b
 In addition some properties affect the way the object will be drawn on the screen.
 The values are meant tb be combined using logical bit operators.
 
-.. c:macro:: elp_fill
+.. c:macro:: elem_fill
 
   Draw each closed polygon with a filling color.
 
-.. c:macro:: elp_stroke
+.. c:macro:: elem_stroke
 
   Draw the stroking of the path or contour.
 
-.. c:macro:: elp_outline
+.. c:macro:: elem_outline
 
   Only the outline of the path will be drawn, without anti-aliasing.
 
-.. c:macro:: elp_crisp
+.. c:macro:: elem_crisp
 
 Graphics objects types and functions
 ------------------------------------
 
-.. c:type:: elp_object
+.. c:type:: elem_object
 
-  A graphical element that can be added to a plot. An instance of the :c:type:`elp_object` cannot be directly created but it is the base class of other elements like, for example, a :c:type:`elp_path`.
+  A graphical element that can be added to a plot. An instance of the :c:type:`elem_object` cannot be directly created but it is the base class of other elements like, for example, a :c:type:`elem_path`.
 
-.. c:type:: elp_path
+.. c:type:: elem_path
 
   A graphical path that can contain polygonal paths, open or closed. Can be cast into an object using the function :c:func:`path_as_object`.
 
-  .. c:function:: elp_path *elp_path_new()
+  .. c:function:: elem_path *elem_path_new()
 
     Create a new empty path.
 
-  .. c:function:: void elp_path_move_to(elp_path *path, double x, double y)
+  .. c:function:: void elem_path_move_to(elem_path *path, double x, double y)
 
     Move the path to the given location without a connecting line.
 
-  .. c:function:: void elp_path_line_to(elp_path *path, double x, double y)
+  .. c:function:: void elem_path_line_to(elem_path *path, double x, double y)
 
     Add a straight line segment up to the given location.
 
-  .. c:function:: void elp_path_close_polygon(elp_path *path)
+  .. c:function:: void elem_path_close_polygon(elem_path *path)
 
     Close the current polygon.
 
-.. c:function:: elp_object *path_as_object(elp_path *path)
+.. c:function:: elem_object *path_as_object(elem_path *path)
 
-   This function is used to cast a pointer to elp_path into a pointer to elp_object in a type-safe way.
+   This function is used to cast a pointer to elem_path into a pointer to elem_object in a type-safe way.
 
-.. c:type:: elp_curve
+.. c:type:: elem_curve
 
-  A graphical path similar to the :c:type:`elp_path` but can additionally contain Bézier and elliptical arcs. More details about how exactly the arcs are drawn can be found from the `official SVG documentation on Paths <https://svgwg.org/specs/paths/#PathElement>`_.
+  A graphical path similar to the :c:type:`elem_path` but can additionally contain Bézier and elliptical arcs. More details about how exactly the arcs are drawn can be found from the `official SVG documentation on Paths <https://svgwg.org/specs/paths/#PathElement>`_.
 
-  Please note that the :c:type:`elp_curve` class does not inherit from :c:type:`elp_path` even if it implements all the methods of the latter.
+  Please note that the :c:type:`elem_curve` class does not inherit from :c:type:`elem_path` even if it implements all the methods of the latter.
   This is due to the their internal representation.
 
-  .. c:function:: elp_curve *elp_curve_new()
+  .. c:function:: elem_curve *elem_curve_new()
 
     Create an new empty path that can contain Bézier and elliptic arcs.
 
-  .. c:function:: elp_curve *elp_curve_copy(const elp_curve *source)
+  .. c:function:: elem_curve *elem_curve_copy(const elem_curve *source)
 
-    Create a copy of the :c:type:`elp_curve` object.
+    Create a copy of the :c:type:`elem_curve` object.
 
-  .. c:function:: void elp_curve_move_to(elp_curve *curve, double x, double y)
+  .. c:function:: void elem_curve_move_to(elem_curve *curve, double x, double y)
 
     Move the path to the given location without a connecting line.
 
-  .. c:function:: void elp_curve_line_to(elp_curve *curve, double x, double y)
+  .. c:function:: void elem_curve_line_to(elem_curve *curve, double x, double y)
 
     Add a straight line segment up to the given location.
 
-  .. c:function:: void elp_curve_curve3(elp_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to)
+  .. c:function:: void elem_curve_curve3(elem_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to)
 
     Add a quadratic Bézier curve up to the point ``(x_to, y_to)`` with control point ``(x_ctrl, y_ctrl)``.
 
-  .. c:function:: void elp_curve_curve4(elp_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to)
+  .. c:function:: void elem_curve_curve4(elem_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to)
 
     Add a cubic Bézier curve up to the point ``(x_to, y_to)`` with control points ``(x_ctrl1, y_ctrl1)`` and  ``(x_ctrl2, y_ctrl2)``.
 
-  .. c:function:: elp_curve_arc_to(elp_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y)
+  .. c:function:: elem_curve_arc_to(elem_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y)
 
      Add an elliptical path up to the point  ``(x, y)``. The other parameters are:
 
@@ -115,37 +115,37 @@ Graphics objects types and functions
      -  ``large_arc_flag``, if a large angle or small angle arc should be chosen.
      -  ``bool sweep_flag``, if the arc should be drawn in the sense of increasing angles.
 
-  .. c:function:: void elp_curve_close_polygon()
+  .. c:function:: void elem_curve_close_polygon()
 
     Close the current polygon.
 
-.. c:type:: elp_markers
+.. c:type:: elem_markers
 
   Like a path but instead of drawing a path it draws a marker at each vertex of the path.
 
-  .. c:function:: elp_markers *elp_markers_new(double size, elp_object marker_symbol)
+  .. c:function:: elem_markers *elem_markers_new(double size, elem_object marker_symbol)
 
     Create an empty Markers path that will draw markers of the specified `size`, in pixels, and using an object `marker_symbol` as a marker. The marker symbol should be an object that span a rectangular area of unit side and centered on zero.
 
-  .. c:function:: elp_markers *elp_markers_copy(const elp_markers *markers)
+  .. c:function:: elem_markers *elem_markers_copy(const elem_markers *markers)
 
     Create a copy of an object of type :c:type:`canavs_markers`.
 
-  .. c:function:: void elp_markers_free(anvas_markers *markers)
+  .. c:function:: void elem_markers_free(anvas_markers *markers)
 
     Free an object of type c:type:`canavs_markers`.
 
-.. c:function:: elp_object *elp_marker_symbol_by_index(int index)
+.. c:function:: elem_object *elem_marker_symbol_by_index(int index)
 
   Returns a marker symbol from a standard list of symbol.
   The symbol is selected by the integer argument.
 
-.. c:function:: elp_object *elp_marker_symbol_by_name(const char *name)
+.. c:function:: elem_object *elem_marker_symbol_by_name(const char *name)
 
   Returns a marker symbol from a standard list of symbol.
   The symbol is selected by name.
 
-.. cpp:class:: Text : public elp_object
+.. cpp:class:: Text : public elem_object
 
   An object that draws a text label. It is meant to be drawn with a fill color, without stroking.
 
@@ -161,7 +161,7 @@ Graphics objects types and functions
 
     Set the position of the text.
 
-.. cpp:class:: DashPath : public elp_path
+.. cpp:class:: DashPath : public elem_path
 
   A path object but it will be drawn as a dashed lines.
 

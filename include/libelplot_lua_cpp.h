@@ -3,7 +3,7 @@
 
 #include <lua.hpp>
 
-namespace elp {
+namespace elem {
     void LuaOpenLibrary(lua_State *L);
 }
 

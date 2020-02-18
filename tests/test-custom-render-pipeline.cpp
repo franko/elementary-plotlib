@@ -20,10 +20,10 @@
 
    As for the classes actually used, below we are using objects from the
    graphics::transform namespace and they all works by implementing the
-   elp_object interface with virtual functions. This is the more simple
+   elem_object interface with virtual functions. This is the more simple
    approach but in principle one could build a chain using only basic AGG
    objects, without virtual methods or interfaces. The only constraint is that
-   the class itself has to implement the elp_object interface. In this case we
+   the class itself has to implement the elem_object interface. In this case we
    have it automatically because we are inheriting from
    graphics::transform::scaling_a.
 
@@ -57,7 +57,7 @@ int main()
 {
     graphics::initialize_fonts();
 
-    elp_window_native win;
+    elem_window_native win;
     graphics::plot p(graphics::plot::show_units);
     p.set_limits({-0.7, -0.3, 0.7, 1.1});
 

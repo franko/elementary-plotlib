@@ -3,7 +3,7 @@
 
 #include "libelplot.h"
 
-using namespace elp;
+using namespace elem;
 
 Plot CreateFunctionPlot(const char *title, unsigned flags) {
     Plot p;

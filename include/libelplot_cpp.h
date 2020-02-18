@@ -41,7 +41,7 @@ namespace FX {
     class FXElemWindow;
 }
 
-namespace elp {
+namespace elem {
 
 typedef uint32_t Color;
 
@@ -91,11 +91,11 @@ public:
     Object& operator=(const Object& that);
     Object& operator=(Object&& that);
 protected:
-    Object(elp_object *object_impl);
-    elp_object *object_impl_;
+    Object(elem_object *object_impl);
+    elem_object *object_impl_;
 
     // Friend declaration needed because Plot::Add method needs to
-    // have access to inner elp_object pointer, the object_impl_ field.
+    // have access to inner elem_object pointer, the object_impl_ field.
     friend class Plot;
     friend class Markers;
 
@@ -117,8 +117,8 @@ public:
     void ClosePolygon();
 
 protected:
-    Path(elp_object *object_impl) : Object(object_impl) { }
-    elp_path *PathImpl() { return (elp_path *) object_impl_; }
+    Path(elem_object *object_impl) : Object(object_impl) { }
+    elem_path *PathImpl() { return (elem_path *) object_impl_; }
 };
 
 // FIXME to be changed or improved: it would be better if CurvePath was
@@ -137,8 +137,8 @@ public:
     void ClosePolygon();
 
 protected:
-    CurvePath(elp_object *object) : Object(object) { }
-    elp_curve *CurveImpl() { return (elp_curve *) object_impl_; }
+    CurvePath(elem_object *object) : Object(object) { }
+    elem_curve *CurveImpl() { return (elem_curve *) object_impl_; }
 };
 
 class DashPath : public Path {
@@ -151,8 +151,8 @@ public:
     void AddDash(double a, double b);
 
 protected:
-    DashPath(elp_object *object_impl) : Path(object_impl) { }
-    elp_dashed *DashedImpl() { return (elp_dashed *) object_impl_; }
+    DashPath(elem_object *object_impl) : Path(object_impl) { }
+    elem_dashed *DashedImpl() { return (elem_dashed *) object_impl_; }
 };
 
 class Polygon : public Path {
@@ -214,7 +214,7 @@ public:
 private:
     void UpdateWindowsAndCommitChanges();
 
-    elp_plot plot_impl_;
+    elem_plot plot_impl_;
 
     friend class Window;
     friend class FX::FXElemWindow;
@@ -224,7 +224,7 @@ class Window {
 public:
     Window();
     Window(const char *layout);
-    Window(elp_window *window_impl);
+    Window(elem_window *window_impl);
     ~Window();
 
     int Attach(Plot& plot, const char* slot_str);
@@ -234,7 +234,7 @@ public:
     void Wait();
 
 private:
-    elp_window *window_impl_;
+    elem_window *window_impl_;
 };
 
 void InitializeFonts();

@@ -3,7 +3,7 @@
 
 #include "FXElemWindow.h"
 
-using namespace elp;
+using namespace elem;
 
 class PlotExampleApp : public FXApp {
     FXDECLARE(PlotExampleApp)

@@ -4,7 +4,7 @@
 #include "FXElemWindow.h"
 #include "libelplot_utils.h"
 
-using namespace elp;
+using namespace elem;
 
 void RunFox(FXApp *app, FXMainWindow *win) {
     app->create();

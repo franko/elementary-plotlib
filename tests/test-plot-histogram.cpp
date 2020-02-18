@@ -2,7 +2,7 @@
 
 #include "libelplot.h"
 
-using namespace elp;
+using namespace elem;
 
 template <typename ParentDistDensity, typename RandomEngine>
 void GenHistogram(Plot& plot, RandomEngine &e, ParentDistDensity parent_df, double x1, double x2, int bins_number, int N) {

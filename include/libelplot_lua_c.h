@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-void elp_lua_open_library(lua_State *L);
+void elem_lua_open_library(lua_State *L);
 
 #ifdef __cplusplus
 }

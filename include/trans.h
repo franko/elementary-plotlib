@@ -18,15 +18,15 @@
 
 namespace graphics { namespace transform {
 
-    typedef elp_object_scaling<manage_owner> scaling;
-    typedef elp_object_scaling<manage_not_owner> scaling_a;
+    typedef elem_object_scaling<manage_owner> scaling;
+    typedef elem_object_scaling<manage_not_owner> scaling_a;
 
-    typedef agg::conv_stroke<elp_object> conv_stroke;
+    typedef agg::conv_stroke<elem_object> conv_stroke;
 
     class stroke_a : public sg_adapter<conv_stroke, approx_scale> {
         typedef sg_adapter<conv_stroke, approx_scale> base_type;
     public:
-        stroke_a(elp_object* src): base_type(src), m_width(1.0) { }
+        stroke_a(elem_object* src): base_type(src), m_width(1.0) { }
 
         void width(double w) {
             this->m_output.width(w);
@@ -46,19 +46,19 @@ namespace graphics { namespace transform {
     };
 
     struct stroke : stroke_a {
-        stroke(elp_object* src) : stroke_a(src) {}
+        stroke(elem_object* src) : stroke_a(src) {}
         virtual ~stroke() {
             delete m_source;
         }
     };
 
     //------------------------------------------------ curve transform
-    typedef agg::conv_curve<elp_object> curve_type;
+    typedef agg::conv_curve<elem_object> curve_type;
 
     class curve_a : public sg_adapter<curve_type, approx_scale> {
         typedef sg_adapter<curve_type, approx_scale> base_type;
     public:
-        curve_a(elp_object* src) : base_type(src) { }
+        curve_a(elem_object* src) : base_type(src) { }
 
         svg_property_list* svg_path(str& s, double h) override {
             svg_curve_coords_from_vs(this->m_source, s, h);
@@ -67,19 +67,19 @@ namespace graphics { namespace transform {
     };
 
     struct curve : curve_a {
-        curve(elp_object* src) : curve_a(src) {}
+        curve(elem_object* src) : curve_a(src) {}
         virtual ~curve() {
             delete m_source;
         }
     };
 
     //------------------------------------------------ dash transform
-    typedef agg::conv_dash<elp_object> dash_type;
+    typedef agg::conv_dash<elem_object> dash_type;
 
     class dash_a : public sg_adapter<dash_type, no_approx_scale> {
         typedef sg_adapter<dash_type, no_approx_scale> base_type;
     public:
-        dash_a(elp_object* src) : base_type(src), m_dasharray(16) { }
+        dash_a(elem_object* src) : base_type(src), m_dasharray(16) { }
 
         svg_property_list* svg_path(str& s, double h) override {
             svg_property_list* ls = this->m_source->svg_path(s, h);
@@ -99,16 +99,16 @@ namespace graphics { namespace transform {
     };
 
     struct dash : dash_a {
-        dash(elp_object* src) : dash_a(src) {}
+        dash(elem_object* src) : dash_a(src) {}
         virtual ~dash() {
             delete m_source;
         }
     };
 
     //------------------------------------------------ affine transform
-    class affine_a : public sg_adapter<agg::conv_transform<elp_object>, no_approx_scale> {
+    class affine_a : public sg_adapter<agg::conv_transform<elem_object>, no_approx_scale> {
     public:
-        affine_a(elp_object *src, const agg::trans_affine& mtx) : sg_adapter<agg::conv_transform<elp_object>, no_approx_scale>(src, m_matrix), m_matrix(mtx) {
+        affine_a(elem_object *src, const agg::trans_affine& mtx) : sg_adapter<agg::conv_transform<elem_object>, no_approx_scale>(src, m_matrix), m_matrix(mtx) {
             m_norm = m_matrix.scale();
         }
 
@@ -127,16 +127,16 @@ namespace graphics { namespace transform {
     };
 
     struct affine : affine_a {
-        affine(elp_object* src, const agg::trans_affine& m) : affine_a(src, m) {}
+        affine(elem_object* src, const agg::trans_affine& m) : affine_a(src, m) {}
         virtual ~affine() {
             delete m_source;
         }
     };
 
     //------------------------------------------------ extend transform
-    struct extend : sg_adapter<agg::conv_contour<elp_object>, approx_scale> {
-        extend(elp_object* src):
-            sg_adapter<agg::conv_contour<elp_object>, approx_scale>(src)
+    struct extend : sg_adapter<agg::conv_contour<elem_object>, approx_scale> {
+        extend(elem_object* src):
+            sg_adapter<agg::conv_contour<elem_object>, approx_scale>(src)
         { }
 
         virtual ~extend() {
@@ -145,7 +145,7 @@ namespace graphics { namespace transform {
     };
 
     //------------------------------------------------ marker transform
-    typedef my::conv_simple_marker<elp_object, elp_object> marker_type;
+    typedef my::conv_simple_marker<elem_object, elem_object> marker_type;
 
     class marker_a :
         public sg_adapter<marker_type, no_approx_scale> {
@@ -153,7 +153,7 @@ namespace graphics { namespace transform {
         typedef sg_adapter<marker_type, no_approx_scale> base_type;
 
     public:
-        marker_a(elp_object* src, double size, elp_object* sym):
+        marker_a(elem_object* src, double size, elem_object* sym):
             base_type(src, *sym), m_size(size), m_scale(m_size), m_symbol(sym)
         {
             // we need to apply the scale transform here to ensure that
@@ -196,7 +196,7 @@ namespace graphics { namespace transform {
     private:
         double m_size;
         agg::trans_affine_scaling m_scale;
-        elp_object* m_symbol;
+        elem_object* m_symbol;
 
         str gen_svg_marker_def(int id, agg::rgba8 c, str& marker_id) {
 
@@ -235,7 +235,7 @@ namespace graphics { namespace transform {
     };
 
     struct marker : marker_a {
-        marker(elp_object* src, double size, elp_object* sym):
+        marker(elem_object* src, double size, elem_object* sym):
             marker_a(src, size, sym)
         {}
 

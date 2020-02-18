@@ -6,9 +6,9 @@
 
 #include "canvas_path.h"
 
-class elp_dashed : public elp_path {
+class elem_dashed : public elem_path {
 public:
-    elp_dashed() : elp_path(), m_path_dash(m_path_scaling), m_svg_dash_array(16) { }
+    elem_dashed() : elem_path(), m_path_dash(m_path_scaling), m_svg_dash_array(16) { }
 
     void rewind(unsigned path_id) override {
         m_path_dash.rewind(path_id);
@@ -32,8 +32,8 @@ public:
         return new svg_property_list(item, nullptr);
     }
 
-    elp_object *copy() const override {
-        elp_dashed *new_object = new elp_dashed{};
+    elem_object *copy() const override {
+        elem_dashed *new_object = new elem_dashed{};
         vertex_source_copy(new_object->m_path, m_path);
         new_object->m_dash_lengths = m_dash_lengths;
         new_object->m_svg_dash_array = m_svg_dash_array;

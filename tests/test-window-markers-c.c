@@ -29,40 +29,40 @@ static double box_muller(struct bm_generator *gen, double mu, double sigma) {
 }
 
 int main() {
-    elp_initialize_fonts();
+    elem_initialize_fonts();
 
-    elp_plot *plot = elp_plot_new(elp_plot_show_units | elp_plot_auto_limits);
-    elp_plot_set_clip_mode(plot, false);
+    elem_plot *plot = elem_plot_new(elem_plot_show_units | elem_plot_auto_limits);
+    elem_plot_set_clip_mode(plot, false);
 
     srand(193);
     struct bm_generator gen[1] = {{false, 0.0}};
 
-    elp_markers *markers = elp_markers_new(6, elp_marker_symbol_by_index(1));
+    elem_markers *markers = elem_markers_new(6, elem_marker_symbol_by_index(1));
     const double x0 = 0.0001, x1 = 8 * 2 * 3.14153265359;
     const int n_markers = 23;
     for (int i = 0; i < n_markers; i++) {
         const double x = x0 + i * (x1 - x0) / (n_markers - 1);
-        elp_path_line_to(markers_as_path(markers), x, xfsin(x) + box_muller(gen, 0.0, 0.02));
+        elem_path_line_to(markers_as_path(markers), x, xfsin(x) + box_muller(gen, 0.0, 0.02));
     }    
-    elp_plot_add(plot, markers_as_object(markers), elp_color_blue, 1.5, elp_color_none, elp_stroke);
+    elem_plot_add(plot, markers_as_object(markers), elem_color_blue, 1.5, elem_color_none, elem_stroke);
 
-    elp_path *line = elp_path_new();
+    elem_path *line = elem_path_new();
     const int n_line = 256;
     for (int i = 0; i < n_line; i++) {
         const double x = x0 + i * (x1 - x0) / (n_line - 1);
-        elp_path_line_to(line, x, xfsin(x));
+        elem_path_line_to(line, x, xfsin(x));
     }
-    elp_plot_add(plot, path_as_object(line), elp_color_red, 1.5, elp_color_none, elp_stroke);
+    elem_plot_add(plot, path_as_object(line), elem_color_red, 1.5, elem_color_none, elem_stroke);
 
-    elp_plot_set_title(plot, "Function plot example");
-    elp_plot_set_x_axis_title(plot, "x variable");
+    elem_plot_set_title(plot, "Function plot example");
+    elem_plot_set_x_axis_title(plot, "x variable");
 
-    elp_window *window = elp_window_new();
-    elp_window_attach(window, plot, "");
-    elp_window_start(window, 640, 480, elp_window_resize);
-    elp_window_wait(window);
+    elem_window *window = elem_window_new();
+    elem_window_attach(window, plot, "");
+    elem_window_start(window, 640, 480, elem_window_resize);
+    elem_window_wait(window);
 
-    elp_window_free(window);
-    elp_plot_free(plot);
+    elem_window_free(window);
+    elem_plot_free(plot);
     return 0;
 }

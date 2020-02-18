@@ -4,7 +4,7 @@ FOX toolkit integration
 The Elementary Plot library can be used inside a `FOX Toolkit <http://fox-toolkit.org/>`_ application using a special class :cpp:class:`FX::FXElemWindow` declared in the header file ``FXElemWindow.h``.
 
 The :cpp:class:`FX::FXElemWindow` inherit from ``FX::FXElemBaseWindow`` which in turns inherits from ``FX::FXWindow`` and it can be used as an ordinary FOX Window in every respect.
-In addition the class implements the method :cpp:func:`FX::FXElemWindow::Attach` to bind a plot, like it can be done with a :cpp:class:`elp::Window`.
+In addition the class implements the method :cpp:func:`FX::FXElemWindow::Attach` to bind a plot, like it can be done with a :cpp:class:`elem::Window`.
 
 The plots themselves can be created and modified using the standard C++ API of the Elementary Plot Library.
 
@@ -18,13 +18,13 @@ Once a plot is bound to a window the application will be automatically updated f
 
     Ordinary FOX constructor with the addition of ``plot_layout`` used to subdivide the windows in multiple plotting slots.
 
-  .. cpp:function:: int Attach(elp::Plot& p, const char* slot_str)
+  .. cpp:function:: int Attach(elem::Plot& p, const char* slot_str)
 
-    Act like the method :cpp:class:`elp::Window` of the :cpp:class:`elp::Window` class to bind a plot to a given slot.
+    Act like the method :cpp:class:`elem::Window` of the :cpp:class:`elem::Window` class to bind a plot to a given slot.
 
   .. cpp:function:: void SlotRefresh(unsigned index)
 
-    Act like the :cpp:class:`elp::Window`'s method of the same name.
+    Act like the :cpp:class:`elem::Window`'s method of the same name.
 
   .. cpp:function:: void SetLayout(const char *fmt)
 
@@ -33,12 +33,12 @@ Once a plot is bound to a window the application will be automatically updated f
 
   .. cpp:function:: void Wait()
 
-    Act like the :cpp:class:`elp::Window`'s method of the same name.
+    Act like the :cpp:class:`elem::Window`'s method of the same name.
     Normally not needed in classic FOX applications.
 
 .. cpp:class:: FX::FXElemBaseWindow : public FX::FXWindow
 
-  FOX toolkit class that provide support for and :cpp:class:`elp::Window`.
+  FOX toolkit class that provide support for and :cpp:class:`elem::Window`.
   It is used for the implementation and should not be used directly.
 
 .. cpp:struct:: FXElemStartMessage
@@ -50,10 +50,10 @@ Once a plot is bound to a window the application will be automatically updated f
   - `unsigned height`
   - `unsigned flags`
 
-.. cpp:function:: elp_window *elp_window_fox(FXGUISignal *start_signal)
+.. cpp:function:: elem_window *elem_window_fox(FXGUISignal *start_signal)
   
-  Create a new object that can be passed to :cpp:func:`FX::FXElemWindow::Attach` to create a :cpp:class:`elp::Window`.
-  It should be used on a worker thread to create a :cpp:class:`elp::Window` that is started in the FOX GUI thread.
+  Create a new object that can be passed to :cpp:func:`FX::FXElemWindow::Attach` to create a :cpp:class:`elem::Window`.
+  It should be used on a worker thread to create a :cpp:class:`elem::Window` that is started in the FOX GUI thread.
   The start_signal should be a signal, previously created in the GUI thread, that trigger a request to create a new Elementary Plot window.
   The method that handle the start_signal should call the function :cpp:func:`FXElemBuildWindow` passing a FXComposite where the Elementary Plot window should be placed.
 

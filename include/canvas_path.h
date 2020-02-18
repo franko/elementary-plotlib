@@ -10,12 +10,12 @@
 #include "canvas_object.h"
 
 /* This class serve as a base class for derived classes that have a
-   path and should implement the elp_object interface.
-   No virtual methods for elp_object is implemented except, for
+   path and should implement the elem_object interface.
+   No virtual methods for elem_object is implemented except, for
    convenience bounding_box. */
-class elp_path_base : public elp_object {
+class elem_path_base : public elem_object {
 public:
-    elp_path_base() : m_path() { }
+    elem_path_base() : m_path() { }
 
     void line_to(double x, double y) {
         m_path.line_to(x, y);
@@ -61,11 +61,11 @@ protected:
     agg::path_storage m_path;
 };
 
-/* The same of the elp_path_base class but provide scaling and implement
-   the related apply_transform method from elp_object interface. */
-class path_base_scaling : public elp_path_base {
+/* The same of the elem_path_base class but provide scaling and implement
+   the related apply_transform method from elem_object interface. */
+class path_base_scaling : public elem_path_base {
 public:
-    path_base_scaling() : elp_path_base(), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
+    path_base_scaling() : elem_path_base(), m_scaling_matrix(), m_path_scaling(m_path, m_scaling_matrix) { }
 
     void apply_transform(const agg::trans_affine& m, double as) override {
         m_scaling_matrix = m;
@@ -76,11 +76,11 @@ protected:
     agg::conv_transform<agg::path_storage> m_path_scaling;
 };
 
-class elp_path : public path_base_scaling {
+class elem_path : public path_base_scaling {
 public:
-    elp_path() : path_base_scaling() { }
+    elem_path() : path_base_scaling() { }
 
-    elp_path(std::initializer_list<std::pair<double, double>> lst) : path_base_scaling() {
+    elem_path(std::initializer_list<std::pair<double, double>> lst) : path_base_scaling() {
         path_from_initializer_list(lst);
     }
 
@@ -92,8 +92,8 @@ public:
         return m_path_scaling.vertex(x, y);
     }
 
-    elp_object *copy() const override {
-        elp_path *new_object = new elp_path();
+    elem_object *copy() const override {
+        elem_path *new_object = new elem_path();
         vertex_source_copy(new_object->m_path, m_path);
         return new_object;
     }

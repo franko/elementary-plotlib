@@ -2,7 +2,7 @@
 Graphical Elements
 ==================
 
-.. cpp:namespace:: elp
+.. cpp:namespace:: elem
 
 Graphical elements are created and added to plots.
 They are drawn with a filling of a given color and a stroking of a given color and line width.

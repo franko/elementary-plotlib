@@ -29,7 +29,7 @@ inline bool color_alpha_not_zero(const agg::rgba8& color) {
 }
 
 struct sg_element {
-    elp_object* object;
+    elem_object* object;
     agg::rgba8 stroke_color;
     float      stroke_width;
     agg::rgba8 fill_color;
@@ -92,17 +92,17 @@ public:
         m_elements.add(e);
     }
 
-    void add(elp_object* obj, agg::rgba8 fill_color, agg::rgba8 stroke_color, float stroke_width, unsigned flags = 0) {
+    void add(elem_object* obj, agg::rgba8 fill_color, agg::rgba8 stroke_color, float stroke_width, unsigned flags = 0) {
         const sg_element e{obj, stroke_color, stroke_width, fill_color, graphics::property::stroke|graphics::property::fill|flags};
         m_elements.add(e);
     }
 
-    void add_fill(elp_object* obj, agg::rgba8 fill_color, unsigned flags = 0) {
+    void add_fill(elem_object* obj, agg::rgba8 fill_color, unsigned flags = 0) {
         const sg_element e{obj, colors::zero(), 0.0, fill_color, graphics::property::fill|flags};
         m_elements.add(e);
     }
 
-    void add_stroke(elp_object* obj, agg::rgba8 color, float line_width, unsigned flags = 0) {
+    void add_stroke(elem_object* obj, agg::rgba8 color, float line_width, unsigned flags = 0) {
         const sg_element e{obj, color, line_width, colors::zero(), graphics::property::stroke|flags};
         m_elements.add(e);
     }

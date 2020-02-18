@@ -36,155 +36,155 @@ extern "C" {
 #endif
 
 enum {
-    elp_window_resize            = 1,
-    elp_window_hw_buffer         = 2,
-    elp_window_keep_aspect_ratio = 4,
-    elp_window_process_all_keys  = 8,
+    elem_window_resize            = 1,
+    elem_window_hw_buffer         = 2,
+    elem_window_keep_aspect_ratio = 4,
+    elem_window_process_all_keys  = 8,
 };
 
-enum { elp_color_red = 0xB40000FF, elp_color_green = 0x00CC00ff, elp_color_blue = 0x0000B4FF, elp_color_yellow = 0xF5FE00FF, elp_color_black = 0x000000FF, elp_color_gray = 0xBBBBBBFF, elp_color_white = 0xFFFFFFFF, elp_color_none = 0 };
+enum { elem_color_red = 0xB40000FF, elem_color_green = 0x00CC00ff, elem_color_blue = 0x0000B4FF, elem_color_yellow = 0xF5FE00FF, elem_color_black = 0x000000FF, elem_color_gray = 0xBBBBBBFF, elem_color_white = 0xFFFFFFFF, elem_color_none = 0 };
 
 enum {
-    elp_fill    = 1 << 0,
-    elp_stroke  = 1 << 1,
-    elp_outline = 1 << 2,
-    elp_crisp   = 1 << 3,
-};
-
-enum {
-    elp_plot_show_units = 1 << 0,
-    elp_plot_auto_limits = 1 << 1,
-    elp_plot_clip_region = 1 << 2
+    elem_fill    = 1 << 0,
+    elem_stroke  = 1 << 1,
+    elem_outline = 1 << 2,
+    elem_crisp   = 1 << 3,
 };
 
 enum {
-    elp_plot_right  = 0,
-    elp_plot_left   = 1, 
-    elp_plot_bottom = 2,
-    elp_plot_top    = 3
+    elem_plot_show_units = 1 << 0,
+    elem_plot_auto_limits = 1 << 1,
+    elem_plot_clip_region = 1 << 2
 };
 
 enum {
-    elp_x_axis = 0,
-    elp_y_axis = 1,
+    elem_plot_right  = 0,
+    elem_plot_left   = 1, 
+    elem_plot_bottom = 2,
+    elem_plot_top    = 3
 };
 
-typedef uint32_t elp_color;
+enum {
+    elem_x_axis = 0,
+    elem_y_axis = 1,
+};
 
-struct elp_rectangle {
+typedef uint32_t elem_color;
+
+struct elem_rectangle {
     float x1, y1, x2, y2;
 };
 
 #ifdef __cplusplus
-class elp_object;
-class elp_path;
-class elp_curve;
-class elp_dashed;
-class elp_markers;
-class elp_plot;
-class elp_window;
+class elem_object;
+class elem_path;
+class elem_curve;
+class elem_dashed;
+class elem_markers;
+class elem_plot;
+class elem_window;
 #else
-struct elp_object;
-struct elp_path;
-struct elp_curve;
-struct elp_dashed;
-struct elp_markers;
-struct elp_plot;
-struct elp_window;
-typedef struct elp_object elp_object;
-typedef struct elp_path elp_path;
-typedef struct elp_curve elp_curve;
-typedef struct elp_dashed elp_dashed;
-typedef struct elp_markers elp_markers;
-typedef struct elp_plot elp_plot;
-typedef struct elp_window elp_window;
+struct elem_object;
+struct elem_path;
+struct elem_curve;
+struct elem_dashed;
+struct elem_markers;
+struct elem_plot;
+struct elem_window;
+typedef struct elem_object elem_object;
+typedef struct elem_path elem_path;
+typedef struct elem_curve elem_curve;
+typedef struct elem_dashed elem_dashed;
+typedef struct elem_markers elem_markers;
+typedef struct elem_plot elem_plot;
+typedef struct elem_window elem_window;
 #endif
 
-elp_object *elp_object_copy(const elp_object *obj);
-void elp_object_free(elp_object *obj);
+elem_object *elem_object_copy(const elem_object *obj);
+void elem_object_free(elem_object *obj);
 
-elp_path *elp_path_new();
-elp_path *elp_path_copy(const elp_path *source);
-void elp_path_free(elp_path *path);
+elem_path *elem_path_new();
+elem_path *elem_path_copy(const elem_path *source);
+void elem_path_free(elem_path *path);
 
-void elp_path_move_to(elp_path *path, double x, double y);
-void elp_path_line_to(elp_path *path, double x, double y);
-void elp_path_close_polygon(elp_path *path);
+void elem_path_move_to(elem_path *path, double x, double y);
+void elem_path_line_to(elem_path *path, double x, double y);
+void elem_path_close_polygon(elem_path *path);
 
-elp_curve *elp_curve_new();
-elp_curve *elp_curve_copy(const elp_curve *source);
-void elp_curve_free(elp_curve *curve);
-void elp_curve_move_to(elp_curve *curve, double x, double y);
-void elp_curve_line_to(elp_curve *curve, double x, double y);
-void elp_curve_curve3(elp_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to);
-void elp_curve_curve4(elp_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
-void elp_curve_arc_to(elp_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
-void elp_curve_close_polygon(elp_curve *curve);
+elem_curve *elem_curve_new();
+elem_curve *elem_curve_copy(const elem_curve *source);
+void elem_curve_free(elem_curve *curve);
+void elem_curve_move_to(elem_curve *curve, double x, double y);
+void elem_curve_line_to(elem_curve *curve, double x, double y);
+void elem_curve_curve3(elem_curve *curve, double x_ctrl, double y_ctrl, double x_to, double y_to);
+void elem_curve_curve4(elem_curve *curve, double x_ctrl1, double y_ctrl1, double x_ctrl2, double y_ctrl2, double x_to, double y_to);
+void elem_curve_arc_to(elem_curve *curve, double rx, double ry, double angle, bool large_arc_flag, bool sweep_flag, double x, double y);
+void elem_curve_close_polygon(elem_curve *curve);
 
-elp_dashed *elp_dashed_new(double dash_len, double gap_len);
-void elp_dashed_add_dash(elp_dashed *path, double dash_len, double gap_len);
-void elp_dashed_free(elp_dashed *path);
-elp_dashed *elp_dashed_copy(const elp_dashed *path);
+elem_dashed *elem_dashed_new(double dash_len, double gap_len);
+void elem_dashed_add_dash(elem_dashed *path, double dash_len, double gap_len);
+void elem_dashed_free(elem_dashed *path);
+elem_dashed *elem_dashed_copy(const elem_dashed *path);
 
-elp_object *elp_marker_symbol_by_index(int index);
-elp_object *elp_marker_symbol_by_name(const char *name);
-elp_markers *elp_markers_new(double size, elp_object *marker_symbol);
-elp_markers *elp_markers_copy(const elp_markers *markers);
-void elp_markers_free(elp_markers *markers);
+elem_object *elem_marker_symbol_by_index(int index);
+elem_object *elem_marker_symbol_by_name(const char *name);
+elem_markers *elem_markers_new(double size, elem_object *marker_symbol);
+elem_markers *elem_markers_copy(const elem_markers *markers);
+void elem_markers_free(elem_markers *markers);
 
-elp_plot *elp_plot_new(unsigned int flags);
+elem_plot *elem_plot_new(unsigned int flags);
 // TODO: implement functions to copy a plot
-void elp_plot_free(elp_plot *plot);
-void elp_plot_set_title(elp_plot *plot, const char *title);
-void elp_plot_set_x_axis_title(elp_plot *plot, const char *title);
-void elp_plot_set_y_axis_title(elp_plot *plot, const char *title);
-void elp_plot_set_label_angle(elp_plot *plot, int axis, float angle);
-void elp_plot_set_limits(elp_plot *plot, float x0, float y0, float x1, float y1);
-void elp_plot_set_clip_mode(elp_plot *plot, bool flag);
-void elp_plot_enable_label_format(elp_plot *plot, int axis, const char *fmt);
-void elp_plot_commit_pending_draw(elp_plot *plot_object);
-bool elp_plot_push_layer(elp_plot *plot);
-bool elp_plot_pop_layer(elp_plot *plot);
-void elp_plot_clear_layer(elp_plot *plot);
-void elp_plot_add(elp_plot *plot, elp_object *obj, elp_color stroke_color, float stroke_width, elp_color fill_color, int flags);
+void elem_plot_free(elem_plot *plot);
+void elem_plot_set_title(elem_plot *plot, const char *title);
+void elem_plot_set_x_axis_title(elem_plot *plot, const char *title);
+void elem_plot_set_y_axis_title(elem_plot *plot, const char *title);
+void elem_plot_set_label_angle(elem_plot *plot, int axis, float angle);
+void elem_plot_set_limits(elem_plot *plot, float x0, float y0, float x1, float y1);
+void elem_plot_set_clip_mode(elem_plot *plot, bool flag);
+void elem_plot_enable_label_format(elem_plot *plot, int axis, const char *fmt);
+void elem_plot_commit_pending_draw(elem_plot *plot_object);
+bool elem_plot_push_layer(elem_plot *plot);
+bool elem_plot_pop_layer(elem_plot *plot);
+void elem_plot_clear_layer(elem_plot *plot);
+void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
 // TODO: add function to add a legend
-int elp_plot_write_svg(elp_plot *plot, const char *filename, double width, double height);
+int elem_plot_write_svg(elem_plot *plot, const char *filename, double width, double height);
 
-elp_window *elp_window_new();
-elp_window *elp_window_new_with_layout(const char *fmt);
-void elp_window_set_layout(elp_window *win, const char *fmt);
-void elp_window_free(elp_window *w);
-int elp_window_attach(elp_window *win, elp_plot *plot, const char* slot_str);
-void elp_window_slot_refresh(elp_window *win, unsigned index);
-void elp_window_start(elp_window *win, unsigned width, unsigned height, unsigned flags);
-void elp_window_wait(elp_window *win);
+elem_window *elem_window_new();
+elem_window *elem_window_new_with_layout(const char *fmt);
+void elem_window_set_layout(elem_window *win, const char *fmt);
+void elem_window_free(elem_window *w);
+int elem_window_attach(elem_window *win, elem_plot *plot, const char* slot_str);
+void elem_window_slot_refresh(elem_window *win, unsigned index);
+void elem_window_start(elem_window *win, unsigned width, unsigned height, unsigned flags);
+void elem_window_wait(elem_window *win);
 
 // TODO: document initialize fonts function
-void elp_initialize_fonts();
+void elem_initialize_fonts();
 
 // TODO: document all the cast functions below
-static inline elp_object *path_as_object(elp_path *p) {
-    return (elp_object *) p;
+static inline elem_object *path_as_object(elem_path *p) {
+    return (elem_object *) p;
 }
 
-static inline elp_object *curve_as_object(elp_curve *c) {
-    return (elp_object *) c;
+static inline elem_object *curve_as_object(elem_curve *c) {
+    return (elem_object *) c;
 }
 
-static inline elp_object *dashed_as_object(elp_dashed *c) {
-    return (elp_object *) c;
+static inline elem_object *dashed_as_object(elem_dashed *c) {
+    return (elem_object *) c;
 }
 
-static inline elp_path *dashed_as_path(elp_dashed *c) {
-    return (elp_path *) c;
+static inline elem_path *dashed_as_path(elem_dashed *c) {
+    return (elem_path *) c;
 }
 
-static inline elp_path *markers_as_path(elp_markers *c) {
-    return (elp_path *) c;
+static inline elem_path *markers_as_path(elem_markers *c) {
+    return (elem_path *) c;
 }
 
-static inline elp_object *markers_as_object(elp_markers *c) {
-    return (elp_object *) c;
+static inline elem_object *markers_as_object(elem_markers *c) {
+    return (elem_object *) c;
 }
 
 #ifdef __cplusplus

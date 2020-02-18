@@ -1,7 +1,7 @@
 #include <cmath>
 
 #include "libelplot.h"
-using namespace elp;
+using namespace elem;
 
 template <typename Function>
 void AddFunction(Plot& p, double x0, double x1, Function f, Color color, int n = 512) {

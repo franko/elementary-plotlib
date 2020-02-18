@@ -6,7 +6,7 @@
 #include "FXElemBaseWindow.h"
 #include "window_platform_fox.h"
 
-using namespace elp;
+using namespace elem;
 
 class PlotWindow : public FXMainWindow {
     FXDECLARE(PlotWindow)
@@ -76,7 +76,7 @@ Plot CreateNewPlot() {
 void WorkerThreadStart(FXGUISignal *start_signal) {
     InitializeFonts();
     utils::Sleep(3);
-    Window win(new elp_window_fox(start_signal));
+    Window win(new elem_window_fox(start_signal));
     Plot plot = CreateNewPlot();
     win.Attach(plot, "");
     win.Start(640, 480, WindowResize);

@@ -1,7 +1,7 @@
 Windows
 =======
 
-.. cpp:namespace:: elp
+.. cpp:namespace:: elem
 
 Window's flags
 --------------

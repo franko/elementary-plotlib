@@ -1,17 +1,17 @@
 #include "FXElemWindow.h"
 #include "window_platform_fox.h"
 
-FXDEFMAP(FXElemWindow) FXElpWindowMap[] = {};
+FXDEFMAP(FXElemWindow) FXElemWindowMap[] = {};
 
-FXIMPLEMENT(FXElemWindow,FXElemBaseWindow,FXElpWindowMap,ARRAYNUMBER(FXElpWindowMap))
+FXIMPLEMENT(FXElemWindow,FXElemBaseWindow,FXElemWindowMap,ARRAYNUMBER(FXElemWindowMap))
 
 FXElemWindow::FXElemWindow(FXComposite* p, const char *split_str, FXuint opts, FXint x, FXint y, FXint w, FXint h):
     FXElemBaseWindow(p, nullptr, opts, x, y, w, h),
-    m_window(new elp_window_fox(split_str, this))
+    m_window(new elem_window_fox(split_str, this))
 {
 }
 
-int FXElemWindow::Attach(elp::Plot& p, const char* slot_str) {
+int FXElemWindow::Attach(elem::Plot& p, const char* slot_str) {
     return m_window.Attach(p, slot_str);
 }
 
