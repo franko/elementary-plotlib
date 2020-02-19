@@ -1,6 +1,6 @@
 lib_elem_plot_fox_src = ['FXElemWindow.cpp', 'FXElemBaseWindow.cpp', 'window_fox.cpp']
 
-lib_elem_plot_fox = static_library('canvasfox', lib_elem_plot_fox_src,
+lib_elem_plot_fox = static_library('elemplotfox', lib_elem_plot_fox_src,
     include_directories: lib_elem_plot_include,
     cpp_args: lib_elem_plot_cflags,
     dependencies: [lib_elem_plot_dep, agg_dep, freetype_dep, thread_dep, fox_dep],
