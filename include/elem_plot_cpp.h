@@ -25,8 +25,8 @@
 ** [ MIT license: http://www.opensource.org/licenses/mit-license.php ]
 */
 
-#ifndef LIBELPLOT_CPP_H_
-#define LIBELPLOT_CPP_H_
+#ifndef ELEM_PLOT_CPP_H_
+#define ELEM_PLOT_CPP_H_
 
 #include <initializer_list>
 #include <utility>
@@ -35,7 +35,7 @@
 // Following: https://google.github.io/styleguide/cppguide.html
 
 // Forward declaration of C API objects.
-#include "libelplot_c_forward.h"
+#include "elem_plot_c_forward.h"
 
 namespace FX {
     class FXElemWindow;

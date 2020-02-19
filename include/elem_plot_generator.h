@@ -1,5 +1,5 @@
-#ifndef LIBELPLOT_GENERATOR_H_
-#define LIBELPLOT_GENERATOR_H_
+#ifndef ELEM_PLOT_GENERATOR_H_
+#define ELEM_PLOT_GENERATOR_H_
 
 namespace elem {
 

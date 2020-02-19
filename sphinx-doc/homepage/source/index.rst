@@ -68,7 +68,7 @@ A Simple Example
 Here an example::
 
     #include <cmath>
-    #include "libelplot.h"
+    #include "elem_plot.h"
 
     using namespace elem;
 

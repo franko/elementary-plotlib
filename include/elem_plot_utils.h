@@ -1,5 +1,5 @@
-#ifndef LIBELPLOT_DEBUG_H_
-#define LIBELPLOT_DEBUG_H_
+#ifndef ELEM_PLOT_DEBUG_H_
+#define ELEM_PLOT_DEBUG_H_
 
 #ifdef WIN32
 #include <synchapi.h>

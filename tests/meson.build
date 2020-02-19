@@ -36,20 +36,20 @@ lua_tests = [
 
 foreach test : window_tests
     executable(test['name'], test['sources'],
-        include_directories: libelplot_include,
-        dependencies: libelplot_dep,
-        cpp_args: libelplot_cflags,
-        link_with: [libelplotwin, libelplot],
+        include_directories: lib_elem_plot_include,
+        dependencies: lib_elem_plot_dep,
+        cpp_args: lib_elem_plot_cflags,
+        link_with: [lib_elem_plot_win, lib_elem_plot],
         gui_app: false)
 endforeach
 
 if fox_dep.found()
     foreach test : fox_tests
         executable(test['name'], test['sources'],
-            include_directories: libelplot_include,
+            include_directories: lib_elem_plot_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
-            cpp_args: libelplot_cflags,
-            link_with: [libelplotfox, libelplotwin, libelplot],
+            cpp_args: lib_elem_plot_cflags,
+            link_with: [lib_elem_plot_fox, lib_elem_plot_win, lib_elem_plot],
             gui_app: false)
     endforeach
 endif
@@ -57,10 +57,10 @@ endif
 if enable_lua
     foreach test : lua_tests
         executable(test['name'], test['sources'],
-            include_directories: libelplot_include,
-            dependencies: [libelplot_dep, sol_dep, lua_dep],
-            cpp_args: libelplot_cflags,
-            link_with: [libelplotwin, libelplotlua, libelplot],
+            include_directories: lib_elem_plot_include,
+            dependencies: [lib_elem_plot_dep, sol_dep, lua_dep],
+            cpp_args: lib_elem_plot_cflags,
+            link_with: [lib_elem_plot_win, lib_elem_plot_lua, lib_elem_plot],
             gui_app: false)
     endforeach
 endif

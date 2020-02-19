@@ -1,5 +1,5 @@
-#ifndef LIBELPLOT_LUA_C_H_
-#define LIBELPLOT_LUA_C_H_
+#ifndef ELEM_PLOT_LUA_C_H_
+#define ELEM_PLOT_LUA_C_H_
 
 #include <lua.h>
 

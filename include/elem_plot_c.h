@@ -25,8 +25,8 @@
 ** [ MIT license: http://www.opensource.org/licenses/mit-license.php ]
 */
 
-#ifndef LIBELPLOT_C_H_
-#define LIBELPLOT_C_H_
+#ifndef ELEM_PLOT_C_H_
+#define ELEM_PLOT_C_H_
 
 #include <stdint.h>
 #include <stdbool.h>

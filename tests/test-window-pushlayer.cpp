@@ -1,5 +1,5 @@
-#include "libelplot.h"
-#include "libelplot_utils.h"
+#include "elem_plot.h"
+#include "elem_plot_utils.h"
 
 using namespace elem;
 

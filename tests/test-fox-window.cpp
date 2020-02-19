@@ -26,7 +26,7 @@ void RunFox(FXApp *app, FXMainWindow *win) {
 int main(int argc, char *argv[]) {
     InitializeFonts();
 
-    auto app = new FXApp("libelplot", "libelplot");
+    auto app = new FXApp("elem_plot", "elem_plot");
     app->init(argc, argv);
 
     auto main_window = new FXMainWindow(app, "Graphics Window", nullptr, nullptr, DECOR_ALL, 0, 0, 640, 480);

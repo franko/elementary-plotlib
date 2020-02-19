@@ -1,8 +1,8 @@
 #include <cmath>
 #include <thread>
 
-#include "libelplot.h"
-#include "libelplot_utils.h"
+#include "elem_plot.h"
+#include "elem_plot_utils.h"
 #include "FXElemBaseWindow.h"
 #include "window_platform_fox.h"
 
@@ -84,7 +84,7 @@ void WorkerThreadStart(FXGUISignal *start_signal) {
 }
 
 int main(int argc, char *argv[]) {
-    FXApp app("Plot Windows", "libelplot");
+    FXApp app("Plot Windows", "elem_plot");
     app.init(argc, argv);
     auto main_window = new PlotWindow(&app, "FOX Window host example", nullptr, nullptr, DECOR_ALL, 0, 0, 320, 320);
     new FXLabel(main_window, "Window Plot demonstrator");

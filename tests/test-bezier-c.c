@@ -1,4 +1,4 @@
-#include "libelplot.h"
+#include "elem_plot.h"
 
 int main() {
     elem_initialize_fonts();

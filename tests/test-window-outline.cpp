@@ -1,7 +1,7 @@
 #include <cmath>
 #include <memory>
 
-#include "libelplot.h"
+#include "elem_plot.h"
 
 using namespace elem;
 

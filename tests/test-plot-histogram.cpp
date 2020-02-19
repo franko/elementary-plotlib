@@ -1,6 +1,6 @@
 #include <random>
 
-#include "libelplot.h"
+#include "elem_plot.h"
 
 using namespace elem;
 

@@ -1,4 +1,4 @@
-project('libelplot', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++17'])
+project('elementary_plotlib', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++17'])
 
 # ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
 #  DEFS += -DDISABLE_GAMMA_CORR
@@ -8,32 +8,35 @@ project('libelplot', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99
 #  DEFS += -DDISABLE_SUBPIXEL_AA
 # endif
 
-libelplot_cflags = []
+lib_elem_plot_cflags = []
 
 host_system = host_machine.system()
 host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
 
 if host_system == 'windows'
-    libelplot_cflags += '-DWIN32'
+    lib_elem_plot_cflags += '-DWIN32'
 elif host_system == 'cygwin'
-    libelplot_cflags += '-DCYGWIN'
+    lib_elem_plot_cflags += '-DCYGWIN'
 endif
 
 debug_build = get_option('buildtype') != 'release'
 cc = meson.get_compiler('cpp')
 
 if debug_build
-    libelplot_cflags += '-DLIBELPLOT_DEBUG'
-    libelplot_cflags += '-DLIBELPLOT_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
+    lib_elem_plot_cflags += '-DELEM_PLOT_DEBUG'
+    lib_elem_plot_cflags += '-DELEM_PLOT_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
 endif
 
-libelplot_include = include_directories('include')
-install_headers('include/libelplot_cpp.h')
-install_headers('include/libelplot_c.h')
-install_headers('include/libelplot.h')
-install_headers('include/libelplot_constants.h')
-install_headers('include/libelplot_generator.h')
-install_headers('include/libelplot_c_forward.h')
+lib_elem_plot_include = include_directories('include')
+install_headers('include/elem_plot_cpp.h')
+install_headers('include/elem_plot_c.h')
+install_headers('include/elem_plot.h')
+install_headers('include/elem_plot_constants.h')
+install_headers('include/elem_plot_generator.h')
+install_headers('include/elem_plot_c_forward.h')
+install_headers('include/elem_plot_lua.h')
+install_headers('include/elem_plot_lua_c.h')
+install_headers('include/elem_plot_lua_cpp.h')
 install_headers('include/FXElemWindow.h')
 
 subdir('src')
@@ -47,11 +50,11 @@ endif
 
 pkg = import('pkgconfig')
 
-pkg.generate(libelplotwin,
-    filebase : 'libelplot',
-    name : 'libelplot',
-    description : 'The libelplot library',
-    url : 'github.com/franko/libelplot',
+pkg.generate(lib_elem_plot_win,
+    filebase : 'libelemplot',
+    name : 'libelemplot',
+    description : 'The Elementary Plot library',
+    url : 'github.com/franko/elementary-plotlib',
 )
 
 fox_dep = dependency('fox', required: false)
@@ -73,7 +76,7 @@ endif
 enable_lua = (sol_dep.found() and lua_dep.found())
 
 if enable_lua
-    libelplot_cflags += '-DELEM_PLOT_USE_LUA'
+    lib_elem_plot_cflags += '-DELEM_PLOT_USE_LUA'
     subdir('lua')
 endif
 

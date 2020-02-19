@@ -1,5 +1,5 @@
-#ifndef LIBELPLOT_CONSTANTS_H_
-#define LIBELPLOT_CONSTANTS_H_
+#ifndef ELEM_PLOT_CONSTANTS_H_
+#define ELEM_PLOT_CONSTANTS_H_
 
 namespace elem { namespace math {
 

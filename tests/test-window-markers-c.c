@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "libelplot.h"
+#include "elem_plot.h"
 
 struct bm_generator {
     bool have_z;

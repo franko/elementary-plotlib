@@ -3,7 +3,7 @@
 #include <fx.h>
 
 // We include here only the public interface elementary plot library header.
-#include "libelplot.h"
+#include "elem_plot.h"
 #include "FXElemBaseWindow.h"
 
 namespace FX {

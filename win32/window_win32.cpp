@@ -1,7 +1,7 @@
 #include "win32/window_win32.h"
 #include "debug_priv.h"
 
-#ifdef LIBELPLOT_DEBUG
+#ifdef ELEM_PLOT_DEBUG
 void DebugLogLastError(int debug_level) {
     DWORD errorMessageID = ::GetLastError();
     fprintf(stderr, "::GetLastError: %ld\n", errorMessageID);

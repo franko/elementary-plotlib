@@ -2,8 +2,8 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
-#include "libelplot.h"
-#include "libelplot_lua.h"
+#include "elem_plot.h"
+#include "elem_plot_lua.h"
 
 int main() {
     lua_State* L = luaL_newstate();

@@ -1,17 +1,17 @@
 #pragma once
 
-#ifdef LIBELPLOT_DEBUG
+#ifdef ELEM_PLOT_DEBUG
 #include <cstdio>
 #include <cstdarg>
 #endif
 
-#ifndef LIBELPLOT_DEBUG_LEVEL
-#define LIBELPLOT_DEBUG_LEVEL 1
+#ifndef ELEM_PLOT_DEBUG_LEVEL
+#define ELEM_PLOT_DEBUG_LEVEL 1
 #endif
 
-#ifdef LIBELPLOT_DEBUG
+#ifdef ELEM_PLOT_DEBUG
 inline void debug_log(int level, const char *fmt, ...) {
-    if (level <= LIBELPLOT_DEBUG_LEVEL) {
+    if (level <= ELEM_PLOT_DEBUG_LEVEL) {
         va_list args;
         va_start(args, fmt);
         vfprintf(stderr, fmt, args);

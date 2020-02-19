@@ -25,15 +25,15 @@
 ** [ MIT license: http://www.opensource.org/licenses/mit-license.php ]
 */
 
-#ifndef LIBELPLOT_H_
-#define LIBELPLOT_H_
+#ifndef ELEM_PLOT_H_
+#define ELEM_PLOT_H_
 
 #ifdef __cplusplus
-#include "libelplot_cpp.h"
-#include "libelplot_constants.h"
-#include "libelplot_generator.h"
+#include "elem_plot_cpp.h"
+#include "elem_plot_constants.h"
+#include "elem_plot_generator.h"
 #else
-#include "libelplot_c.h"
+#include "elem_plot_c.h"
 #endif
 
 #endif
