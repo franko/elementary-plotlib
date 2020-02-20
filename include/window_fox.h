@@ -42,11 +42,11 @@ public:
         m_update_notify.notify();
     }
 
-    void bind_drawable(FXDrawable *drawable, FXSelector update_selector, FXSelector close_selector);
+    void bind_elem_window(FXElemBaseWindow *elem_window);
 
 private:
 
-    FXDrawable *m_drawable;
+    FXElemBaseWindow *m_elem_window;
     FXGUISignal *m_update_signal;
     FXGUISignal *m_close_signal;
     FXGUISignal *m_start_signal; // Just a reference, not owned.

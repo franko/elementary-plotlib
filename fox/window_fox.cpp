@@ -3,7 +3,7 @@
 #include "FXElemBaseWindow.h"
 
 window_fox::window_fox(graphics::window_surface& window_surface):
-        m_drawable(nullptr),
+        m_elem_window(nullptr),
         m_update_signal(nullptr),
         m_start_signal(nullptr),
         m_window_surface(window_surface) {
@@ -17,7 +17,7 @@ window_fox::window_fox(graphics::window_surface& window_surface, FXGUISignal *st
 window_fox::window_fox(graphics::window_surface& window_surface, FXElemBaseWindow *elem_window):
         window_fox(window_surface) {
     elem_window->setWindowFox(this);
-    bind_drawable(elem_window, FXElemBaseWindow::ID_ELEM_UPDATE, FXElemBaseWindow::ID_ELEM_CLOSE);
+    bind_elem_window(elem_window);
 }
 
 window_fox::~window_fox() {
@@ -25,10 +25,11 @@ window_fox::~window_fox() {
     // Do not delete m_start_signal since we are not the owner.
 }
 
-void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector, FXSelector close_selector) {
-    m_drawable = drawable;
-    m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
-    m_close_signal = new FXGUISignal(drawable->getApp(), m_drawable, close_selector, nullptr);
+void window_fox::bind_elem_window(FXElemBaseWindow *elem_window) {
+    m_elem_window = elem_window;
+    FXApp *app = elem_window->getApp();
+    m_update_signal = new FXGUISignal(app, m_elem_window, FXElemBaseWindow::ID_ELEM_UPDATE, nullptr);
+    m_close_signal = new FXGUISignal(app, m_elem_window, FXElemBaseWindow::ID_ELEM_CLOSE, nullptr);
 }
 
 void window_fox::update_region(const graphics::image& src_img, const agg::rect_i& r) {
@@ -49,13 +50,13 @@ void window_fox::update_region(const graphics::image& src_img, const agg::rect_i
 
     rendering_buffer_copy(fxcolor_image, agg::pix_format_rgba32, src_view, (agg::pix_format_e) graphics::pixel_format);
 
-    FXApp *app = m_drawable->getApp();
+    FXApp *app = m_elem_window->getApp();
     FXColor *fxcolor_buf = (FXColor *) fxcolor_image.buf();
     FXImage img(app, fxcolor_buf, IMAGE_KEEP, width, height);
     img.create();
 
-    FXDCWindow dc(m_drawable);
-    dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
+    FXDCWindow dc(m_elem_window);
+    dc.drawImage(&img, r.x1, m_elem_window->getHeight() - r.y2);
 }
 
 bool window_fox::send_request(graphics::window_request request_type, int index) {
@@ -68,7 +69,7 @@ bool window_fox::send_request(graphics::window_request request_type, int index) 
             m_window_surface.slot_refresh(index);
             break;
         case graphics::window_request::close:
-            delete m_drawable;
+            delete m_elem_window;
         }
     } else {
         switch (request_type) {
