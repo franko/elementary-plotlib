@@ -18,6 +18,7 @@ graphics::gamma_type graphics::gamma(1.5);
 // Some people may notice colorer fringes but fonts looks sharper.
 agg::lcd_distribution_lut graphics::subpixel_lut(0.448, 0.184, 0.092);
 
+bool graphics::global_fonts_initialized = false;
 agg::font_engine_freetype_int32 global_font_eng;
 agg::font_cache_manager<agg::font_engine_freetype_int32> global_font_man(global_font_eng);
 
@@ -120,6 +121,7 @@ int graphics::initialize_fonts()
     if (!global_font_eng.load_font(font_name, 0, gren))
         fatal_exception("cannot load truetype font");
     global_font_eng.hinting(true);
+    graphics::global_fonts_initialized = true;
     return 0;
 }
 

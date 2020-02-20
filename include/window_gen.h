@@ -33,6 +33,10 @@ public:
     }
 
     void start(unsigned width, unsigned height, unsigned flags) override {
+        if (!graphics::global_fonts_initialized) {
+            debug_log(1, "fonts not initialized, performing initialization");
+            graphics::initialize_fonts();
+        }
         m_window.start(width, height, flags);
     }
 

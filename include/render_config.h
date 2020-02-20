@@ -22,5 +22,6 @@ extern agg::font_cache_manager<agg::font_engine_freetype_int32>& font_manager();
 extern const char *get_font_name();
 extern const char *get_fox_console_font_name();
 
+extern bool global_fonts_initialized;
 extern int initialize_fonts();
 }
