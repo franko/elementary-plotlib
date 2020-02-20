@@ -128,9 +128,9 @@ agg::rect_i window_surface::get_plot_area(unsigned index) const
 }
 
 void window_surface::slot_refresh_request(unsigned index) {
-    bool request_success = m_window->update_region_request(index);
+    bool request_success = m_window->send_request(graphics::window_request::update, index);
     if (!request_success) {
-        debug_log(1, "window_surface::update_region_request fail");
+        debug_log(1, "window_surface, update request failed");
     }
     m_plots[index].pending_queue = true;
 }

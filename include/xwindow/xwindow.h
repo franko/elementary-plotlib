@@ -33,7 +33,7 @@ public:
         }
     }
 
-    bool update_region_request(int index) override;
+    bool send_request(graphics::window_request request_type, int plot_index) override;
 
 private:
     void lock() {

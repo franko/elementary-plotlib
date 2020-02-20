@@ -8,8 +8,13 @@ namespace graphics {
 
 typedef image_gen<pixel_size, flip_y> image;
 
+enum class window_request {
+    update,
+    close,
+};
+
 struct display_window {
-    virtual bool update_region_request(int index) = 0;
+    virtual bool send_request(window_request request_type, int plot_index) = 0;
 
     // should be protected so that it can be called only from the
     // window's thread.

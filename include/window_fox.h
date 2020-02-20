@@ -18,7 +18,7 @@ public:
     window_fox(graphics::window_surface& window_surface, FXGUISignal *start_signal);
     ~window_fox();
 
-    bool update_region_request(int index) override;
+    bool send_request(graphics::window_request request_type, int plot_index) override;
     void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
 
     void start(unsigned width, unsigned height, unsigned flags);

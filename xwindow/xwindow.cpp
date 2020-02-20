@@ -325,7 +325,7 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
     unlock();
 }
 
-bool xwindow::update_region_request(int index) {
+bool xwindow::send_request(graphics::window_request request_type, int index) {
     lock();
     m_update_notify.start(index);
     if (send_update_region_event()) {

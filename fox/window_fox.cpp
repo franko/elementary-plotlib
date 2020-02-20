@@ -57,7 +57,7 @@ void window_fox::update_region(const graphics::image& src_img, const agg::rect_i
     dc.drawImage(&img, r.x1, m_drawable->getHeight() - r.y2);
 }
 
-bool window_fox::update_region_request(int index) {
+bool window_fox::send_request(graphics::window_request request_type, int index) {
     if (std::this_thread::get_id() == m_window_thread_id) {
         // We are running in the thread of the Window's event loop. Just do the
         // drawing operation.

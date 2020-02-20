@@ -19,7 +19,7 @@ struct plot_ref {
     plot* plot_ptr;
     plot_render_info inf;
     bool have_save_img;
-    // If true we are between a update_region_request() and a commit_pending_draw():
+    // If true we are between an update send_request() and a commit_pending_draw():
     // render the drawing_queue() on render().
     bool pending_queue;
 };

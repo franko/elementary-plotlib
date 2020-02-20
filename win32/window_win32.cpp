@@ -254,7 +254,7 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
     run();
 }
 
-bool window_win32::update_region_request(int index) {
+bool window_win32::send_request(graphics::window_request request_type, int index) {
     m_update_plot_index = index;
     if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0) == 0) {
         return true;
