@@ -147,6 +147,10 @@ LRESULT window_win32::proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         break;
 
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+
     default:
         ret = ::DefWindowProc(hWnd, msg, wParam, lParam);
         break;
@@ -255,10 +259,19 @@ void window_win32::start_blocking(unsigned width, unsigned height, unsigned flag
 }
 
 bool window_win32::send_request(graphics::window_request request_type, int index) {
-    m_update_plot_index = index;
-    if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0) == 0) {
-        return true;
+    switch (request_type) {
+    case graphics::window_request::update:
+        m_update_plot_index = index;
+        if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0) == 0) {
+            return true;
+        }
+        DebugLogLastError(2);
+        break;
+    case graphics::window_request::close:
+        if (::SendMessage(m_hwnd, WM_CLOSE, 0, 0) == 0) {
+            return true;
+        }
+        DebugLogLastError(2);
     }
-    DebugLogLastError(2);
     return false;
 }

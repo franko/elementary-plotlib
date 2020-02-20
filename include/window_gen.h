@@ -44,6 +44,10 @@ public:
         m_window.wait_for_status(graphics::window_closed);
     }
 
+    void close() override {
+        m_window.send_request(graphics::window_request::close, 0);
+    }
+
     graphics::window_surface *get_window_surface() override {
         return &m_surface;
     }

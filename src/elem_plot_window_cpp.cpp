@@ -44,4 +44,8 @@ void Window::Start(unsigned width, unsigned height, unsigned flags) {
 void Window::Wait() {
     window_impl_->wait();
 }
+
+void Window::Close() {
+    window_impl_->close();
+}
 }

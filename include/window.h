@@ -12,6 +12,7 @@ public:
     virtual void slot_refresh(unsigned index) = 0;
     virtual void start(unsigned width, unsigned height, unsigned flags) = 0;
     virtual void wait() = 0;
+    virtual void close() = 0;
     virtual graphics::window_surface *get_window_surface() = 0;
     virtual ~elem_window() { }
 };

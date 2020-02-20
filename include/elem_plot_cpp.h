@@ -232,6 +232,7 @@ public:
     void SlotRefresh(unsigned index);
     void Start(unsigned width, unsigned height, unsigned flags);
     void Wait();
+    void Close();
 
 private:
     elem_window *window_impl_;
