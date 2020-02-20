@@ -17,7 +17,7 @@ window_fox::window_fox(graphics::window_surface& window_surface, FXGUISignal *st
 window_fox::window_fox(graphics::window_surface& window_surface, FXElemBaseWindow *elem_window):
         window_fox(window_surface) {
     elem_window->setWindowFox(this);
-    bind_drawable(elem_window, FXElemBaseWindow::ID_UPDATE_REGION);
+    bind_drawable(elem_window, FXElemBaseWindow::ID_ELEM_UPDATE, FXElemBaseWindow::ID_ELEM_CLOSE);
 }
 
 window_fox::~window_fox() {
@@ -25,9 +25,10 @@ window_fox::~window_fox() {
     // Do not delete m_start_signal since we are not the owner.
 }
 
-void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector) {
+void window_fox::bind_drawable(FXDrawable *drawable, FXSelector update_selector, FXSelector close_selector) {
     m_drawable = drawable;
     m_update_signal = new FXGUISignal(drawable->getApp(), m_drawable, update_selector, nullptr);
+    m_close_signal = new FXGUISignal(drawable->getApp(), m_drawable, close_selector, nullptr);
 }
 
 void window_fox::update_region(const graphics::image& src_img, const agg::rect_i& r) {
@@ -59,17 +60,31 @@ void window_fox::update_region(const graphics::image& src_img, const agg::rect_i
 
 bool window_fox::send_request(graphics::window_request request_type, int index) {
     if (std::this_thread::get_id() == m_window_thread_id) {
-        // We are running in the thread of the Window's event loop. Just do the
-        // drawing operation.
-        debug_log(1, "update_region request from window's thread");
-        m_window_surface.slot_refresh(index);
+        switch (request_type) {
+        case graphics::window_request::update:
+            // We are running in the thread of the Window's event loop. Just do the
+            // drawing operation.
+            debug_log(1, "update_region request from window's thread");
+            m_window_surface.slot_refresh(index);
+            break;
+        case graphics::window_request::close:
+            delete m_drawable;
+        }
     } else {
-        // We are on another thread. Interrupt the Window's thread to request
-        // the update_region operation.
-        debug_log(1, "update_region request from secondary thread");
-        m_update_notify.start(index);
-        m_update_signal->signal();
-        m_update_notify.wait();
+        switch (request_type) {
+        case graphics::window_request::update:
+            // We are on another thread. Interrupt the Window's thread to request
+            // the update_region operation.
+            debug_log(1, "update_region request from secondary thread");
+            m_update_notify.start(index);
+            m_update_signal->signal();
+            m_update_notify.wait();
+            break;
+        case graphics::window_request::close:
+            m_close_signal->signal();
+            wait_for_status(graphics::window_closed);
+            break;
+        }
     }
     return true;
 }

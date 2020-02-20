@@ -327,15 +327,24 @@ void xwindow::start_blocking(unsigned width, unsigned height, unsigned flags) {
 
 bool xwindow::send_request(graphics::window_request request_type, int index) {
     lock();
-    m_update_notify.start(index);
-    if (send_update_region_event()) {
-        // Wait for the notification but only if the message was actually sent.
-        unlock();
-        m_update_notify.wait();
-        return true;
-    } else {
-        unlock();
+    switch (request_type) {
+    case graphics::window_request::update:
+        m_update_notify.start(index);
+        if (send_update_region_event()) {
+            // Wait for the notification but only if the message was actually sent.
+            unlock();
+            m_update_notify.wait();
+            return true;
+        }
+        break;
+    case graphics::window_request::close:
+        if (send_close_window_event()) {
+            unlock();
+            wait_for_status(graphics::window_closed);
+            return true;
+        }
     }
+    unlock();
     return false;
 }
 
@@ -348,6 +357,28 @@ bool xwindow::send_update_region_event() {
         event.send_event = True;
         event.message_type = m_update_region_atom;
         event.format = 8;
+        Status status = XSendEvent(m_request_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
+        if (status == BadValue) {
+            debug_log(1, "custom event, got BadValue");
+        } else if (status == BadWindow) {
+            debug_log(1, "custom event, got BadWindow");
+        } else {
+            XFlush(m_request_connection.display);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool xwindow::send_close_window_event() {
+    if (status() == graphics::window_running) {
+        XClientMessageEvent event;
+        event.type = ClientMessage;
+        event.display = m_request_connection.display;
+        event.send_event = True;
+        event.message_type = m_wm_protocols_atom;
+        event.format = 32;
+        event.data.l[0] = int(m_close_atom);
         Status status = XSendEvent(m_request_connection.display, m_window, False, NoEventMask, (XEvent *) &event);
         if (status == BadValue) {
             debug_log(1, "custom event, got BadValue");

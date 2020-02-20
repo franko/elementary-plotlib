@@ -28,11 +28,13 @@ public:
     void create() override;
 
     long onUpdateRegion (FXObject *, FXSelector, void *);
+    long onCloseRequest (FXObject *, FXSelector, void *);
     long onPaint        (FXObject *, FXSelector, void *);
     long onMap          (FXObject *, FXSelector, void *);
 
     enum {
-        ID_UPDATE_REGION = FXWindow::ID_LAST,
+        ID_ELEM_UPDATE = FXWindow::ID_LAST,
+        ID_ELEM_CLOSE,
         ID_LAST
     };
 

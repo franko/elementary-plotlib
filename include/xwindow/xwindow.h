@@ -50,6 +50,7 @@ private:
     void close();
 
     bool send_update_region_event();
+    bool send_close_window_event();
     void close_connections();
     void caption(const str& s);
     void wait_map_notify();

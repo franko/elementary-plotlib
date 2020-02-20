@@ -42,12 +42,13 @@ public:
         m_update_notify.notify();
     }
 
-    void bind_drawable(FXDrawable *drawable, FXSelector update_selector);
+    void bind_drawable(FXDrawable *drawable, FXSelector update_selector, FXSelector close_selector);
 
 private:
 
     FXDrawable *m_drawable;
     FXGUISignal *m_update_signal;
+    FXGUISignal *m_close_signal;
     FXGUISignal *m_start_signal; // Just a reference, not owned.
     update_region_notify m_update_notify;
     std::thread::id m_window_thread_id; // Identifies the thread that manage the Window's event loop.

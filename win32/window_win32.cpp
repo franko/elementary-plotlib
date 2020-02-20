@@ -14,6 +14,8 @@ void DebugLogLastError(int debug_level) {
     debug_log(debug_level, messageBuffer);
     LocalFree(messageBuffer);
 }
+#else
+void DebugLogLastError(int debug_level) { }
 #endif
 
 //------------------------------------------------------------------------
@@ -264,14 +266,16 @@ bool window_win32::send_request(graphics::window_request request_type, int index
         m_update_plot_index = index;
         if (::SendMessage(m_hwnd, WM_ELEM_UPD_REGION, 0, 0) == 0) {
             return true;
+        } else {
+            DebugLogLastError(2);
         }
-        DebugLogLastError(2);
         break;
     case graphics::window_request::close:
         if (::SendMessage(m_hwnd, WM_CLOSE, 0, 0) == 0) {
             return true;
+        } else {
+            DebugLogLastError(2);
         }
-        DebugLogLastError(2);
     }
     return false;
 }

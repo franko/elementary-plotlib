@@ -4,7 +4,8 @@
 FXDEFMAP(FXElemBaseWindow) FXElemBaseWindowMap[] = {
     FXMAPFUNC(SEL_MAP, 0, FXElemBaseWindow::onMap),
     FXMAPFUNC(SEL_PAINT, 0, FXElemBaseWindow::onPaint),
-    FXMAPFUNC(SEL_IO_READ, FXElemBaseWindow::ID_UPDATE_REGION, FXElemBaseWindow::onUpdateRegion),
+    FXMAPFUNC(SEL_IO_READ, FXElemBaseWindow::ID_ELEM_UPDATE, FXElemBaseWindow::onUpdateRegion),
+    FXMAPFUNC(SEL_IO_READ, FXElemBaseWindow::ID_ELEM_CLOSE, FXElemBaseWindow::onCloseRequest),
 };
 
 FXIMPLEMENT(FXElemBaseWindow,FXWindow,FXElemBaseWindowMap,ARRAYNUMBER(FXElemBaseWindowMap))
@@ -40,6 +41,11 @@ long FXElemBaseWindow::onUpdateRegion(FXObject *, FXSelector, void *) {
     return 1;
 }
 
+long FXElemBaseWindow::onCloseRequest(FXObject *, FXSelector, void *) {
+    delete this;
+    return 1;
+}
+
 long FXElemBaseWindow::onPaint(FXObject *sender, FXSelector sel, void *ptr) {
     if (m_window) {
         FXEvent *ev=(FXEvent*)ptr;
@@ -61,7 +67,7 @@ void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreate
     auto elem_base_window = new FXElemBaseWindow(p, message->window, LAYOUT_FILL_X | LAYOUT_FILL_Y);
     elem_base_window->setWidth(message->width);
     elem_base_window->setHeight(message->height);
-    message->window->bind_drawable(elem_base_window, FXElemBaseWindow::ID_UPDATE_REGION);
+    message->window->bind_drawable(elem_base_window, FXElemBaseWindow::ID_ELEM_UPDATE, FXElemBaseWindow::ID_ELEM_CLOSE);
     if (create_flag == ELEM_CREATE_NOW) {
         elem_base_window->create();
         elem_base_window->show();
