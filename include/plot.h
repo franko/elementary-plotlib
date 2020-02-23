@@ -194,7 +194,7 @@ public:
         m_layers.add(&m_root_layer);
         // Start from 1 below because zero is the pointer to the root layer, added above.
         for (unsigned k = 1; k < source.m_layers.size(); k++) {
-            m_layers.add(new item_list(*(m_layers[k])));
+            m_layers.add(new item_list(*(source.m_layers[k])));
         }
         for (list<sg_element> *source_node = source.m_drawing_queue; source_node; source_node = source_node->next()) {
             m_drawing_queue = new list<sg_element>(source_node->content(), m_drawing_queue);
