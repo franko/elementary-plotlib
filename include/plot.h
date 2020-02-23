@@ -126,6 +126,13 @@ protected:
             add_duplicate_elements(source);
         }
 
+        item_list(item_list&& source) : agg::pod_bvector<sg_element>(), m_bbox(source.m_bbox) {
+            for (unsigned k = 0; k < source.size(); k++) {
+                add(source[k]);
+            }
+            source.clear();
+        }
+
         void add_duplicate_elements(const item_list& source) {
             for (unsigned k = 0; k < source.size(); k++) {
                 sg_element new_element = source[k];
@@ -211,6 +218,28 @@ public:
         }
     }
 
+    plot(plot&& source) :
+            m_trans(source.m_trans), m_drawing_queue(source.m_drawing_queue), m_clip_flag(source.m_clip_flag),
+            m_need_redraw(source.m_need_redraw), m_rect(source.m_rect),
+            m_changes_accu(source.m_changes_accu), m_changes_pending(source.m_changes_pending),
+            m_root_layer(std::move(source.m_root_layer)), m_layers(),
+            m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
+            m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
+            m_enlarged_layer(source.m_enlarged_layer),
+            m_drawing_mutex() {
+        m_layers.add(&m_root_layer);
+        // Start from 1 below because zero is the pointer to the root layer, added above.
+        for (unsigned k = 1; k < source.m_layers.size(); k++) {
+            m_layers.add(source.m_layers[k]);
+        }
+        source.m_layers.clear();
+        source.m_layers.add(&source.m_root_layer);
+        source.m_drawing_queue = nullptr;
+        for (unsigned k = 0; k < 4; k++) {
+            m_legend[k] = source.m_legend[k];
+            source.m_legend[k] = nullptr;
+        }
+    }
 
     ~plot()
     {
