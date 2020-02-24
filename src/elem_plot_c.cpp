@@ -2,6 +2,7 @@
 #include "elem_plot_c.h"
 
 // the following are private headers.
+#include "elem_plot_class.h"
 #include "elem_plot_c_forward.h"
 #include "canvas_svg.h"
 #include "canvas_object.h"
@@ -18,11 +19,10 @@ static agg::rgba8 ColorToRgba8(const elem_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
 }
 
-static void plot_update_windows_and_commit(elem_plot *plot_object) {
-    graphics::plot_agent *agent = plot_object->plot_agent;
-    agent->update_windows();
-    elem_plot_commit_pending_draw(plot_object);
-    agent->clear_pending_flags();
+static void plot_update_windows_and_commit(elem_plot *plot) {
+    plot->update_windows();
+    elem_plot_commit_pending_draw(plot);
+    plot->clear_windows_pending_flags();
 }
 
 elem_object *elem_object_copy(const elem_object *obj) {
@@ -132,132 +132,113 @@ void elem_markers_free(elem_markers *markers) {
 }
 
 elem_plot *elem_plot_new(unsigned int flags) {
-    elem_plot *plot_struct = new elem_plot();
-    if (plot_struct) {
-        plot_struct->plot = new graphics::plot{flags};
-        plot_struct->plot_agent = new graphics::plot_agent{};
-    }
-    return plot_struct;
+    return new elem_plot{flags};
 }
 
-void elem_plot_free(elem_plot *plot_object) {
-    delete plot_object->plot;
-    delete plot_object->plot_agent;
-    delete plot_object;
+void elem_plot_free(elem_plot *plot) {
+    delete plot;
 }
 
-void elem_plot_set_title(elem_plot *plot_object, const char *title) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+void elem_plot_set_title(elem_plot *plot, const char *title) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->set_title(title);
+        graphics::plot::drawing_context dc(*plot);
+        plot->set_title(title);
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_set_x_axis_title(elem_plot *plot_object, const char *axis_title) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+void elem_plot_set_x_axis_title(elem_plot *plot, const char *axis_title) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->set_x_axis_title(axis_title);
+        graphics::plot::drawing_context dc(*plot);
+        plot->set_x_axis_title(axis_title);
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_set_y_axis_title(elem_plot *plot_object, const char *axis_title) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+void elem_plot_set_y_axis_title(elem_plot *plot, const char *axis_title) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->set_y_axis_title(axis_title);
+        graphics::plot::drawing_context dc(*plot);
+        plot->set_y_axis_title(axis_title);
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_set_label_angle(elem_plot *plot_object, int axis, float angle) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+void elem_plot_set_label_angle(elem_plot *plot, int axis, float angle) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->set_axis_labels_angle(axis == elem_x_axis ? graphics::x_axis : graphics::y_axis, angle);
+        graphics::plot::drawing_context dc(*plot);
+        plot->set_axis_labels_angle(axis == elem_x_axis ? graphics::x_axis : graphics::y_axis, angle);
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_enable_label_format(elem_plot *plot_object, int axis, const char *fmt) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+void elem_plot_enable_label_format(elem_plot *plot, int axis, const char *fmt) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->enable_label_format(axis == elem_x_axis ? graphics::x_axis : graphics::y_axis, fmt);
+        graphics::plot::drawing_context dc(*plot);
+        plot->enable_label_format(axis == elem_x_axis ? graphics::x_axis : graphics::y_axis, fmt);
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_set_clip_mode(elem_plot *plot_object, bool flag) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
-    graphics::plot::drawing_context dc(*p);
-    p->set_clip_mode(flag);
+void elem_plot_set_clip_mode(elem_plot *plot, bool flag) {
+    graphics::plot::drawing_context dc(*plot);
+    plot->set_clip_mode(flag);
 }
 
-bool elem_plot_push_layer(elem_plot *plot_object) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+bool elem_plot_push_layer(elem_plot *plot) {
     bool success = false;
     {
-        graphics::plot::drawing_context dc(*p);
-        success = p->push_layer();
+        graphics::plot::drawing_context dc(*plot);
+        success = plot->push_layer();
     }
     if (success) {
-        plot_update_windows_and_commit(plot_object);
+        plot_update_windows_and_commit(plot);
     }
     return success;
 }
 
-bool elem_plot_pop_layer(elem_plot *plot_object) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+bool elem_plot_pop_layer(elem_plot *plot) {
     bool success = false;
     {
-        graphics::plot::drawing_context dc(*p);
-        success = p->pop_layer();
+        graphics::plot::drawing_context dc(*plot);
+        success = plot->pop_layer();
     }
     if (success) {
-        plot_update_windows_and_commit(plot_object);
+        plot_update_windows_and_commit(plot);
     }
     return success;
 }
 
-void elem_plot_clear_layer(elem_plot *plot_object) {
-    graphics::plot *p = (graphics::plot *) plot_object->plot;
+void elem_plot_clear_layer(elem_plot *plot) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->clear_current_layer();
+        graphics::plot::drawing_context dc(*plot);
+        plot->clear_current_layer();
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_set_limits(elem_plot *plot_object, float x1, float y1, float x2, float y2) {
-    graphics::plot *p = plot_object->plot;
+void elem_plot_set_limits(elem_plot *plot, float x1, float y1, float x2, float y2) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->set_limits(agg::rect_d(x1, y1, x2, y2));
+        graphics::plot::drawing_context dc(*plot);
+        plot->set_limits(agg::rect_d(x1, y1, x2, y2));
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_commit_pending_draw(elem_plot *plot_object) {
-    graphics::plot *p = plot_object->plot;
-    graphics::plot::drawing_context dc(*p);
-    p->commit_pending_draw();
+void elem_plot_commit_pending_draw(elem_plot *plot) {
+    graphics::plot::drawing_context dc(*plot);
+    plot->commit_pending_draw();
 }
 
 // The plot takes implicitly the ownership of the object.
-void elem_plot_add(elem_plot *plot_object, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags) {
-    graphics::plot *p = plot_object->plot;
+void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags) {
     {
-        graphics::plot::drawing_context dc(*p);
-        p->add(obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+        graphics::plot::drawing_context dc(*plot);
+        plot->add(obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
     }
-    plot_update_windows_and_commit(plot_object);
+    plot_update_windows_and_commit(plot);
 }
 
-int elem_plot_write_svg(elem_plot *plot_object, const char *filename, double width, double height) {
+int elem_plot_write_svg(elem_plot *plot, const char *filename, double width, double height) {
     FILE *svg_file = fopen(filename, "w");
     if (!svg_file) {
         return false;
@@ -265,9 +246,8 @@ int elem_plot_write_svg(elem_plot *plot_object, const char *filename, double wid
     canvas_svg canvas{svg_file, height};
     agg::trans_affine_scaling m(width, height);
     canvas.write_header(width, height);
-    graphics::plot *p = plot_object->plot;
-    graphics::plot::drawing_context dc(*p);
-    p->draw(dc, canvas, m, nullptr);
+    graphics::plot::drawing_context dc(*plot);
+    plot->draw(dc, canvas, m, nullptr);
     canvas.write_end();
     fclose(svg_file);
     return true;

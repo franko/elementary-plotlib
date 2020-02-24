@@ -1,4 +1,5 @@
 #include "plot_agent.h"
+#include "window_surface.h"
 
 namespace graphics {
 

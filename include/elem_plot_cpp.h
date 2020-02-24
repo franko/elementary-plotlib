@@ -214,7 +214,7 @@ public:
 private:
     void UpdateWindowsAndCommitChanges();
 
-    elem_plot plot_impl_;
+    elem_plot *plot_impl_;
 
     friend class Window;
     friend class FX::FXElemWindow;

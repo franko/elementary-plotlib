@@ -1,6 +1,7 @@
 #include <cmath>
 #include <random>
 
+#include "elem_plot_class.h"
 #include "window_platform_native.h"
 #include "trans.h"
 #include "sg_path.h"
@@ -58,7 +59,7 @@ int main()
     graphics::initialize_fonts();
 
     elem_window_native win;
-    graphics::plot p(graphics::plot::show_units);
+    elem_plot p(graphics::plot::show_units);
     p.set_limits({-0.7, -0.3, 0.7, 1.1});
 
     agg::rgba8 blue(0, 0, 180, 255);

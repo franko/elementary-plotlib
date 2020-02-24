@@ -1,9 +1,10 @@
 #pragma once
 
 #include "agg_array.h"
-#include "window_surface.h"
 
 namespace graphics {
+
+class window_surface;
 
 class plot_agent {
     struct window_index_pair {
@@ -11,6 +12,14 @@ class plot_agent {
         int slot_index;
     };
 public:
+    plot_agent() { }
+    plot_agent(const plot_agent& other):
+        linked_windows_(other.linked_windows_) {
+    }
+    plot_agent(plot_agent&& other):
+        linked_windows_(other.linked_windows_) {
+        other.linked_windows_.clear();
+    }
     void add_window(window_surface *surface, int slot_index);
     void update_windows();
     void clear();

@@ -4,6 +4,7 @@
 #include "agg_trans_affine.h"
 
 // the following are private headers.
+#include "elem_plot_class.h"
 #include "elem_plot_c.h"
 #include "elem_plot_c_forward.h"
 #include "canvas_object.h"
@@ -136,84 +137,73 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
-void DeletePlotImpl(elem_plot& plot) {
-    delete plot.plot;
-    delete plot.plot_agent;
+Plot::Plot(unsigned flags) : plot_impl_{new elem_plot{flags}} {
 }
 
-void NullPlotImpl(elem_plot& plot) {
-    plot.plot = nullptr;
-    plot.plot_agent = nullptr;
+Plot::Plot(const Plot& other) : plot_impl_{new elem_plot{*other.plot_impl_}} {
 }
 
-Plot::Plot(unsigned flags) : plot_impl_{new graphics::plot{flags}, new graphics::plot_agent{}} {
-}
-
-Plot::Plot(const Plot& other) : plot_impl_{new graphics::plot(*other.plot_impl_.plot), new graphics::plot_agent{}} {
-}
-
-Plot::Plot(Plot&& other) : plot_impl_{other.plot_impl_.plot, other.plot_impl_.plot_agent} {
-    NullPlotImpl(other.plot_impl_);
+Plot::Plot(Plot&& other) : plot_impl_{new elem_plot{std::move(*other.plot_impl_)}} {
 }
 
 Plot::~Plot() {
-    DeletePlotImpl(plot_impl_);
+    delete plot_impl_;
 }
 
 Plot& Plot::operator=(Plot&& other) {
     if (this != &other) {
-        DeletePlotImpl(plot_impl_);
+        delete plot_impl_;
         plot_impl_ = other.plot_impl_;
-        NullPlotImpl(other.plot_impl_);
+        other.plot_impl_ = nullptr;
     }
     return *this;
 }
 
 Plot& Plot::operator=(const Plot& other) {
     if (this != &other) {
-        delete plot_impl_.plot;
-        plot_impl_.plot = new graphics::plot(*other.plot_impl_.plot);
-        plot_impl_.plot_agent->clear();
+        delete plot_impl_;
+        plot_impl_ = new elem_plot{*other.plot_impl_};
+        plot_impl_->clear_windows_links();
     }
     return *this;
 }
 
 void Plot::SetTitle(const char *title) {
-    elem_plot_set_title(&plot_impl_, title);
+    elem_plot_set_title(plot_impl_, title);
 }
 
 void Plot::SetXAxisTitle(const char *axis_title) {
-    elem_plot_set_x_axis_title(&plot_impl_, axis_title);
+    elem_plot_set_x_axis_title(plot_impl_, axis_title);
 }
 
 void Plot::SetYAxisTitle(const char *axis_title) {
-    elem_plot_set_y_axis_title(&plot_impl_, axis_title);
+    elem_plot_set_y_axis_title(plot_impl_, axis_title);
 }
 
 void Plot::SetClipMode(bool flag) {
-    graphics::plot::drawing_context dc(*plot_impl_.plot);
-    plot_impl_.plot->set_clip_mode(flag);
+    graphics::plot::drawing_context dc(*plot_impl_);
+    plot_impl_->set_clip_mode(flag);
 }
 
 void Plot::SetLimits(float x1, float y1, float x2, float y2) {
-    elem_plot_set_limits(&plot_impl_, x1, y1, x2, y2);
+    elem_plot_set_limits(plot_impl_, x1, y1, x2, y2);
 }
 
 void Plot::SetAxisLabelsAngle(const Axis& axis, float angle) {
-    elem_plot_set_label_angle(&plot_impl_, axis, angle);
+    elem_plot_set_label_angle(plot_impl_, axis, angle);
 }
 
 void Plot::EnableLabelFormat(const Axis& axis, const char *fmt) {
-    elem_plot_enable_label_format(&plot_impl_, axis, fmt);
+    elem_plot_enable_label_format(plot_impl_, axis, fmt);
 }
 
 void Plot::CommitPendingDraw() {
-    elem_plot_commit_pending_draw(&plot_impl_);
+    elem_plot_commit_pending_draw(plot_impl_);
 }
 
 void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
     if (object.object_impl_ != nullptr) {
-        elem_plot_add(&plot_impl_, (elem_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
+        elem_plot_add(plot_impl_, (elem_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
     }
@@ -224,27 +214,24 @@ void Plot::AddStroke(Object object, Color color, float line_width, unsigned flag
 }
 
 void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
-    graphics::plot *legend_plot = (graphics::plot *) legend.plot_impl_.plot;
-    plot_impl_.plot->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
-    // The plot take the ownership of the legend plot so null the pointer inside the object.
-    delete legend.plot_impl_.plot_agent;
-    NullPlotImpl(legend.plot_impl_);
+    auto legend_plot = new graphics::plot{std::move(*legend.plot_impl_)};
+    plot_impl_->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
 }
 
 bool Plot::PushLayer() {
-    return elem_plot_push_layer(&plot_impl_);
+    return elem_plot_push_layer(plot_impl_);
 }
 
 bool Plot::PopLayer() {
-    return elem_plot_pop_layer(&plot_impl_);
+    return elem_plot_pop_layer(plot_impl_);
 }
 
 void Plot::ClearLayer() {
-    return elem_plot_clear_layer(&plot_impl_);
+    return elem_plot_clear_layer(plot_impl_);
 }
 
 bool Plot::WriteSvg(const char *filename, double width, double height) {
-    return elem_plot_write_svg(&plot_impl_, filename, width, height);
+    return elem_plot_write_svg(plot_impl_, filename, width, height);
 }
 
 Object MarkerSymbol(int n) {

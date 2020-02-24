@@ -4,6 +4,7 @@
 #include "util/agg_color_conv_rgb8.h"
 
 #include "debug_priv.h"
+#include "elem_plot_class.h"
 #include "fatal.h"
 #include "colors.h"
 
@@ -91,7 +92,7 @@ window_surface::render_drawing_queue(plot::drawing_context& dc, unsigned index)
     return render_drawing_queue(dc, ref, area);
 }
 
-int window_surface::attach(plot* p, const char* slot_str)
+int window_surface::attach(elem_plot* p, const char* slot_str)
 {
     int index = m_part.get_slot_index(slot_str);
     if (index >= 0)
@@ -145,7 +146,7 @@ void window_surface::update_window_area() {
 void window_surface::slot_refresh(unsigned index)
 {
     if (m_canvas == nullptr) return;
-    plot *plot_selected = get_plot(index);
+    elem_plot *plot_selected = get_plot(index);
     plot::drawing_context dc(*plot_selected);
     bool redraw = get_plot(index)->need_redraw();
     if (redraw) {
@@ -170,7 +171,7 @@ void
 window_surface::render()
 {
     for (unsigned k = 0; k < m_plots.size(); k++) {
-        plot *current_plot = get_plot(k);
+        elem_plot *current_plot = get_plot(k);
         if (current_plot) {
             plot::drawing_context dc(*current_plot);
             render_plot_by_index(dc, k);
@@ -196,7 +197,7 @@ window_surface::restore_slot_image(unsigned index)
     }
     else
     {
-        plot *current_plot = get_plot(index);
+        elem_plot *current_plot = get_plot(index);
         if (current_plot) {
             plot::drawing_context dc(*current_plot);
             render_plot_by_index(dc, index);

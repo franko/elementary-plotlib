@@ -2,6 +2,7 @@
 #include "elem_plot.h"
 
 // the following are private headers.
+#include "elem_plot_class.h"
 #include "plot.h"
 #include "plot_agent.h"
 #include "window_platform_native.h"
@@ -26,10 +27,8 @@ void Window::SetLayout(const char *fmt) {
 }
 
 int Window::Attach(Plot& plot, const char* slot_str) {
-    graphics::plot *p = plot.plot_impl_.plot;
-    int index = window_impl_->attach(p, slot_str);
-    graphics::plot_agent *agent = plot.plot_impl_.plot_agent;
-    agent->add_window(window_impl_->get_window_surface(), index);
+    int index = window_impl_->attach(plot.plot_impl_, slot_str);
+    plot.plot_impl_->add_window_link(window_impl_->get_window_surface(), index);
     return index;
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "elem_plot_class.h"
 #include "window.h"
 #include "window_flags.h"
 #include "window_surface.h"
@@ -24,7 +25,7 @@ public:
         }
     }
 
-    int attach(graphics::plot* p, const char* slot_str) override {
+    int attach(elem_plot* p, const char* slot_str) override {
         return m_surface.attach(p, slot_str);
     }
 

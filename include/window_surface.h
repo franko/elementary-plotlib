@@ -11,12 +11,14 @@
 #include "rect.h"
 #include "plot.h"
 
+class elem_plot;
+
 namespace graphics {
 
 struct plot_ref {
-    plot_ref(): plot_ptr(NULL), have_save_img(false), pending_queue(false) {}
+    plot_ref(): plot_ptr(nullptr), have_save_img(false), pending_queue(false) {}
 
-    plot* plot_ptr;
+    elem_plot* plot_ptr;
     plot_render_info inf;
     bool have_save_img;
     // If true we are between an update send_request() and a commit_pending_draw():
@@ -62,7 +64,7 @@ public:
 
     /* Methods for initial window's setup. */
     void attach_window(display_window* win) { m_window = win; }
-    int attach(plot* p, const char* slot_str);
+    int attach(elem_plot* p, const char* slot_str);
     void split(const char* split_str);
 
     /* The following methods are called from the main thread. */
@@ -82,7 +84,7 @@ private:
     opt_rect<int> render_drawing_queue(plot::drawing_context& dc, unsigned index);
     opt_rect<int> render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
 
-    plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
+    elem_plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
     agg::rect_i get_plot_area(unsigned index) const;
     unsigned plot_number() const { return m_plots.size(); }

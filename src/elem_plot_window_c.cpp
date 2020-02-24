@@ -21,10 +21,8 @@ void elem_window_set_layout(elem_window *win, const char *fmt) {
 }
 
 int elem_window_attach(elem_window *win, elem_plot *plot, const char* slot_str) {
-    graphics::plot *p = plot->plot;
-    int index = win->attach(p, slot_str);
-    graphics::plot_agent *agent = (graphics::plot_agent *) plot->plot_agent;
-    agent->add_window(win->get_window_surface(), index);
+    int index = win->attach(plot, slot_str);
+    plot->add_window_link(win->get_window_surface(), index);
     return index;
 }
 
