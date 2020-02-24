@@ -5,13 +5,12 @@
 #include <agg_trans_affine.h>
 
 #include "display_window.h"
+#include "elem_plot_class.h"
 #include "image_buf.h"
 #include "window_part.h"
 #include "canvas.h"
 #include "rect.h"
 #include "plot.h"
-
-class elem_plot;
 
 namespace graphics {
 

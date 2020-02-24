@@ -4,7 +4,6 @@
 #include "util/agg_color_conv_rgb8.h"
 
 #include "debug_priv.h"
-#include "elem_plot_class.h"
 #include "fatal.h"
 #include "colors.h"
 
