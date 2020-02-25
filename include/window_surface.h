@@ -14,6 +14,12 @@
 
 namespace graphics {
 
+// Note: the window_surface does not need to have point to an elem_plot
+// but we may give an interface that implements only the methods draw()
+// and draw_queue().
+// The benefits would be a better decoupling between the classes and
+// the possibility to give to elem_plot something else than a elem_plot
+// generalizing in this way the things that window_surface can render.
 struct plot_ref {
     plot_ref(): plot_ptr(nullptr), have_save_img(false), pending_queue(false) {}
 
