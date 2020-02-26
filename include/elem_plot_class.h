@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gc_context.h"
 #include "plot.h"
 #include "plot_agent.h"
 
@@ -9,7 +10,8 @@ public:
         graphics::plot{flags} {
     }
     elem_plot(const elem_plot& other):
-        graphics::plot{other}, m_plot_agent{} {
+        graphics::plot{other},
+        m_plot_agent{} {
     }
     elem_plot(elem_plot&& other):
         graphics::plot{std::move(other)},
@@ -31,6 +33,11 @@ public:
     void clear_windows_links() {
         m_plot_agent.clear();
     }
+
+    bool release();
+    // Returns true if object has some remaining references.
+    bool has_references(gc_context& gc);
 private:
     graphics::plot_agent m_plot_agent;
+    int m_ref_count = 1;
 };

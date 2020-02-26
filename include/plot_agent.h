@@ -24,6 +24,7 @@ public:
     void update_windows();
     void clear();
     void clear_pending_flags();
+    agg::pod_bvector<window_surface*> linked_windows() const;
 private:
     agg::pod_bvector<window_index_pair> linked_windows_;
 };

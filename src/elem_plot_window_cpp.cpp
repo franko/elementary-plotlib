@@ -19,7 +19,11 @@ Window::Window(elem_window *window_impl_) : window_impl_(window_impl_) {
 }
 
 Window::~Window() {
-    delete window_impl_;
+    auto window_surface = window_impl_->get_window_surface();
+    bool has_references = window_surface->release();
+    if (!has_references) {
+        delete window_impl_;
+    }
 }
 
 void Window::SetLayout(const char *fmt) {

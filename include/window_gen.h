@@ -38,7 +38,9 @@ public:
             debug_log(1, "fonts not initialized, performing initialization");
             graphics::initialize_fonts();
         }
+        m_surface.retain();
         m_window.start(width, height, flags);
+        m_surface.release();
     }
 
     void wait() override {

@@ -147,7 +147,10 @@ Plot::Plot(Plot&& other) : plot_impl_{new elem_plot{std::move(*other.plot_impl_)
 }
 
 Plot::~Plot() {
-    delete plot_impl_;
+    bool has_references = plot_impl_->release();
+    if (!has_references) {
+        delete plot_impl_;
+    }
 }
 
 Plot& Plot::operator=(Plot&& other) {

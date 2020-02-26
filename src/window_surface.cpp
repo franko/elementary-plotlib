@@ -209,4 +209,31 @@ void window_surface::clear_pending_flags(int plot_index) {
     m_plots[plot_index].pending_queue = false;
 }
 
+void window_surface::retain() {
+  m_ref_count++;
+}
+
+bool window_surface::release() {
+    m_ref_count--;
+    gc_context gc;
+    return has_references(gc);
+}
+
+bool window_surface::has_references(gc_context& gc) {
+    if (gc.visited(this)) {
+        return false;
+    }
+    gc.add_visited(this);
+    if (m_ref_count > 0) {
+        return true;
+    } 
+    for (unsigned i = 0; i < plot_number(); i++) {
+        elem_plot *linked_plot = get_plot(i);
+        if (linked_plot->has_references(gc)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 } /* namespace graphics */

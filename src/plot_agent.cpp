@@ -32,4 +32,12 @@ void plot_agent::clear_pending_flags() {
         pair.surface->clear_pending_flags(pair.slot_index);
     }
 }
+
+agg::pod_bvector<window_surface*> plot_agent::linked_windows() const {
+    agg::pod_bvector<window_surface*> windows_list;
+    for (unsigned i = 0; i < linked_windows_.size(); i++) {
+        windows_list.add(linked_windows_[i].surface);
+    }
+    return windows_list;
+}
 }
