@@ -31,37 +31,36 @@ struct plot_ref {
     bool pending_queue;
 };
 
-/* The class window_surface is part of a window. It is declared by window_gen
-   and the screen window implementation gets a reference to the window_surface.
-
-   The window, including the window surface, run on its own thread. In order
-   to ensure memory safety and avoid race conditions the main thread and
-   the window's thread should interact only using some predefined methods.
-
-   The window contains references to the main thread with the pointers to
-   plots. The interaction of the window's with the plots should be strictly
-   limited.
-
-   The principles of the operations are:
-
-   1. the plots referenced from window_surface are rendered on the
-      windows buffer only from the window's thread.
-   2. the paint operations are all done from the window's thread
-   3. when the plots needs to update the window it sends to the
-      window's thread a request by communicating the plot's index
-      relative to the window surface.
-      In response to the request the window's thread will render the
-      plot and paint on the screen (see point 1).
-
-   The window screen implementation (window_win32 or xwindow) calls
-   the following window_surface's methods:
-
-   resize, render, slot_refresh, update_window_area.
-
-   From the plot_agent the following methods are called:
-
-   slot_refresh_request, clear_pending_flags.
-*/
+// The class window_surface is part of a window. It is declared by window_gen
+//   and the screen window implementation gets a reference to the window_surface.
+//
+//   The window, including the window surface, run on its own thread. In order
+//   to ensure memory safety and avoid race conditions the main thread and
+//   the window's thread should interact only using some predefined methods.
+//
+//   The window contains references to the main thread with the pointers to
+//   plots. The interaction of the window's with the plots should be strictly
+//   limited.
+//
+//   The principles of the operations are:
+//
+//   1. the plots referenced from window_surface are rendered on the
+//      windows buffer only from the window's thread.
+//   2. the paint operations are all done from the window's thread
+//   3. when the plots needs to update the window it sends to the
+//      window's thread a request by communicating the plot's index
+//      relative to the window surface.
+//      In response to the request the window's thread will render the
+//      plot and paint on the screen (see point 1).
+//
+//   The window screen implementation (window_win32 or xwindow) calls
+//   the following window_surface's methods:
+//
+//   resize, render, slot_refresh, update_window_area.
+//
+//   From the plot_agent the following methods are called:
+//
+//   slot_refresh_request, clear_pending_flags.
 class window_surface {
 public:
     window_surface(const char* split);
