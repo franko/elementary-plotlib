@@ -1,8 +1,6 @@
 #pragma once
 
-namespace graphics {
-class window_surface;
-}
+#include "window_surface.h"
 
 class elem_plot;
 
@@ -16,4 +14,37 @@ public:
     virtual void close() = 0;
     virtual graphics::window_surface *get_window_surface() = 0;
     virtual ~elem_window() { }
+
+    void retain() {
+        m_ref_count++;
+    }
+
+    void release() {
+        m_ref_count--;
+        gc_context gc;
+        if (!has_references(gc)) {
+            gc.collect_visited();
+        }
+    }
+
+    bool has_references(gc_context& gc) {
+        if (gc.visited(this)) {
+            return false;
+        }
+        gc.add_visited(this);
+        if (m_ref_count > 0) {
+            return true;
+        } 
+        auto linked_plots_list = get_window_surface()->linked_plots();
+        for (unsigned i = 0; i < linked_plots_list.size(); i++) {
+            elem_plot *linked_plot = linked_plots_list[i];
+            if (linked_plot->has_references(gc)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+private:
+    int m_ref_count = 1;
 };

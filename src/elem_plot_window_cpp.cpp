@@ -19,20 +19,16 @@ Window::Window(elem_window *window_impl_) : window_impl_(window_impl_) {
 }
 
 Window::~Window() {
-    auto window_surface = window_impl_->get_window_surface();
-    bool has_references = window_surface->release();
-    if (!has_references) {
-        delete window_impl_;
-    }
+    window_impl_->release();
 }
 
 void Window::SetLayout(const char *fmt) {
-    window_impl_->set_layout(fmt);    
+    window_impl_->set_layout(fmt);
 }
 
 int Window::Attach(Plot& plot, const char* slot_str) {
     int index = window_impl_->attach(plot.plot_impl_, slot_str);
-    plot.plot_impl_->add_window_link(window_impl_->get_window_surface(), index);
+    plot.plot_impl_->add_window_link(window_impl_, index);
     return index;
 }
 

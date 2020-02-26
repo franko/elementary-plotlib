@@ -2,14 +2,12 @@
 
 #include <agg_array.h>
 
-namespace graphics {
-    class plot;
-    class window_surface;
-}
+class elem_plot;
+class elem_window;
 
 class gc_context {
-    using plot_type = graphics::plot;
-    using window_type = graphics::window_surface;
+    using plot_type = elem_plot;
+    using window_type = elem_window;
 public:
     bool visited(plot_type *plot) const {
         for (unsigned i = 0; i < m_visited_plots.size(); i++) {
@@ -46,6 +44,8 @@ public:
         }
         m_visited_windows.add(window);
     }
+
+    void collect_visited();
 private:
     agg::pod_bvector<plot_type*> m_visited_plots;
     agg::pod_bvector<window_type*> m_visited_windows;

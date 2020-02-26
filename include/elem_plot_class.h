@@ -26,15 +26,15 @@ public:
         m_plot_agent.clear_pending_flags();
     }
 
-    void add_window_link(graphics::window_surface *surface, int slot_index) {
-        m_plot_agent.add_window(surface, slot_index);
+    void add_window_link(elem_window *window, int slot_index) {
+        m_plot_agent.add_window(window, slot_index);
     }
 
     void clear_windows_links() {
         m_plot_agent.clear();
     }
 
-    bool release();
+    void release();
     // Returns true if object has some remaining references.
     bool has_references(gc_context& gc);
 private:

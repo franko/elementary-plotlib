@@ -136,7 +136,7 @@ elem_plot *elem_plot_new(unsigned int flags) {
 }
 
 void elem_plot_free(elem_plot *plot) {
-    delete plot;
+    plot->release();
 }
 
 void elem_plot_set_title(elem_plot *plot, const char *title) {

@@ -22,7 +22,7 @@ void elem_window_set_layout(elem_window *win, const char *fmt) {
 
 int elem_window_attach(elem_window *win, elem_plot *plot, const char* slot_str) {
     int index = win->attach(plot, slot_str);
-    plot->add_window_link(win->get_window_surface(), index);
+    plot->add_window_link(win, index);
     return index;
 }
 
@@ -39,5 +39,5 @@ void elem_window_wait(elem_window *win) {
 }
 
 void elem_window_free(elem_window *win) {
-    delete win;
+    win->release();
 }

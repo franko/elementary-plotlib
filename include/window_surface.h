@@ -6,7 +6,6 @@
 
 #include "display_window.h"
 #include "elem_plot_class.h"
-#include "gc_context.h"
 #include "image_buf.h"
 #include "window_part.h"
 #include "canvas.h"
@@ -84,9 +83,13 @@ public:
     void slot_refresh(unsigned index);
     void update_window_area();
 
-    void retain();
-    bool release();
-    bool has_references(gc_context& gc);
+    agg::pod_bvector<elem_plot *> linked_plots() const {
+        agg::pod_bvector<elem_plot *> linked_plots_list;
+        for (unsigned i = 0; i < plot_number(); i++) {
+            linked_plots_list.add(get_plot(i));
+        }
+        return linked_plots_list;
+    }
 
 private:
     void render_by_ref(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r);
@@ -113,7 +116,6 @@ private:
     agg::pod_bvector<plot_ref> m_plots;
     display_window* m_window;
     canvas* m_canvas;
-    int m_ref_count = 1;
 };
 
 } /* namespace graphics */

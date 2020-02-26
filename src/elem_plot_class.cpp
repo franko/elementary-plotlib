@@ -1,10 +1,13 @@
 #include "elem_plot_class.h"
-#include "window_surface.h"
+#include "window.h"
 
-bool elem_plot::release() {
+void elem_plot::release() {
     m_ref_count--;
     gc_context gc;
-    return has_references(gc);
+    if (!has_references(gc)) {
+        gc.collect_visited();
+    }
+    }
 }
 
 bool elem_plot::has_references(gc_context& gc) {

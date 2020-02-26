@@ -1,16 +1,18 @@
 #include "plot_agent.h"
 #include "window_surface.h"
+#include "window.h"
 
 namespace graphics {
 
-void plot_agent::add_window(window_surface *surface, int slot_index) {
+void plot_agent::add_window(elem_window *window, int slot_index) {
+    window_surface *surface = window->get_window_surface();
     for (unsigned i = 0; i < linked_windows_.size(); i++) {
         if (linked_windows_[i].surface == surface) {
             linked_windows_[i].slot_index = slot_index;
             return;
         }
     }
-    linked_windows_.add(window_index_pair{surface, slot_index});
+    linked_windows_.add(window_index_pair{window, surface, slot_index});
 }
 
 void plot_agent::update_windows() {
@@ -33,10 +35,10 @@ void plot_agent::clear_pending_flags() {
     }
 }
 
-agg::pod_bvector<window_surface*> plot_agent::linked_windows() const {
-    agg::pod_bvector<window_surface*> windows_list;
+agg::pod_bvector<elem_window *> plot_agent::linked_windows() const {
+    agg::pod_bvector<elem_window *> windows_list;
     for (unsigned i = 0; i < linked_windows_.size(); i++) {
-        windows_list.add(linked_windows_[i].surface);
+        windows_list.add(linked_windows_[i].window);
     }
     return windows_list;
 }
