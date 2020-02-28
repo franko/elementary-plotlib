@@ -147,12 +147,16 @@ Plot::Plot(Plot&& other) : plot_impl_{new elem_plot{std::move(*other.plot_impl_)
 }
 
 Plot::~Plot() {
-    plot_impl_->release();
+    if (plot_impl_) {
+        plot_impl_->release();
+    }
 }
 
 Plot& Plot::operator=(Plot&& other) {
     if (this != &other) {
-        delete plot_impl_;
+        if (plot_impl_) {
+            plot_impl_->release();
+        }
         plot_impl_ = other.plot_impl_;
         other.plot_impl_ = nullptr;
     }
@@ -161,7 +165,9 @@ Plot& Plot::operator=(Plot&& other) {
 
 Plot& Plot::operator=(const Plot& other) {
     if (this != &other) {
-        delete plot_impl_;
+        if (plot_impl_) {
+            plot_impl_->release();
+        }
         plot_impl_ = new elem_plot{*other.plot_impl_};
         plot_impl_->clear_windows_links();
     }

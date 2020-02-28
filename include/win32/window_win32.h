@@ -8,6 +8,7 @@
 #include "strpp.h"
 #include "start_window.h"
 #include "win32/agg_win32_bmp.h"
+#include "window_close_callback.h"
 #include "window_surface.h"
 
 class window_win32 : public graphics::display_window_status {
@@ -17,8 +18,8 @@ public:
 
     void start_blocking(unsigned width, unsigned height, unsigned flags);
 
-    void start(unsigned width, unsigned height, unsigned flags) {
-        int status = start_window_new_thread(this, width, height, flags);
+    void start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
+        int status = start_window_new_thread(this, width, height, flags, callback);
         if (status != 0) {
             debug_log(1, "error starting window, unknwon error");
         }

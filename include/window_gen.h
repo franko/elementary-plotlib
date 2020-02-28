@@ -2,9 +2,20 @@
 
 #include "elem_plot_class.h"
 #include "window.h"
+#include "window_close_callback.h"
 #include "window_flags.h"
 #include "window_surface.h"
 #include "debug_priv.h"
+
+class elem_window_close_callback : public window_close_callback {
+public:
+    elem_window_close_callback(elem_window& window): m_window(window) { }
+    void execute() override {
+        m_window.release();
+    }
+private:
+    elem_window& m_window;
+};
 
 template <typename Window>
 class window_gen : public elem_window {
@@ -38,7 +49,9 @@ public:
             debug_log(1, "fonts not initialized, performing initialization");
             graphics::initialize_fonts();
         }
-        m_window.start(width, height, flags);
+        retain();
+        auto callback = new elem_window_close_callback{*this};
+        m_window.start(width, height, flags, callback);
     }
 
     void wait() override {

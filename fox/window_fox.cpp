@@ -90,8 +90,8 @@ bool window_fox::send_request(graphics::window_request request_type, int index) 
     return true;
 }
 
-void window_fox::start(unsigned width, unsigned height, unsigned flags) {
-    FXElemStartMessage data{this, width, height, flags};
+void window_fox::start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
+    FXElemStartMessage data{this, width, height, flags, callback};
     if (! m_start_signal) {
         debug_log(0, "error: cannot start fox window, no hosting environment");
         return;
@@ -99,5 +99,6 @@ void window_fox::start(unsigned width, unsigned height, unsigned flags) {
     m_start_signal->setData(&data);
     m_start_signal->signal();
     wait_for_status(graphics::window_running);
+    // FIXME: ownership of callback and ensure it was taken into account.
     m_start_signal->setData(nullptr);
 }

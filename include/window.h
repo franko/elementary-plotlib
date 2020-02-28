@@ -1,6 +1,7 @@
 #pragma once
 
 #include "window_surface.h"
+#include "gc_context.h"
 
 class elem_plot;
 
@@ -16,10 +17,12 @@ public:
     virtual ~elem_window() { }
 
     void retain() {
+        std::lock_guard<std::mutex> guard(global_window_gc_mutex);
         m_ref_count++;
     }
 
     void release() {
+        std::lock_guard<std::mutex> guard(global_window_gc_mutex);
         m_ref_count--;
         gc_context gc;
         if (!has_references(gc)) {

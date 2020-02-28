@@ -1,12 +1,13 @@
 #include "elem_plot_class.h"
+#include "gc_context.h"
 #include "window.h"
 
 void elem_plot::release() {
+    std::lock_guard<std::mutex> guard(global_window_gc_mutex);
     m_ref_count--;
     gc_context gc;
     if (!has_references(gc)) {
         gc.collect_visited();
-    }
     }
 }
 

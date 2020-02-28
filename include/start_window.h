@@ -2,6 +2,8 @@
 
 #include <thread>
 
+#include "window_close_callback.h"
+
 /* The functions below are meant to be used with a Window type that:
    - inherits from display_window_status for the methods lock, unlock
      and wait_until_notification
@@ -13,13 +15,17 @@
 */
 
 template <typename Window>
-void run_window(Window *window, unsigned width, unsigned height, unsigned flags) {
+void run_window(Window *window, unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
     window->start_blocking(width, height, flags);
+    if (callback) {
+        callback->execute();
+        delete callback;
+    }
 }
 
 template <typename Window>
-int start_window_new_thread(Window *window, unsigned width, unsigned height, unsigned flags) {
-    std::thread window_thread(run_window<Window>, window, width, height, flags);
+int start_window_new_thread(Window *window, unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
+    std::thread window_thread(run_window<Window>, window, width, height, flags, callback);
     window_thread.detach();
     window->wait_for_status(graphics::window_running);
     return 0;

@@ -18,6 +18,10 @@ FXElemBaseWindow::FXElemBaseWindow(FXComposite* p, window_fox *win, FXuint opts,
 
 FXElemBaseWindow::~FXElemBaseWindow() {
     m_window->set_status(graphics::window_closed);
+    if (m_callback) {
+        m_callback->execute();
+        delete m_callback;
+    }
 }
 
 void FXElemBaseWindow::position(FXint x, FXint y, FXint w, FXint h) {
@@ -72,4 +76,5 @@ void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreate
         elem_base_window->create();
         elem_base_window->show();
     }
+    elem_base_window->bindCloseCallback(message->callback);
 }

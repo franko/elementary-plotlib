@@ -1,9 +1,11 @@
 #pragma once
 
+#include <cassert>
 #include <fx.h>
 
 // We include here only the public interface elementary plot library header.
 #include "elem_plot.h"
+#include "window_close_callback.h"
 
 class window_fox;
 
@@ -24,6 +26,11 @@ public:
         m_window = win;
     }
 
+    void bindCloseCallback(window_close_callback *callback) {
+        assert(callback == nullptr);
+        m_callback = callback;
+    }
+
     void position(FXint x, FXint y, FXint w, FXint h) override;
     void create() override;
 
@@ -40,6 +47,7 @@ public:
 
 private:
     window_fox *m_window;
+    window_close_callback *m_callback = nullptr;
 };
 }
 
@@ -53,6 +61,7 @@ struct FXElemStartMessage {
     unsigned width;
     unsigned height;
     unsigned flags;
+    window_close_callback *callback;
 };
 
 void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreatePolicy create_flag);

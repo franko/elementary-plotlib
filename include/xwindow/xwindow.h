@@ -10,6 +10,7 @@
 #include "start_window.h"
 #include "strpp.h"
 #include "update_region_notify.h"
+#include "window_close_callback.h"
 #include "window_surface.h"
 #include "xwindow/x_connection.h"
 #include "xwindow/x_image.h"
@@ -26,8 +27,8 @@ public:
 
     void start_blocking(unsigned width, unsigned height, unsigned flags);
 
-    void start(unsigned width, unsigned height, unsigned flags) {
-        int status = start_window_new_thread(this, width, height, flags);
+    void start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
+        int status = start_window_new_thread(this, width, height, flags, callback);
         if (status != 0) {
             debug_log(1, "error starting window, unknwon error");
         }

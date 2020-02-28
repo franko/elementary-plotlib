@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "display_window_status.h"
+#include "window_close_callback.h"
 #include "update_region_notify.h"
 #include "window_surface.h"
 
@@ -21,7 +22,7 @@ public:
     bool send_request(graphics::window_request request_type, int plot_index) override;
     void update_region(const graphics::image& src_img, const agg::rect_i& r) override;
 
-    void start(unsigned width, unsigned height, unsigned flags);
+    void start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback);
 
     void draw(FXEvent *ev) {
         m_window_surface.update_window_area();

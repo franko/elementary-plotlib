@@ -1,6 +1,7 @@
 
 window_tests = [
     {'name': 'test-window', 'sources': 'test-window.cpp'},
+    {'name': 'test-window-gc', 'sources': 'test-window-gc.cpp'},
     {'name': 'test-window-close', 'sources': 'test-window-close.cpp'},
     {'name': 'test-window-no-init', 'sources': 'test-window-no-init.cpp'},
     {'name': 'test-window-auto', 'sources': 'test-window-auto.cpp'},

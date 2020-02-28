@@ -1,9 +1,12 @@
 #pragma once
 
+#include <mutex>
 #include <agg_array.h>
 
 class elem_plot;
 class elem_window;
+
+extern std::mutex global_window_gc_mutex;
 
 class gc_context {
     using plot_type = elem_plot;
