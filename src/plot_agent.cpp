@@ -7,8 +7,8 @@ namespace graphics {
 void plot_agent::add_window(elem_window *window, int slot_index) {
     window_surface *surface = window->get_window_surface();
     for (unsigned i = 0; i < linked_windows_.size(); i++) {
-        if (linked_windows_[i].surface == surface) {
-            linked_windows_[i].slot_index = slot_index;
+        window_index_pair&  test_pair = linked_windows_[i];
+        if (test_pair.window == window && test_pair.slot_index == slot_index) {
             return;
         }
     }
