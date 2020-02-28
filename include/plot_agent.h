@@ -11,8 +11,6 @@ class window_surface;
 class plot_agent {
     struct window_index_pair {
         elem_window *window;
-        // FIXME: check if we can actually remove the pointer below.
-        window_surface *surface;
         int slot_index;
     };
 public:
