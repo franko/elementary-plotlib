@@ -12,7 +12,7 @@
 #include "canvas_markers.h"
 #include "plot.h"
 #include "plot_agent.h"
-#include "window.h"
+#include "elem_window.h"
 #include "markers.h"
 
 static agg::rgba8 ColorToRgba8(const elem_color& c) {

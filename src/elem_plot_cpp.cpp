@@ -14,7 +14,7 @@
 #include "canvas_markers.h"
 #include "plot.h"
 #include "plot_agent.h"
-#include "window.h"
+#include "elem_window.h"
 #include "markers.h"
 #include "canvas_svg.h"
 

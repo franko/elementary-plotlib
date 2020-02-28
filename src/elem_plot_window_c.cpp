@@ -4,7 +4,7 @@
 // the following are private headers.
 #include "plot.h"
 #include "plot_agent.h"
-#include "window.h"
+#include "elem_window.h"
 #include "elem_plot_c_forward.h"
 #include "window_platform_native.h"
 

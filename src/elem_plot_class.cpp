@@ -1,6 +1,6 @@
 #include "elem_plot_class.h"
 #include "gc_context.h"
-#include "window.h"
+#include "elem_window.h"
 
 void elem_plot::release() {
     std::lock_guard<std::mutex> guard(global_window_gc_mutex);

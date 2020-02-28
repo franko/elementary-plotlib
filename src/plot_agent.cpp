@@ -1,6 +1,6 @@
 #include "plot_agent.h"
 #include "window_surface.h"
-#include "window.h"
+#include "elem_window.h"
 
 namespace graphics {
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "elem_plot_class.h"
-#include "window.h"
+#include "elem_window.h"
 #include "window_close_callback.h"
 #include "window_flags.h"
 #include "window_surface.h"
