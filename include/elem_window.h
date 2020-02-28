@@ -1,7 +1,8 @@
 #pragma once
 
-#include "window_surface.h"
+#include "debug_priv.h"
 #include "gc_context.h"
+#include "window_surface.h"
 
 class elem_plot;
 
@@ -14,7 +15,10 @@ public:
     virtual void wait() = 0;
     virtual void close() = 0;
     virtual graphics::window_surface *get_window_surface() = 0;
-    virtual ~elem_window() { }
+
+    virtual ~elem_window() {
+        debug_log(2, "elem_window::~elem_window() [%p]", this);
+    }
 
     void retain() {
         std::lock_guard<std::mutex> guard(global_window_gc_mutex);

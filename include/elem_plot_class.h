@@ -1,5 +1,6 @@
 #pragma once
 
+#include "debug_priv.h"
 #include "gc_context.h"
 #include "plot.h"
 #include "plot_agent.h"
@@ -16,6 +17,10 @@ public:
     elem_plot(elem_plot&& other):
         graphics::plot{std::move(other)},
         m_plot_agent{std::move(other.m_plot_agent)} {
+    }
+
+    ~elem_plot() {
+        debug_log(2, "elem_plot::~elem_plot() [%p]", this);
     }
 
     void update_windows() {
