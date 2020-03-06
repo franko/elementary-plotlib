@@ -3,16 +3,17 @@
 
 // the following are private headers.
 #include "elem_plot_class.h"
+#include "elem_window.h"
+#include "global_elem_window_factory.h"
 #include "plot.h"
 #include "plot_agent.h"
-#include "window_platform_native.h"
 
 namespace elem {
 
-Window::Window() : window_impl_(new elem_window_native()) {
+Window::Window() : window_impl_(global_elem_window_factory->create()) {
 }
 
-Window::Window(const char *layout) : window_impl_{new elem_window_native(layout)} {
+Window::Window(const char *layout) : window_impl_{global_elem_window_factory->create_with_layout(layout)} {
 }
 
 Window::Window(elem_window *window_impl_) : window_impl_(window_impl_) {

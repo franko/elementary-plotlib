@@ -40,6 +40,7 @@ install_headers('include/elem_plot_lua_cpp.h')
 install_headers('include/FXElemWindow.h')
 
 subdir('src')
+subdir('window')
 if host_system == 'linux'
     subdir('xwindow')
 elif host_is_window
