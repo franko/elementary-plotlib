@@ -27,7 +27,7 @@ public:
     }
 
     void bindCloseCallback(window_close_callback *callback) {
-        assert(callback == nullptr);
+        assert(m_callback == nullptr);
         m_callback = callback;
     }
 

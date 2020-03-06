@@ -72,9 +72,9 @@ void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreate
     elem_base_window->setWidth(message->width);
     elem_base_window->setHeight(message->height);
     message->window->bind_elem_window(elem_base_window);
+    elem_base_window->bindCloseCallback(message->callback);
     if (create_flag == ELEM_CREATE_NOW) {
         elem_base_window->create();
         elem_base_window->show();
     }
-    elem_base_window->bindCloseCallback(message->callback);
 }
