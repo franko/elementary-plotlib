@@ -55,7 +55,9 @@ public:
     }
 
     void wait() override {
-        m_window.wait_for_status(graphics::window_closed);
+        if (m_window.status() == graphics::window_running) {
+            m_window.wait_for_status(graphics::window_closed);
+        }
     }
 
     void close() override {
