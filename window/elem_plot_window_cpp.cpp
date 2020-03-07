@@ -29,7 +29,9 @@ void Window::SetLayout(const char *fmt) {
 
 int Window::Attach(Plot& plot, const char* slot_str) {
     int index = window_impl_->attach(plot.plot_impl_, slot_str);
-    plot.plot_impl_->add_window_link(window_impl_, index);
+    if (index >= 0) {
+        plot.plot_impl_->add_window_link(window_impl_, index);
+    }
     return index;
 }
 
