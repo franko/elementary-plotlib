@@ -65,8 +65,8 @@ inline void vertex_source_copy<agg::ellipse>(agg::ellipse& dest, const agg::elli
 }
 
 // Scalable Graphics Object
-struct elem_object : public vertex_source {
-
+class elem_object : public vertex_source {
+public:
     virtual void apply_transform(const agg::trans_affine& m, double as) = 0;
     virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) = 0;
 
