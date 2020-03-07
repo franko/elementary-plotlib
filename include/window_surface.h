@@ -85,7 +85,10 @@ public:
     agg::pod_bvector<elem_plot *> linked_plots() const {
         agg::pod_bvector<elem_plot *> linked_plots_list;
         for (unsigned i = 0; i < plot_number(); i++) {
-            linked_plots_list.add(get_plot(i));
+            auto plot_at_index = get_plot(i);
+            if (plot_at_index) {
+                linked_plots_list.add(plot_at_index);
+            }
         }
         return linked_plots_list;
     }
