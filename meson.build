@@ -64,6 +64,12 @@ if fox_dep.found()
     subdir('fox')
 endif
 
+wxwidgets_dep = dependency('wxwidgets', required: false)
+
+if wxwidgets_dep.found()
+    subdir('wxwidgets')
+endif
+
 sol_dep = dependency('sol2', required: false)
 
 luajit_dep  = dependency('luajit', required: false)
