@@ -5,6 +5,7 @@
 window_fox::window_fox(graphics::window_surface& window_surface):
         m_elem_window(nullptr),
         m_update_signal(nullptr),
+        m_close_signal(nullptr),
         m_start_signal(nullptr),
         m_window_surface(window_surface) {
 }
@@ -22,6 +23,7 @@ window_fox::window_fox(graphics::window_surface& window_surface, FXElemBaseWindo
 
 window_fox::~window_fox() {
     delete m_update_signal;
+    delete m_close_signal;
     // Do not delete m_start_signal since we are not the owner.
 }
 
