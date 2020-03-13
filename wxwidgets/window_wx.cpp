@@ -35,14 +35,26 @@ void window_wx::bind_elem_window(wxElemBaseWindow *elem_window) {
 }
 
 void window_wx::update_region(const graphics::image& src_img, const agg::rect_i& r) {
-    const unsigned fximage_pixel_size = 4; // 32 bit RGBA format.
-    const bool fximage_flipy = true;
+    const unsigned wx_image_pixel_size = 3; // 24 bit RGB format.
+    const bool wx_image_flipy = true;
     const int width = r.x2 - r.x1, height = r.y2 - r.y1;
 
     if (width <= 0 || height <= 0) return;
 
     debug_log(1, "update_region rect: %d %d %d %d", r.x1, r.y1, r.x2, r.y2);
 
+    /* Create a rendering_buffer and the underlying memory buffer to
+       store a FXColor array. */
+    image_gen<wx_image_pixel_size, wx_image_flipy> wx_color_image{unsigned(width), unsigned(height)};
+
+    rendering_buffer_ro src_view;
+    rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
+    rendering_buffer_copy(wx_color_image, agg::pix_format_rgb24, src_view, (agg::pix_format_e) graphics::pixel_format);
+
+    wxImage wx_image(width, height, (unsigned char *) wx_color_image.buf(), true);
+    wxBitmap wx_bitmap(wx_image);
+
+#if 0
     /* Create a rendering_buffer and the underlying memory buffer to
        store a FXColor array. */
     image_gen<fximage_pixel_size, fximage_flipy> fxcolor_image{unsigned(width), unsigned(height)};
@@ -59,6 +71,7 @@ void window_wx::update_region(const graphics::image& src_img, const agg::rect_i&
 
     FXDCWindow dc(m_elem_window);
     dc.drawImage(&img, r.x1, m_elem_window->getHeight() - r.y2);
+#endif
 }
 
 bool window_wx::send_request(graphics::window_request request_type, int index) {
