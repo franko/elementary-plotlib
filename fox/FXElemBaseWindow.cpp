@@ -68,7 +68,7 @@ long FXElemBaseWindow::onMap(FXObject *, FXSelector, void *) {
     return 1;
 }
 
-void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreatePolicy create_flag) {
+FXElemBaseWindow * FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreatePolicy create_flag) {
     auto elem_base_window = new FXElemBaseWindow(p, message->window, LAYOUT_FILL_X | LAYOUT_FILL_Y);
     elem_base_window->setWidth(message->width);
     elem_base_window->setHeight(message->height);
@@ -78,4 +78,5 @@ void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreate
         elem_base_window->create();
         elem_base_window->show();
     }
+    return elem_base_window;
 }

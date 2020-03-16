@@ -61,4 +61,4 @@ struct FXElemStartMessage {
     window_close_callback *callback;
 };
 
-void FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreatePolicy create_flag);
+FXElemBaseWindow *FXElemBuildWindow(FXComposite *p, FXElemStartMessage *message, FXElemCreatePolicy create_flag);
