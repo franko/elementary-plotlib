@@ -3,10 +3,7 @@
 #include <cassert>
 #include <fx.h>
 
-// We include here only the public interface elementary plot library header.
-#include "elem_plot.h"
-#include "window_close_callback.h"
-
+class window_close_callback;
 class window_fox;
 
 namespace FX {

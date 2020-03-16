@@ -1,4 +1,5 @@
 #include "FXElemBaseWindow.h"
+#include "window_close_callback.h"
 #include "window_fox.h"
 
 FXDEFMAP(FXElemBaseWindow) FXElemBaseWindowMap[] = {
