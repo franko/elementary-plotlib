@@ -1,4 +1,4 @@
-lib_elem_plot_fox_src = ['FXElemWindow.cpp', 'FXElemBaseWindow.cpp', 'window_fox.cpp']
+lib_elem_plot_fox_src = ['FXElemWindow.cpp', 'FXElemBaseWindow.cpp', 'window_fox.cpp', 'fox_elem_window_factory.cpp', 'elem_plot_fox_cpp.cpp']
 
 lib_elem_plot_fox = static_library('elemplotfox', lib_elem_plot_fox_src,
     include_directories: lib_elem_plot_include,
