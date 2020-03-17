@@ -50,7 +50,7 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
         fprintf(stderr, "internal error: no message data with window's start signal\n");
         return 1;
     }
-    FXElemBuildWindow(this->frame, message, ELEM_CREATE_NOW);
+    FXElemBuildWindow(this->frame, LAYOUT_FILL_X | LAYOUT_FILL_Y, message, ELEM_CREATE_NOW);
     return 1;
 }
 
