@@ -7,3 +7,10 @@ lib_elem_plot_lua = library('elemplotlua',
     dependencies: [agg_dep, freetype_dep, sol_dep, lua_dep, thread_dep],
     install: true
 )
+
+pkg.generate(lib_elem_plot_lua,
+    filebase : 'libelemplotlua',
+    name : 'libelemplotlua',
+    description : 'The Elementary Plot library, Lua bindings',
+    url : 'github.com/franko/elementary-plotlib',
+)
