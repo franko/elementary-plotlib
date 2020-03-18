@@ -78,14 +78,18 @@ bool window_fox::send_request(graphics::window_request request_type, int index) 
         case graphics::window_request::update:
             // We are on another thread. Interrupt the Window's thread to request
             // the update_region operation.
-            debug_log(1, "update_region request from secondary thread");
-            m_update_notify.start(index);
-            m_update_signal->signal();
-            m_update_notify.wait();
+            if (m_update_signal) {
+                debug_log(1, "update_region request from secondary thread");
+                m_update_notify.start(index);
+                m_update_signal->signal();
+                m_update_notify.wait();
+            }
             break;
         case graphics::window_request::close:
-            m_close_signal->signal();
-            wait_for_status(graphics::window_closed);
+            if (m_close_signal) {
+                m_close_signal->signal();
+                wait_for_status(graphics::window_closed);
+            }
             break;
         }
     }

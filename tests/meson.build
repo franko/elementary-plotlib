@@ -32,6 +32,9 @@ fox_tests = [
     {'name': 'test-fox-host', 'sources': 'test-fox-host.cpp'},
     {'name': 'test-fox-host-2', 'sources': 'test-fox-host-2.cpp'},
     {'name': 'test-fox-host-3', 'sources': 'test-fox-host-3.cpp'},
+    {'name': 'test-fox-host-3b', 'sources': 'test-fox-host-3b.cpp'},
+    {'name': 'test-fox-host-3c', 'sources': 'test-fox-host-3c.cpp'},
+    {'name': 'test-fox-host-3d', 'sources': 'test-fox-host-3d.cpp'},
     {'name': 'test-fox-host-close', 'sources': 'test-fox-host-close.cpp'},
 ]
 
