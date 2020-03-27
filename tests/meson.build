@@ -21,6 +21,7 @@ window_tests = [
     {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
     {'name': 'test-plot-show', 'sources': 'test-plot-show.cpp'},
     {'name': 'test-plot-show-2', 'sources': 'test-plot-show-2.cpp'},
+    {'name': 'test-plot-function-c', 'sources': 'test-plot-function-c.c'},
     {'name': 'test-window-c', 'sources': 'test-window-c.c'},
     {'name': 'test-bezier-c', 'sources': 'test-bezier-c.c'},
     {'name': 'test-plot-dash-lines-c', 'sources': 'test-plot-dash-lines-c.c'},
