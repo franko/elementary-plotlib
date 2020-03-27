@@ -1,8 +1,8 @@
 // public declarations header.
-#include "elem_plot.h"
+#include "elem/elem.h"
 
 // the following are private headers.
-#include "elem_plot_class.h"
+#include "elem_plot.h"
 #include "elem_window.h"
 #include "global_elem_window_factory.h"
 #include "plot.h"

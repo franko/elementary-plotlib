@@ -1,7 +1,7 @@
 #include <cmath>
 #include <random>
 
-#include "elem_plot_class.h"
+#include "elem_plot.h"
 #include "window_platform_native.h"
 #include "trans.h"
 #include "sg_path.h"

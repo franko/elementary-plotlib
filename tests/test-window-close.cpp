@@ -1,6 +1,6 @@
 #include <cstdio>
-#include "elem_plot_utils.h"
-#include "elem_plot.h"
+#include "elem/elem_utils.h"
+#include "elem/elem.h"
 
 using namespace elem;
 

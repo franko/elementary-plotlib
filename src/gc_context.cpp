@@ -1,5 +1,5 @@
 #include "gc_context.h"
-#include "elem_plot_class.h"
+#include "elem_plot.h"
 #include "elem_window.h"
 
 std::mutex global_window_gc_mutex;

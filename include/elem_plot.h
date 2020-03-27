@@ -1,39 +1,48 @@
-/*
-** Libelplot -- a plotting library for C++. https://github.com/franko/elementary-plotlib
-**
-** Copyright (C) 2018-2019 Francesco Abbate. All rights reserved.
-**
-** Permission is hereby granted, free of charge, to any person obtaining
-** a copy of this software and associated documentation files (the
-** "Software"), to deal in the Software without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
-** distribute, sublicense, and/or sell copies of the Software, and to
-** permit persons to whom the Software is furnished to do so, subject to
-** the following conditions:
-**
-** The above copyright notice and this permission notice shall be
-** included in all copies or substantial portions of the Software.
-**
-** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-** SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**
-** [ MIT license: http://www.opensource.org/licenses/mit-license.php ]
-*/
+#pragma once
 
-#ifndef ELEM_PLOT_H_
-#define ELEM_PLOT_H_
+#include "debug_priv.h"
+#include "gc_context.h"
+#include "plot.h"
+#include "plot_agent.h"
 
-#ifdef __cplusplus
-#include "elem_plot_cpp.h"
-#include "elem_plot_constants.h"
-#include "elem_plot_generator.h"
-#else
-#include "elem_plot_c.h"
-#endif
+class elem_plot : public graphics::plot {
+public:
+    elem_plot(unsigned flags):
+        graphics::plot{flags} {
+    }
+    elem_plot(const elem_plot& other):
+        graphics::plot{other},
+        m_plot_agent{} {
+    }
+    elem_plot(elem_plot&& other):
+        graphics::plot{std::move(other)},
+        m_plot_agent{std::move(other.m_plot_agent)} {
+    }
 
-#endif
+    ~elem_plot() {
+        debug_log(2, "elem_plot::~elem_plot() [%p]", this);
+    }
+
+    void update_windows() {
+        m_plot_agent.update_windows();
+    }
+
+    void clear_windows_pending_flags() {
+        m_plot_agent.clear_pending_flags();
+    }
+
+    void add_window_link(elem_window *window, int slot_index) {
+        m_plot_agent.add_window(window, slot_index);
+    }
+
+    void clear_windows_links() {
+        m_plot_agent.clear();
+    }
+
+    void release();
+    // Returns true if object has some remaining references.
+    bool has_references(gc_context& gc);
+private:
+    graphics::plot_agent m_plot_agent;
+    int m_ref_count = 1;
+};

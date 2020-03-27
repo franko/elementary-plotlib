@@ -2,7 +2,7 @@
 #include <thread>
 
 #include "FXElemWindow.h"
-#include "elem_plot_utils.h"
+#include "elem/elem_utils.h"
 
 using namespace elem;
 

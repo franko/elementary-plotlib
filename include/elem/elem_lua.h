@@ -2,9 +2,9 @@
 #define ELEM_PLOT_LUA_H_
 
 #ifdef __cplusplus
-#include "elem_plot_lua_cpp.h"
+#include "elem/elem_lua_cpp.h"
 #else
-#include "elem_plot_lua_c.h"
+#include "elem/elem_lua_c.h"
 #endif
 
 #endif

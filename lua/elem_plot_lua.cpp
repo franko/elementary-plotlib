@@ -1,8 +1,8 @@
 #include <sol/sol.hpp>
 
-#include "elem_plot.h"
-#include "elem_plot_utils.h"
-#include "elem_plot_lua_cpp.h"
+#include "elem/elem.h"
+#include "elem/elem_utils.h"
+#include "elem/elem_lua_cpp.h"
 
 namespace elem {
 

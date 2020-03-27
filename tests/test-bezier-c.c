@@ -1,4 +1,4 @@
-#include "elem_plot.h"
+#include "elem/elem.h"
 
 int main() {
     elem_initialize_fonts();

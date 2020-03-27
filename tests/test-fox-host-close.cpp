@@ -2,8 +2,8 @@
 #include <cstdio>
 #include <thread>
 
-#include "elem_plot.h"
-#include "elem_plot_utils.h"
+#include "elem/elem.h"
+#include "elem/elem_utils.h"
 #include "FXElemBaseWindow.h"
 #include "window_platform_fox.h"
 

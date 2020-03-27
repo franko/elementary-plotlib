@@ -1,7 +1,7 @@
 #include <cmath>
 #include <memory>
 
-#include "elem_plot.h"
+#include "elem/elem.h"
 
 using namespace elem;
 

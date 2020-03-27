@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "elem_plot.h"
+#include "elem/elem.h"
 
 struct bm_generator {
     bool have_z;

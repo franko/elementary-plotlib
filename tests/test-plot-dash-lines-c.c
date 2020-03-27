@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "elem_plot.h"
+#include "elem/elem.h"
 
 static double xfsin(double x) {
     return sin(x) / x;

@@ -1,9 +1,9 @@
 // public declarations header.
-#include "elem_plot_c.h"
+#include "elem/elem_c.h"
 
 // the following are private headers.
-#include "elem_plot_class.h"
-#include "elem_plot_c_forward.h"
+#include "elem_plot.h"
+#include "elem/elem_c_forward.h"
 #include "canvas_svg.h"
 #include "canvas_object.h"
 #include "canvas_path.h"

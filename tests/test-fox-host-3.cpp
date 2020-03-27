@@ -1,9 +1,9 @@
 #include <cmath>
 #include <thread>
 
-#include "elem_plot.h"
-#include "elem_plot_fox.h"
-#include "elem_plot_utils.h"
+#include "elem/elem.h"
+#include "elem/elem_fox.h"
+#include "elem/elem_utils.h"
 
 using namespace elem;
 
