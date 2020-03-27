@@ -22,7 +22,9 @@ void elem_window_set_layout(elem_window *win, const char *fmt) {
 
 int elem_window_attach(elem_window *win, elem_plot *plot, const char* slot_str) {
     int index = win->attach(plot, slot_str);
-    plot->add_window_link(win, index);
+    if (index >= 0) {
+        plot->add_window_link(win, index);
+    }
     return index;
 }
 

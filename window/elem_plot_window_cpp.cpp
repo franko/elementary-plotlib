@@ -1,5 +1,6 @@
 // public declarations header.
-#include "elem/elem.h"
+#include "elem/elem_cpp.h"
+#include "elem/elem_c.h"
 
 // the following are private headers.
 #include "elem_plot.h"
@@ -28,11 +29,7 @@ void Window::SetLayout(const char *fmt) {
 }
 
 int Window::Attach(Plot& plot, const char* slot_str) {
-    int index = window_impl_->attach(plot.plot_impl_, slot_str);
-    if (index >= 0) {
-        plot.plot_impl_->add_window_link(window_impl_, index);
-    }
-    return index;
+    return elem_window_attach(window_impl_, plot.plot_impl_, slot_str);
 }
 
 void Window::SlotRefresh(unsigned index) {

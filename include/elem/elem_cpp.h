@@ -208,9 +208,11 @@ public:
     void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
     bool PushLayer();
     bool PopLayer();
+    void Show(unsigned width, unsigned height, unsigned flags);
     void ClearLayer();
     void AddLegend(Plot legend, Placement location);
     bool WriteSvg(const char *filename, double width, double height);
+    void Wait();
 private:
     void UpdateWindowsAndCommitChanges();
 

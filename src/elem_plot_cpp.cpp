@@ -240,6 +240,14 @@ bool Plot::WriteSvg(const char *filename, double width, double height) {
     return elem_plot_write_svg(plot_impl_, filename, width, height);
 }
 
+void Plot::Show(unsigned width, unsigned height, unsigned flags) {
+    plot_impl_->show(width, height, flags);
+}
+
+void Plot::Wait() {
+    plot_impl_->wait_show_window();
+}
+
 Object MarkerSymbol(int n) {
     elem_object *new_object = new_marker_symbol(n);
     return Object{(elem_object *) new_object};

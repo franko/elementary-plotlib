@@ -147,6 +147,8 @@ bool elem_plot_push_layer(elem_plot *plot);
 bool elem_plot_pop_layer(elem_plot *plot);
 void elem_plot_clear_layer(elem_plot *plot);
 void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
+void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags);
+void elem_plot_wait(elem_plot *plot);
 // TODO: add function to add a legend
 int elem_plot_write_svg(elem_plot *plot, const char *filename, double width, double height);
 

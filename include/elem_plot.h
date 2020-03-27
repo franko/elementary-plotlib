@@ -19,9 +19,7 @@ public:
         m_plot_agent{std::move(other.m_plot_agent)} {
     }
 
-    ~elem_plot() {
-        debug_log(2, "elem_plot::~elem_plot() [%p]", this);
-    }
+    ~elem_plot();
 
     void update_windows() {
         m_plot_agent.update_windows();
@@ -39,10 +37,14 @@ public:
         m_plot_agent.clear();
     }
 
+    void show(unsigned width, unsigned height, unsigned flags);
+    void wait_show_window();
+
     void release();
     // Returns true if object has some remaining references.
     bool has_references(gc_context& gc);
 private:
     graphics::plot_agent m_plot_agent;
+    elem_window *m_show_window = nullptr;
     int m_ref_count = 1;
 };

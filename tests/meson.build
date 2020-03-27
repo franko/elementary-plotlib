@@ -19,9 +19,12 @@ window_tests = [
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
     {'name': 'test-write-svg', 'sources': 'test-write-svg.cpp'},
     {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
+    {'name': 'test-plot-show', 'sources': 'test-plot-show.cpp'},
+    {'name': 'test-plot-show-2', 'sources': 'test-plot-show-2.cpp'},
     {'name': 'test-window-c', 'sources': 'test-window-c.c'},
     {'name': 'test-bezier-c', 'sources': 'test-bezier-c.c'},
     {'name': 'test-plot-dash-lines-c', 'sources': 'test-plot-dash-lines-c.c'},
+    {'name': 'test-plot-show-c', 'sources': 'test-plot-show-c.c'},
     {'name': 'test-window-markers-c', 'sources': 'test-window-markers-c.c'},
 ]
 
