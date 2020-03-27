@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plot &mdash; Libelplot  documentation</title>
+  <title>Plot &mdash; Elementary Plot Manual  documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Libelplot
+            <a href="index.html" class="icon icon-home"> Elementary Plot Manual
           
 
           
@@ -83,9 +83,13 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#drawing-properties">Drawing Properties</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua-bindings.html">Lua Bindings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot-c.html">Plot - C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="window-c.html">Windows - C API</a></li>
@@ -103,7 +107,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Libelplot</a>
+          <a href="index.html">Elementary Plot Manual</a>
         
       </nav>
 
@@ -156,13 +160,13 @@
   <div class="section" id="plot">
 <h1>Plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="_CPPv4N3elp4PlotE">
-<span id="_CPPv3N3elp4PlotE"></span><span id="_CPPv2N3elp4PlotE"></span><span id="elp::Plot"></span><em class="property">class </em><code class="sig-name descname">Plot</code><a class="headerlink" href="#_CPPv4N3elp4PlotE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4PlotE">
+<span id="_CPPv3N4elem4PlotE"></span><span id="_CPPv2N4elem4PlotE"></span><span id="elem::Plot"></span><em class="property">class </em><code class="sig-name descname">Plot</code><a class="headerlink" href="#_CPPv4N4elem4PlotE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A plot is an object that is used to group and display one or more graphical elements. The elements that belong to a plot will share the same coordinates space, we will refer to this latter as the model coordinates space.</p>
 <p>The plot works by displaying on the screen a region of the model coordinates space.
-When in <code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">Autolimits</span></code> the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot’s method <a class="reference internal" href="#_CPPv4N3elp4Plot9SetLimitsERK9Rectangle" title="elp::Plot::SetLimits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::SetLimits()</span></code></a>.</p>
+When in <code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">Autolimits</span></code> the size of the region will be automatically adjusted to accommodate all the objects contained in the plot. Otherwise the size of the region should be explicitly given using the Plot’s method <a class="reference internal" href="#_CPPv4N4elem4Plot9SetLimitsEffff" title="elem::Plot::SetLimits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::SetLimits()</span></code></a>.</p>
 <p>When shown on the screen the plot will show all the objects it contains using for each of them a combination of stroking and filling.
-The plot will also display the X and Y axis with units and labels if the option <a class="reference internal" href="#_CPPv4N3elp4Plot9ShowUnitsE" title="elp::Plot::ShowUnits"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">ShowUnits</span></code></a> is used.</p>
+The plot will also display the X and Y axis with units and labels if the option <a class="reference internal" href="#_CPPv4N4elem4Plot9ShowUnitsE" title="elem::Plot::ShowUnits"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">ShowUnits</span></code></a> is used.</p>
 <p>The elements that belongs to a plot are organized in incremental <em>layers</em> of visualization that contains one or more graphical elements.
 Layers and be added or removed from a plot in an incremental fashion.</p>
 <p>Examples of a plot that contains two Path objects, drawn with different colors.</p>
@@ -171,134 +175,179 @@ Layers and be added or removed from a plot in an incremental fashion.</p>
 </div>
 <p><strong>Plot options</strong></p>
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot9ShowUnitsE">
-<span id="_CPPv3N3elp4Plot9ShowUnitsE"></span><span id="_CPPv2N3elp4Plot9ShowUnitsE"></span><em class="property">enumerator </em><code class="sig-name descname">ShowUnits</code><a class="headerlink" href="#_CPPv4N3elp4Plot9ShowUnitsE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot9ShowUnitsE">
+<span id="_CPPv3N4elem4Plot9ShowUnitsE"></span><span id="_CPPv2N4elem4Plot9ShowUnitsE"></span><em class="property">enumerator </em><code class="sig-name descname">ShowUnits</code><a class="headerlink" href="#_CPPv4N4elem4Plot9ShowUnitsE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot10AutoLimitsE">
-<span id="_CPPv3N3elp4Plot10AutoLimitsE"></span><span id="_CPPv2N3elp4Plot10AutoLimitsE"></span><em class="property">enumerator </em><code class="sig-name descname">AutoLimits</code><a class="headerlink" href="#_CPPv4N3elp4Plot10AutoLimitsE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot10AutoLimitsE">
+<span id="_CPPv3N4elem4Plot10AutoLimitsE"></span><span id="_CPPv2N4elem4Plot10AutoLimitsE"></span><em class="property">enumerator </em><code class="sig-name descname">AutoLimits</code><a class="headerlink" href="#_CPPv4N4elem4Plot10AutoLimitsE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot10ClipRegionE">
-<span id="_CPPv3N3elp4Plot10ClipRegionE"></span><span id="_CPPv2N3elp4Plot10ClipRegionE"></span><em class="property">enumerator </em><code class="sig-name descname">ClipRegion</code><a class="headerlink" href="#_CPPv4N3elp4Plot10ClipRegionE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot10ClipRegionE">
+<span id="_CPPv3N4elem4Plot10ClipRegionE"></span><span id="_CPPv2N4elem4Plot10ClipRegionE"></span><em class="property">enumerator </em><code class="sig-name descname">ClipRegion</code><a class="headerlink" href="#_CPPv4N4elem4Plot10ClipRegionE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Legend Placement</strong></p>
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot4LeftE">
-<span id="_CPPv3N3elp4Plot4LeftE"></span><span id="_CPPv2N3elp4Plot4LeftE"></span><em class="property">enumerator </em><code class="sig-name descname">Left</code><a class="headerlink" href="#_CPPv4N3elp4Plot4LeftE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot4LeftE">
+<span id="_CPPv3N4elem4Plot4LeftE"></span><span id="_CPPv2N4elem4Plot4LeftE"></span><em class="property">enumerator </em><code class="sig-name descname">Left</code><a class="headerlink" href="#_CPPv4N4elem4Plot4LeftE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot5RightE">
-<span id="_CPPv3N3elp4Plot5RightE"></span><span id="_CPPv2N3elp4Plot5RightE"></span><em class="property">enumerator </em><code class="sig-name descname">Right</code><a class="headerlink" href="#_CPPv4N3elp4Plot5RightE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot5RightE">
+<span id="_CPPv3N4elem4Plot5RightE"></span><span id="_CPPv2N4elem4Plot5RightE"></span><em class="property">enumerator </em><code class="sig-name descname">Right</code><a class="headerlink" href="#_CPPv4N4elem4Plot5RightE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot6BottomE">
-<span id="_CPPv3N3elp4Plot6BottomE"></span><span id="_CPPv2N3elp4Plot6BottomE"></span><em class="property">enumerator </em><code class="sig-name descname">Bottom</code><a class="headerlink" href="#_CPPv4N3elp4Plot6BottomE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot6BottomE">
+<span id="_CPPv3N4elem4Plot6BottomE"></span><span id="_CPPv2N4elem4Plot6BottomE"></span><em class="property">enumerator </em><code class="sig-name descname">Bottom</code><a class="headerlink" href="#_CPPv4N4elem4Plot6BottomE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="enumerator">
-<dt id="_CPPv4N3elp4Plot3TopE">
-<span id="_CPPv3N3elp4Plot3TopE"></span><span id="_CPPv2N3elp4Plot3TopE"></span><em class="property">enumerator </em><code class="sig-name descname">Top</code><a class="headerlink" href="#_CPPv4N3elp4Plot3TopE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot3TopE">
+<span id="_CPPv3N4elem4Plot3TopE"></span><span id="_CPPv2N4elem4Plot3TopE"></span><em class="property">enumerator </em><code class="sig-name descname">Top</code><a class="headerlink" href="#_CPPv4N4elem4Plot3TopE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot4PlotEj">
-<span id="_CPPv3N3elp4Plot4PlotEj"></span><span id="_CPPv2N3elp4Plot4PlotEj"></span><span id="elp::Plot::Plot__unsigned"></span><code class="sig-name descname">Plot</code><span class="sig-paren">(</span>unsigned <em>flags</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot4PlotEj" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot4PlotEj">
+<span id="_CPPv3N4elem4Plot4PlotEj"></span><span id="_CPPv2N4elem4Plot4PlotEj"></span><span id="elem::Plot::Plot__unsigned"></span><code class="sig-name descname">Plot</code><span class="sig-paren">(</span>unsigned <em>flags</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot4PlotEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a new empty plot with options given by <code class="docutils literal notranslate"><span class="pre">flags</span></code>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot8SetTitleEPKc">
-<span id="_CPPv3N3elp4Plot8SetTitleEPKc"></span><span id="_CPPv2N3elp4Plot8SetTitleEPKc"></span><span id="elp::Plot::SetTitle__cCP"></span>void <code class="sig-name descname">SetTitle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot8SetTitleEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot8SetTitleEPKc">
+<span id="_CPPv3N4elem4Plot8SetTitleEPKc"></span><span id="_CPPv2N4elem4Plot8SetTitleEPKc"></span><span id="elem::Plot::SetTitle__cCP"></span>void <code class="sig-name descname">SetTitle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot8SetTitleEPKc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the plot’s title.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot13SetXAxisTitleEPKc">
-<span id="_CPPv3N3elp4Plot13SetXAxisTitleEPKc"></span><span id="_CPPv2N3elp4Plot13SetXAxisTitleEPKc"></span><span id="elp::Plot::SetXAxisTitle__cCP"></span>void <code class="sig-name descname">SetXAxisTitle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>axis_title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot13SetXAxisTitleEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot13SetXAxisTitleEPKc">
+<span id="_CPPv3N4elem4Plot13SetXAxisTitleEPKc"></span><span id="_CPPv2N4elem4Plot13SetXAxisTitleEPKc"></span><span id="elem::Plot::SetXAxisTitle__cCP"></span>void <code class="sig-name descname">SetXAxisTitle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>axis_title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot13SetXAxisTitleEPKc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the X axis title.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot13SetYAxisTitleEPKc">
-<span id="_CPPv3N3elp4Plot13SetYAxisTitleEPKc"></span><span id="_CPPv2N3elp4Plot13SetYAxisTitleEPKc"></span><span id="elp::Plot::SetYAxisTitle__cCP"></span>void <code class="sig-name descname">SetYAxisTitle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>axis_title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot13SetYAxisTitleEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot13SetYAxisTitleEPKc">
+<span id="_CPPv3N4elem4Plot13SetYAxisTitleEPKc"></span><span id="_CPPv2N4elem4Plot13SetYAxisTitleEPKc"></span><span id="elem::Plot::SetYAxisTitle__cCP"></span>void <code class="sig-name descname">SetYAxisTitle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>axis_title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot13SetYAxisTitleEPKc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the Y axis title.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot11SetClipModeEb">
-<span id="_CPPv3N3elp4Plot11SetClipModeEb"></span><span id="_CPPv2N3elp4Plot11SetClipModeEb"></span><span id="elp::Plot::SetClipMode__b"></span>void <code class="sig-name descname">SetClipMode</code><span class="sig-paren">(</span>bool <em>flag</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot11SetClipModeEb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot11SetClipModeEb">
+<span id="_CPPv3N4elem4Plot11SetClipModeEb"></span><span id="_CPPv2N4elem4Plot11SetClipModeEb"></span><span id="elem::Plot::SetClipMode__b"></span>void <code class="sig-name descname">SetClipMode</code><span class="sig-paren">(</span>bool <em>flag</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot11SetClipModeEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the clip mode. If true all the pixel drawn for the graphics elements are clipped in the plotting area.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot9SetLimitsERK9Rectangle">
-<span id="_CPPv3N3elp4Plot9SetLimitsERK9Rectangle"></span><span id="_CPPv2N3elp4Plot9SetLimitsERK9Rectangle"></span><span id="elp::Plot::SetLimits__RectangleCR"></span>void <code class="sig-name descname">SetLimits</code><span class="sig-paren">(</span><em class="property">const</em> Rectangle &amp;<em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot9SetLimitsERK9Rectangle" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Explicitly set the plotting limits, along the two axis. Attention if the plot is in auto limits the limits will be changed when adding new objects.</p>
+<dt id="_CPPv4N4elem4Plot9SetLimitsEffff">
+<span id="_CPPv3N4elem4Plot9SetLimitsEffff"></span><span id="_CPPv2N4elem4Plot9SetLimitsEffff"></span><span id="elem::Plot::SetLimits__float.float.float.float"></span>void <code class="sig-name descname">SetLimits</code><span class="sig-paren">(</span>float <em>x1</em>, float <em>y1</em>, float <em>x2</em>, float <em>y2</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot9SetLimitsEffff" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Explicitly set the plotting limits, along the two axis.
+If the plot is in auto limits mode the limits will be changed when adding new objects.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot18SetAxisLabelsAngleERK4Axisf">
-<span id="_CPPv3N3elp4Plot18SetAxisLabelsAngleERK4Axisf"></span><span id="_CPPv2N3elp4Plot18SetAxisLabelsAngleERK4Axisf"></span><span id="elp::Plot::SetAxisLabelsAngle__AxisCR.float"></span>void <code class="sig-name descname">SetAxisLabelsAngle</code><span class="sig-paren">(</span><em class="property">const</em> Axis &amp;<em>axis</em>, float <em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot18SetAxisLabelsAngleERK4Axisf" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot18SetAxisLabelsAngleERK4Axisf">
+<span id="_CPPv3N4elem4Plot18SetAxisLabelsAngleERK4Axisf"></span><span id="_CPPv2N4elem4Plot18SetAxisLabelsAngleERK4Axisf"></span><span id="elem::Plot::SetAxisLabelsAngle__AxisCR.float"></span>void <code class="sig-name descname">SetAxisLabelsAngle</code><span class="sig-paren">(</span><em class="property">const</em> Axis &amp;<em>axis</em>, float <em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot18SetAxisLabelsAngleERK4Axisf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the angle in radians for the labels of the X axis.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot17EnableLabelFormatERK4AxisPKc">
-<span id="_CPPv3N3elp4Plot17EnableLabelFormatERK4AxisPKc"></span><span id="_CPPv2N3elp4Plot17EnableLabelFormatERK4AxisPKc"></span><span id="elp::Plot::EnableLabelFormat__AxisCR.cCP"></span>void <code class="sig-name descname">EnableLabelFormat</code><span class="sig-paren">(</span><em class="property">const</em> Axis &amp;<em>axis</em>, <em class="property">const</em> char *<em>fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot17EnableLabelFormatERK4AxisPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot17EnableLabelFormatERK4AxisPKc">
+<span id="_CPPv3N4elem4Plot17EnableLabelFormatERK4AxisPKc"></span><span id="_CPPv2N4elem4Plot17EnableLabelFormatERK4AxisPKc"></span><span id="elem::Plot::EnableLabelFormat__AxisCR.cCP"></span>void <code class="sig-name descname">EnableLabelFormat</code><span class="sig-paren">(</span><em class="property">const</em> Axis &amp;<em>axis</em>, <em class="property">const</em> char *<em>fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot17EnableLabelFormatERK4AxisPKc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the format to be used to write the label for the given axis. Follow the same format of the printf function but accepts only specifiers for integer and floating point numbers.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot17CommitPendingDrawEv">
-<span id="_CPPv3N3elp4Plot17CommitPendingDrawEv"></span><span id="_CPPv2N3elp4Plot17CommitPendingDrawEv"></span><span id="elp::Plot::CommitPendingDraw"></span>void <code class="sig-name descname">CommitPendingDraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot17CommitPendingDrawEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot17CommitPendingDrawEv">
+<span id="_CPPv3N4elem4Plot17CommitPendingDrawEv"></span><span id="_CPPv2N4elem4Plot17CommitPendingDrawEv"></span><span id="elem::Plot::CommitPendingDraw"></span>void <code class="sig-name descname">CommitPendingDraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot17CommitPendingDrawEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mark all pending changes as done and they are added to the plot elements.
 <strong>Should not be used</strong> as plots includes now a mechanism to perform this operation automatically.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot3AddE6Object5Colorf5Colorj">
-<span id="_CPPv3N3elp4Plot3AddE6Object5Colorf5Colorj"></span><span id="_CPPv2N3elp4Plot3AddE6Object5Colorf5Colorj"></span><span id="elp::Plot::Add__Object.Color.float.Color.unsigned"></span>void <code class="sig-name descname">Add</code><span class="sig-paren">(</span><a class="reference internal" href="graphical-element.html#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a> <em>object</em>, <a class="reference internal" href="graphical-element.html#_CPPv4N3elp5ColorE" title="elp::Color">Color</a> <em>stroke_color</em>, float <em>stroke_width</em>, <a class="reference internal" href="graphical-element.html#_CPPv4N3elp5ColorE" title="elp::Color">Color</a> <em>fill_color</em>, unsigned <em>flags</em> = property::<a class="reference internal" href="graphical-element.html#_CPPv4N3elp8property4FillE" title="elp::property::Fill">Fill</a> | property::<a class="reference internal" href="graphical-element.html#_CPPv4N3elp8property6StrokeE" title="elp::property::Stroke">Stroke</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot3AddE6Object5Colorf5Colorj" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot3AddE6Object5Colorf5Colorj">
+<span id="_CPPv3N4elem4Plot3AddE6Object5Colorf5Colorj"></span><span id="_CPPv2N4elem4Plot3AddE6Object5Colorf5Colorj"></span><span id="elem::Plot::Add__Object.Color.float.Color.unsigned"></span>void <code class="sig-name descname">Add</code><span class="sig-paren">(</span><a class="reference internal" href="graphical-element.html#_CPPv4N4elem6ObjectE" title="elem::Object">Object</a> <em>object</em>, <a class="reference internal" href="graphical-element.html#_CPPv4N4elem5ColorE" title="elem::Color">Color</a> <em>stroke_color</em>, float <em>stroke_width</em>, <a class="reference internal" href="graphical-element.html#_CPPv4N4elem5ColorE" title="elem::Color">Color</a> <em>fill_color</em>, unsigned <em>flags</em> = property::<a class="reference internal" href="#_CPPv4N4elem8property4FillE" title="elem::property::Fill">Fill</a> | property::<a class="reference internal" href="#_CPPv4N4elem8property6StrokeE" title="elem::property::Stroke">Stroke</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot3AddE6Object5Colorf5Colorj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add a graphical object to the plot by specifying the stroke color, line’s width and fill color.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot9AddStrokeE6Object5Colorfj">
-<span id="_CPPv3N3elp4Plot9AddStrokeE6Object5Colorfj"></span><span id="_CPPv2N3elp4Plot9AddStrokeE6Object5Colorfj"></span><span id="elp::Plot::AddStroke__Object.Color.float.unsigned"></span>void <code class="sig-name descname">AddStroke</code><span class="sig-paren">(</span><a class="reference internal" href="graphical-element.html#_CPPv4N3elp6ObjectE" title="elp::Object">Object</a> <em>object</em>, <a class="reference internal" href="graphical-element.html#_CPPv4N3elp5ColorE" title="elp::Color">Color</a> <em>color</em>, float <em>line_width</em>, unsigned <em>flags</em> = property::<a class="reference internal" href="graphical-element.html#_CPPv4N3elp8property6StrokeE" title="elp::property::Stroke">Stroke</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot9AddStrokeE6Object5Colorfj" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Add a graphical object to the plot by specifying the stroke color, line’s width but without fill. Equivalent to <a class="reference internal" href="#_CPPv4N3elp4Plot3AddE6Object5Colorf5Colorj" title="elp::Plot::Add"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::Add()</span></code></a> with fill color set to <code class="docutils literal notranslate"><span class="pre">color::None</span></code>.</p>
+<dt id="_CPPv4N4elem4Plot9AddStrokeE6Object5Colorfj">
+<span id="_CPPv3N4elem4Plot9AddStrokeE6Object5Colorfj"></span><span id="_CPPv2N4elem4Plot9AddStrokeE6Object5Colorfj"></span><span id="elem::Plot::AddStroke__Object.Color.float.unsigned"></span>void <code class="sig-name descname">AddStroke</code><span class="sig-paren">(</span><a class="reference internal" href="graphical-element.html#_CPPv4N4elem6ObjectE" title="elem::Object">Object</a> <em>object</em>, <a class="reference internal" href="graphical-element.html#_CPPv4N4elem5ColorE" title="elem::Color">Color</a> <em>color</em>, float <em>line_width</em>, unsigned <em>flags</em> = property::<a class="reference internal" href="#_CPPv4N4elem8property6StrokeE" title="elem::property::Stroke">Stroke</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot9AddStrokeE6Object5Colorfj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a graphical object to the plot by specifying the stroke color, line’s width but without fill. Equivalent to <a class="reference internal" href="#_CPPv4N4elem4Plot3AddE6Object5Colorf5Colorj" title="elem::Plot::Add"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::Add()</span></code></a> with fill color set to <code class="docutils literal notranslate"><span class="pre">color::None</span></code>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot9PushLayerEv">
-<span id="_CPPv3N3elp4Plot9PushLayerEv"></span><span id="_CPPv2N3elp4Plot9PushLayerEv"></span><span id="elp::Plot::PushLayer"></span>bool <code class="sig-name descname">PushLayer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot9PushLayerEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot9PushLayerEv">
+<span id="_CPPv3N4elem4Plot9PushLayerEv"></span><span id="_CPPv2N4elem4Plot9PushLayerEv"></span><span id="elem::Plot::PushLayer"></span>bool <code class="sig-name descname">PushLayer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot9PushLayerEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a new empty layer.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot8PopLayerEv">
-<span id="_CPPv3N3elp4Plot8PopLayerEv"></span><span id="_CPPv2N3elp4Plot8PopLayerEv"></span><span id="elp::Plot::PopLayer"></span>bool <code class="sig-name descname">PopLayer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot8PopLayerEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot8PopLayerEv">
+<span id="_CPPv3N4elem4Plot8PopLayerEv"></span><span id="_CPPv2N4elem4Plot8PopLayerEv"></span><span id="elem::Plot::PopLayer"></span>bool <code class="sig-name descname">PopLayer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot8PopLayerEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Discard the current layer with all its content. The previous layer will become the current one. If the plot has only one layer the operation has no effect.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot9AddLegendE4Plot9Placement">
-<span id="_CPPv3N3elp4Plot9AddLegendE4Plot9Placement"></span><span id="_CPPv2N3elp4Plot9AddLegendE4Plot9Placement"></span><span id="elp::Plot::AddLegend__Plot.Placement"></span>void <code class="sig-name descname">AddLegend</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3elp4PlotE" title="elp::Plot">Plot</a> <em>legend</em>, Placement <em>location</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot9AddLegendE4Plot9Placement" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot9AddLegendE4Plot9Placement">
+<span id="_CPPv3N4elem4Plot9AddLegendE4Plot9Placement"></span><span id="_CPPv2N4elem4Plot9AddLegendE4Plot9Placement"></span><span id="elem::Plot::AddLegend__Plot.Placement"></span>void <code class="sig-name descname">AddLegend</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4elem4PlotE" title="elem::Plot">Plot</a> <em>legend</em>, Placement <em>location</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot9AddLegendE4Plot9Placement" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add a new plot as a legend in the given location.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N3elp4Plot8WriteSvgEPKcdd">
-<span id="_CPPv3N3elp4Plot8WriteSvgEPKcdd"></span><span id="_CPPv2N3elp4Plot8WriteSvgEPKcdd"></span><span id="elp::Plot::WriteSvg__cCP.double.double"></span>bool <code class="sig-name descname">WriteSvg</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, double <em>width</em>, double <em>height</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3elp4Plot8WriteSvgEPKcdd" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4elem4Plot4ShowEjjj">
+<span id="_CPPv3N4elem4Plot4ShowEjjj"></span><span id="_CPPv2N4elem4Plot4ShowEjjj"></span><span id="elem::Plot::Show__unsigned.unsigned.unsigned"></span>void <code class="sig-name descname">Show</code><span class="sig-paren">(</span>unsigned <em>width</em>, unsigned <em>height</em>, unsigned <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot4ShowEjjj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Show the plot on the screen with the given width and height.
+The flags argument is currently unused and should be set to <a class="reference internal" href="window.html#_CPPv4N4elem12WindowResizeE" title="elem::WindowResize"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">WindowResize</span></code></a>.
+It works internally by creating and showing on the screen a window.
+The function <a class="reference internal" href="#_CPPv4N4elem4Plot4WaitEv" title="elem::Plot::Wait"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::Wait()</span></code></a> can be used to wait until the window is closed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4elem4Plot4WaitEv">
+<span id="_CPPv3N4elem4Plot4WaitEv"></span><span id="_CPPv2N4elem4Plot4WaitEv"></span><span id="elem::Plot::Wait"></span>void <code class="sig-name descname">Wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot4WaitEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If the plot is shown on the screen, using the <a class="reference internal" href="#_CPPv4N4elem4Plot4ShowEjjj" title="elem::Plot::Show"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Plot::Show()</span></code></a>, it waits until the window is closed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4elem4Plot8WriteSvgEPKcdd">
+<span id="_CPPv3N4elem4Plot8WriteSvgEPKcdd"></span><span id="_CPPv2N4elem4Plot8WriteSvgEPKcdd"></span><span id="elem::Plot::WriteSvg__cCP.double.double"></span>bool <code class="sig-name descname">WriteSvg</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>filename</em>, double <em>width</em>, double <em>height</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem4Plot8WriteSvgEPKcdd" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Write the plot as a SVG file with the given filename, width and height.</p>
 </dd></dl>
 
 </dd></dl>
 
+<div class="section" id="drawing-properties">
+<h2>Drawing Properties<a class="headerlink" href="#drawing-properties" title="Permalink to this headline">¶</a></h2>
+<p>The following are used when adding an element into a plot to specify if should be stroked, filled or possibly both.
+In addition some properties affect the way the object will be drawn on the screen.
+The values are meant to be combined using logical bit operators.</p>
+<dl class="enumerator">
+<dt id="_CPPv4N4elem8property4FillE">
+<span id="_CPPv3N4elem8property4FillE"></span><span id="_CPPv2N4elem8property4FillE"></span><em class="property">enumerator </em><code class="sig-name descname">Fill</code><a class="headerlink" href="#_CPPv4N4elem8property4FillE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Draw each closed polygon with a filling color.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4elem8property6StrokeE">
+<span id="_CPPv3N4elem8property6StrokeE"></span><span id="_CPPv2N4elem8property6StrokeE"></span><em class="property">enumerator </em><code class="sig-name descname">Stroke</code><a class="headerlink" href="#_CPPv4N4elem8property6StrokeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Draw the stroking of the path or contour.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4elem8property7OutlineE">
+<span id="_CPPv3N4elem8property7OutlineE"></span><span id="_CPPv2N4elem8property7OutlineE"></span><em class="property">enumerator </em><code class="sig-name descname">Outline</code><a class="headerlink" href="#_CPPv4N4elem8property7OutlineE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Only the outline of the path will be drawn, without anti-aliasing.</p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4elem8property5CrispE">
+<span id="_CPPv3N4elem8property5CrispE"></span><span id="_CPPv2N4elem8property5CrispE"></span><em class="property">enumerator </em><code class="sig-name descname">Crisp</code><a class="headerlink" href="#_CPPv4N4elem8property5CrispE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
 </div>
 
 

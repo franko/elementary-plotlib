@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Windows - C API &mdash; Libelplot  documentation</title>
+  <title>Windows - C API &mdash; Elementary Plot Manual  documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Libelplot
+            <a href="index.html" class="icon icon-home"> Elementary Plot Manual
           
 
           
@@ -85,6 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua-bindings.html">Lua Bindings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot-c.html">Plot - C API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Windows - C API</a><ul>
@@ -105,7 +106,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Libelplot</a>
+          <a href="index.html">Elementary Plot Manual</a>
         
       </nav>
 
@@ -160,23 +161,23 @@
 <div class="section" id="window-s-flags">
 <h2>Window’s flags<a class="headerlink" href="#window-s-flags" title="Permalink to this headline">¶</a></h2>
 <dl class="macro">
-<dt id="c.elp_window_resize">
-<code class="sig-name descname">elp_window_resize</code><a class="headerlink" href="#c.elp_window_resize" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_resize">
+<code class="sig-name descname">elem_window_resize</code><a class="headerlink" href="#c.elem_window_resize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="type">
-<dt id="c.elp_window">
-<code class="sig-name descname">elp_window</code><a class="headerlink" href="#c.elp_window" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window">
+<code class="sig-name descname">elem_window</code><a class="headerlink" href="#c.elem_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>A window that can accommodate one or more plots to be shown on the screen.</p>
 <dl class="function">
-<dt id="c.elp_window_new">
-<a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a> *<code class="sig-name descname">elp_window_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_new" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_new">
+<a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a> *<code class="sig-name descname">elem_window_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_new" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Create an empty window with a single slot.</p>
 <dl class="function">
-<dt id="c.elp_window_new_with_layout">
-<a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a> *<code class="sig-name descname">elp_window_new_with_layout</code><span class="sig-paren">(</span>const char<em> *fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_new_with_layout" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_new_with_layout">
+<a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a> *<code class="sig-name descname">elem_window_new_with_layout</code><span class="sig-paren">(</span>const char<em> *fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_new_with_layout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Create an empty window subdivided accordingly to the <code class="docutils literal notranslate"><span class="pre">layout</span></code> string.</p>
@@ -193,16 +194,16 @@ The parenthesis are used fro grouping.</p>
 <p>For example to accommodate two plots horizontally use the layout string <code class="docutils literal notranslate"><span class="pre">h..</span></code>.
 To subdivide a window in a 2x2 grid it can be used the layout string <code class="docutils literal notranslate"><span class="pre">h(v..)(v..)</span></code>.</p>
 <dl class="function">
-<dt id="c.elp_window_set_layout">
-void <code class="sig-name descname">elp_window_set_layout</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a><em> *win</em>, const char<em> *layout</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_set_layout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the window’s layout using the format string <cite>layout</cite> like when using the constructor <code class="xref c c-func docutils literal notranslate"><span class="pre">elp_window_new_with_layout(const</span> <span class="pre">char</span> <span class="pre">*layout)()</span></code>.
+<dt id="c.elem_window_set_layout">
+void <code class="sig-name descname">elem_window_set_layout</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a><em> *win</em>, const char<em> *layout</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_set_layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the window’s layout using the format string <cite>layout</cite> like when using the constructor <code class="xref c c-func docutils literal notranslate"><span class="pre">elem_window_new_with_layout(const</span> <span class="pre">char</span> <span class="pre">*layout)()</span></code>.
 Can be used only if the windows is not yet running.
 If the window is already running the call has no effect.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="c.elp_window_attach">
-int <code class="sig-name descname">elp_window_attach</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a><em> *win</em>, <a class="reference internal" href="plot-c.html#c.elp_plot" title="elp_plot">elp_plot</a><em> *plot</em>, const char*<em> slot_str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_attach" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_attach">
+int <code class="sig-name descname">elem_window_attach</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a><em> *win</em>, <a class="reference internal" href="plot-c.html#c.elem_plot" title="elem_plot">elem_plot</a><em> *plot</em>, const char*<em> slot_str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_attach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach the given plot inside a window using <code class="docutils literal notranslate"><span class="pre">slot</span></code> to address the slot.
 Return an integer index that can be used for the <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Window::SlotRefresh()</span></code> function.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">slot</span></code> string should be composed by integer indexes separated by commas.
@@ -213,22 +214,22 @@ For a layout with nested subdivisions, for example, <code class="docutils litera
 </dd></dl>
 
 <dl class="function">
-<dt id="c.elp_window_slot_refresh">
-void <code class="sig-name descname">elp_window_slot_refresh</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a><em> *win</em>, unsigned<em> index</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_slot_refresh" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_slot_refresh">
+void <code class="sig-name descname">elem_window_slot_refresh</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a><em> *win</em>, unsigned<em> index</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_slot_refresh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Incrementally update the image of the window for the plot in the slot identified by <code class="docutils literal notranslate"><span class="pre">index</span></code>.
 Only the elements on the plot marked as pending will be drawn.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="c.elp_window_start">
-void <code class="sig-name descname">elp_window_start</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a><em> *win</em>, unsigned<em> width</em>, unsigned<em> height</em>, unsigned<em> flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_start" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_start">
+void <code class="sig-name descname">elem_window_start</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a><em> *win</em>, unsigned<em> width</em>, unsigned<em> height</em>, unsigned<em> flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the window on the screen with the given width and height.
 Thhe flags currently accept only the <code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">WindowResize</span></code>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="c.elp_window_wait">
-void <code class="sig-name descname">elp_window_wait</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elp_window" title="elp_window">elp_window</a><em> *win</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elp_window_wait" title="Permalink to this definition">¶</a></dt>
+<dt id="c.elem_window_wait">
+void <code class="sig-name descname">elem_window_wait</code><span class="sig-paren">(</span><a class="reference internal" href="#c.elem_window" title="elem_window">elem_window</a><em> *win</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_window_wait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blocks waiting until the window is closed.</p>
 </dd></dl>
 

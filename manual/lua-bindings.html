@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lua Bindings &mdash; Elementary Plot Manual  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graphical Elements - C API" href="graphical-element-c.html" />
+    <link rel="prev" title="FOX toolkit integration" href="fox-integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Elementary Plot Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lua Bindings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c-loader-function">C++ Loader Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">C Loader Function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot-c.html">Plot - C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="window-c.html">Windows - C API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Elementary Plot Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Lua Bindings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lua-bindings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lua-bindings">
+<h1>Lua Bindings<a class="headerlink" href="#lua-bindings" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="c-loader-function">
+<h2>C++ Loader Function<a class="headerlink" href="#c-loader-function" title="Permalink to this headline">¶</a></h2>
+<p>The Elementary Plot library can be used from C or C++ applications using the Lua programming language.
+The functions described below are C/C++ functions that loads the Elementary Plot library’s functions into a <code class="docutils literal notranslate"><span class="pre">lua_State</span></code> pointer.</p>
+<dl class="function">
+<dt id="_CPPv4N4elem14LuaOpenLibraryEP9lua_State">
+<span id="_CPPv3N4elem14LuaOpenLibraryEP9lua_State"></span><span id="_CPPv2N4elem14LuaOpenLibraryEP9lua_State"></span><span id="elem::LuaOpenLibrary__lua_StateP"></span>void <code class="sig-name descname">LuaOpenLibrary</code><span class="sig-paren">(</span>lua_State *<em>L</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4elem14LuaOpenLibraryEP9lua_State" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>For the given Lua state, load the library’s functions and classes into a global Lua table named <code class="docutils literal notranslate"><span class="pre">elem</span></code>.</p>
+<p>Here a Lua example that illustrate how to use the library from Lua:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">plot</span> <span class="o">=</span> <span class="n">elem</span><span class="p">.</span><span class="n">Plot</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">ShowUnits</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">:</span><span class="n">SetLimits</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">:</span><span class="n">SetAxisLabelsAngle</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="n">xAxis</span><span class="p">,</span> <span class="mf">3.141592</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">:</span><span class="n">EnableLabelFormat</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="n">xAxis</span><span class="p">,</span> <span class="s2">&quot;%.6f&quot;</span><span class="p">)</span>
+
+<span class="kd">local</span> <span class="n">line</span> <span class="o">=</span> <span class="n">elem</span><span class="p">.</span><span class="n">Path</span><span class="p">.</span><span class="n">new</span><span class="p">()</span>
+<span class="n">line</span><span class="p">:</span><span class="n">MoveTo</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">line</span><span class="p">:</span><span class="n">LineTo</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">)</span>
+<span class="n">line</span><span class="p">:</span><span class="n">LineTo</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
+<span class="n">line</span><span class="p">:</span><span class="n">ClosePolygon</span><span class="p">()</span>
+<span class="n">plot</span><span class="p">:</span><span class="n">Add</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mh">0xB40000FF</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mh">0xF5FE00FF</span><span class="p">,</span> <span class="n">elem</span><span class="p">.</span><span class="n">flags</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="n">property</span><span class="p">.</span><span class="n">Stroke</span><span class="p">,</span> <span class="n">elem</span><span class="p">.</span><span class="n">property</span><span class="p">.</span><span class="n">Fill</span><span class="p">))</span>
+
+<span class="kd">local</span> <span class="n">window</span> <span class="o">=</span> <span class="n">elem</span><span class="p">.</span><span class="n">Window</span><span class="p">.</span><span class="n">new</span><span class="p">()</span>
+<span class="n">window</span><span class="p">:</span><span class="n">Attach</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">window</span><span class="p">:</span><span class="n">Start</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="n">elem</span><span class="p">.</span><span class="n">WindowResize</span><span class="p">)</span>
+<span class="n">elem</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="kd">local</span> <span class="n">line2</span> <span class="o">=</span> <span class="n">elem</span><span class="p">.</span><span class="n">Path</span><span class="p">.</span><span class="n">new</span><span class="p">()</span>
+<span class="n">line2</span><span class="p">:</span><span class="n">MoveTo</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">line2</span><span class="p">:</span><span class="n">LineTo</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">)</span>
+<span class="n">line2</span><span class="p">:</span><span class="n">LineTo</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
+<span class="n">line2</span><span class="p">:</span><span class="n">ClosePolygon</span><span class="p">()</span>
+<span class="n">plot</span><span class="p">:</span><span class="n">Add</span><span class="p">(</span><span class="n">line2</span><span class="p">,</span> <span class="mh">0x0000B4FF</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mh">0x00000000</span><span class="p">,</span> <span class="n">elem</span><span class="p">.</span><span class="n">property</span><span class="p">.</span><span class="n">Stroke</span><span class="p">)</span>
+
+<span class="n">window</span><span class="p">:</span><span class="n">Wait</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h2>C Loader Function<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="c.elem_lua_open_library">
+void <code class="sig-name descname">elem_lua_open_library</code><span class="sig-paren">(</span>lua_State<em> *L</em><span class="sig-paren">)</span><a class="headerlink" href="#c.elem_lua_open_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>The same of the <a class="reference internal" href="#_CPPv4N4elem14LuaOpenLibraryEP9lua_State" title="elem::LuaOpenLibrary"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">LuaOpenLibrary()</span></code></a> but as a C function.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="graphical-element-c.html" class="btn btn-neutral float-right" title="Graphical Elements - C API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fox-integration.html" class="btn btn-neutral float-left" title="FOX toolkit integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Francesco Abbate
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

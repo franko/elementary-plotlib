@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Elementary Plot library Reference Manual &mdash; Libelplot  documentation</title>
+  <title>Elementary Plot library Reference Manual &mdash; Elementary Plot Manual  documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> Libelplot
+            <a href="#" class="icon icon-home"> Elementary Plot Manual
           
 
           
@@ -84,7 +84,9 @@
 <li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot-window-lifetime.html">Plots and Windows lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua-bindings.html">Lua Bindings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot-c.html">Plot - C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="window-c.html">Windows - C API</a></li>
@@ -102,7 +104,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Libelplot</a>
+          <a href="#">Elementary Plot Manual</a>
         
       </nav>
 
@@ -156,21 +158,31 @@
 <h1>Elementary Plot library Reference Manual<a class="headerlink" href="#elementary-plot-library-reference-manual" title="Permalink to this headline">¶</a></h1>
 <p>This is the reference documentation for the C and C++ interface of <a class="reference external" href="https://franko.github.io/elementary-plotlib/">Elementary Plot</a>, a library for high-quality plots and animations.</p>
 <p>In the chapter below you can find the documentation for the classes and functions that are part of the Elementary Plot public C and C++ interfaces.
-All the classes, functions and enumerators are defined inside the <code class="docutils literal notranslate"><span class="pre">elp</span></code> namespace.</p>
-<p>All the definitions are provided by a single header file, <code class="docutils literal notranslate"><span class="pre">libelplot.h</span></code>.</p>
+All the classes, functions and enumerators are defined inside the <code class="docutils literal notranslate"><span class="pre">elem</span></code> namespace.</p>
+<p>All the definitions are provided by a single header file, <code class="docutils literal notranslate"><span class="pre">elem/elem.h</span></code>.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="graphical-element.html">Graphical Elements</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="graphical-element.html#drawing-properties">Drawing Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphical-element.html#graphical-objects">Graphical Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphical-element.html#colors">Colors</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#drawing-properties">Drawing Properties</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="window.html#window-s-flags">Window’s flags</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="plot-window-lifetime.html">Plots and Windows lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fox-integration.html">FOX toolkit integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua-bindings.html">Lua Bindings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lua-bindings.html#c-loader-function">C++ Loader Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua-bindings.html#id1">C Loader Function</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="graphical-element-c.html">Graphical Elements - C API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="graphical-element-c.html#color-constants">Color constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphical-element-c.html#drawing-properties">Drawing Properties</a></li>

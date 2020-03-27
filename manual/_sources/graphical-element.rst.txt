@@ -2,60 +2,13 @@
 Graphical Elements
 ==================
 
-.. cpp:namespace:: elp
+.. cpp:namespace:: elem
 
-.. cpp:enum:: Color
+Graphical elements are created and added to plots.
+They are drawn with a filling of a given color and a stroking of a given color and line width.
 
-  Used to express colors in RGBA format. Corresponds to an unsigned 32 bit integer type.
-  The R, G, B and A corresponds respectively to the red, green, blue and alpha channel and each takes 8 bit.
-  The alpha channel controls the transparency and its values corresponds to zero for completely transparent and 255, ``0xff`` in hexadecimal, for completely opaque.
-  The color can be given directly in hexadecimal format like, for example, ``0x00ff00ff`` for green, or using the functions :cpp:func:`color::RGB` and :cpp:func:`color::RGBA`.
-
-.. cpp:namespace-push:: color
-
-.. cpp:function:: Color RGBA(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
-
-   Form a color from the value of its individual channel.
-
-.. cpp:function:: Color RGB(unsigned int r, unsigned int g, unsigned int b)
-
-   Form a color from the value of its individual channel setting the alpha channel to its maximum value.
-
-.. cpp:enumerator:: Red
-.. cpp:enumerator:: Blue
-.. cpp:enumerator:: Green
-.. cpp:enumerator:: Yellow
-.. cpp:enumerator:: Black
-.. cpp:enumerator:: Gray
-.. cpp:enumerator:: White
-.. cpp:enumerator:: None = 0
-
-.. cpp:namespace-pop::
-
-Drawing Properties
-------------------
-
-The following are used when adding an element into a plot to specify if should be stroked, filled or possibly both.
-In addition some properties affect the way the object will be drawn on the screen.
-The values are meant to be combined using logical bit operators.
-
-.. cpp:namespace-push:: property
-
-.. cpp:enumerator:: Fill
-
-  Draw each closed polygon with a filling color.
-
-.. cpp:enumerator:: Stroke
-
-  Draw the stroking of the path or contour.
-
-.. cpp:enumerator:: Outline
-
-  Only the outline of the path will be drawn, without anti-aliasing.
-
-.. cpp:enumerator:: Crisp
-
-.. cpp:namespace-pop::
+Graphical Objects
+-----------------
 
 .. cpp:class:: Object
 
@@ -162,3 +115,32 @@ The values are meant to be combined using logical bit operators.
   .. cpp:function:: void AddDash(double a, double b)
 
     Add a dash length and gap after the creation of the object.
+
+Colors
+------
+
+.. cpp:enum:: Color
+
+  Used to express colors in RGBA format. Corresponds to an unsigned 32 bit integer type.
+  The R, G, B and A corresponds respectively to the red, green, blue and alpha channel and each takes 8 bit.
+  The alpha channel controls the transparency and its values corresponds to zero for completely transparent and 255, ``0xff`` in hexadecimal, for completely opaque.
+  The color can be given directly in hexadecimal format like, for example, ``0x00ff00ff`` for green, or using the functions :cpp:func:`color::RGB` and :cpp:func:`color::RGBA`.
+
+.. cpp:namespace-push:: color
+
+.. cpp:function:: Color RGBA(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+
+   Form a color from the value of its individual channel.
+
+.. cpp:function:: Color RGB(unsigned int r, unsigned int g, unsigned int b)
+
+   Form a color from the value of its individual channel setting the alpha channel to its maximum value.
+
+.. cpp:enumerator:: Red
+.. cpp:enumerator:: Blue
+.. cpp:enumerator:: Green
+.. cpp:enumerator:: Yellow
+.. cpp:enumerator:: Black
+.. cpp:enumerator:: Gray
+.. cpp:enumerator:: White
+.. cpp:enumerator:: None = 0
