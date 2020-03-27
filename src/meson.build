@@ -3,7 +3,7 @@ freetype_dep = dependency('freetype2')
 thread_dep = dependency('threads')
 
 lib_elem_plot_src = ['str.c', 'agg_font_freetype.cpp', 'render_config.cpp', 'fatal.cpp', 'utils.cpp', 'canvas_svg.cpp', 'markers.cpp', 'text.cpp', 'window_part.cpp', 'draw_svg.cpp', 'plot_axis.cpp', 'plot.cpp', 'units.cpp', 'window_surface.cpp', 'printf_check.cpp', 'plot_agent.cpp', 'elem_plot.cpp', 'gc_context.cpp']
-lib_elem_plot_api_src = ['elem_plot_c.cpp', 'elem_plot_cpp.cpp']
+lib_elem_plot_api_src = ['elem_c.cpp', 'elem_cpp.cpp']
 
 libelem = library('elem',
     lib_elem_plot_src + lib_elem_plot_api_src,
