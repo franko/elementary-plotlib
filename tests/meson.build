@@ -52,7 +52,7 @@ foreach test : window_tests
         include_directories: lib_elem_plot_include,
         dependencies: lib_elem_plot_dep,
         cpp_args: lib_elem_plot_cflags,
-        link_with: [lib_elem_plot_win, lib_elem_plot],
+        link_with: [lib_elem_plot_win, libelem],
         gui_app: false)
 endforeach
 
@@ -62,7 +62,7 @@ if fox_dep.found()
             include_directories: lib_elem_plot_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
             cpp_args: lib_elem_plot_cflags,
-            link_with: [lib_elem_plot_fox, lib_elem_plot_win, lib_elem_plot],
+            link_with: [libelem_fox, lib_elem_plot_win, libelem],
             gui_app: false)
     endforeach
 endif
@@ -73,7 +73,7 @@ if enable_lua
             include_directories: lib_elem_plot_include,
             dependencies: [lib_elem_plot_dep, sol_dep, lua_dep],
             cpp_args: lib_elem_plot_cflags,
-            link_with: [lib_elem_plot_win, lib_elem_plot_lua, lib_elem_plot],
+            link_with: [lib_elem_plot_win, libelem_lua, libelem],
             gui_app: false)
     endforeach
 endif

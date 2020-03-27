@@ -56,8 +56,8 @@ endif
 pkg = import('pkgconfig')
 
 pkg.generate(lib_elem_plot_win,
-    filebase : 'libelemplot',
-    name : 'libelemplot',
+    filebase : 'libelem',
+    name : 'libelem',
     description : 'The Elementary Plot library',
     url : 'github.com/franko/elementary-plotlib',
 )

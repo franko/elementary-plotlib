@@ -1,6 +1,6 @@
 lib_elem_plot_lua_src = ['elem_plot_lua.cpp', 'elem_plot_lua_c.cpp']
 
-lib_elem_plot_lua = library('elemplotlua',
+libelem_lua = library('elemlua',
     lib_elem_plot_lua_src,
     cpp_args: lib_elem_plot_cflags,
     include_directories: lib_elem_plot_include,
@@ -8,9 +8,9 @@ lib_elem_plot_lua = library('elemplotlua',
     install: true
 )
 
-pkg.generate(lib_elem_plot_lua,
-    filebase : 'libelemplotlua',
-    name : 'libelemplotlua',
+pkg.generate(libelem_lua,
+    filebase : 'libelemlua',
+    name : 'libelemlua',
     description : 'The Elementary Plot library, Lua bindings',
     url : 'github.com/franko/elementary-plotlib',
 )
