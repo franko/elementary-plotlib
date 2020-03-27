@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Libelplot'
+project = 'Elementary Plot Manual'
 copyright = '2019, Francesco Abbate'
 author = 'Francesco Abbate'
 

@@ -91,6 +91,17 @@ Plot
 
     Add a new plot as a legend in the given location.
 
+  .. cpp:function:: void Show(unsigned width, unsigned height, unsigned flags)
+
+    Show the plot on the screen with the given width and height.
+    The flags argument is currently unused and should be set to :cpp:enumerator:`WindowResize`.
+    It works internally by creating and showing on the screen a window.
+    The function :cpp:func:`Plot::Wait` can be used to wait until the window is closed.
+
+  .. cpp:function:: void Wait()
+
+    If the plot is shown on the screen, using the :cpp:func:`Plot::Show`, it waits until the window is closed.
+
   .. cpp:function:: bool WriteSvg(const char *filename, double width, double height)
 
     Write the plot as a SVG file with the given filename, width and height.

@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "Elementary Plot Library's Homepage"
+project = "Elementary Plot Homepage"
 copyright = '2020, Francesco Abbate'
 author = 'Francesco Abbate'
 

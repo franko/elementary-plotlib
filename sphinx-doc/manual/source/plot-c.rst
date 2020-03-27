@@ -90,6 +90,17 @@ Legend Placement
 
     Add a new plot as a legend in the given location.
 
+  .. c:function:: void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags)
+
+    Show the plot on the screen with the given width and height.
+    The flags argument is currently unused and should be set to :c:macro:`elem_window_resize`.
+    It works internally by creating and showing on the screen a window.
+    The function :c:func:`elem_window_wait` can be used to wait until the window is closed.
+
+  .. c:function:: void elem_plot_wait(elem_plot *plot)
+
+    If the plot is shown on the screen, using the :c:func:`elem_plot_show`, it waits until the window is closed.
+
   .. c:function:: int elem_plot_write_svg(elem_plot *plot, const char *filename, double width, double height)
 
     Write the plot as a SVG file with the given filename, width and height.
