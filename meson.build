@@ -35,13 +35,6 @@ install_headers('include/elem/elem_utils.h', subdir: 'elem')
 install_headers('include/elem/elem_constants.h', subdir: 'elem')
 install_headers('include/elem/elem_generator.h', subdir: 'elem')
 install_headers('include/elem/elem_c_forward.h', subdir: 'elem')
-install_headers('include/elem/elem_lua.h', subdir: 'elem')
-install_headers('include/elem/elem_lua_c.h', subdir: 'elem')
-install_headers('include/elem/elem_lua_cpp.h', subdir: 'elem')
-install_headers('include/elem/elem_fox.h', subdir: 'elem')
-install_headers('include/elem/elem_fox_cpp.h', subdir: 'elem')
-install_headers('include/FXElemWindow.h')
-install_headers('include/FXElemBaseWindow.h')
 
 subdir('src')
 subdir('window')
@@ -67,6 +60,10 @@ fox_dep = dependency('fox', required: false)
 
 if fox_dep.found()
     subdir('fox')
+    install_headers('include/elem/elem_fox.h', subdir: 'elem')
+    install_headers('include/elem/elem_fox_cpp.h', subdir: 'elem')
+    install_headers('include/FXElemWindow.h')
+    install_headers('include/FXElemBaseWindow.h')
 endif
 
 sol_dep = dependency('sol2', required: false)
@@ -84,6 +81,9 @@ enable_lua = (sol_dep.found() and lua_dep.found())
 if enable_lua
     libelem_cflags += '-DELEM_PLOT_USE_LUA'
     subdir('lua')
+    install_headers('include/elem/elem_lua.h', subdir: 'elem')
+    install_headers('include/elem/elem_lua_c.h', subdir: 'elem')
+    install_headers('include/elem/elem_lua_cpp.h', subdir: 'elem')
 endif
 
 if get_option('tests')
