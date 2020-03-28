@@ -4,7 +4,7 @@ libelem_lua = library('elemlua',
     libelem_lua_src,
     cpp_args: libelem_cflags,
     include_directories: libelem_include,
-    dependencies: [agg_dep, freetype_dep, sol_dep, lua_dep, thread_dep],
+    dependencies: [sol_dep, lua_dep],
     install: true
 )
 

@@ -3,7 +3,7 @@ libelem_fox_src = ['FXElemWindow.cpp', 'FXElemBaseWindow.cpp', 'window_fox.cpp',
 libelem_fox = static_library('elemfox', libelem_fox_src,
     include_directories: libelem_include,
     cpp_args: libelem_cflags,
-    dependencies: [libelem_dep, agg_dep, freetype_dep, thread_dep, fox_dep],
+    dependencies: [libelem_dep, fox_dep],
     install: true
 )
 
