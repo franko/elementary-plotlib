@@ -8,6 +8,14 @@
 #include "elem/elem_c_forward.h"
 #include "window_platform_native.h"
 
+void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags) {
+    plot->show(width, height, flags);
+}
+
+void elem_plot_wait(elem_plot *plot) {
+    plot->wait_show_window();
+}
+
 elem_window *elem_window_new() {
     return new elem_window_native{};
 }

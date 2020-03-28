@@ -253,14 +253,6 @@ int elem_plot_write_svg(elem_plot *plot, const char *filename, double width, dou
     return true;
 }
 
-void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags) {
-    plot->show(width, height, flags);
-}
-
-void elem_plot_wait(elem_plot *plot) {
-    plot->wait_show_window();
-}
-
 void elem_initialize_fonts() {
     graphics::initialize_fonts();
 }

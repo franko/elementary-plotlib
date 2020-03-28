@@ -11,6 +11,14 @@
 
 namespace elem {
 
+void Plot::Show(unsigned width, unsigned height, unsigned flags) {
+    plot_impl_->show(width, height, flags);
+}
+
+void Plot::Wait() {
+    plot_impl_->wait_show_window();
+}
+
 Window::Window() : window_impl_(global_elem_window_factory->create()) {
 }
 
