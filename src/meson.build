@@ -14,8 +14,8 @@ libelem = library('elem',
     install: true
 )
 
-# The following is useful in order to let pkg.generate add -lcanvas
-# in the libraries list, in addition to -lcanvaswin.
+# The following is useful in order to let pkg.generate add -lelem
+# in the libraries list, in addition to -lelemwin.
 # It works by declaring libelem as a dependency instead of using
 # link_with.
 libelem_dep = declare_dependency(
