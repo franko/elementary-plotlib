@@ -10,6 +10,7 @@ libelem_fox = static_library('elemfox', libelem_fox_src,
 pkg.generate(libelem_fox,
     filebase : 'libelemfox',
     name : 'libelemfox',
+    libraries: [libelemwin, libelem],
     description : 'The FOX Elementary Plot library',
     url : 'github.com/franko/elementary-plotlib',
 )

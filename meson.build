@@ -58,6 +58,7 @@ pkg = import('pkgconfig')
 pkg.generate(libelem_win,
     filebase : 'libelem',
     name : 'libelem',
+    libraries : libelem,
     description : 'The Elementary Plot library',
     url : 'github.com/franko/elementary-plotlib',
 )

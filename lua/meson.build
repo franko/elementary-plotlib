@@ -11,6 +11,7 @@ libelem_lua = library('elemlua',
 pkg.generate(libelem_lua,
     filebase : 'libelemlua',
     name : 'libelemlua',
+    libraries: [libelemwin, libelem],
     description : 'The Elementary Plot library, Lua bindings',
     url : 'github.com/franko/elementary-plotlib',
 )
