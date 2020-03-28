@@ -12,7 +12,7 @@ if [ -d "$LIBCANVAS_WORKING_DIR" ]; then
 else
     rm -fr "$LIBCANVAS_WORKING_DIR"
     cd "$(dirname "$LIBCANVAS_WORKING_DIR")"
-    git clone git@github.com:/franko/libcanvas -b gh-pages "$WORKING_DIRNAME"
+    git clone git@github.com:/franko/elementary-plotlib -b gh-pages "$WORKING_DIRNAME"
     pushd "$WORKING_DIRNAME"
 fi
 
