@@ -49,9 +49,9 @@ lua_tests = [
 
 foreach test : window_tests
     executable(test['name'], test['sources'],
-        include_directories: lib_elem_plot_include,
-        dependencies: lib_elem_plot_dep,
-        cpp_args: lib_elem_plot_cflags,
+        include_directories: libelem_include,
+        dependencies: libelem_dep,
+        cpp_args: libelem_cflags,
         link_with: [libelem_win, libelem],
         gui_app: false)
 endforeach
@@ -59,9 +59,9 @@ endforeach
 if fox_dep.found()
     foreach test : fox_tests
         executable(test['name'], test['sources'],
-            include_directories: lib_elem_plot_include,
+            include_directories: libelem_include,
             dependencies: [agg_dep, freetype_dep, thread_dep, fox_dep],
-            cpp_args: lib_elem_plot_cflags,
+            cpp_args: libelem_cflags,
             link_with: [libelem_fox, libelem_win, libelem],
             gui_app: false)
     endforeach
@@ -70,9 +70,9 @@ endif
 if enable_lua
     foreach test : lua_tests
         executable(test['name'], test['sources'],
-            include_directories: lib_elem_plot_include,
-            dependencies: [lib_elem_plot_dep, sol_dep, lua_dep],
-            cpp_args: lib_elem_plot_cflags,
+            include_directories: libelem_include,
+            dependencies: [libelem_dep, sol_dep, lua_dep],
+            cpp_args: libelem_cflags,
             link_with: [libelem_win, libelem_lua, libelem],
             gui_app: false)
     endforeach

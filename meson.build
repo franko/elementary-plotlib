@@ -8,38 +8,38 @@ project('elementary_plotlib', 'c', 'cpp', version: '0.1.0', default_options : ['
 #  DEFS += -DDISABLE_SUBPIXEL_AA
 # endif
 
-lib_elem_plot_cflags = []
+libelem_cflags = []
 
 host_system = host_machine.system()
 host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
 
 if host_system == 'windows'
-    lib_elem_plot_cflags += '-DWIN32'
+    libelem_cflags += '-DWIN32'
 elif host_system == 'cygwin'
-    lib_elem_plot_cflags += '-DCYGWIN'
+    libelem_cflags += '-DCYGWIN'
 endif
 
 debug_build = get_option('buildtype') != 'release'
 cc = meson.get_compiler('cpp')
 
 if debug_build
-    lib_elem_plot_cflags += '-DELEM_PLOT_DEBUG'
-    lib_elem_plot_cflags += '-DELEM_PLOT_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
+    libelem_cflags += '-DELEM_PLOT_DEBUG'
+    libelem_cflags += '-DELEM_PLOT_DEBUG_LEVEL=' + get_option('debuglevel').to_string()
 endif
 
-lib_elem_plot_include = include_directories('include')
-install_headers('include/elem/elem_cpp.h')
-install_headers('include/elem/elem_c.h')
-install_headers('include/elem/elem.h')
-install_headers('include/elem/elem_utils.h')
-install_headers('include/elem/elem_constants.h')
-install_headers('include/elem/elem_generator.h')
-install_headers('include/elem/elem_c_forward.h')
-install_headers('include/elem/elem_lua.h')
-install_headers('include/elem/elem_lua_c.h')
-install_headers('include/elem/elem_lua_cpp.h')
-install_headers('include/elem/elem_fox.h')
-install_headers('include/elem/elem_fox_cpp.h')
+libelem_include = include_directories('include')
+install_headers('include/elem/elem_cpp.h', subdir: 'elem')
+install_headers('include/elem/elem_c.h', subdir: 'elem')
+install_headers('include/elem/elem.h', subdir: 'elem')
+install_headers('include/elem/elem_utils.h', subdir: 'elem')
+install_headers('include/elem/elem_constants.h', subdir: 'elem')
+install_headers('include/elem/elem_generator.h', subdir: 'elem')
+install_headers('include/elem/elem_c_forward.h', subdir: 'elem')
+install_headers('include/elem/elem_lua.h', subdir: 'elem')
+install_headers('include/elem/elem_lua_c.h', subdir: 'elem')
+install_headers('include/elem/elem_lua_cpp.h', subdir: 'elem')
+install_headers('include/elem/elem_fox.h', subdir: 'elem')
+install_headers('include/elem/elem_fox_cpp.h', subdir: 'elem')
 install_headers('include/FXElemWindow.h')
 install_headers('include/FXElemBaseWindow.h')
 
@@ -81,7 +81,7 @@ endif
 enable_lua = (sol_dep.found() and lua_dep.found())
 
 if enable_lua
-    lib_elem_plot_cflags += '-DELEM_PLOT_USE_LUA'
+    libelem_cflags += '-DELEM_PLOT_USE_LUA'
     subdir('lua')
 endif
 
