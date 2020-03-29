@@ -5,13 +5,14 @@ libelem_lua = library('elemlua',
     cpp_args: libelem_cflags,
     include_directories: libelem_include,
     dependencies: [sol_dep, lua_dep],
+    link_with: [libelem_win, libelem],
     install: true
 )
 
 pkg.generate(libelem_lua,
     filebase : 'libelemlua',
     name : 'libelemlua',
-    libraries: [libelemwin, libelem],
+    libraries: [libelem_win, libelem],
     description : 'The Elementary Plot library, Lua bindings',
     url : 'github.com/franko/elementary-plotlib',
 )
