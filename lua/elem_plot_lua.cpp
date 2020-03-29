@@ -61,6 +61,8 @@ void LuaOpenLibrary(lua_State *L) {
         "PopLayer", &Plot::PopLayer,
         "ClearLayer", &Plot::ClearLayer,
         "AddLegend", &Plot::AddLegend,
+        "Show", &Plot::Show,
+        "Wait", &Plot::Wait,
         "WriteSvg", &Plot::WriteSvg
     );
     elem.new_usertype<Window>("Window", sol::constructors<Window()>(),
