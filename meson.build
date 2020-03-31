@@ -1,18 +1,9 @@
 project('elementary_plotlib', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++17'])
 
-# ifeq ($(strip $(DISABLE_GAMMA_CORR)), yes)
-#  DEFS += -DDISABLE_GAMMA_CORR
-# endif
-
-# ifeq ($(strip $(DISABLE_SUBPIXEL_LCD)), yes)
-#  DEFS += -DDISABLE_SUBPIXEL_AA
-# endif
-
-libelem_cflags = []
-
 host_system = host_machine.system()
 host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
 
+libelem_cflags = []
 if host_system == 'windows'
     libelem_cflags += '-DWIN32'
 elif host_system == 'cygwin'
