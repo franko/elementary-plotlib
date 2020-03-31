@@ -1,4 +1,4 @@
-project('elementary_plotlib', 'c', 'cpp', version: '0.1.0', default_options : ['c_std=c99' ,'cpp_std=c++17'])
+project('elementary_plotlib', 'c', 'cpp', version: '1.0-beta3', default_options : ['c_std=c99' ,'cpp_std=c++17'])
 
 host_system = host_machine.system()
 host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
