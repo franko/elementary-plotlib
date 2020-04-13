@@ -56,7 +56,7 @@ foreach test : window_tests
         gui_app: false)
 endforeach
 
-if fox_dep.found()
+if enable_fox
     foreach test : fox_tests
         executable(test['name'], test['sources'],
             include_directories: libelem_include,

@@ -48,8 +48,9 @@ pkg.generate(libelem_win,
 )
 
 fox_dep = dependency('fox', required: false)
+enable_fox = (get_option('fox') and fox_dep.found())
 
-if fox_dep.found()
+if enable_fox
     subdir('fox')
     install_headers('include/elem/elem_fox.h', subdir: 'elem')
     install_headers('include/elem/elem_fox_cpp.h', subdir: 'elem')
@@ -67,7 +68,7 @@ else
     lua_dep = puc_rio_lua_dep
 endif
 
-enable_lua = (sol_dep.found() and lua_dep.found())
+enable_lua = (get_option('lua') and sol_dep.found() and lua_dep.found())
 
 if enable_lua
     libelem_cflags += '-DELEM_PLOT_USE_LUA'
