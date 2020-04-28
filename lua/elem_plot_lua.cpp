@@ -96,6 +96,28 @@ void LuaOpenLibrary(lua_State *L) {
     elem["flags"] = BitOr;
 
     elem["property"] = elem_property;
+
+    // TODO: problem below is that we access "elem" as a global
+    // variable but there is no guarantee it is defined.
+    auto fxresult = lua.script(R"(
+        local function fxlinedraw(line, x0, x1, f, N)
+            N = N or 128
+            local dx = (x1 - x0) / N
+            line:MoveTo(x0, f(x0))
+            for i = 1, N do
+                local x = x0 + dx * i
+                line:LineTo(x, f(x))
+            end
+            return line
+        end
+        local function fxline(x0, x1, f, N)
+            return fxlinedraw(elem.Path.new(), x0, x1, f, N)
+        end
+        return fxline, fxlinedraw
+    )");
+    elem["FxLine"] = fxresult.get<sol::function>(0);
+    elem["FxLineDraw"] = fxresult.get<sol::function>(1);
+
     lua["elem"] = elem;
 }
 }
