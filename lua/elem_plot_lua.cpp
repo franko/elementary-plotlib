@@ -16,7 +16,6 @@ static unsigned BitOr(sol::variadic_args va) {
 
 void LuaOpenLibrary(lua_State *L) {
     sol::state_view lua(L);
-    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::bit32);
     auto elem = lua.create_table();
     elem.new_usertype<Object>("Object", sol::constructors<Object()>());
     elem.new_usertype<Path>("Path", sol::constructors<Path()>(),
