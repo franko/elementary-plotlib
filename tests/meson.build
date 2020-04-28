@@ -45,6 +45,8 @@ fox_tests = [
 
 lua_tests = [
     {'name': 'lua-test-1', 'sources': 'lua-test-1.cpp'},
+    {'name': 'lua-test-2', 'sources': 'lua-test-2.cpp'},
+    {'name': 'lua-test-3', 'sources': 'lua-test-3.cpp'},
     {'name': 'lua-test-c-1', 'sources': 'lua-test-c-1.c'},
 ]
 

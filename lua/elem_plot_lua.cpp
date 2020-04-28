@@ -71,6 +71,8 @@ void LuaOpenLibrary(lua_State *L) {
         "Wait", &Window::Wait
     );
 
+    elem["MarkerSymbol"] = MarkerSymbol;
+
     auto plot_flags = lua.create_table();
     plot_flags["ShowUnits"] = Plot::ShowUnits;
     plot_flags["AutoLimits"] = Plot::AutoLimits;

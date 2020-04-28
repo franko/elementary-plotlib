@@ -10,5 +10,5 @@ int main() {
     elem::LuaOpenLibrary(L);
     elem::InitializeFonts();
     sol::state_view lua(L);
-    lua.script_file("lua/lua-test-1.lua");
+    lua.script_file("lua/lua-test-3.lua");
 }
