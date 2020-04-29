@@ -43,13 +43,6 @@ fox_tests = [
     {'name': 'test-fox-host-close', 'sources': 'test-fox-host-close.cpp'},
 ]
 
-lua_tests = [
-    {'name': 'lua-test-1', 'sources': 'lua-test-1.cpp'},
-    {'name': 'lua-test-2', 'sources': 'lua-test-2.cpp'},
-    {'name': 'lua-test-3', 'sources': 'lua-test-3.cpp'},
-    {'name': 'lua-test-c-1', 'sources': 'lua-test-c-1.c'},
-]
-
 foreach test : window_tests
     executable(test['name'], test['sources'],
         include_directories: libelem_include,
@@ -70,13 +63,18 @@ if enable_fox
     endforeach
 endif
 
-if enable_lua
-    foreach test : lua_tests
-        executable(test['name'], test['sources'],
-            include_directories: libelem_include,
-            dependencies: [libelem_dep, sol_dep, lua_dep],
-            cpp_args: libelem_cflags,
-            link_with: [libelem_win, libelem_lua, libelem],
-            gui_app: false)
-    endforeach
-endif
+executable('lua-run', 'lua-run.cpp',
+    include_directories: libelem_include,
+    dependencies: [libelem_dep, sol_dep, lua_dep],
+    cpp_args: libelem_cflags,
+    link_with: [libelem_win, libelem_lua, libelem],
+    gui_app: false
+)
+
+executable('lua-run-c', 'lua-run-c.c',
+    include_directories: libelem_include,
+    dependencies: [libelem_dep, sol_dep, lua_dep],
+    cpp_args: libelem_cflags,
+    link_with: [libelem_win, libelem_lua, libelem],
+    gui_app: false
+)

@@ -73,11 +73,9 @@ void LuaOpenLibrary(lua_State *L) {
 
     elem["MarkerSymbol"] = MarkerSymbol;
 
-    auto plot_flags = lua.create_table();
-    plot_flags["ShowUnits"] = Plot::ShowUnits;
-    plot_flags["AutoLimits"] = Plot::AutoLimits;
-    plot_flags["ClipRegion"] = Plot::ClipRegion;
-    elem["plot"] = plot_flags;
+    elem["Plot"]["ShowUnits"]  = Plot::ShowUnits;
+    elem["Plot"]["AutoLimits"] = Plot::AutoLimits;
+    elem["Plot"]["ClipRegion"] = Plot::ClipRegion;
 
     elem["xAxis"] = xAxis;
     elem["yAxis"] = yAxis;
@@ -97,10 +95,14 @@ void LuaOpenLibrary(lua_State *L) {
 
     elem["property"] = elem_property;
 
-    // TODO: problem below is that we access "elem" as a global
-    // variable but there is no guarantee it is defined.
+    lua["elem"] = elem;
+
     auto fxresult = lua.script(R"(
-        local function fxlinedraw(line, x0, x1, f, N)
+        elem.color = {
+            Red = 0xB40000FF, Green = 0x00CC00ff, Blue = 0x0000B4FF, Yellow = 0xF5FE00FF, Black = 0x000000FF, Gray = 0xBBBBBBFF, White = 0xFFFFFFFF, None = 0
+        }
+
+        function elem.FxLineDraw(line, x0, x1, f, N)
             N = N or 128
             local dx = (x1 - x0) / N
             line:MoveTo(x0, f(x0))
@@ -108,16 +110,12 @@ void LuaOpenLibrary(lua_State *L) {
                 local x = x0 + dx * i
                 line:LineTo(x, f(x))
             end
+        end
+        function elem.FxLine(x0, x1, f, N)
+            local line = elem.Path.new()
+            elem.FxLineDraw(line, x0, x1, f, N)
             return line
         end
-        local function fxline(x0, x1, f, N)
-            return fxlinedraw(elem.Path.new(), x0, x1, f, N)
-        end
-        return fxline, fxlinedraw
     )");
-    elem["FxLine"] = fxresult.get<sol::function>(0);
-    elem["FxLineDraw"] = fxresult.get<sol::function>(1);
-
-    lua["elem"] = elem;
 }
 }
