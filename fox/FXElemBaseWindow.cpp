@@ -11,8 +11,8 @@ FXDEFMAP(FXElemBaseWindow) FXElemBaseWindowMap[] = {
 
 FXIMPLEMENT(FXElemBaseWindow,FXWindow,FXElemBaseWindowMap,ARRAYNUMBER(FXElemBaseWindowMap))
 
-FXElemBaseWindow::FXElemBaseWindow(FXComposite* p, window_fox *win, FXuint opts, FXint x, FXint y, FXint w, FXint h):
-    FXWindow(p, opts, x, y, w, h), m_window(win)
+FXElemBaseWindow::FXElemBaseWindow(FXComposite* p, FXuint opts, FXint x, FXint y, FXint w, FXint h):
+    FXWindow(p, opts, x, y, w, h), m_window(nullptr)
 {
     flags |= FLAG_SHOWN;
 }
@@ -68,15 +68,12 @@ long FXElemBaseWindow::onMap(FXObject *, FXSelector, void *) {
     return 1;
 }
 
-FXElemBaseWindow * FXElemBuildWindow(FXComposite *p, FXuint opts, FXElemStartMessage *message, FXElemCreatePolicy create_flag) {
-    auto elem_base_window = new FXElemBaseWindow(p, message->window, opts);
-    elem_base_window->setWidth(message->width);
-    elem_base_window->setHeight(message->height);
-    message->window->bind_elem_window(elem_base_window);
-    elem_base_window->bindCloseCallback(message->callback);
-    if (create_flag == ELEM_CREATE_NOW) {
-        elem_base_window->create();
-        elem_base_window->show();
+void FXElemBaseWindow::activateElem(FXElemStartMessage *message, FXElemCreatePolicy create_policy) {
+    setWindowFox(message->window);
+    message->window->bind_elem_window(this);
+    bindCloseCallback(message->callback);
+    if (create_policy == ELEM_CREATE_NOW) {
+        create();
+        show();
     }
-    return elem_base_window;
 }

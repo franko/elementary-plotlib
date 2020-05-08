@@ -6,7 +6,7 @@ FXDEFMAP(FXElemWindow) FXElemWindowMap[] = {};
 FXIMPLEMENT(FXElemWindow,FXElemBaseWindow,FXElemWindowMap,ARRAYNUMBER(FXElemWindowMap))
 
 FXElemWindow::FXElemWindow(FXComposite* p, const char *split_str, FXuint opts, FXint x, FXint y, FXint w, FXint h):
-    FXElemBaseWindow(p, nullptr, opts, x, y, w, h),
+    FXElemBaseWindow(p, opts, x, y, w, h),
     m_window(new elem_window_fox(split_str, this))
 {
 }

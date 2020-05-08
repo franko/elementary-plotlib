@@ -6,6 +6,13 @@
 class window_close_callback;
 class window_fox;
 
+struct FXElemStartMessage;
+
+enum FXElemCreatePolicy {
+    ELEM_CREATE_DEFER = 0,
+    ELEM_CREATE_NOW = 1,
+};
+
 namespace FX {
 
 class FXElemBaseWindow : public FXWindow {
@@ -16,8 +23,10 @@ private:
     FXElemBaseWindow(const FXElemBaseWindow&);
     FXElemBaseWindow &operator=(const FXElemBaseWindow&);
 public:
-    FXElemBaseWindow(FXComposite* p, window_fox *win = nullptr, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
+    FXElemBaseWindow(FXComposite* p, FXuint opts=FRAME_NORMAL, FXint x=0, FXint y=0, FXint w=0, FXint h=0);
     ~FXElemBaseWindow();
+
+    void activateElem(FXElemStartMessage *message, FXElemCreatePolicy create_policy);
 
     void setWindowFox(window_fox *win) {
         m_window = win;
@@ -48,11 +57,6 @@ private:
 };
 }
 
-enum FXElemCreatePolicy {
-    ELEM_CREATE_DEFER = 0,
-    ELEM_CREATE_NOW = 1,
-};
-
 struct FXElemStartMessage {
     window_fox *window;
     unsigned width;
@@ -60,5 +64,3 @@ struct FXElemStartMessage {
     unsigned flags;
     window_close_callback *callback;
 };
-
-FXElemBaseWindow *FXElemBuildWindow(FXComposite *p, FXuint opts, FXElemStartMessage *message, FXElemCreatePolicy create_flag);

@@ -58,7 +58,11 @@ long PlotWindow::onElemWindowStart(FXObject *, FXSelector, void *ptr) {
         main_window_options |= DECOR_STRETCHABLE;
     }
     auto main_win = new FXMainWindow(app, "Plot Window", nullptr, nullptr, main_window_options, 0, 0, message->width, message->height);
-    FXElemBuildWindow(main_win, LAYOUT_FILL_X | LAYOUT_FILL_Y, message, ELEM_CREATE_DEFER);
+
+    auto elem_window = new FXElemBaseWindow(main_win, LAYOUT_FILL_X | LAYOUT_FILL_Y);
+    elem_window->setWidth(message->width);
+    elem_window->setHeight(message->height);
+    elem_window->activateElem(message, ELEM_CREATE_DEFER);
     main_win->create();
     main_win->show(PLACEMENT_SCREEN);
     return 1;
