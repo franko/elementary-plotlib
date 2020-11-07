@@ -50,6 +50,10 @@ pkg.generate(libelem_win,
 fox_dep = dependency('fox', required: false)
 enable_fox = (get_option('fox') and fox_dep.found())
 
+sdl_dep = dependency('sdl2')
+
+subdir('sdl')
+
 if enable_fox
     subdir('fox')
     install_headers('include/elem/elem_fox.h', subdir: 'elem')

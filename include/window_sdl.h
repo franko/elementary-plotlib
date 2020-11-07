@@ -31,6 +31,7 @@ private:
     unsigned m_width;
     unsigned m_height;
     SDL_Window *m_window;
+    agg::pix_format_e m_pixel_format;
     str m_caption;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
