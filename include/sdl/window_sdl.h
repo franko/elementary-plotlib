@@ -28,6 +28,9 @@ private:
     int run();
     void close();
 
+    bool send_update_region_event();
+    bool send_close_window_event();
+
     unsigned m_width;
     unsigned m_height;
     SDL_Window *m_window;

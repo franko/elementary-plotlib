@@ -1,4 +1,4 @@
-#include "window_sdl.h"
+#include "sdl/window_sdl.h"
 
 bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_update_event_type = -1;
@@ -106,3 +106,41 @@ void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i
     SDL_UpdateWindowSurface(m_window);
 }
 
+bool window_sdl::send_update_region_event() {
+    SDL_Event event;
+    SDL_zero(event);
+    event.type = window_sdl::g_update_event_type;
+    SDL_PushEvent(&event);
+    return true;
+}
+
+bool window_sdl::send_close_window_event() {
+    SDL_Event event;
+    SDL_zero(event);
+    event.type = SDL_QUIT;
+    SDL_PushEvent(&event);
+    return true;
+}
+
+bool window_sdl::send_request(graphics::window_request request_type, int index) {
+    // lock();
+    switch (request_type) {
+    case graphics::window_request::update:
+        // m_update_notify.start(index);
+        if (send_update_region_event()) {
+            // Wait for the notification but only if the message was actually sent.
+            // unlock();
+            // m_update_notify.wait();
+            return true;
+        }
+        break;
+    case graphics::window_request::close:
+        if (send_close_window_event()) {
+            // unlock();
+            // wait_for_status(graphics::window_closed);
+            return true;
+        }
+    }
+    // unlock();
+    return false;
+}
