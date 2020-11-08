@@ -29,7 +29,11 @@ install_headers('include/elem/elem_c_forward.h', subdir: 'elem')
 
 subdir('src')
 subdir('window')
-if host_system == 'linux'
+
+if get_option('sdl')
+    libelem_cflags += '-DELEM_PLOT_USE_SDL'
+    subdir('sdl')
+elif host_system == 'linux'
     subdir('xwindow')
 elif host_is_window
     subdir('win32')
@@ -49,10 +53,6 @@ pkg.generate(libelem_win,
 
 fox_dep = dependency('fox', required: false)
 enable_fox = (get_option('fox') and fox_dep.found())
-
-sdl_dep = dependency('sdl2')
-
-subdir('sdl')
 
 if enable_fox
     subdir('fox')

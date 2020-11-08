@@ -1,4 +1,5 @@
 option('tests', type : 'boolean', value : true, description: 'build tests applications')
 option('fox', type : 'boolean', value : true, description: 'build FOX integration module')
+option('sdl', type : 'boolean', value : true, description: 'use SDL2 window support')
 option('lua', type : 'boolean', value : true, description: 'build Lua support module')
 option('debuglevel', type : 'integer', value : 1, description: 'debug level')
