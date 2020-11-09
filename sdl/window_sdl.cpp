@@ -39,6 +39,7 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
         }
         g_sdl_initialized = true;
     }
+    set_status(graphics::window_starting);
     // FIXME: manage flags for resizable window.
     m_window = SDL_CreateWindow(
         "Graphics Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
@@ -59,7 +60,10 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
             quit = true;
             break;
         case SDL_WINDOWEVENT:
-            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+            if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
+                // m_window_surface.update_window_area();
+                set_status(graphics::window_running);
+            } else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                 unsigned width = event.window.data1, height = event.window.data2;
                 // TODO: check if we need to store m_width and m_height.
                 if (width != m_width || height != m_height) {
@@ -70,9 +74,10 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
                 }
             } else if (event.window.event == SDL_WINDOWEVENT_EXPOSED) {
                 m_window_surface.update_window_area();
-                // FIXME: figure out precisely where the set_status running
-                // below should be set.
-                set_status(graphics::window_running);
+            } else if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                quit = true;
+            } else {
+                fprintf(stderr, "SDL window event UNKNOWN: %d\n", event.window.event); fflush(stderr);
             }
             break;
         default:
@@ -84,6 +89,7 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
             }
         }
     }
+    set_status(graphics::window_closed);
 }
 
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
@@ -126,11 +132,11 @@ bool window_sdl::send_request(graphics::window_request request_type, int index) 
     // lock();
     switch (request_type) {
     case graphics::window_request::update:
-        // m_update_notify.start(index);
+        m_update_notify.start(index);
         if (send_update_region_event()) {
             // Wait for the notification but only if the message was actually sent.
             // unlock();
-            // m_update_notify.wait();
+            m_update_notify.wait();
             return true;
         }
         break;
