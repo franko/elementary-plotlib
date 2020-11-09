@@ -32,11 +32,14 @@ static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
 
 void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags) {
     if (!g_sdl_initialized) {
+        fprintf(stderr, "SDL initialization\n"); fflush(stderr);
         SDL_Init(SDL_INIT_VIDEO);
+        fprintf(stderr, "SDL Register Event\n"); fflush(stderr);
         g_update_event_type = SDL_RegisterEvents(1);
         if (g_update_event_type == ((Uint32)-1)) {
             return;
         }
+        fprintf(stderr, "SDL Register Event done: %d\n", g_update_event_type); fflush(stderr);
         g_sdl_initialized = true;
     }
     set_status(graphics::window_starting);
@@ -45,16 +48,20 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
         "Graphics Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
         SDL_WINDOW_RESIZABLE); // | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_HIDDEN);
 
+    fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
+
     SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
     m_pixel_format = find_pixel_format(window_surface);
 
     SDL_Event event;
     bool quit = false;
+    fprintf(stderr, "SDL Entering event loop\n"); fflush(stderr);
     while (!quit) {
         int event_status = SDL_WaitEvent(&event);
         if (event_status == 0) {
             break;
         }
+        fprintf(stderr, "SDL event: %d\n", event.type); fflush(stderr);
         switch (event.type) {
         case SDL_QUIT:
             quit = true;
@@ -63,7 +70,9 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
             if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
                 // m_window_surface.update_window_area();
                 set_status(graphics::window_running);
+                fprintf(stderr, "SDL window event SHOWN: %d\n", event.window.event); fflush(stderr);
             } else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                fprintf(stderr, "SDL window event RESIZED: %d\n", event.window.event); fflush(stderr);
                 unsigned width = event.window.data1, height = event.window.data2;
                 // TODO: check if we need to store m_width and m_height.
                 if (width != m_width || height != m_height) {
@@ -73,8 +82,10 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
                     m_window_surface.render();
                 }
             } else if (event.window.event == SDL_WINDOWEVENT_EXPOSED) {
+                fprintf(stderr, "SDL window event EXPOSED: %d\n", event.window.event); fflush(stderr);
                 m_window_surface.update_window_area();
             } else if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                fprintf(stderr, "SDL window event CLOSE: %d\n", event.window.event); fflush(stderr);
                 quit = true;
             } else {
                 fprintf(stderr, "SDL window event UNKNOWN: %d\n", event.window.event); fflush(stderr);
@@ -82,6 +93,7 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
             break;
         default:
             if (event.type == g_update_event_type) {
+                fprintf(stderr, "SDL UPDATE REGION EVENT\n"); fflush(stderr);
                 if (!m_update_notify.completed) {
                     m_window_surface.slot_refresh(m_update_notify.plot_index);
                     m_update_notify.notify();
@@ -100,6 +112,8 @@ void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i
 
     SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
     Uint8 *window_pixels = (Uint8 *) window_surface->pixels;
+
+    fprintf(stderr, "window surface pixels: %p\n", window_pixels); fflush(stderr);
 
     rendering_buffer dst_view;
     // FIXME: we may need to provide a negative stride and adjust the start buffer's pointer. See
