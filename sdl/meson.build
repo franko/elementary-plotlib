@@ -1,4 +1,4 @@
-sdl_dep = dependency('sdl2')
+sdl_dep = dependency('sdl2', method: 'config-tool')
 
 dl_library = cc.find_library('dl', required: false)
 

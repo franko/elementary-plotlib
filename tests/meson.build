@@ -63,18 +63,20 @@ if enable_fox
     endforeach
 endif
 
-executable('lua-run', 'lua-run.cpp',
-    include_directories: libelem_include,
-    dependencies: [libelem_dep, sol_dep, lua_dep],
-    cpp_args: libelem_cflags,
-    link_with: [libelem_win, libelem_lua, libelem],
-    gui_app: false
-)
+if enable_lua
+    executable('lua-run', 'lua-run.cpp',
+        include_directories: libelem_include,
+        dependencies: [libelem_dep, sol_dep, lua_dep],
+        cpp_args: libelem_cflags,
+        link_with: [libelem_win, libelem_lua, libelem],
+        gui_app: false
+    )
 
-executable('lua-run-c', 'lua-run-c.c',
-    include_directories: libelem_include,
-    dependencies: [libelem_dep, sol_dep, lua_dep],
-    cpp_args: libelem_cflags,
-    link_with: [libelem_win, libelem_lua, libelem],
-    gui_app: false
-)
+    executable('lua-run-c', 'lua-run-c.c',
+        include_directories: libelem_include,
+        dependencies: [libelem_dep, sol_dep, lua_dep],
+        cpp_args: libelem_cflags,
+        link_with: [libelem_win, libelem_lua, libelem],
+        gui_app: false
+    )
+endif
