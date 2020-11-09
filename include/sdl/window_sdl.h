@@ -31,8 +31,8 @@ private:
     bool send_update_region_event();
     bool send_close_window_event();
 
-    unsigned m_width;
-    unsigned m_height;
+    int m_width;
+    int m_height;
     SDL_Window *m_window;
     agg::pix_format_e m_pixel_format;
     str m_caption;

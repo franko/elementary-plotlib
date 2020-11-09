@@ -50,9 +50,6 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
 
     fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
 
-    SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-    m_pixel_format = find_pixel_format(window_surface);
-
     SDL_Event event;
     bool quit = false;
     fprintf(stderr, "SDL Entering event loop\n"); fflush(stderr);
@@ -69,11 +66,23 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
         case SDL_WINDOWEVENT:
             if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
                 // m_window_surface.update_window_area();
-                set_status(graphics::window_running);
                 fprintf(stderr, "SDL window event SHOWN: %d\n", event.window.event); fflush(stderr);
+                SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
+                // TODO: check if we need to store m_width and m_height.
+                fprintf(stderr, "width: %d height: %d\n", window_surface->w, window_surface->h); fflush(stderr);
+                if (window_surface->w != m_width || window_surface->h != m_height) {
+                    m_pixel_format = find_pixel_format(window_surface);
+                    m_window_surface.resize(window_surface->w, window_surface->h);
+                    m_width = window_surface->w;
+                    m_height = window_surface->h;
+                    m_window_surface.render();
+                    m_window_surface.update_window_area();
+                    // SDL_UpdateWindowSurface(m_window);
+                }
+                set_status(graphics::window_running);
             } else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                 fprintf(stderr, "SDL window event RESIZED: %d\n", event.window.event); fflush(stderr);
-                unsigned width = event.window.data1, height = event.window.data2;
+                int width = event.window.data1, height = event.window.data2;
                 // TODO: check if we need to store m_width and m_height.
                 if (width != m_width || height != m_height) {
                     m_window_surface.resize(width, height);
