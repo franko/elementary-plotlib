@@ -8,7 +8,6 @@ struct window_create_message {
     unsigned width;
     unsigned height;
     unsigned flags;
-    window_close_callback *close_callback; // FIXME: remove callback from here.
 };
 
 /* Modeled after update_window_notify. Consider merge them in
@@ -22,9 +21,9 @@ struct window_create_notify {
 
     window_create_notify(): completed(true) { }
 
-    void start(const char *caption, unsigned width, unsigned height, unsigned flags, window_close_callback *close_callback) {
+    void start(const char *caption, unsigned width, unsigned height, unsigned flags) {
         completed = false;
-        message = window_create_message{caption, width, height, flags, close_callback};
+        message = window_create_message{caption, width, height, flags};
         new_window = nullptr;
     }
 

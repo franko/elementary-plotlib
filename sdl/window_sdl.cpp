@@ -170,7 +170,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
         g_sdl_initialized = true;
     }
     set_status(graphics::window_starting);
-    m_window = send_create_window_event(m_caption.cstr(), width, height, flags, callback);
+    m_window = send_create_window_event(m_caption.cstr(), width, height, flags);
     fprintf(stderr, "SDL window create received: %p\n", m_window); fflush(stderr);
     register_window(SDL_GetWindowID(m_window), callback);
 }
@@ -222,14 +222,14 @@ bool window_sdl::send_update_region_event() {
     return false;
 }
 
-SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned width, unsigned height, unsigned flags, window_close_callback *close_callback) {
+SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned width, unsigned height, unsigned flags) {
     SDL_Event event;
     SDL_zero(event);
     event.user.code = kCreateWindow;
     event.type = window_sdl::g_user_event_type;
     window_create_notify create;
     event.user.data1 = (void *) &create;
-    create.start(caption, width, height, flags, close_callback);
+    create.start(caption, width, height, flags);
     fprintf(stderr, "sending create window envent\n"); fflush(stderr);
     if (SDL_PushEvent(&event) >= 0) {
         fprintf(stderr, "waiting create window\n"); fflush(stderr);

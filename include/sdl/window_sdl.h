@@ -27,8 +27,6 @@ class window_sdl : public graphics::display_window_status {
 public:
     window_sdl(graphics::window_surface& window_surface);
 
-    // void start_blocking(unsigned width, unsigned height, unsigned flags);
-
     void start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback);
     bool send_request(graphics::window_request request_type, int plot_index) override;
     void update_region(const graphics::image& img, const agg::rect_i& r) override;
@@ -39,7 +37,7 @@ private:
 
     bool send_update_region_event();
     bool send_close_window_event();
-    SDL_Window *send_create_window_event(const char *caption, unsigned w, unsigned h, unsigned flags, window_close_callback *close_callback);
+    SDL_Window *send_create_window_event(const char *caption, unsigned w, unsigned h, unsigned flags);
 
     void register_window(Uint32 window_id, window_close_callback *close_callback);
     void unregister_window();
