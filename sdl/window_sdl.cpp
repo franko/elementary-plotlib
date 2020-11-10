@@ -1,11 +1,9 @@
 #include <stdint.h>
-#include <unistd.h>
 
 #include "sdl/window_sdl.h"
 
 bool window_sdl::g_sdl_initialized = false;
-Uint32 window_sdl::g_update_event_type = -1;
-// std::thread window_sdl::g_event_thread;
+Uint32 window_sdl::g_user_event_type = -1;
 std::mutex window_sdl::g_register_mutex;
 agg::pod_bvector<window_entry> window_sdl::g_window_entries;
 
@@ -53,11 +51,11 @@ void window_sdl::process_window_event(SDL_Event *event) {
         m_window_surface.update_window_area();
     } else if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
         fprintf(stderr, "SDL window event CLOSE: %d\n", event->window.event); fflush(stderr);
+        SDL_DestroyWindow(m_window);
         unregister_window();
     } else {
         fprintf(stderr, "SDL window event UNKNOWN: %d\n", event->window.event); fflush(stderr);
     }
-
 }
 
 void window_sdl::process_user_event(SDL_Event *event) {
@@ -94,12 +92,13 @@ void window_sdl::dispatch_sdl_user_event(SDL_Event *event) {
     g_register_mutex.unlock();
 }
 
-void window_sdl::event_loop() {
+void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     fprintf(stderr, "SDL initialization\n"); fflush(stderr);
     SDL_Init(SDL_INIT_VIDEO);
     fprintf(stderr, "SDL Register Event\n"); fflush(stderr);
-    g_update_event_type = SDL_RegisterEvents(1);
-    if (g_update_event_type == ((Uint32)-1)) {
+    g_user_event_type = SDL_RegisterEvents(1);
+    initialization->set(kTaskComplete);
+    if (g_user_event_type == ((Uint32)-1)) {
         return;
     }
 
@@ -118,9 +117,10 @@ void window_sdl::event_loop() {
             break;
         case SDL_WINDOWEVENT:
             window_sdl::dispatch_sdl_window_event(&event);
+            fprintf(stderr, "done dispatch_sdl_window_event\n"); fflush(stderr);
             break;
         default:
-            if (event.type == window_sdl::g_update_event_type) {
+            if (event.type == window_sdl::g_user_event_type) {
                 if (event.user.code == kUpdateRegion) {
                     window_sdl::dispatch_sdl_user_event(&event);
                 } else if (event.user.code == kCreateWindow) {
@@ -149,13 +149,12 @@ void window_sdl::unregister_window() {
     for (unsigned i = 0; i < g_window_entries.size(); i++) {
         window_entry& we = g_window_entries[i];
         if (we.window == this) {
-            g_register_mutex.unlock();
             we.window = nullptr;
             we.window_id = -1;
             we.close_callback->execute();
             delete we.close_callback;
             we.close_callback = nullptr;
-            return;
+            break;
         }
     }
     g_register_mutex.unlock();
@@ -163,12 +162,12 @@ void window_sdl::unregister_window() {
 
 void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
     if (!g_sdl_initialized) {
-        std::thread x_event_thread(window_sdl::event_loop);
-        x_event_thread.detach();
-        fprintf(stderr, "SDL Register Event done: %d\n", g_update_event_type); fflush(stderr);
+        status_notifier<task_status> initialization;
+        std::thread events_thread(window_sdl::event_loop, &initialization);
+        events_thread.detach();
+        initialization.wait_for_status(kTaskComplete);
+        fprintf(stderr, "SDL Register Event done: %d\n", g_user_event_type); fflush(stderr);
         g_sdl_initialized = true;
-        // FIXME: implement proper syncronization.
-        sleep(2);
     }
     set_status(graphics::window_starting);
     m_window = send_create_window_event(m_caption.cstr(), width, height, flags, callback);
@@ -179,7 +178,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
     // We may consider using the function SDL_CreateRGBSurfaceWithFormatFrom to wrap
     // the pixel data from the image and use SDL_BlitSurface to blit the pixels.
-    // Unfortunately the convention for the y is opposite and AFAIK it cannot work. 
+    // Unfortunately the convention for the y is opposite and AFAIK it cannot work.
     rendering_buffer_ro src_view;
     rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
 
@@ -216,7 +215,7 @@ bool window_sdl::send_update_region_event() {
     SDL_zero(event);
     event.user.code = kUpdateRegion;
     event.user.data1 = (void *) (intptr_t) SDL_GetWindowID(m_window);
-    event.type = window_sdl::g_update_event_type;
+    event.type = window_sdl::g_user_event_type;
     if (status() == graphics::window_running) {
         return (SDL_PushEvent(&event) >= 0);
     }
@@ -227,7 +226,7 @@ SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned w
     SDL_Event event;
     SDL_zero(event);
     event.user.code = kCreateWindow;
-    event.type = window_sdl::g_update_event_type;
+    event.type = window_sdl::g_user_event_type;
     window_create_notify create;
     event.user.data1 = (void *) &create;
     create.start(caption, width, height, flags, close_callback);
