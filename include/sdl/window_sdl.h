@@ -45,8 +45,7 @@ private:
     void process_user_event(SDL_Event *event);
 
     static void event_loop(status_notifier<task_status> *initialization);
-    static void dispatch_sdl_window_event(SDL_Event *event);
-    static void dispatch_sdl_user_event(SDL_Event *event);
+    static window_sdl *select_window_for_event(SDL_Event *event);
 
     SDL_Window *m_window;
     agg::pix_format_e m_pixel_format;

@@ -66,30 +66,17 @@ void window_sdl::process_user_event(SDL_Event *event) {
     }
 }
 
-void window_sdl::dispatch_sdl_window_event(SDL_Event *event) {
+window_sdl *window_sdl::select_window_for_event(SDL_Event *event) {
     g_register_mutex.lock();
     for (unsigned i = 0; i < g_window_entries.size(); i++) {
         window_entry& we = g_window_entries[i];
         if (we.window && we.window_id == event->window.windowID) {
             g_register_mutex.unlock();
-            we.window->process_window_event(event);
-            return;
+            return we.window;
         }
     }
     g_register_mutex.unlock();
-}
-
-void window_sdl::dispatch_sdl_user_event(SDL_Event *event) {
-    g_register_mutex.lock();
-    for (unsigned i = 0; i < g_window_entries.size(); i++) {
-        window_entry& we = g_window_entries[i];
-        if (we.window && we.window_id == (intptr_t) event->user.data1) {
-            g_register_mutex.unlock();
-            we.window->process_user_event(event);
-            return;
-        }
-    }
-    g_register_mutex.unlock();
+    return nullptr;
 }
 
 void window_sdl::event_loop(status_notifier<task_status> *initialization) {
@@ -116,13 +103,21 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
             quit = true;
             break;
         case SDL_WINDOWEVENT:
-            window_sdl::dispatch_sdl_window_event(&event);
-            fprintf(stderr, "done dispatch_sdl_window_event\n"); fflush(stderr);
-            break;
+            {
+                window_sdl *window = select_window_for_event(&event);
+                if (window) {
+                    window->process_window_event(&event);
+                }
+                fprintf(stderr, "done dispatch_sdl_window_event\n"); fflush(stderr);
+                break;
+            }
         default:
             if (event.type == window_sdl::g_user_event_type) {
                 if (event.user.code == kUpdateRegion) {
-                    window_sdl::dispatch_sdl_user_event(&event);
+                    window_sdl *window = select_window_for_event(&event);
+                    if (window) {
+                        window->process_user_event(&event);
+                    }
                 } else if (event.user.code == kCreateWindow) {
                     // Note: we may use the flag SDL_WINDOW_ALLOW_HIGHDPI.
                     window_create_notify *create = (window_create_notify *) event.user.data1;
