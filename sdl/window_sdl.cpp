@@ -126,25 +126,30 @@ void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i
     SDL_UpdateWindowSurfaceRects(m_window, &rect, 1);
 }
 
+/* When querying about the status of the window in the method below and
+   in send_close_window_event we should use a mutex to ensure that the state of
+   the window doesn't change between the query and the SDL_PushEvent.
+   If this case the mutex should be appropriately locked/unlocked in the event loop.
+   We do not use the mutex for staty simple and because SDL_PushEvent is
+   thread safe and we consider pushing an event for a window not yet started or
+   closed as a benign error. */
 bool window_sdl::send_update_region_event() {
+    SDL_Event event;
+    SDL_zero(event);
+    event.type = window_sdl::g_update_event_type;
     if (status() == graphics::window_running) {
-        SDL_Event event;
-        SDL_zero(event);
-        event.type = window_sdl::g_update_event_type;
-        SDL_PushEvent(&event);
-        return true;
+        return (SDL_PushEvent(&event) >= 0);
     }
     return false;
 }
 
 bool window_sdl::send_close_window_event() {
+    SDL_Event event;
+    SDL_zero(event);
+    event.type = SDL_QUIT;
     auto current_status = status();
     if (current_status == graphics::window_running || current_status == graphics::window_starting) {
-        SDL_Event event;
-        SDL_zero(event);
-        event.type = SDL_QUIT;
-        SDL_PushEvent(&event);
-        return true;
+        return (SDL_PushEvent(&event) >= 0);
     }
     return false;
 }
