@@ -15,21 +15,16 @@ window_sdl::~window_sdl() {
 static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
     fprintf(stderr, "SDL pixel format: %d %s\n", surface->format->format, SDL_GetPixelFormatName(surface->format->format)); fflush(stderr);
     switch (surface->format->format) {
-        // FIXME: add other cases of interest.
-        // consider add all cases treated in rendering_buffer_utils.h, function rendering_buffer_copy.
-        case SDL_PIXELFORMAT_BGR24:
+        case SDL_PIXELFORMAT_ABGR8888: // equal to SDL_PIXELFORMAT_RGBA32
         case SDL_PIXELFORMAT_BGR888:
-            return agg::pix_format_bgra32;
-        case SDL_PIXELFORMAT_RGB24:
-        case SDL_PIXELFORMAT_RGB888:
-            // FIXME: bgra32 seems to work below but I do not understand why.
-            return agg::pix_format_bgra32;
-        case SDL_PIXELFORMAT_BGRA32:
-        case SDL_PIXELFORMAT_BGRA8888:
-            return agg::pix_format_bgra32;
-        case SDL_PIXELFORMAT_RGBA32:
-        case SDL_PIXELFORMAT_RGBA8888:
             return agg::pix_format_rgba32;
+        case SDL_PIXELFORMAT_ARGB8888: // equal to SDL_PIXELFORMAT_BGRA32
+        case SDL_PIXELFORMAT_RGB888:
+            return agg::pix_format_bgra32;
+        case SDL_PIXELFORMAT_BGR24:
+            return agg::pix_format_bgr24;
+        case SDL_PIXELFORMAT_RGB24:
+            return agg::pix_format_rgb24;
         default:
             break;
     }
