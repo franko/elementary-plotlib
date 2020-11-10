@@ -13,16 +13,22 @@ window_sdl::~window_sdl() {
 }
 
 static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
+    fprintf(stderr, "SDL pixel format: %d %s\n", surface->format->format, SDL_GetPixelFormatName(surface->format->format)); fflush(stderr);
     switch (surface->format->format) {
         // FIXME: add other cases of interest.
         // consider add all cases treated in rendering_buffer_utils.h, function rendering_buffer_copy.
         case SDL_PIXELFORMAT_BGR24:
-            return agg::pix_format_bgr24;
+        case SDL_PIXELFORMAT_BGR888:
+            return agg::pix_format_bgra32;
         case SDL_PIXELFORMAT_RGB24:
-            return agg::pix_format_rgb24;
+        case SDL_PIXELFORMAT_RGB888:
+            // FIXME: bgra32 seems to work below but I do not understand why.
+            return agg::pix_format_bgra32;
         case SDL_PIXELFORMAT_BGRA32:
+        case SDL_PIXELFORMAT_BGRA8888:
             return agg::pix_format_bgra32;
         case SDL_PIXELFORMAT_RGBA32:
+        case SDL_PIXELFORMAT_RGBA8888:
             return agg::pix_format_rgba32;
         default:
             break;
@@ -114,24 +120,26 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
 }
 
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
-    const unsigned rect_width = r.x2 - r.x1, rect_height = r.y2 - r.y1;
-
+    // We may consider using the function SDL_CreateRGBSurfaceWithFormatFrom to wrap
+    // the pixel data from the image and use SDL_BlitSurface to blit the pixels.
+    // Unfortunately the convention for the y is opposite and AFAIK it cannot work. 
     rendering_buffer_ro src_view;
     rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
 
     SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-    Uint8 *window_pixels = (Uint8 *) window_surface->pixels;
+    Uint8 *pixels = (Uint8 *) window_surface->pixels;
 
-    fprintf(stderr, "window surface pixels: %p\n", window_pixels); fflush(stderr);
+    fprintf(stderr, "rect: (%d,%d) (%d,%d)\n", r.x1, r.y1, r.x2, r.y2);
+    fprintf(stderr, "window surface pixels: %p bpp: %d\n", pixels, window_surface->format->BytesPerPixel); fflush(stderr);
 
+    const int window_bpp = window_surface->format->BytesPerPixel;
+    rendering_buffer dst(pixels, window_surface->w, window_surface->h, -window_surface->w * window_bpp);
     rendering_buffer dst_view;
-    // FIXME: we may need to provide a negative stride and adjust the start buffer's pointer. See
-    // rendering_buffer_get_const_view.
-    dst_view.attach(window_pixels + (r.x1 + r.y1 * window_surface->w) * window_surface->format->BytesPerPixel, rect_width, rect_height, window_surface->w * window_surface->format->BytesPerPixel);
+    rendering_buffer_get_view(dst_view, dst, r, window_bpp);
 
-    // SDL_BlitSurface(image, NULL, screen, NULL);
     rendering_buffer_copy(dst_view, m_pixel_format, src_view, (agg::pix_format_e) graphics::pixel_format);
 
+    // FIXME: use SDL_UpdateWindowSurfaceRects instead.
     SDL_UpdateWindowSurface(m_window);
 }
 
