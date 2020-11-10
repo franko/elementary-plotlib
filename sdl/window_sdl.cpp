@@ -66,11 +66,11 @@ void window_sdl::process_user_event(SDL_Event *event) {
     }
 }
 
-window_sdl *window_sdl::select_window_for_event(SDL_Event *event) {
+window_sdl *window_sdl::select_on_window_id(Uint32 window_id) {
     g_register_mutex.lock();
     for (unsigned i = 0; i < g_window_entries.size(); i++) {
         window_entry& we = g_window_entries[i];
-        if (we.window && we.window_id == event->window.windowID) {
+        if (we.window && we.window_id == window_id) {
             g_register_mutex.unlock();
             return we.window;
         }
@@ -104,7 +104,7 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
             break;
         case SDL_WINDOWEVENT:
             {
-                window_sdl *window = select_window_for_event(&event);
+                window_sdl *window = select_on_window_id(event.window.windowID);
                 if (window) {
                     window->process_window_event(&event);
                 }
@@ -114,7 +114,7 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
         default:
             if (event.type == window_sdl::g_user_event_type) {
                 if (event.user.code == kUpdateRegion) {
-                    window_sdl *window = select_window_for_event(&event);
+                    window_sdl *window = select_on_window_id((intptr_t) event.user.data1);
                     if (window) {
                         window->process_user_event(&event);
                     }
@@ -168,6 +168,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
     m_window = send_create_window_event(m_caption.cstr(), width, height, flags);
     fprintf(stderr, "SDL window create received: %p\n", m_window); fflush(stderr);
     register_window(SDL_GetWindowID(m_window), callback);
+    wait_for_status(graphics::window_running);
 }
 
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
@@ -208,9 +209,9 @@ void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i
 bool window_sdl::send_update_region_event() {
     SDL_Event event;
     SDL_zero(event);
+    event.type = window_sdl::g_user_event_type;
     event.user.code = kUpdateRegion;
     event.user.data1 = (void *) (intptr_t) SDL_GetWindowID(m_window);
-    event.type = window_sdl::g_user_event_type;
     if (status() == graphics::window_running) {
         return (SDL_PushEvent(&event) >= 0);
     }
@@ -220,8 +221,8 @@ bool window_sdl::send_update_region_event() {
 SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned width, unsigned height, unsigned flags) {
     SDL_Event event;
     SDL_zero(event);
-    event.user.code = kCreateWindow;
     event.type = window_sdl::g_user_event_type;
+    event.user.code = kCreateWindow;
     window_create_notify create;
     event.user.data1 = (void *) &create;
     create.start(caption, width, height, flags);
