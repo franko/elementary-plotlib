@@ -9,6 +9,7 @@
 #include "strpp.h"
 #include "update_region_notify.h"
 #include "window_close_callback.h"
+#include "window_create_notify.h"
 #include "window_surface.h"
 
 class window_sdl;
@@ -20,6 +21,7 @@ struct window_entry {
 };
 
 class window_sdl : public graphics::display_window_status {
+    enum { kUpdateRegion, kCreateWindow };
 public:
     window_sdl(graphics::window_surface& window_surface);
 
@@ -36,6 +38,7 @@ private:
 
     bool send_update_region_event();
     bool send_close_window_event();
+    SDL_Window *send_create_window_event(const char *caption, unsigned w, unsigned h, unsigned flags, window_close_callback *close_callback);
 
     void register_window(Uint32 window_id, window_close_callback *close_callback);
     void unregister_window();
@@ -55,6 +58,6 @@ private:
     // static std::thread g_event_thread;
     static std::mutex g_register_mutex;
     static agg::pod_bvector<window_entry> g_window_entries;
-    static Uint32 g_update_event_type;
+    static Uint32 g_update_event_type; // FIXME: change name.
     static bool g_sdl_initialized;
 };
