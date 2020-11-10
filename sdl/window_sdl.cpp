@@ -2,6 +2,9 @@
 
 bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_update_event_type = -1;
+// std::thread window_sdl::g_event_thread;
+std::mutex window_sdl::g_register_mutex;
+agg::pod_bvector<window_entry> window_sdl::g_window_entries;
 
 window_sdl::window_sdl(graphics::window_surface& window_surface):
     m_window(nullptr), m_pixel_format(agg::pix_format_undefined),
@@ -28,26 +31,67 @@ static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
     return agg::pix_format_undefined;
 }
 
-void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags) {
-    if (!g_sdl_initialized) {
-        fprintf(stderr, "SDL initialization\n"); fflush(stderr);
-        SDL_Init(SDL_INIT_VIDEO);
-        fprintf(stderr, "SDL Register Event\n"); fflush(stderr);
-        g_update_event_type = SDL_RegisterEvents(1);
-        if (g_update_event_type == ((Uint32)-1)) {
+void window_sdl::process_window_event(SDL_Event *event) {
+    if (event->window.event == SDL_WINDOWEVENT_SHOWN) {
+        fprintf(stderr, "SDL window event SHOWN: %d\n", event->window.event); fflush(stderr);
+        SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
+        fprintf(stderr, "width: %d height: %d\n", window_surface->w, window_surface->h); fflush(stderr);
+        m_pixel_format = find_pixel_format(window_surface);
+        m_window_surface.resize(window_surface->w, window_surface->h);
+        m_window_surface.render();
+        set_status(graphics::window_running);
+    } else if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
+        fprintf(stderr, "SDL window event RESIZED: %d\n", event->window.event); fflush(stderr);
+        const int width = event->window.data1, height = event->window.data2;
+        m_window_surface.resize(width, height);
+        m_window_surface.render();
+    } else if (event->window.event == SDL_WINDOWEVENT_EXPOSED) {
+        fprintf(stderr, "SDL window event EXPOSED: %d\n", event->window.event); fflush(stderr);
+        m_window_surface.update_window_area();
+    } else if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
+        fprintf(stderr, "SDL window event CLOSE: %d\n", event->window.event); fflush(stderr);
+        unregister_window();
+    } else {
+        fprintf(stderr, "SDL window event UNKNOWN: %d\n", event->window.event); fflush(stderr);
+    }
+
+}
+
+void window_sdl::process_user_event(SDL_Event *event) {
+    fprintf(stderr, "SDL UPDATE REGION EVENT\n"); fflush(stderr);
+    if (!m_update_notify.completed) {
+        m_window_surface.slot_refresh(m_update_notify.plot_index);
+        m_update_notify.notify();
+    }
+}
+
+void window_sdl::dispatch_sdl_window_event(SDL_Event *event) {
+    g_register_mutex.lock();
+    for (unsigned i = 0; i < g_window_entries.size(); i++) {
+        window_entry& we = g_window_entries[i];
+        if (we.window && we.window_id == event->window.windowID) {
+            g_register_mutex.unlock();
+            we.window->process_window_event(event);
             return;
         }
-        fprintf(stderr, "SDL Register Event done: %d\n", g_update_event_type); fflush(stderr);
-        g_sdl_initialized = true;
     }
-    set_status(graphics::window_starting);
-    // Note: we may use the flag SDL_WINDOW_ALLOW_HIGHDPI.
-    m_window = SDL_CreateWindow(
-        "Graphics Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
-        flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
+    g_register_mutex.unlock();
+}
 
-    fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
+void window_sdl::dispatch_sdl_user_event(SDL_Event *event) {
+    g_register_mutex.lock();
+    for (unsigned i = 0; i < g_window_entries.size(); i++) {
+        window_entry& we = g_window_entries[i];
+        if (we.window && we.window_id == (Uint32) event->user.data1) {
+            g_register_mutex.unlock();
+            we.window->process_user_event(event);
+            return;
+        }
+    }
+    g_register_mutex.unlock();
+}
 
+void window_sdl::event_loop() {
     SDL_Event event;
     bool quit = false;
     fprintf(stderr, "SDL Entering event loop\n"); fflush(stderr);
@@ -62,40 +106,62 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
             quit = true;
             break;
         case SDL_WINDOWEVENT:
-            if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
-                fprintf(stderr, "SDL window event SHOWN: %d\n", event.window.event); fflush(stderr);
-                SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-                fprintf(stderr, "width: %d height: %d\n", window_surface->w, window_surface->h); fflush(stderr);
-                m_pixel_format = find_pixel_format(window_surface);
-                m_window_surface.resize(window_surface->w, window_surface->h);
-                m_window_surface.render();
-                set_status(graphics::window_running);
-            } else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                fprintf(stderr, "SDL window event RESIZED: %d\n", event.window.event); fflush(stderr);
-                const int width = event.window.data1, height = event.window.data2;
-                m_window_surface.resize(width, height);
-                m_window_surface.render();
-            } else if (event.window.event == SDL_WINDOWEVENT_EXPOSED) {
-                fprintf(stderr, "SDL window event EXPOSED: %d\n", event.window.event); fflush(stderr);
-                m_window_surface.update_window_area();
-            } else if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
-                fprintf(stderr, "SDL window event CLOSE: %d\n", event.window.event); fflush(stderr);
-                quit = true;
-            } else {
-                fprintf(stderr, "SDL window event UNKNOWN: %d\n", event.window.event); fflush(stderr);
-            }
+            window_sdl::dispatch_sdl_window_event(&event);
             break;
         default:
-            if (event.type == g_update_event_type) {
-                fprintf(stderr, "SDL UPDATE REGION EVENT\n"); fflush(stderr);
-                if (!m_update_notify.completed) {
-                    m_window_surface.slot_refresh(m_update_notify.plot_index);
-                    m_update_notify.notify();
-                }
+            if (event.type == window_sdl::g_update_event_type) {
+                window_sdl::dispatch_sdl_user_event(&event);
             }
         }
     }
-    set_status(graphics::window_closed);
+    // FIXME: close all windows
+}
+
+void window_sdl::register_window(Uint32 window_id, window_close_callback *close_callback) {
+    g_register_mutex.lock();
+    g_window_entries.add(window_entry{this, window_id, close_callback});
+    g_register_mutex.unlock();
+}
+
+void window_sdl::unregister_window() {
+    g_register_mutex.lock();
+    for (unsigned i = 0; i < g_window_entries.size(); i++) {
+        window_entry& we = g_window_entries[i];
+        if (we.window == this) {
+            g_register_mutex.unlock();
+            we.window = nullptr;
+            we.window_id = -1;
+            we.close_callback->execute();
+            delete we.close_callback;
+            we.close_callback = nullptr;
+            return;
+        }
+    }
+    g_register_mutex.unlock();
+}
+
+void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
+    if (!g_sdl_initialized) {
+        fprintf(stderr, "SDL initialization\n"); fflush(stderr);
+        SDL_Init(SDL_INIT_VIDEO);
+        fprintf(stderr, "SDL Register Event\n"); fflush(stderr);
+        g_update_event_type = SDL_RegisterEvents(1);
+        if (g_update_event_type == ((Uint32)-1)) {
+            return;
+        }
+        std::thread x_event_thread(window_sdl::event_loop);
+        x_event_thread.detach();
+        fprintf(stderr, "SDL Register Event done: %d\n", g_update_event_type); fflush(stderr);
+        g_sdl_initialized = true;
+    }
+    set_status(graphics::window_starting);
+    // Note: we may use the flag SDL_WINDOW_ALLOW_HIGHDPI.
+    Uint32 window_flags = (flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
+    m_window = SDL_CreateWindow(m_caption.cstr(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, window_flags);
+    register_window(SDL_GetWindowID(m_window), callback);
+    fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
+
+    // set_status(graphics::window_closed);
 }
 
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
@@ -136,6 +202,7 @@ void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i
 bool window_sdl::send_update_region_event() {
     SDL_Event event;
     SDL_zero(event);
+    event.user.data1 = (void *) SDL_GetWindowID(m_window);
     event.type = window_sdl::g_update_event_type;
     if (status() == graphics::window_running) {
         return (SDL_PushEvent(&event) >= 0);
@@ -146,6 +213,7 @@ bool window_sdl::send_update_region_event() {
 bool window_sdl::send_close_window_event() {
     SDL_Event event;
     SDL_zero(event);
+    event.user.data1 = (void *) SDL_GetWindowID(m_window);
     event.type = SDL_QUIT;
     auto current_status = status();
     if (current_status == graphics::window_running || current_status == graphics::window_starting) {
