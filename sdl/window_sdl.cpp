@@ -4,12 +4,9 @@ bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_update_event_type = -1;
 
 window_sdl::window_sdl(graphics::window_surface& window_surface):
-    m_width(0), m_height(0), m_window(nullptr), m_pixel_format(agg::pix_format_undefined),
+    m_window(nullptr), m_pixel_format(agg::pix_format_undefined),
     m_window_surface(window_surface)
 {
-}
-
-window_sdl::~window_sdl() {
 }
 
 static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
@@ -44,10 +41,10 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
         g_sdl_initialized = true;
     }
     set_status(graphics::window_starting);
-    // FIXME: manage flags for resizable window.
+    // Note: we may use the flag SDL_WINDOW_ALLOW_HIGHDPI.
     m_window = SDL_CreateWindow(
         "Graphics Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
-        SDL_WINDOW_RESIZABLE); // | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_HIDDEN);
+        flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
 
     fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
 
@@ -66,31 +63,18 @@ void window_sdl::start_blocking(unsigned width, unsigned height, unsigned flags)
             break;
         case SDL_WINDOWEVENT:
             if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
-                // m_window_surface.update_window_area();
                 fprintf(stderr, "SDL window event SHOWN: %d\n", event.window.event); fflush(stderr);
                 SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-                // TODO: check if we need to store m_width and m_height.
                 fprintf(stderr, "width: %d height: %d\n", window_surface->w, window_surface->h); fflush(stderr);
-                if (window_surface->w != m_width || window_surface->h != m_height) {
-                    m_pixel_format = find_pixel_format(window_surface);
-                    m_window_surface.resize(window_surface->w, window_surface->h);
-                    m_width = window_surface->w;
-                    m_height = window_surface->h;
-                    m_window_surface.render();
-                    m_window_surface.update_window_area();
-                    // SDL_UpdateWindowSurface(m_window);
-                }
+                m_pixel_format = find_pixel_format(window_surface);
+                m_window_surface.resize(window_surface->w, window_surface->h);
+                m_window_surface.render();
                 set_status(graphics::window_running);
             } else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                 fprintf(stderr, "SDL window event RESIZED: %d\n", event.window.event); fflush(stderr);
-                int width = event.window.data1, height = event.window.data2;
-                // TODO: check if we need to store m_width and m_height.
-                if (width != m_width || height != m_height) {
-                    m_window_surface.resize(width, height);
-                    m_width = width;
-                    m_height = height;
-                    m_window_surface.render();
-                }
+                const int width = event.window.data1, height = event.window.data2;
+                m_window_surface.resize(width, height);
+                m_window_surface.render();
             } else if (event.window.event == SDL_WINDOWEVENT_EXPOSED) {
                 fprintf(stderr, "SDL window event EXPOSED: %d\n", event.window.event); fflush(stderr);
                 m_window_surface.update_window_area();
@@ -134,45 +118,52 @@ void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i
 
     rendering_buffer_copy(dst_view, m_pixel_format, src_view, (agg::pix_format_e) graphics::pixel_format);
 
-    // FIXME: use SDL_UpdateWindowSurfaceRects instead.
-    SDL_UpdateWindowSurface(m_window);
+    SDL_Rect rect;
+    rect.x = r.x1;
+    rect.y = window_surface->h - r.y2;
+    rect.w = r.x2 - r.x1;
+    rect.h = r.y2 - r.y1;
+    SDL_UpdateWindowSurfaceRects(m_window, &rect, 1);
 }
 
 bool window_sdl::send_update_region_event() {
-    SDL_Event event;
-    SDL_zero(event);
-    event.type = window_sdl::g_update_event_type;
-    SDL_PushEvent(&event);
-    return true;
+    if (status() == graphics::window_running) {
+        SDL_Event event;
+        SDL_zero(event);
+        event.type = window_sdl::g_update_event_type;
+        SDL_PushEvent(&event);
+        return true;
+    }
+    return false;
 }
 
 bool window_sdl::send_close_window_event() {
-    SDL_Event event;
-    SDL_zero(event);
-    event.type = SDL_QUIT;
-    SDL_PushEvent(&event);
-    return true;
+    auto current_status = status();
+    if (current_status == graphics::window_running || current_status == graphics::window_starting) {
+        SDL_Event event;
+        SDL_zero(event);
+        event.type = SDL_QUIT;
+        SDL_PushEvent(&event);
+        return true;
+    }
+    return false;
 }
 
 bool window_sdl::send_request(graphics::window_request request_type, int index) {
-    // lock();
     switch (request_type) {
     case graphics::window_request::update:
         m_update_notify.start(index);
         if (send_update_region_event()) {
             // Wait for the notification but only if the message was actually sent.
-            // unlock();
             m_update_notify.wait();
             return true;
         }
         break;
     case graphics::window_request::close:
         if (send_close_window_event()) {
-            // unlock();
-            // wait_for_status(graphics::window_closed);
+            wait_for_status(graphics::window_closed);
             return true;
         }
     }
-    // unlock();
     return false;
 }

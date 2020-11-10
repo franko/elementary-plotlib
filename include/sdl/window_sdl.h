@@ -9,7 +9,6 @@
 class window_sdl : public graphics::display_window_status {
 public:
     window_sdl(graphics::window_surface& window_surface);
-    ~window_sdl();
 
     void start_blocking(unsigned width, unsigned height, unsigned flags);
 
@@ -31,8 +30,6 @@ private:
     bool send_update_region_event();
     bool send_close_window_event();
 
-    int m_width;
-    int m_height;
     SDL_Window *m_window;
     agg::pix_format_e m_pixel_format;
     str m_caption;
