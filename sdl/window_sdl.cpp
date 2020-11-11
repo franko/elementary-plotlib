@@ -6,6 +6,7 @@ bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_user_event_type = -1;
 std::mutex window_sdl::g_register_mutex;
 agg::pod_bvector<window_entry> window_sdl::g_window_entries;
+status_notifier<wake_status> window_sdl::g_events_thread_status;
 
 window_sdl::window_sdl(graphics::window_surface& window_surface):
     m_window(nullptr), m_pixel_format(agg::pix_format_undefined),
@@ -80,6 +81,16 @@ window_sdl *window_sdl::select_on_window_id(Uint32 window_id) {
     return nullptr;
 }
 
+int window_sdl::get_windows_number() {
+    int count = 0;
+    g_register_mutex.lock();
+    for (unsigned i = 0; i < g_window_entries.size(); i++) {
+        if (g_window_entries[i].window) count++;
+    }
+    g_register_mutex.unlock();
+    return count;
+}
+
 void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     fprintf(stderr, "SDL initialization\n"); fflush(stderr);
     SDL_Init(SDL_INIT_VIDEO);
@@ -94,6 +105,13 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     bool quit = false;
     fprintf(stderr, "SDL Entering event loop\n"); fflush(stderr);
     while (!quit) {
+        int windows_number = get_windows_number();
+        if (false && windows_number == 0) {
+            fprintf(stderr, "Event loops going sleep\n"); fflush(stderr);
+            g_events_thread_status.set(kWaiting);
+            g_events_thread_status.wait_for_status(kWakeup);
+        }
+        fprintf(stderr, "Event loops waint event\n"); fflush(stderr);
         int event_status = SDL_WaitEvent(&event);
         if (event_status == 0) {
             break;
@@ -220,6 +238,7 @@ bool window_sdl::send_update_region_event() {
 }
 
 SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned width, unsigned height, unsigned flags) {
+    g_events_thread_status.set(kWakeup);
     SDL_Event event;
     SDL_zero(event);
     event.type = window_sdl::g_user_event_type;

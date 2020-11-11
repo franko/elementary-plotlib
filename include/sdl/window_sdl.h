@@ -21,6 +21,7 @@ struct window_entry {
 };
 
 enum task_status { kTaskRunning = 0, kTaskComplete };
+enum wake_status { kWaiting = 0, kWakeup };
 
 class window_sdl : public graphics::display_window_status {
     enum { kUpdateRegion, kCreateWindow };
@@ -46,6 +47,7 @@ private:
 
     static void event_loop(status_notifier<task_status> *initialization);
     static window_sdl *select_on_window_id(Uint32 window_id);
+    static int get_windows_number();
 
     SDL_Window *m_window;
     agg::pix_format_e m_pixel_format;
@@ -56,5 +58,6 @@ private:
     static std::mutex g_register_mutex;
     static agg::pod_bvector<window_entry> g_window_entries;
     static Uint32 g_user_event_type;
+    static status_notifier<wake_status> g_events_thread_status;
     static bool g_sdl_initialized;
 };
