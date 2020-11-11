@@ -141,7 +141,22 @@ void window_sdl::register_window(Uint32 window_id, window_close_callback *close_
     g_register_mutex.unlock();
 }
 
+void window_sdl::compact_window_register() {
+    const unsigned we_size = g_window_entries.size();
+    unsigned iw = 0;
+    for (unsigned ir = 0; ir < we_size; ir++) {
+        if (g_window_entries[ir].window) {
+            if (iw < ir) {
+                g_window_entries[iw] = g_window_entries[ir];
+            }
+            iw++;
+        }
+    }
+    g_window_entries.free_tail(iw);
+}
+
 void window_sdl::unregister_window() {
+    int empty_windows_number = 0;
     g_register_mutex.lock();
     for (unsigned i = 0; i < g_window_entries.size(); i++) {
         window_entry& we = g_window_entries[i];
@@ -153,6 +168,12 @@ void window_sdl::unregister_window() {
             we.close_callback = nullptr;
             break;
         }
+        if (!we.window) {
+            empty_windows_number++;
+        }
+    }
+    if (empty_windows_number >= 8) {
+        compact_window_register();
     }
     g_register_mutex.unlock();
 }
@@ -165,7 +186,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
         initialization.wait_for_status(kTaskComplete);
         if (!g_sdl_initialized) {
             fprintf(stderr, "error: unable to open window, cannot initialize SDL2.\n");
-            fflush(stderr);            
+            fflush(stderr);
             return;
         }
     }

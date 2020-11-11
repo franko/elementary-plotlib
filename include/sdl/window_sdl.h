@@ -47,6 +47,7 @@ private:
     static int initialize_sdl();
     static void event_loop(status_notifier<task_status> *initialization);
     static window_sdl *select_on_window_id(Uint32 window_id);
+    static void compact_window_register();
 
     SDL_Window *m_window;
     agg::pix_format_e m_pixel_format;
