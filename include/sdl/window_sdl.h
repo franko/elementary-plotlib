@@ -44,6 +44,7 @@ private:
     void process_window_event(SDL_Event *event);
     void process_user_event(SDL_Event *event);
 
+    static int initialize_sdl();
     static void event_loop(status_notifier<task_status> *initialization);
     static window_sdl *select_on_window_id(Uint32 window_id);
 

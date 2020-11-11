@@ -1,3 +1,6 @@
+#ifdef WIN32
+  #include <windows.h>
+#endif
 #include <stdint.h>
 
 #include "sdl/window_sdl.h"
@@ -80,16 +83,31 @@ window_sdl *window_sdl::select_on_window_id(Uint32 window_id) {
     return nullptr;
 }
 
-void window_sdl::event_loop(status_notifier<task_status> *initialization) {
+int window_sdl::initialize_sdl() {
+#ifdef WIN32
+    HINSTANCE lib = LoadLibrary("user32.dll");
+    int (*SetProcessDPIAware)() = (int (*)()) GetProcAddress(lib, "SetProcessDPIAware");
+    SetProcessDPIAware();
+#endif
     fprintf(stderr, "SDL initialization\n"); fflush(stderr);
-    SDL_Init(SDL_INIT_VIDEO);
+    if (SDL_Init(SDL_INIT_VIDEO)) {
+        return (-1);
+    }
     fprintf(stderr, "SDL Register Event\n"); fflush(stderr);
     g_user_event_type = SDL_RegisterEvents(1);
-    initialization->set(kTaskComplete);
     if (g_user_event_type == ((Uint32)-1)) {
+        return (-1);
+    }
+    g_sdl_initialized = true;
+    return 0;
+}
+
+void window_sdl::event_loop(status_notifier<task_status> *initialization) {
+    if (initialize_sdl()) {
+        initialization->set(kTaskComplete);
         return;
     }
-
+    initialization->set(kTaskComplete);
     SDL_Event event;
     bool quit = false;
     fprintf(stderr, "SDL Entering event loop\n"); fflush(stderr);
@@ -123,7 +141,7 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     // Note: we may use the flag SDL_WINDOW_ALLOW_HIGHDPI.
                     window_create_notify *create = (window_create_notify *) event.user.data1;
                     const window_create_message& message = create->message;
-                    Uint32 window_flags = (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
+                    Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
                     create->notify((void *) window);
                     fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
@@ -131,7 +149,6 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
             }
         }
     }
-    // FIXME: close all windows
 }
 
 void window_sdl::register_window(Uint32 window_id, window_close_callback *close_callback) {
@@ -162,8 +179,12 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
         std::thread events_thread(window_sdl::event_loop, &initialization);
         events_thread.detach();
         initialization.wait_for_status(kTaskComplete);
+        if (!g_sdl_initialized) {
+            fprintf(stderr, "error: unable to open window, cannot initialize SDL2.\n");
+            fflush(stderr);            
+            return;
+        }
         fprintf(stderr, "SDL Register Event done: %d\n", g_user_event_type); fflush(stderr);
-        g_sdl_initialized = true;
     }
     set_status(graphics::window_starting);
     m_window = send_create_window_event(m_caption.cstr(), width, height, flags);
