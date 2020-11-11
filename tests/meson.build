@@ -11,7 +11,7 @@ window_tests = [
     {'name': 'test-window-function', 'sources': 'test-window-function.cpp'},
     {'name': 'test-window-markers', 'sources': 'test-window-markers.cpp'},
     {'name': 'test-window-anim', 'sources': 'test-window-anim.cpp'},
-    # {'name': 'test-custom-render-pipeline', 'sources': 'test-custom-render-pipeline.cpp'},
+    {'name': 'test-custom-render-pipeline', 'sources': 'test-custom-render-pipeline.cpp'},
     {'name': 'test-window-outline', 'sources': 'test-window-outline.cpp'},
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
     {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},

@@ -2,9 +2,11 @@
 #include <random>
 
 #include "elem_plot.h"
-#include "window_platform_native.h"
+#include "elem_window.h"
+#include "global_elem_window_factory.h"
 #include "trans.h"
 #include "sg_path.h"
+#include "window_flags.h"
 
 /* This example demonstrate how to build a custom rendering pipeline by
    chaining objects and transforms. In this case we perform a dash transform
@@ -58,7 +60,7 @@ int main()
 {
     graphics::initialize_fonts();
 
-    elem_window_native win;
+    elem_window *win = global_elem_window_factory->create();
     elem_plot p(graphics::plot::show_units);
     p.set_limits({-0.7, -0.3, 0.7, 1.1});
 
@@ -81,9 +83,9 @@ int main()
 
     p.commit_pending_draw();
 
-    win.attach(&p, "");
-    win.start(640, 640, graphics::window_resize);
-    win.wait();
+    win->attach(&p, "");
+    win->start(640, 640, graphics::window_resize);
+    win->wait();
 
     return 0;
 }
