@@ -53,6 +53,7 @@ void window_sdl::process_window_event(SDL_Event *event) {
         fprintf(stderr, "SDL window event CLOSE: %d\n", event->window.event); fflush(stderr);
         SDL_DestroyWindow(m_window);
         unregister_window();
+        set_status(graphics::window_closed);
     } else {
         fprintf(stderr, "SDL window event UNKNOWN: %d\n", event->window.event); fflush(stderr);
     }
