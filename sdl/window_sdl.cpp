@@ -17,7 +17,6 @@ window_sdl::window_sdl(graphics::window_surface& window_surface):
 }
 
 static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
-    fprintf(stderr, "SDL pixel format: %d %s\n", surface->format->format, SDL_GetPixelFormatName(surface->format->format)); fflush(stderr);
     switch (surface->format->format) {
         case SDL_PIXELFORMAT_ABGR8888: // equal to SDL_PIXELFORMAT_RGBA32
         case SDL_PIXELFORMAT_BGR888:
@@ -37,33 +36,25 @@ static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
 
 void window_sdl::process_window_event(SDL_Event *event) {
     if (event->window.event == SDL_WINDOWEVENT_SHOWN) {
-        fprintf(stderr, "SDL window event SHOWN: %d\n", event->window.event); fflush(stderr);
         SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-        fprintf(stderr, "width: %d height: %d\n", window_surface->w, window_surface->h); fflush(stderr);
         m_pixel_format = find_pixel_format(window_surface);
         m_window_surface.resize(window_surface->w, window_surface->h);
         m_window_surface.render();
         set_status(graphics::window_running);
     } else if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
-        fprintf(stderr, "SDL window event RESIZED: %d\n", event->window.event); fflush(stderr);
         const int width = event->window.data1, height = event->window.data2;
         m_window_surface.resize(width, height);
         m_window_surface.render();
     } else if (event->window.event == SDL_WINDOWEVENT_EXPOSED) {
-        fprintf(stderr, "SDL window event EXPOSED: %d\n", event->window.event); fflush(stderr);
         m_window_surface.update_window_area();
     } else if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
-        fprintf(stderr, "SDL window event CLOSE: %d\n", event->window.event); fflush(stderr);
         SDL_DestroyWindow(m_window);
         unregister_window();
         set_status(graphics::window_closed);
-    } else {
-        fprintf(stderr, "SDL window event UNKNOWN: %d\n", event->window.event); fflush(stderr);
     }
 }
 
-void window_sdl::process_user_event(SDL_Event *event) {
-    fprintf(stderr, "SDL UPDATE REGION EVENT\n"); fflush(stderr);
+void window_sdl::process_update_event() {
     if (!m_update_notify.completed) {
         m_window_surface.slot_refresh(m_update_notify.plot_index);
         m_update_notify.notify();
@@ -89,11 +80,9 @@ int window_sdl::initialize_sdl() {
     int (*SetProcessDPIAware)() = (int (*)()) GetProcAddress(lib, "SetProcessDPIAware");
     SetProcessDPIAware();
 #endif
-    fprintf(stderr, "SDL initialization\n"); fflush(stderr);
     if (SDL_Init(SDL_INIT_VIDEO)) {
         return (-1);
     }
-    fprintf(stderr, "SDL Register Event\n"); fflush(stderr);
     g_user_event_type = SDL_RegisterEvents(1);
     if (g_user_event_type == ((Uint32)-1)) {
         return (-1);
@@ -110,13 +99,11 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     initialization->set(kTaskComplete);
     SDL_Event event;
     bool quit = false;
-    fprintf(stderr, "SDL Entering event loop\n"); fflush(stderr);
     while (!quit) {
         int event_status = SDL_WaitEvent(&event);
         if (event_status == 0) {
             break;
         }
-        fprintf(stderr, "SDL event: %d\n", event.type); fflush(stderr);
         switch (event.type) {
         case SDL_QUIT:
             quit = true;
@@ -127,7 +114,6 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                 if (window) {
                     window->process_window_event(&event);
                 }
-                fprintf(stderr, "done dispatch_sdl_window_event\n"); fflush(stderr);
                 break;
             }
         default:
@@ -135,16 +121,14 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                 if (event.user.code == kUpdateRegion) {
                     window_sdl *window = select_on_window_id((intptr_t) event.user.data1);
                     if (window) {
-                        window->process_user_event(&event);
+                        window->process_update_event();
                     }
                 } else if (event.user.code == kCreateWindow) {
-                    // Note: we may use the flag SDL_WINDOW_ALLOW_HIGHDPI.
                     window_create_notify *create = (window_create_notify *) event.user.data1;
                     const window_create_message& message = create->message;
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
                     create->notify((void *) window);
-                    fprintf(stderr, "SDL Window Creation done\n"); fflush(stderr);
                 }
             }
         }
@@ -184,11 +168,9 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
             fflush(stderr);            
             return;
         }
-        fprintf(stderr, "SDL Register Event done: %d\n", g_user_event_type); fflush(stderr);
     }
     set_status(graphics::window_starting);
-    m_window = send_create_window_event(m_caption.cstr(), width, height, flags);
-    fprintf(stderr, "SDL window create received: %p\n", m_window); fflush(stderr);
+    m_window = send_create_window_event("Graphics Window", width, height, flags);
     register_window(SDL_GetWindowID(m_window), callback);
     wait_for_status(graphics::window_running);
 }
@@ -196,15 +178,13 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
     // We may consider using the function SDL_CreateRGBSurfaceWithFormatFrom to wrap
     // the pixel data from the image and use SDL_BlitSurface to blit the pixels.
-    // Unfortunately the convention for the y is opposite and AFAIK it cannot work.
+    // Unfortunately the convention for the y sign is opposite and I know no way
+    // to make it work with SDL blit function.
     rendering_buffer_ro src_view;
     rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
 
     SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
     Uint8 *pixels = (Uint8 *) window_surface->pixels;
-
-    fprintf(stderr, "rect: (%d,%d) (%d,%d)\n", r.x1, r.y1, r.x2, r.y2);
-    fprintf(stderr, "window surface pixels: %p bpp: %d\n", pixels, window_surface->format->BytesPerPixel); fflush(stderr);
 
     const int window_bpp = window_surface->format->BytesPerPixel;
     rendering_buffer dst(pixels, window_surface->w, window_surface->h, -window_surface->w * window_bpp);
@@ -248,9 +228,7 @@ SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned w
     window_create_notify create;
     event.user.data1 = (void *) &create;
     create.start(caption, width, height, flags);
-    fprintf(stderr, "sending create window envent\n"); fflush(stderr);
     if (SDL_PushEvent(&event) >= 0) {
-        fprintf(stderr, "waiting create window\n"); fflush(stderr);
         return (SDL_Window *) create.wait();
     }
     return nullptr;

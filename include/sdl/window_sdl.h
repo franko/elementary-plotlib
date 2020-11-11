@@ -42,7 +42,7 @@ private:
     void register_window(Uint32 window_id, window_close_callback *close_callback);
     void unregister_window();
     void process_window_event(SDL_Event *event);
-    void process_user_event(SDL_Event *event);
+    void process_update_event();
 
     static int initialize_sdl();
     static void event_loop(status_notifier<task_status> *initialization);
@@ -50,12 +50,14 @@ private:
 
     SDL_Window *m_window;
     agg::pix_format_e m_pixel_format;
-    str m_caption;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
 
+    // We keep a global register of all the windows to dispatch events.
+    // The mutex is used to protect access to the register.
     static std::mutex g_register_mutex;
     static agg::pod_bvector<window_entry> g_window_entries;
+
     static Uint32 g_user_event_type;
     static bool g_sdl_initialized;
 };
