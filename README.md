@@ -51,11 +51,21 @@ The window is used to show the plot on the screen. It can accomodate one plots o
 Installing the library
 ---
 
-The library can be compiled using the Meson build system and it does require the AGG and freetype2 libraries. If the FOX library is detected in addition the FOX support library will be built.
+The library can be compiled using the Meson build system and it does require the
+AGG and freetype2 libraries. If the FOX library is detected in addition the FOX
+support library will be built.
 
 To build the library and the examples use the following command:
 ```
 > meson build
+> ninja -C build
+```
+
+The library can be also built using the SDL2 library backend.
+It can be enabled using the option 'sdl' with Meson:
+
+```
+> meson -Dsdl=true build
 > ninja -C build
 ```
 
@@ -75,7 +85,13 @@ Its current status is 1.0 pre-release.
 
 A clean and simple C and C++ API is now available to make the utilisation of the library super-simple and to isolate from the implementation details.
 
-The library currently works on Windows and GNU/Linux system.
+The library currently works and has native windows support on Windows and
+GNU/Linux.
+On other operating systems the library can work using the SDL2 library backend.
+
+The Elementary Plot library may works on Mac OS X using the SDL2 backend
+but currently it is not tested neither it is supported.
+Contributions to tests the library on Mac OS X are welcome.
 
 The documentation for the library is available in the form of a [reference manual](http://franko.github.io/elementary-plotlib/).
 
