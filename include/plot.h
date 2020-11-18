@@ -23,6 +23,7 @@
 #include <new>
 #include <mutex>
 
+#include "drawing_element.h"
 #include "utils.h"
 #include "list.h"
 #include "strpp.h"
@@ -117,16 +118,16 @@ class plot {
     };
 
 protected:
-    class item_list : public agg::pod_bvector<sg_element>
+    class item_list : public agg::pod_bvector<drawing_element*>
     {
     public:
-        item_list(): agg::pod_bvector<sg_element>() { }
+        item_list(): agg::pod_bvector<drawing_element*>() { }
 
-        item_list(const item_list& source) : agg::pod_bvector<sg_element>(), m_bbox(source.m_bbox) {
+        item_list(const item_list& source) : agg::pod_bvector<drawing_element*>(), m_bbox(source.m_bbox) {
             add_duplicate_elements(source);
         }
 
-        item_list(item_list&& source) : agg::pod_bvector<sg_element>(), m_bbox(source.m_bbox) {
+        item_list(item_list&& source) : agg::pod_bvector<drawing_element*>(), m_bbox(source.m_bbox) {
             for (unsigned k = 0; k < source.size(); k++) {
                 add(source[k]);
             }
@@ -135,9 +136,7 @@ protected:
 
         void add_duplicate_elements(const item_list& source) {
             for (unsigned k = 0; k < source.size(); k++) {
-                sg_element new_element = source[k];
-                new_element.clone_object();
-                add(new_element);
+                add(source[k]->clone());
             }
         }
 
@@ -158,6 +157,7 @@ protected:
     };
 
 public:
+    // FIXME: remove the canvas_type and use directly virtual_canvas.
     typedef virtual_canvas canvas_type;
 
     enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
@@ -203,9 +203,8 @@ public:
         for (unsigned k = 1; k < source.m_layers.size(); k++) {
             m_layers.add(new item_list(*(source.m_layers[k])));
         }
-        for (list<sg_element> *source_node = source.m_drawing_queue; source_node; source_node = source_node->next()) {
-            m_drawing_queue = new list<sg_element>(source_node->content(), m_drawing_queue);
-            m_drawing_queue->content().clone_object();
+        for (list<drawing_element*> *source_node = source.m_drawing_queue; source_node; source_node = source_node->next()) {
+            m_drawing_queue = new list<drawing_element*>(source_node->content()->clone(), m_drawing_queue);
         }
 
         for (unsigned k = 0; k < 4; k++) {
@@ -317,6 +316,9 @@ public:
         m_x_axis.set_comp_labels(labels);
     }
 
+    // FIXME: we keep the add elements before taking sg_element to ease the transition but
+    // eventually the add methods should accept only drawing_element(s).
+    // FIXME: write an helper function that construct a drawing_element out of an sg_element.
     void add(sg_element element);
 
     void add(elem_object *object, agg::rgba8 stroke_color, float stroke_width, agg::rgba8 fill_color, unsigned flags = graphics::property::fill|graphics::property::stroke) {
@@ -438,8 +440,8 @@ private:
 
     void draw_elements(canvas_type &canvas, const plot_layout& layout);
 
-    void draw_element(sg_element& c, canvas_type &canvas, const agg::trans_affine& m) {
-        c.draw(canvas, m);
+    void draw_element(drawing_element *element, canvas_type &canvas, const agg::trans_affine& m) {
+        element->draw(canvas, m);
     }
 
     void draw_axis(canvas_type& can, plot_layout& layout, const agg::rect_i* clip = 0);
@@ -456,7 +458,7 @@ private:
 
     void compute_user_trans();
 
-    bool fit_inside(const sg_element& elem) const;
+    bool fit_inside(const drawing_element *elem) const;
     void check_bounding_box();
     void calc_layer_bounding_box(item_list* layer, opt_rect<double>& rect);
     void calc_bounding_box();
@@ -489,7 +491,7 @@ private:
     }
 
     agg::trans_affine m_trans;
-    list<sg_element> *m_drawing_queue;
+    list<drawing_element*> *m_drawing_queue;
 
     bool m_clip_flag;
 
@@ -529,10 +531,10 @@ void plot::draw_queue(plot::drawing_context& dc, Canvas& _canvas, const agg::tra
     auto c0 = m_drawing_queue;
     for (auto c = c0; c != 0; c = c->next())
     {
-        sg_element& d = c->content();
+        draw_element *element = c->content();
         agg::trans_affine m = get_model_matrix(layout);
         agg::rect_d ebb;
-        d.draw(canvas, m, &ebb);
+        element->draw(canvas, m, &ebb);
         if (ebb.is_valid()) {
             bb.add<rect_union>(ebb);
         }
