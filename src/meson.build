@@ -2,7 +2,27 @@ agg_dep = dependency('libagg')
 freetype_dep = dependency('freetype2')
 thread_dep = dependency('threads')
 
-libelem_src = ['str.c', 'agg_font_freetype.cpp', 'render_config.cpp', 'fatal.cpp', 'utils.cpp', 'canvas_svg.cpp', 'markers.cpp', 'text.cpp', 'window_part.cpp', 'draw_svg.cpp', 'plot_axis.cpp', 'plot.cpp', 'units.cpp', 'window_surface.cpp', 'printf_check.cpp', 'plot_agent.cpp', 'elem_plot.cpp', 'gc_context.cpp']
+libelem_src = [
+    'str.c',
+    'agg_font_freetype.cpp',
+    'render_config.cpp',
+    'fatal.cpp',
+    'utils.cpp',
+    'canvas_svg.cpp',
+    'markers.cpp',
+    'text.cpp',
+    'sg_drawing_element.cpp',
+    'window_part.cpp',
+    'draw_svg.cpp',
+    'plot_axis.cpp',
+    'plot.cpp',
+    'units.cpp',
+    'window_surface.cpp',
+    'printf_check.cpp',
+    'plot_agent.cpp',
+    'elem_plot.cpp',
+    'gc_context.cpp'
+]
 libelem_api_src = ['elem_c.cpp', 'elem_cpp.cpp']
 
 libelem = library('elem',

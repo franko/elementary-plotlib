@@ -17,16 +17,15 @@ void plot::commit_pending_draw()
     m_changes_pending.clear();
 }
 
-// FIXME: use the wrapper for sg_element.
-void plot::add(sg_element elem)
+void plot::add(drawing_element *element)
 {
-    if (m_auto_limits && !fit_inside(elem)) {
+    if (m_auto_limits && !fit_inside(element)) {
         m_bbox_updated = false;
         m_need_redraw = true;
         m_enlarged_layer = true;
     }
 
-    auto new_node = new list<drawing_element*>(elem);
+    auto new_node = new list<drawing_element*>(element);
     m_drawing_queue = list<drawing_element*>::push_back(m_drawing_queue, new_node);
 }
 
@@ -498,7 +497,7 @@ int plot::current_layer_index()
     return m_layers.size();
 }
 
-bool plot::fit_inside(const draw_element *element) const
+bool plot::fit_inside(drawing_element *element) const
 {
     if (!m_bbox_updated || !m_rect.is_defined()) {
         return false;
@@ -531,7 +530,8 @@ void plot::calc_bounding_box()
     calc_layer_bounding_box(get_layer(n-1), box);
     for (auto t = m_drawing_queue; t; t = t->next())
     {
-        const drawing_element *element = t->content();
+        // FIXME: bring back the const qualifier below!
+        /* const */ drawing_element *element = t->content();
         agg::rect_d r;
         element->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
         box.add<rect_union>(r);

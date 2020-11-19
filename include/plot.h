@@ -23,16 +23,16 @@
 #include <new>
 #include <mutex>
 
-#include "drawing_element.h"
-#include "utils.h"
-#include "list.h"
-#include "strpp.h"
 #include "canvas.h"
-#include "units.h"
-#include "rect.h"
-#include "sg_element.h"
-#include "text.h"
+#include "drawing_element.h"
+#include "list.h"
 #include "plot_axis.h"
+#include "rect.h"
+#include "sg_drawing_element.h"
+#include "strpp.h"
+#include "text.h"
+#include "units.h"
+#include "utils.h"
 
 #include "agg_array.h"
 #include "agg_bounding_rect.h"
@@ -316,13 +316,16 @@ public:
         m_x_axis.set_comp_labels(labels);
     }
 
+    void add(drawing_element *element);
+
     // FIXME: we keep the add elements before taking sg_element to ease the transition but
     // eventually the add methods should accept only drawing_element(s).
-    // FIXME: write an helper function that construct a drawing_element out of an sg_element.
-    void add(sg_element element);
+    void add(sg_element element) {
+        add(new sg_drawing_element{element});
+    }
 
     void add(elem_object *object, agg::rgba8 stroke_color, float stroke_width, agg::rgba8 fill_color, unsigned flags = graphics::property::fill|graphics::property::stroke) {
-        add(sg_element{object, stroke_color, stroke_width, fill_color, flags});
+        add(new sg_drawing_element{sg_element{object, stroke_color, stroke_width, fill_color, flags}});
     }
 
     void before_draw();
@@ -441,7 +444,7 @@ private:
     void draw_elements(canvas_type &canvas, const plot_layout& layout);
 
     void draw_element(drawing_element *element, canvas_type &canvas, const agg::trans_affine& m) {
-        element->draw(canvas, m);
+        element->draw(canvas, m, nullptr);
     }
 
     void draw_axis(canvas_type& can, plot_layout& layout, const agg::rect_i* clip = 0);
@@ -458,7 +461,8 @@ private:
 
     void compute_user_trans();
 
-    bool fit_inside(const drawing_element *elem) const;
+    // FIXME: fit_inside below should take a const pointer.
+    bool fit_inside(drawing_element *elem) const;
     void check_bounding_box();
     void calc_layer_bounding_box(item_list* layer, opt_rect<double>& rect);
     void calc_bounding_box();
@@ -531,7 +535,7 @@ void plot::draw_queue(plot::drawing_context& dc, Canvas& _canvas, const agg::tra
     auto c0 = m_drawing_queue;
     for (auto c = c0; c != 0; c = c->next())
     {
-        draw_element *element = c->content();
+        drawing_element *element = c->content();
         agg::trans_affine m = get_model_matrix(layout);
         agg::rect_d ebb;
         element->draw(canvas, m, &ebb);
