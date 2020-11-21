@@ -461,7 +461,6 @@ private:
 
     void compute_user_trans();
 
-    // FIXME: fit_inside below should take a const pointer.
     bool fit_inside(drawing_element *elem) const;
     void check_bounding_box();
     void calc_layer_bounding_box(item_list* layer, opt_rect<double>& rect);

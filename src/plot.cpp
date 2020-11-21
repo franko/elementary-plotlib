@@ -530,8 +530,7 @@ void plot::calc_bounding_box()
     calc_layer_bounding_box(get_layer(n-1), box);
     for (auto t = m_drawing_queue; t; t = t->next())
     {
-        // FIXME: bring back the const qualifier below!
-        /* const */ drawing_element *element = t->content();
+        drawing_element *element = t->content();
         agg::rect_d r;
         element->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
         box.add<rect_union>(r);
