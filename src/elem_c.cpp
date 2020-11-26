@@ -10,6 +10,7 @@
 #include "canvas_curve.h"
 #include "canvas_dashed.h"
 #include "canvas_markers.h"
+#include "drawing_element.h"
 #include "plot.h"
 #include "plot_agent.h"
 #include "elem_window.h"
@@ -234,6 +235,14 @@ void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, f
     {
         graphics::plot::drawing_context dc(*plot);
         plot->add(obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+    }
+    plot_update_windows_and_commit(plot);
+}
+
+void elem_plot_add_element(elem_plot *plot, drawing_element *obj) {
+    {
+        graphics::plot::drawing_context dc(*plot);
+        plot->add(obj);
     }
     plot_update_windows_and_commit(plot);
 }

@@ -28,6 +28,7 @@ window_tests = [
     {'name': 'test-plot-dash-lines-c', 'sources': 'test-plot-dash-lines-c.c'},
     {'name': 'test-plot-show-c', 'sources': 'test-plot-show-c.c'},
     {'name': 'test-window-markers-c', 'sources': 'test-window-markers-c.c'},
+    {'name': 'test-triangles', 'sources': 'test-triangles.cpp'},
 ]
 
 fox_tests = [

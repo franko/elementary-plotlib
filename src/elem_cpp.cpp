@@ -17,6 +17,7 @@
 #include "elem_window.h"
 #include "markers.h"
 #include "canvas_svg.h"
+#include "triangles_drawing_element.h"
 
 namespace elem {
 
@@ -51,6 +52,24 @@ Object& Object::operator=(Object&& other) {
         other.object_impl_ = nullptr;
     }
     return *this;
+}
+
+TestingTriangles::TestingTriangles(): triangles_{new triangles_drawing_element{agg::rgba8{0xdd, 0x00, 0x00}}} {
+    triangles_->resize_points(6);
+    for (unsigned i = 0; i < 6; i++) {
+        if (i % 2 == 0) {
+            triangles_->point(i) = triangles_drawing_element::point_type{0.0f, (i / 2) * 1.0f};
+        } else {
+            triangles_->point(i) = triangles_drawing_element::point_type{1.0f, (i / 2) * 1.0f};
+        }
+    }
+    triangles_->resize_triangles(3);
+    int data_1[3] = {0, 1, 3};
+    triangles_->triangle(0) = triangles_drawing_element::triangle_type{data_1};
+    int data_2[3] = {0, 3, 2};
+    triangles_->triangle(1) = triangles_drawing_element::triangle_type{data_2};
+    int data_3[3] = {2, 5, 4};
+    triangles_->triangle(2) = triangles_drawing_element::triangle_type{data_3};
 }
 
 Path::Path(): Object{(elem_object *) new elem_path{}} {
@@ -212,6 +231,13 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
         elem_plot_add(plot_impl_, (elem_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
         // Since the plot take the ownership null the pointer inside the object.
         object.object_impl_ = nullptr;
+    }
+}
+
+void Plot::Add(TestingTriangles object) {
+    if (object.triangles_) {
+        elem_plot_add_element(plot_impl_, object.triangles_);
+        object.triangles_ = nullptr;
     }
 }
 

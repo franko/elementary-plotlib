@@ -36,6 +36,7 @@
 
 // Forward declaration of C API objects.
 #include "elem/elem_c_forward.h"
+class triangles_drawing_element;
 
 namespace FX {
     class FXElemWindow;
@@ -104,6 +105,31 @@ protected:
 };
 
 Object MarkerSymbol(int index);
+
+#if 0
+class GraphicsElement {
+public:
+    GraphicsElement() : graphics_element_(nullptr) { }
+    GraphicsElement(const GraphicsElement& obj);
+    GraphicsElement(GraphicsElement&& obj);
+    ~GraphicsElement();
+
+    GraphicsElement& operator=(const GraphicsElement& that);
+    GraphicsElement& operator=(GraphicsElement&& that);
+protected:
+    GraphicsElement(drawing_element *graphics_element_);
+    drawing_element *graphics_element_;
+};
+#endif
+
+class TestingTriangles {
+public:
+    TestingTriangles();
+private:
+    triangles_drawing_element *triangles_;
+
+    friend class Plot;
+};
 
 class Path : public Object {
 public:
@@ -204,6 +230,7 @@ public:
     void SetAxisLabelsAngle(const Axis& axis, float angle);
     void EnableLabelFormat(const Axis& axis, const char *fmt);
     void CommitPendingDraw();
+    void Add(TestingTriangles triangles);
     void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
     void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
     bool PushLayer();

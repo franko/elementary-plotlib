@@ -83,6 +83,7 @@ class elem_dashed;
 class elem_markers;
 class elem_plot;
 class elem_window;
+class drawing_element;
 #else
 struct elem_object;
 struct elem_path;
@@ -91,6 +92,7 @@ struct elem_dashed;
 struct elem_markers;
 struct elem_plot;
 struct elem_window;
+struct drawing_element;
 typedef struct elem_object elem_object;
 typedef struct elem_path elem_path;
 typedef struct elem_curve elem_curve;
@@ -98,6 +100,7 @@ typedef struct elem_dashed elem_dashed;
 typedef struct elem_markers elem_markers;
 typedef struct elem_plot elem_plot;
 typedef struct elem_window elem_window;
+typedef struct drawing_element drawing_element;
 #endif
 
 elem_object *elem_object_copy(const elem_object *obj);
@@ -147,6 +150,7 @@ bool elem_plot_push_layer(elem_plot *plot);
 bool elem_plot_pop_layer(elem_plot *plot);
 void elem_plot_clear_layer(elem_plot *plot);
 void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
+void elem_plot_add_element(elem_plot *plot, drawing_element *obj);
 void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags);
 void elem_plot_wait(elem_plot *plot);
 // TODO: add function to add a legend
