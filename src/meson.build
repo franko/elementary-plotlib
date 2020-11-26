@@ -12,6 +12,7 @@ libelem_src = [
     'markers.cpp',
     'text.cpp',
     'sg_drawing_element.cpp',
+    'triangles_drawing_element.cpp',
     'window_part.cpp',
     'draw_svg.cpp',
     'plot_axis.cpp',
