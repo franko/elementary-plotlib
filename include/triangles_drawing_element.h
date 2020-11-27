@@ -9,7 +9,12 @@ public:
     using point_type = agg::point_base<float_type>;
     using triangle_type = agg::pod_auto_array<int, 3>;
 
-    triangles_drawing_element(agg::rgba8 color);
+    triangles_drawing_element(agg::rgba8 color): m_color(color) { }
+    triangles_drawing_element() { }
+
+    void set_color(agg::rgba8 color) {
+        m_color = color;
+    }
 
     template <typename PointsArray>
     void set_points(const PointsArray& points) {
@@ -22,7 +27,7 @@ public:
 
     template <typename TrianglesArray>
     void set_triangles(const TrianglesArray& triangles) {
-        const unsigned n = m_triangles.size();
+        const unsigned n = triangles.size();
         m_triangles.resize(n);
         for (unsigned i = 0; i < n; i++) {
             for (int k = 0; k < 3; k++) {
@@ -30,9 +35,6 @@ public:
             }
         }
     }
-
-    // unsigned points_number() const { return m_points.size(); }
-    // unsigned triangles_number() const { return m_triangles.size(); }
 
     void resize_points(int n) {
         if (n < 0) return;

@@ -6,3 +6,5 @@ class elem_curve;
 class elem_dashed;
 class elem_window;
 class elem_plot;
+class drawing_element;
+

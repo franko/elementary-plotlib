@@ -76,8 +76,6 @@ public:
     }
 };
 
-triangles_drawing_element::triangles_drawing_element(agg::rgba8 color): m_color(color) { }
-
 void triangles_drawing_element::draw(virtual_canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb) {
     agg::trans_affine mtx;
     elem_object_scaling_gen<triangles_storage<agg::pod_array<point_type>, agg::pod_array<triangle_type>>> triangles(mtx, m_points, m_triangles);

@@ -84,6 +84,7 @@ class elem_markers;
 class elem_plot;
 class elem_window;
 class drawing_element;
+class triangles_drawing_element;
 #else
 struct elem_object;
 struct elem_path;
@@ -93,6 +94,7 @@ struct elem_markers;
 struct elem_plot;
 struct elem_window;
 struct drawing_element;
+struct triangles_drawing_element;
 typedef struct elem_object elem_object;
 typedef struct elem_path elem_path;
 typedef struct elem_curve elem_curve;
@@ -101,6 +103,7 @@ typedef struct elem_markers elem_markers;
 typedef struct elem_plot elem_plot;
 typedef struct elem_window elem_window;
 typedef struct drawing_element drawing_element;
+typedef struct triangles_drawing_element triangles_drawing_element;
 #endif
 
 elem_object *elem_object_copy(const elem_object *obj);
@@ -135,6 +138,13 @@ elem_markers *elem_markers_new(double size, elem_object *marker_symbol);
 elem_markers *elem_markers_copy(const elem_markers *markers);
 void elem_markers_free(elem_markers *markers);
 
+triangles_drawing_element *elem_triangles_new(elem_color color);
+void elem_triangles_set_color(triangles_drawing_element *elem, elem_color color);
+void elem_triangles_resize_points_buffer(triangles_drawing_element *elem, int n);
+void elem_triangles_resize_triangles_buffer(triangles_drawing_element *elem, int n);
+void elem_triangles_set_point(triangles_drawing_element *elem, int i, float x, float y);
+void elem_triangles_set_triangle(triangles_drawing_element *elem, int i, int vertex_a, int vertex_b, int vertex_c);
+
 elem_plot *elem_plot_new(unsigned int flags);
 // TODO: implement functions to copy a plot
 void elem_plot_free(elem_plot *plot);
@@ -150,7 +160,8 @@ bool elem_plot_push_layer(elem_plot *plot);
 bool elem_plot_pop_layer(elem_plot *plot);
 void elem_plot_clear_layer(elem_plot *plot);
 void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
-void elem_plot_add_element(elem_plot *plot, drawing_element *obj);
+// FIXME: reconcile names graphics and drawing element.
+void elem_plot_add_graphics_element(elem_plot *plot, drawing_element *obj);
 void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags);
 void elem_plot_wait(elem_plot *plot);
 // TODO: add function to add a legend

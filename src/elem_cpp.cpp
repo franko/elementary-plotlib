@@ -54,22 +54,69 @@ Object& Object::operator=(Object&& other) {
     return *this;
 }
 
-TestingTriangles::TestingTriangles(): triangles_{new triangles_drawing_element{agg::rgba8{0xdd, 0x00, 0x00}}} {
-    triangles_->resize_points(6);
-    for (unsigned i = 0; i < 6; i++) {
-        if (i % 2 == 0) {
-            triangles_->point(i) = triangles_drawing_element::point_type{0.0f, (i / 2) * 1.0f};
-        } else {
-            triangles_->point(i) = triangles_drawing_element::point_type{1.0f, (i / 2) * 1.0f};
-        }
+// FIXME: GraphicsElement and Object does very much the same things.
+// Consider derive from a template class.
+GraphicsElement::GraphicsElement(drawing_element *element): graphics_element_(element) {
+}
+
+GraphicsElement::GraphicsElement(const GraphicsElement& obj) {
+    graphics_element_ = obj.graphics_element_->clone();
+}
+
+GraphicsElement::GraphicsElement(GraphicsElement&& obj) {
+    graphics_element_ = obj.graphics_element_;
+    obj.graphics_element_ = nullptr;
+}
+
+GraphicsElement::~GraphicsElement() {
+    delete graphics_element_;
+}
+
+GraphicsElement& GraphicsElement::operator=(const GraphicsElement& other) {
+    if (this != &other) {
+        delete graphics_element_;
+        graphics_element_ = other.graphics_element_->clone();
     }
-    triangles_->resize_triangles(3);
-    int data_1[3] = {0, 1, 3};
-    triangles_->triangle(0) = triangles_drawing_element::triangle_type{data_1};
-    int data_2[3] = {0, 3, 2};
-    triangles_->triangle(1) = triangles_drawing_element::triangle_type{data_2};
-    int data_3[3] = {2, 5, 4};
-    triangles_->triangle(2) = triangles_drawing_element::triangle_type{data_3};
+    return *this;
+}
+
+GraphicsElement& GraphicsElement::operator=(GraphicsElement&& other) {
+    if (this != &other) {
+        delete graphics_element_;
+        graphics_element_ = other.graphics_element_;
+        other.graphics_element_ = nullptr;
+    }
+    return *this;
+}
+
+Triangles::Triangles(Color color): GraphicsElement{(drawing_element *) new triangles_drawing_element{}} {
+    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
+    elem_triangles_set_color(elem, color);
+}
+
+void Triangles::SetColor(Color color) {
+    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
+    elem_triangles_set_color(elem, color);
+}
+
+void Triangles::ResizePointsBuffer(int n) {
+    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
+    elem_triangles_resize_points_buffer(elem, n);
+}
+
+void Triangles::ResizeTrianglesBuffer(int n) {
+    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
+    elem_triangles_resize_triangles_buffer(elem, n);
+}
+
+void Triangles::SetPoint(int i, Point p) {
+    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
+    elem_triangles_set_point(elem, i, p.x, p.y);
+}
+
+void Triangles::SetTriangle(int i, Triangle t) {
+    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
+    elem_triangles_set_triangle(elem, i, t.a, t.b, t.c);
 }
 
 Path::Path(): Object{(elem_object *) new elem_path{}} {
@@ -234,10 +281,10 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
     }
 }
 
-void Plot::Add(TestingTriangles object) {
-    if (object.triangles_) {
-        elem_plot_add_element(plot_impl_, object.triangles_);
-        object.triangles_ = nullptr;
+void Plot::Add(GraphicsElement object) {
+    if (object.graphics_element_) {
+        elem_plot_add_graphics_element(plot_impl_, object.graphics_element_);
+        object.graphics_element_ = nullptr;
     }
 }
 
