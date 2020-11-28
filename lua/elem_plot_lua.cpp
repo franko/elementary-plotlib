@@ -19,7 +19,7 @@ void LuaOpenLibrary(lua_State *L) {
     auto elem = lua.create_table();
     elem.new_usertype<Object>("Object", sol::constructors<Object()>());
     elem.new_usertype<Path>("Path", sol::constructors<Path()>(),
-        "MoveTo", &Path::MoveTo, 
+        "MoveTo", &Path::MoveTo,
         "LineTo", &Path::LineTo,
         "ClosePolygon", &Path::ClosePolygon,
         sol::base_classes, sol::bases<Object>()
@@ -55,6 +55,7 @@ void LuaOpenLibrary(lua_State *L) {
         "EnableLabelFormat", &Plot::EnableLabelFormat,
         "CommitPendingDraw", &Plot::CommitPendingDraw,
         "Add", &Plot::Add,
+        "AddPrimitive", &Plot::AddPrimitive,
         "AddStroke", &Plot::AddStroke,
         "PushLayer", &Plot::PushLayer,
         "PopLayer", &Plot::PopLayer,
