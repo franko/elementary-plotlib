@@ -268,7 +268,7 @@ void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, f
     plot_update_windows_and_commit(plot);
 }
 
-void elem_plot_add_graphics_element(elem_plot *plot, drawing_element *obj) {
+void elem_plot_add_element(elem_plot *plot, drawing_element *obj) {
     {
         graphics::plot::drawing_context dc(*plot);
         plot->add(obj);

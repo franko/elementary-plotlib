@@ -59,7 +59,7 @@ enum {
 
 enum {
     elem_plot_right  = 0,
-    elem_plot_left   = 1, 
+    elem_plot_left   = 1,
     elem_plot_bottom = 2,
     elem_plot_top    = 3
 };
@@ -160,8 +160,7 @@ bool elem_plot_push_layer(elem_plot *plot);
 bool elem_plot_pop_layer(elem_plot *plot);
 void elem_plot_clear_layer(elem_plot *plot);
 void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
-// FIXME: reconcile names graphics and drawing element.
-void elem_plot_add_graphics_element(elem_plot *plot, drawing_element *obj);
+void elem_plot_add_element(elem_plot *plot, drawing_element *obj);
 void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags);
 void elem_plot_wait(elem_plot *plot);
 // TODO: add function to add a legend

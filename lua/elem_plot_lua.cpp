@@ -55,7 +55,7 @@ void LuaOpenLibrary(lua_State *L) {
         "EnableLabelFormat", &Plot::EnableLabelFormat,
         "CommitPendingDraw", &Plot::CommitPendingDraw,
         "Add", &Plot::Add,
-        "AddPrimitive", &Plot::AddPrimitive,
+        "AddElement", &Plot::AddElement,
         "AddStroke", &Plot::AddStroke,
         "PushLayer", &Plot::PushLayer,
         "PopLayer", &Plot::PopLayer,

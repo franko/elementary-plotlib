@@ -281,9 +281,9 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
     }
 }
 
-void Plot::AddPrimitive(GraphicsElement object) {
+void Plot::AddElement(GraphicsElement object) {
     if (object.graphics_element_) {
-        elem_plot_add_graphics_element(plot_impl_, object.graphics_element_);
+        elem_plot_add_element(plot_impl_, object.graphics_element_);
         object.graphics_element_ = nullptr;
     }
 }

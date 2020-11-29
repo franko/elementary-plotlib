@@ -16,7 +16,7 @@ int main() {
     triangles.SetTriangle(2, {2, 5, 4});
 
     Plot plot;
-    plot.AddPrimitive(triangles);
+    plot.AddElement(triangles);
     plot.SetXAxisTitle("x variable");
     plot.SetYAxisTitle("y variable");
     plot.Show(640, 480, WindowResize);
