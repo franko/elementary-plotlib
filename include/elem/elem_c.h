@@ -138,12 +138,11 @@ elem_markers *elem_markers_new(double size, elem_object *marker_symbol);
 elem_markers *elem_markers_copy(const elem_markers *markers);
 void elem_markers_free(elem_markers *markers);
 
-triangles_drawing_element *elem_triangles_new(elem_color color);
-void elem_triangles_set_color(triangles_drawing_element *elem, elem_color color);
+triangles_drawing_element *elem_triangles_new();
 void elem_triangles_resize_points_buffer(triangles_drawing_element *elem, int n);
 void elem_triangles_resize_triangles_buffer(triangles_drawing_element *elem, int n);
 void elem_triangles_set_point(triangles_drawing_element *elem, int i, float x, float y);
-void elem_triangles_set_triangle(triangles_drawing_element *elem, int i, int vertex_a, int vertex_b, int vertex_c);
+void elem_triangles_set_triangle(triangles_drawing_element *elem, int i, int vertex_a, int vertex_b, int vertex_c, elem_color color);
 
 elem_plot *elem_plot_new(unsigned int flags);
 // TODO: implement functions to copy a plot

@@ -9,12 +9,7 @@ public:
     using point_type = agg::point_base<float_type>;
     using triangle_type = agg::pod_auto_array<int, 3>;
 
-    triangles_drawing_element(agg::rgba8 color): m_color(color) { }
     triangles_drawing_element() { }
-
-    void set_color(agg::rgba8 color) {
-        m_color = color;
-    }
 
     template <typename PointsArray>
     void set_points(const PointsArray& points) {
@@ -25,14 +20,16 @@ public:
         }
     }
 
-    template <typename TrianglesArray>
-    void set_triangles(const TrianglesArray& triangles) {
+    template <typename TrianglesArray, typename ColorsArray>
+    void set_triangles(const TrianglesArray& triangles, const ColorsArray& colors) {
         const unsigned n = triangles.size();
         m_triangles.resize(n);
+        m_colors.resize(n);
         for (unsigned i = 0; i < n; i++) {
             for (int k = 0; k < 3; k++) {
                 m_triangles[i][k] = triangles[i][k];
             }
+            m_colors[i] = colors[i];
         }
     }
 
@@ -44,6 +41,7 @@ public:
     void resize_triangles(int n) {
         if (n < 0) return;
         m_triangles.resize((unsigned) n);
+        m_colors.resize((unsigned) n);
     }
 
     const point_type& point(unsigned i) const { return m_points[i]; }
@@ -52,6 +50,9 @@ public:
     const triangle_type& triangle(unsigned i) const { return m_triangles[i]; }
           triangle_type& triangle(unsigned i)       { return m_triangles[i]; }
 
+    const agg::rgba8& color(unsigned i) const { return m_colors[i]; }
+          agg::rgba8& color(unsigned i)       { return m_colors[i]; }
+
     void draw(virtual_canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb) override;
     void bounding_box(double *x1, double *y1, double *x2, double *y2) override;
     drawing_element *copy() override;
@@ -59,6 +60,6 @@ public:
 private:
     agg::pod_array<point_type> m_points;
     agg::pod_array<triangle_type> m_triangles;
-    agg::rgba8 m_color;
+    agg::pod_array<agg::rgba8> m_colors;
 };
 

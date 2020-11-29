@@ -133,12 +133,8 @@ void elem_markers_free(elem_markers *markers) {
     delete markers;
 }
 
-triangles_drawing_element *elem_triangles_new(elem_color color) {
-    return new triangles_drawing_element{ColorToRgba8(color)};
-}
-
-void elem_triangles_set_color(triangles_drawing_element *elem, elem_color color) {
-    elem->set_color(ColorToRgba8(color));
+triangles_drawing_element *elem_triangles_new() {
+    return new triangles_drawing_element{};
 }
 
 void elem_triangles_resize_points_buffer(triangles_drawing_element *elem, int n) {
@@ -153,12 +149,13 @@ void elem_triangles_set_point(triangles_drawing_element *elem, int i, float x, f
     elem->point(i) = triangles_drawing_element::point_type{x, y};
 }
 
-void elem_triangles_set_triangle(triangles_drawing_element *elem, int i, int vertex_a, int vertex_b, int vertex_c) {
+void elem_triangles_set_triangle(triangles_drawing_element *elem, int i, int vertex_a, int vertex_b, int vertex_c, elem_color color) {
     triangles_drawing_element::triangle_type triangle;
     triangle[0] = vertex_a;
     triangle[1] = vertex_b;
     triangle[2] = vertex_c;
     elem->triangle(i) = triangle;
+    elem->color(i) = ColorToRgba8(color);
 }
 
 elem_plot *elem_plot_new(unsigned int flags) {

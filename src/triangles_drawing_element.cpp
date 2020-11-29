@@ -1,35 +1,29 @@
-#include <agg_trans_affine.h>
+#include <agg_basics.h>
 #include <agg_bounding_rect.h>
 #include <agg_conv_transform.h>
+#include <agg_trans_affine.h>
 
 #include "triangles_drawing_element.h"
 
-template <typename PointsArray, typename TrianglesArray>
-class triangles_vertex_source {
+template <typename PointsArray, typename TriangleType>
+class triangle_vertex_source {
 public:
-    triangles_vertex_source(PointsArray& points, TrianglesArray& triangles):
-        m_triangle_index(0),
+    triangle_vertex_source(const PointsArray& points, const TriangleType& triangle):
+        m_triangle(triangle),
         m_vertex_index(0),
-        m_points(points),
-        m_triangles(triangles)
+        m_points(points)
     { }
 
     void rewind(unsigned path_id) {
-        m_triangle_index = 0;
         m_vertex_index = 0;
     }
 
     unsigned vertex(double* x, double* y) {
         if (m_vertex_index > 3) {
-            m_vertex_index = 0;
-            m_triangle_index++;
-        }
-        if (m_triangle_index >= m_triangles.size()) {
             return agg::path_cmd_stop;
         }
-        const auto& triangle = m_triangles[m_triangle_index];
         if (m_vertex_index < 3) {
-            const auto& vertex = m_points[triangle[m_vertex_index]];
+            const auto& vertex = m_points[m_triangle[m_vertex_index]];
             *x = double(vertex.x);
             *y = double(vertex.y);
             return (m_vertex_index++ == 0 ? agg::path_cmd_move_to : agg::path_cmd_line_to);
@@ -38,10 +32,9 @@ public:
         return agg::path_cmd_end_poly | agg::path_flags_close;
     }
 private:
-    unsigned m_triangle_index;
+    const TriangleType& m_triangle;
     unsigned m_vertex_index;
-    PointsArray& m_points;
-    TrianglesArray& m_triangles;
+    const PointsArray& m_points;
 };
 
 template <class VertexSource>
@@ -78,23 +71,50 @@ public:
 
 void triangles_drawing_element::draw(virtual_canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb) {
     agg::trans_affine mtx;
-    elem_object_scaling_gen<triangles_vertex_source<agg::pod_array<point_type>, agg::pod_array<triangle_type>>> triangles(mtx, m_points, m_triangles);
-    triangles.apply_transform(m, 1.0);
-    canvas.draw_noaa(triangles, m_color);
-    if (bb) {
-        triangles.bounding_box(&bb->x1, &bb->y1, &bb->x2, &bb->y2);
+    for (unsigned i = 0; i < m_triangles.size(); i++) {
+        elem_object_scaling_gen<triangle_vertex_source<agg::pod_array<point_type>, triangle_type>> triangle(mtx, m_points, m_triangles[i]);
+        triangle.apply_transform(m, 1.0);
+        canvas.draw_noaa(triangle, m_colors[i]);
+        if (bb) {
+            // FIXME: it is probably more efficient to avoid using
+            // the vertex_source instance and just loop over the points
+            // corresponding to triangles' vertices.
+            if (i == 0) {
+                agg::bounding_rect_single(triangle, 0, &bb->x1, &bb->y1, &bb->x2, &bb->y2);
+            } else {
+                agg::rect_d tbb;
+                agg::bounding_rect_single(triangle, 0, &tbb.x1, &tbb.y1, &tbb.x2, &tbb.y2);
+                *bb = agg::unite_rectangles(*bb, tbb);
+            }
+        }
     }
 }
 
 void triangles_drawing_element::bounding_box(double *x1, double *y1, double *x2, double *y2) {
-    triangles_vertex_source<agg::pod_array<point_type>, agg::pod_array<triangle_type>> triangles(m_points, m_triangles);
-    agg::bounding_rect_single(triangles, 0, x1, y1, x2, y2);
+    agg::rect_d bb;
+    for (unsigned i = 0; i < m_triangles.size(); i++) {
+        triangle_vertex_source<agg::pod_array<point_type>, triangle_type> triangle(m_points, m_triangles[i]);
+        // FIXME: it is probably more efficient to avoid using
+        // the vertex_source instance and just loop over the points
+        // corresponding to triangles' vertices.
+        if (i == 0) {
+            agg::bounding_rect_single(triangle, 0, &bb.x1, &bb.y1, &bb.x2, &bb.y2);
+        } else {
+            agg::rect_d tbb;
+            agg::bounding_rect_single(triangle, 0, &tbb.x1, &tbb.y1, &tbb.x2, &tbb.y2);
+            bb = agg::unite_rectangles(bb, tbb);
+        }
+    }
+    *x1 = bb.x1;
+    *y1 = bb.y1;
+    *x2 = bb.x2;
+    *y2 = bb.y2;
 }
 
 drawing_element *triangles_drawing_element::copy() {
-    triangles_drawing_element *new_object = new triangles_drawing_element(m_color);
+    triangles_drawing_element *new_object = new triangles_drawing_element();
     new_object->set_points(m_points);
-    new_object->set_triangles(m_triangles);
+    new_object->set_triangles(m_triangles, m_colors);
     return new_object;
 }
 

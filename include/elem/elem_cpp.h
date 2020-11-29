@@ -126,12 +126,11 @@ struct Triangle { int a, b, c; };
 
 class Triangles : public GraphicsElement {
 public:
-    Triangles(Color color);
-    void SetColor(Color color);
+    Triangles();
     void ResizePointsBuffer(int n);
     void ResizeTrianglesBuffer(int n);
     void SetPoint(int i, Point p);
-    void SetTriangle(int i, Triangle t);
+    void SetTriangle(int i, Triangle t, Color color);
 };
 
 class Path : public Object {

@@ -89,14 +89,7 @@ GraphicsElement& GraphicsElement::operator=(GraphicsElement&& other) {
     return *this;
 }
 
-Triangles::Triangles(Color color): GraphicsElement{(drawing_element *) new triangles_drawing_element{}} {
-    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
-    elem_triangles_set_color(elem, color);
-}
-
-void Triangles::SetColor(Color color) {
-    triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
-    elem_triangles_set_color(elem, color);
+Triangles::Triangles(): GraphicsElement{(drawing_element *) new triangles_drawing_element{}} {
 }
 
 void Triangles::ResizePointsBuffer(int n) {
@@ -114,9 +107,9 @@ void Triangles::SetPoint(int i, Point p) {
     elem_triangles_set_point(elem, i, p.x, p.y);
 }
 
-void Triangles::SetTriangle(int i, Triangle t) {
+void Triangles::SetTriangle(int i, Triangle t, Color color) {
     triangles_drawing_element *elem = (triangles_drawing_element *) graphics_element_;
-    elem_triangles_set_triangle(elem, i, t.a, t.b, t.c);
+    elem_triangles_set_triangle(elem, i, t.a, t.b, t.c, color);
 }
 
 Path::Path(): Object{(elem_object *) new elem_path{}} {
