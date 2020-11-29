@@ -81,6 +81,9 @@ enum {
 class Plot;
 class Window;
 
+// FIXME: collapse this class with GraphicsElement.
+// Ultimately a plot accept only GraphicsElement (aka drawing_element)
+// with the Add() method.
 class Object {
 public:
     Object() : object_impl_(nullptr) { }
