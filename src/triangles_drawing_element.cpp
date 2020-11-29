@@ -5,9 +5,9 @@
 #include "triangles_drawing_element.h"
 
 template <typename PointsArray, typename TrianglesArray>
-class triangles_storage {
+class triangles_vertex_source {
 public:
-    triangles_storage(PointsArray& points, TrianglesArray& triangles):
+    triangles_vertex_source(PointsArray& points, TrianglesArray& triangles):
         m_triangle_index(0),
         m_vertex_index(0),
         m_points(points),
@@ -78,7 +78,7 @@ public:
 
 void triangles_drawing_element::draw(virtual_canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb) {
     agg::trans_affine mtx;
-    elem_object_scaling_gen<triangles_storage<agg::pod_array<point_type>, agg::pod_array<triangle_type>>> triangles(mtx, m_points, m_triangles);
+    elem_object_scaling_gen<triangles_vertex_source<agg::pod_array<point_type>, agg::pod_array<triangle_type>>> triangles(mtx, m_points, m_triangles);
     triangles.apply_transform(m, 1.0);
     canvas.draw_noaa(triangles, m_color);
     if (bb) {
@@ -87,7 +87,7 @@ void triangles_drawing_element::draw(virtual_canvas& canvas, const agg::trans_af
 }
 
 void triangles_drawing_element::bounding_box(double *x1, double *y1, double *x2, double *y2) {
-    triangles_storage<agg::pod_array<point_type>, agg::pod_array<triangle_type>> triangles(m_points, m_triangles);
+    triangles_vertex_source<agg::pod_array<point_type>, agg::pod_array<triangle_type>> triangles(m_points, m_triangles);
     agg::bounding_rect_single(triangles, 0, x1, y1, x2, y2);
 }
 
