@@ -91,7 +91,7 @@ void triangles_drawing_element::bounding_box(double *x1, double *y1, double *x2,
     agg::bounding_rect_single(triangles, 0, x1, y1, x2, y2);
 }
 
-drawing_element *triangles_drawing_element::clone() {
+drawing_element *triangles_drawing_element::copy() {
     triangles_drawing_element *new_object = new triangles_drawing_element(m_color);
     new_object->set_points(m_points);
     new_object->set_triangles(m_triangles);

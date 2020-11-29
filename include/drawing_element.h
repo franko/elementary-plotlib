@@ -8,7 +8,6 @@
 struct drawing_element {
     virtual void draw(virtual_canvas& canvas, const agg::trans_affine& m, agg::rect_d* bb) = 0;
     virtual void bounding_box(double *x1, double *y1, double *x2, double *y2) = 0;
-    // FIXME: rename to copy().
-    virtual drawing_element *clone() = 0;
+    virtual drawing_element *copy() = 0;
     virtual ~drawing_element() { }
 };

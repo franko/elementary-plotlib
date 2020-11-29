@@ -60,7 +60,7 @@ GraphicsElement::GraphicsElement(drawing_element *element): graphics_element_(el
 }
 
 GraphicsElement::GraphicsElement(const GraphicsElement& obj) {
-    graphics_element_ = obj.graphics_element_->clone();
+    graphics_element_ = obj.graphics_element_->copy();
 }
 
 GraphicsElement::GraphicsElement(GraphicsElement&& obj) {
@@ -75,7 +75,7 @@ GraphicsElement::~GraphicsElement() {
 GraphicsElement& GraphicsElement::operator=(const GraphicsElement& other) {
     if (this != &other) {
         delete graphics_element_;
-        graphics_element_ = other.graphics_element_->clone();
+        graphics_element_ = other.graphics_element_->copy();
     }
     return *this;
 }

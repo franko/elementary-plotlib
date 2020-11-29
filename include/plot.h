@@ -136,7 +136,7 @@ protected:
 
         void add_duplicate_elements(const item_list& source) {
             for (unsigned k = 0; k < source.size(); k++) {
-                add(source[k]->clone());
+                add(source[k]->copy());
             }
         }
 
@@ -204,7 +204,7 @@ public:
             m_layers.add(new item_list(*(source.m_layers[k])));
         }
         for (list<drawing_element*> *source_node = source.m_drawing_queue; source_node; source_node = source_node->next()) {
-            m_drawing_queue = new list<drawing_element*>(source_node->content()->clone(), m_drawing_queue);
+            m_drawing_queue = new list<drawing_element*>(source_node->content()->copy(), m_drawing_queue);
         }
 
         for (unsigned k = 0; k < 4; k++) {

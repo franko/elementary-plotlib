@@ -12,7 +12,7 @@ void sg_drawing_element::bounding_box(double *x1, double *y1, double *x2, double
     m_content.object->bounding_box(x1, y1, x2, y2);
 };
 
-drawing_element *sg_drawing_element::clone() {
+drawing_element *sg_drawing_element::copy() {
     sg_drawing_element *new_element = new sg_drawing_element(m_content);
     new_element->m_content.clone_object();
     return new_element;
