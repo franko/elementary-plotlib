@@ -282,8 +282,8 @@ void xwindow::run()
             if (ev.xclient.message_type == m_wm_protocols_atom && ev.xclient.format == 32 && ev.xclient.data.l[0] == int(m_close_atom)) {
                 quit = true;
             } else if (ev.xclient.message_type == m_update_region_atom) {
-                if (!m_update_notify.completed) {
-                    m_window_surface.slot_refresh(m_update_notify.plot_index);
+                if (!m_update_notify.completed()) {
+                    m_window_surface.slot_refresh(m_update_notify.message());
                     m_update_notify.notify();
                 }
             }

@@ -5,9 +5,18 @@
 
 #include "sdl/window_sdl.h"
 
+#include "complete_notify.h"
+
+struct window_create_message {
+    const char *caption;
+    unsigned width;
+    unsigned height;
+    unsigned flags;
+};
+
 struct create_window_data {
     window_sdl *this_window;
-    window_create_notify *create;
+    complete_notify<window_create_message> *create;
     window_close_callback *callback;
 };
 
@@ -70,8 +79,8 @@ void window_sdl::process_window_event(SDL_Event *event) {
 }
 
 void window_sdl::process_update_event() {
-    if (!m_update_notify.completed) {
-        m_window_surface.slot_refresh(m_update_notify.plot_index);
+    if (!m_update_notify.completed()) {
+        m_window_surface.slot_refresh(m_update_notify.message());
         m_update_notify.notify();
     }
 }
@@ -140,7 +149,7 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     }
                 } else if (event.user.code == kCreateWindow) {
                     create_window_data *data = (create_window_data *) event.user.data1;
-                    const window_create_message& message = data->create->message;
+                    const window_create_message& message = data->create->message();
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
                     data->this_window->set_sdl_window(window);
@@ -268,10 +277,10 @@ void window_sdl::sdl_thread_create_window(const char *caption,
     SDL_zero(event);
     event.type = window_sdl::g_user_event_type;
     event.user.code = kCreateWindow;
-    window_create_notify create;
+    complete_notify<window_create_message> create;
     create_window_data data = {this, &create, callback};
     event.user.data1 = (void *) &data;
-    create.start(caption, width, height, flags);
+    create.start(window_create_message{caption, width, height, flags});
     if (SDL_PushEvent(&event) >= 0) {
         create.wait();
     }

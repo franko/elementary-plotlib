@@ -39,7 +39,7 @@ public:
     }
 
     void call_update_region() {
-        m_window_surface.slot_refresh(m_update_notify.plot_index);
+        m_window_surface.slot_refresh(m_update_notify.message());
         m_update_notify.notify();
     }
 

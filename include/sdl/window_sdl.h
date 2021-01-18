@@ -9,7 +9,6 @@
 #include "strpp.h"
 #include "update_region_notify.h"
 #include "window_close_callback.h"
-#include "window_create_notify.h"
 #include "window_surface.h"
 
 class window_sdl;
