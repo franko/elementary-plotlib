@@ -143,6 +143,7 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     const window_create_message& message = data->create->message;
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
+                    data->this_window->set_sdl_window(window);
                     data->this_window->register_window(window, data->callback);
                     data->create->notify();
                 }
@@ -152,7 +153,6 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
 }
 
 void window_sdl::register_window(SDL_Window *window, window_close_callback *close_callback) {
-    m_window = window;
     g_register_mutex.lock();
     g_window_entries.add(window_entry{this, SDL_GetWindowID(window), close_callback});
     g_register_mutex.unlock();
@@ -208,7 +208,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
         }
     }
     set_status(graphics::window_starting);
-    send_create_window_event("Graphics Window", width, height, flags, callback);
+    sdl_thread_create_window("Graphics Window", width, height, flags, callback);
     wait_for_status(graphics::window_running);
 }
 
@@ -257,9 +257,13 @@ bool window_sdl::send_update_region_event() {
     return false;
 }
 
-void window_sdl::send_create_window_event(const char *caption,
+void window_sdl::sdl_thread_create_window(const char *caption,
     unsigned width, unsigned height, unsigned flags, window_close_callback *callback)
 {
+    // This function post an event to the main SDL thread requesting
+    // a window creation. We attach some data to the event, create_window_data,
+    // with the instance address (this), the "create" object to notify about
+    // the window's creation and the "close callback".
     SDL_Event event;
     SDL_zero(event);
     event.type = window_sdl::g_user_event_type;
