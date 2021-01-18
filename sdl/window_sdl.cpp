@@ -12,11 +12,8 @@ struct window_create_message {
     unsigned width;
     unsigned height;
     unsigned flags;
-};
 
-struct create_window_data {
     window_sdl *this_window;
-    complete_notify<window_create_message> *create;
     window_close_callback *callback;
 };
 
@@ -148,13 +145,13 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                         window->process_update_event();
                     }
                 } else if (event.user.code == kCreateWindow) {
-                    create_window_data *data = (create_window_data *) event.user.data1;
-                    const window_create_message& message = data->create->message();
+                    complete_notify<window_create_message> *create = (complete_notify<window_create_message> *) event.user.data1;
+                    const window_create_message& message = create->message();
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
-                    data->this_window->set_sdl_window(window);
-                    data->this_window->register_window(window, data->callback);
-                    data->create->notify();
+                    message.this_window->set_sdl_window(window);
+                    message.this_window->register_window(window, message.callback);
+                    create->notify();
                 }
             }
         }
@@ -270,17 +267,18 @@ void window_sdl::sdl_thread_create_window(const char *caption,
     unsigned width, unsigned height, unsigned flags, window_close_callback *callback)
 {
     // This function post an event to the main SDL thread requesting
-    // a window creation. We attach some data to the event, create_window_data,
+    // a window creation. We attach some data to the event
     // with the instance address (this), the "create" object to notify about
     // the window's creation and the "close callback".
+    complete_notify<window_create_message> create;
+    create.start(window_create_message{caption, width, height, flags, this, callback});
+
     SDL_Event event;
     SDL_zero(event);
     event.type = window_sdl::g_user_event_type;
     event.user.code = kCreateWindow;
-    complete_notify<window_create_message> create;
-    create_window_data data = {this, &create, callback};
-    event.user.data1 = (void *) &data;
-    create.start(window_create_message{caption, width, height, flags});
+    event.user.data1 = (void *) &create;
+
     if (SDL_PushEvent(&event) >= 0) {
         create.wait();
     }
