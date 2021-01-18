@@ -17,29 +17,25 @@ struct window_create_notify {
     std::condition_variable condition;
     bool completed;
     window_create_message message;
-    void *new_window;
 
     window_create_notify(): completed(true) { }
 
     void start(const char *caption, unsigned width, unsigned height, unsigned flags) {
         completed = false;
         message = window_create_message{caption, width, height, flags};
-        new_window = nullptr;
     }
 
-    void notify(void *window) {
+    void notify() {
         mutex.lock();
         completed = true;
-        new_window = window;
         mutex.unlock();
         condition.notify_one();
     }
 
-    void *wait() {
+    void wait() {
         std::unique_lock<std::mutex> lk(mutex);
         if (!completed) {
             condition.wait(lk, [this] { return this->completed; });
         }
-        return new_window;
     }
 };

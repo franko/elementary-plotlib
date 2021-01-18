@@ -5,6 +5,12 @@
 
 #include "sdl/window_sdl.h"
 
+struct create_window_data {
+    window_sdl *this_window;
+    window_create_notify *create;
+    window_close_callback *callback;
+};
+
 bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_user_event_type = -1;
 std::mutex window_sdl::g_register_mutex;
@@ -35,22 +41,31 @@ static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
 }
 
 void window_sdl::process_window_event(SDL_Event *event) {
-    if (event->window.event == SDL_WINDOWEVENT_SHOWN) {
+    switch (event->window.event) {
+    case SDL_WINDOWEVENT_SHOWN: {
         SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
         m_pixel_format = find_pixel_format(window_surface);
         m_window_surface.resize(window_surface->w, window_surface->h);
         m_window_surface.render();
         set_status(graphics::window_running);
-    } else if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
+        break;
+    }
+    case SDL_WINDOWEVENT_RESIZED: {
         const int width = event->window.data1, height = event->window.data2;
         m_window_surface.resize(width, height);
         m_window_surface.render();
-    } else if (event->window.event == SDL_WINDOWEVENT_EXPOSED) {
+        break;
+    }
+    case SDL_WINDOWEVENT_EXPOSED:
         m_window_surface.update_window_area();
-    } else if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
+        break;
+    case SDL_WINDOWEVENT_CLOSE:
         SDL_DestroyWindow(m_window);
         unregister_window();
         set_status(graphics::window_closed);
+        break;
+    default:
+        break;
     }
 }
 
@@ -124,20 +139,22 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                         window->process_update_event();
                     }
                 } else if (event.user.code == kCreateWindow) {
-                    window_create_notify *create = (window_create_notify *) event.user.data1;
-                    const window_create_message& message = create->message;
+                    create_window_data *data = (create_window_data *) event.user.data1;
+                    const window_create_message& message = data->create->message;
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
-                    create->notify((void *) window);
+                    data->this_window->register_window(window, data->callback);
+                    data->create->notify();
                 }
             }
         }
     }
 }
 
-void window_sdl::register_window(Uint32 window_id, window_close_callback *close_callback) {
+void window_sdl::register_window(SDL_Window *window, window_close_callback *close_callback) {
+    m_window = window;
     g_register_mutex.lock();
-    g_window_entries.add(window_entry{this, window_id, close_callback});
+    g_window_entries.add(window_entry{this, SDL_GetWindowID(window), close_callback});
     g_register_mutex.unlock();
 }
 
@@ -191,8 +208,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
         }
     }
     set_status(graphics::window_starting);
-    m_window = send_create_window_event("Graphics Window", width, height, flags);
-    register_window(SDL_GetWindowID(m_window), callback);
+    send_create_window_event("Graphics Window", width, height, flags, callback);
     wait_for_status(graphics::window_running);
 }
 
@@ -241,18 +257,20 @@ bool window_sdl::send_update_region_event() {
     return false;
 }
 
-SDL_Window *window_sdl::send_create_window_event(const char *caption, unsigned width, unsigned height, unsigned flags) {
+void window_sdl::send_create_window_event(const char *caption,
+    unsigned width, unsigned height, unsigned flags, window_close_callback *callback)
+{
     SDL_Event event;
     SDL_zero(event);
     event.type = window_sdl::g_user_event_type;
     event.user.code = kCreateWindow;
     window_create_notify create;
-    event.user.data1 = (void *) &create;
+    create_window_data data = {this, &create, callback};
+    event.user.data1 = (void *) &data;
     create.start(caption, width, height, flags);
     if (SDL_PushEvent(&event) >= 0) {
-        return (SDL_Window *) create.wait();
+        create.wait();
     }
-    return nullptr;
 }
 
 bool window_sdl::send_close_window_event() {

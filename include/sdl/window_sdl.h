@@ -37,9 +37,9 @@ private:
 
     bool send_update_region_event();
     bool send_close_window_event();
-    SDL_Window *send_create_window_event(const char *caption, unsigned w, unsigned h, unsigned flags);
+    void send_create_window_event(const char *caption, unsigned w, unsigned h, unsigned flags, window_close_callback *callback);
 
-    void register_window(Uint32 window_id, window_close_callback *close_callback);
+    void register_window(SDL_Window *window, window_close_callback *close_callback);
     void unregister_window();
     void process_window_event(SDL_Event *event);
     void process_update_event();
