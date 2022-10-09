@@ -9,6 +9,7 @@ window_tests = [
     {'name': 'test-window-set-layout', 'sources': 'test-window-set-layout.cpp'},
     {'name': 'test-window-pushlayer', 'sources': 'test-window-pushlayer.cpp'},
     {'name': 'test-window-function', 'sources': 'test-window-function.cpp'},
+    {'name': 'test-window-function-ui-thread', 'sources': 'test-window-function-ui-thread.cpp'},
     {'name': 'test-window-markers', 'sources': 'test-window-markers.cpp'},
     {'name': 'test-window-anim', 'sources': 'test-window-anim.cpp'},
     {'name': 'test-window-many', 'sources': 'test-window-many.cpp'},

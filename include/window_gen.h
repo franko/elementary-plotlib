@@ -2,6 +2,7 @@
 
 #include "elem_plot.h"
 #include "elem_window.h"
+#include "status_notifier.h"
 #include "window_close_callback.h"
 #include "window_flags.h"
 #include "window_surface.h"
@@ -42,6 +43,12 @@ public:
 
     void slot_refresh(unsigned index) override {
         m_surface.slot_refresh_request(index);
+    }
+
+    // TODO: currently there is no point returning an int.
+    static int run_event_loop(status_notifier<task_status> *initialization) {
+        Window::event_loop(initialization);
+        return 0;
     }
 
     void start(unsigned width, unsigned height, unsigned flags) override {

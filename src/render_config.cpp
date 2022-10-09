@@ -26,9 +26,9 @@ agg::font_cache_manager<agg::font_engine_freetype_int32> global_font_man(global_
 const char *ttf_names[] = {"calibri.ttf", "arial.ttf", 0};
 const char *console_font_names[] = {"consolas", "lucida console", "fixedsys", 0};
 const char *console_font_filenames[] = {"consola.ttf", "lucon.ttf", "cvgafix.fon", 0};
-#elif defined (DARWIN_MACOSX)
-const char *ttf_names[] = {"Arial.ttf", "Trebuchet MS.ttf", "Courier New.ttf", 0};
-#define TTF_SYSTEM_DIR "/Library/Fonts/"
+#elif __APPLE__
+const char *ttf_names[] = {"Geneva.ttf", "NewYork.ttf", 0};
+#define TTF_SYSTEM_DIR "/System/Library/Fonts/"
 #define CONSOLE_FONT_NAME "Monaco"
 #else
 const char *ttf_names[] = {"ubuntu-font-family/Ubuntu-R.ttf", "freefont/FreeSans.ttf", "ttf-dejavu/DejaVuSans.ttf", 0};

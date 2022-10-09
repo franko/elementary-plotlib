@@ -19,8 +19,6 @@ struct window_entry {
     window_close_callback *close_callback;
 };
 
-enum task_status { kTaskRunning = 0, kTaskComplete };
-
 class window_sdl : public graphics::display_window_status {
     enum { kUpdateRegion, kCreateWindow };
 public:
@@ -29,6 +27,8 @@ public:
     void start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback);
     bool send_request(graphics::window_request request_type, int plot_index) override;
     void update_region(const graphics::image& img, const agg::rect_i& r) override;
+
+    static void event_loop(status_notifier<task_status> *initialization);
 
 private:
     int run();
@@ -45,7 +45,6 @@ private:
 
     void set_sdl_window(SDL_Window *window) { m_window = window; }
     static int initialize_sdl();
-    static void event_loop(status_notifier<task_status> *initialization);
     static window_sdl *select_on_window_id(Uint32 window_id);
     static void compact_window_register();
 

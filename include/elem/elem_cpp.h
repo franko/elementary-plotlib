@@ -241,6 +241,8 @@ private:
 };
 
 void InitializeFonts();
+
+int InitializeAndRun(void (*user_main)());
 }
 
 #endif

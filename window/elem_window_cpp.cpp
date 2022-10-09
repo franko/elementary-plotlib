@@ -8,6 +8,8 @@
 #include "global_elem_window_factory.h"
 #include "plot.h"
 #include "plot_agent.h"
+#include "status_notifier.h"
+#include "window_platform_sdl.h"
 
 namespace elem {
 
@@ -54,5 +56,19 @@ void Window::Wait() {
 
 void Window::Close() {
     window_impl_->close();
+}
+
+static void run_user_main(void (*user_main)(), status_notifier<task_status> *initialization) {
+    initialization->wait_for_status(kTaskComplete);
+    // FIXME: verify if the initialization was successful.
+    user_main();
+    delete initialization;
+}
+
+int InitializeAndRun(void (*user_main)()) {
+    auto initialization = new status_notifier<task_status>();
+    std::thread events_thread(run_user_main, user_main, initialization);
+    events_thread.detach();
+    return elem_window_sdl::run_event_loop(initialization);
 }
 }

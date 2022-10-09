@@ -4,6 +4,8 @@
 #include <condition_variable>
 #include <mutex>
 
+enum task_status { kTaskRunning = 0, kTaskComplete };
+
 template <typename StatusOrderedEnum>
 class status_notifier {
 public:
