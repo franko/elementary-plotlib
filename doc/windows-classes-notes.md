@@ -34,7 +34,7 @@ private:
 
 ## XWindow implementation
 
-Important: classes that contains a window_surface will call the function
+Important: classes that contains a `window_surface` will call the function
 
 ```c++
 // m_window is passed as a graphics::display_window.
@@ -51,7 +51,7 @@ private:
 
 ## Top level Window wrapper
 
-Template class. Can use either window_win32 or xwindow and template's argument.
+Template class. Can use either `window_win32` or `xwindow` and template's argument.
 
 ```c++
 class window_gen<xwindow> {
