@@ -30,16 +30,7 @@ install_headers('include/elem/elem_c_forward.h', subdir: 'elem')
 subdir('src')
 subdir('window')
 
-if get_option('sdl')
-    libelem_cflags += '-DELEM_PLOT_USE_SDL'
-    subdir('sdl')
-elif host_system == 'linux'
-    subdir('xwindow')
-elif host_is_window
-    subdir('win32')
-else
-    error('Host not supported \'' + host_machine.system() + '\'.')
-endif
+subdir('sdl')
 
 pkg = import('pkgconfig')
 
