@@ -4,7 +4,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot plot(Plot::ShowUnits);
@@ -26,3 +26,5 @@ int main() {
     utils::Sleep(2);
     return 0;
 }
+
+ELEM_GUI_LOOP()

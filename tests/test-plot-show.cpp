@@ -4,7 +4,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     Plot plot;
     const double x0 = 0.0001, x1 = 8 * math::Tau();
     plot.AddStroke(FxLine(x0, x1, [](double x) { return std::sin(x) / x; }), color::Blue, 1.5);
@@ -16,3 +16,5 @@ int main() {
     plot.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

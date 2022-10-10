@@ -4,7 +4,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot plot;
@@ -29,3 +29,5 @@ int main() {
     window.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

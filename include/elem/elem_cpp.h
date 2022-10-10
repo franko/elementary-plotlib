@@ -242,7 +242,7 @@ private:
 
 void InitializeFonts();
 
-int InitializeAndRun(void (*user_main)());
+int InitializeAndRun(int (*user_main)());
 }
 
 #endif

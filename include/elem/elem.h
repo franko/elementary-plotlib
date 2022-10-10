@@ -36,4 +36,20 @@
 #include "elem/elem_c.h"
 #endif
 
+// On macOS the UI event loops needs to run on the main thread
+// so we set the variable above to configure accordingly.
+#if __APPLE__
+#define ELEM_UI_MAIN_THREAD
+#endif
+
+#ifdef ELEM_UI_MAIN_THREAD
+#define ELEM_USER_MAIN() static int elem_user_main_()
+#define ELEM_GUI_LOOP() int main() { \
+    return elem::InitializeAndRun(elem_user_main_); \
+}
+#else
+#define ELEM_USER_MAIN() int main()
+#define ELEM_GUI_LOOP()
+#endif
+
 #endif

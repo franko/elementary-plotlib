@@ -3,7 +3,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot p(Plot::ShowUnits);
@@ -28,3 +28,5 @@ int main() {
     win.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

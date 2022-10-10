@@ -19,6 +19,7 @@ struct window_create_message {
 
 bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_user_event_type = -1;
+int window_sdl::g_sdl_init_status = -1;
 std::mutex window_sdl::g_register_mutex;
 agg::pod_bvector<window_entry> window_sdl::g_window_entries;
 
@@ -101,8 +102,10 @@ int window_sdl::initialize_sdl() {
     int (*SetProcessDPIAware)() = (int (*)()) GetProcAddress(lib, "SetProcessDPIAware");
     SetProcessDPIAware();
 #endif
-    if (SDL_Init(SDL_INIT_VIDEO)) {
-        return (-1);
+    g_sdl_init_status = SDL_Init(SDL_INIT_VIDEO);
+    if (g_sdl_init_status) {
+        fprintf(stderr, "error starting graphical system: %s\n", SDL_GetError());
+        return g_sdl_init_status;
     }
     g_user_event_type = SDL_RegisterEvents(1);
     if (g_user_event_type == ((Uint32)-1)) {
@@ -295,6 +298,17 @@ bool window_sdl::send_close_window_event() {
         return (SDL_PushEvent(&event) >= 0);
     }
     return false;
+}
+
+void window_sdl::send_quit_event() {
+    SDL_Event event;
+    SDL_zero(event);
+    event.type = SDL_QUIT;
+    SDL_PushEvent(&event);
+}
+
+bool window_sdl::initialization_success() {
+    return (g_sdl_init_status == 0);
 }
 
 bool window_sdl::send_request(graphics::window_request request_type, int index) {

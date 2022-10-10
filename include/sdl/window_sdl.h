@@ -29,6 +29,8 @@ public:
     void update_region(const graphics::image& img, const agg::rect_i& r) override;
 
     static void event_loop(status_notifier<task_status> *initialization);
+    static void send_quit_event();
+    static bool initialization_success();
 
 private:
     int run();
@@ -60,4 +62,5 @@ private:
 
     static Uint32 g_user_event_type;
     static bool g_sdl_initialized;
+    static int g_sdl_init_status;
 };

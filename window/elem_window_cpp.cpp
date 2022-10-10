@@ -58,17 +58,24 @@ void Window::Close() {
     window_impl_->close();
 }
 
-static void run_user_main(void (*user_main)(), status_notifier<task_status> *initialization) {
+static void run_user_main(int (*user_main)(), status_notifier<task_status> *initialization, status_notifier<task_status> *main_task) {
     initialization->wait_for_status(kTaskComplete);
     // FIXME: verify if the initialization was successful.
-    user_main();
     delete initialization;
+    if (elem_window_sdl::initialization_success()) {
+        user_main();
+        elem_window_sdl::send_quit_event();
+    }
+    main_task->set(kTaskComplete);
 }
 
-int InitializeAndRun(void (*user_main)()) {
+int InitializeAndRun(int (*user_main)()) {
     auto initialization = new status_notifier<task_status>();
-    std::thread events_thread(run_user_main, user_main, initialization);
+    auto main_task = new status_notifier<task_status>();
+    std::thread events_thread(run_user_main, user_main, initialization, main_task);
     events_thread.detach();
-    return elem_window_sdl::run_event_loop(initialization);
+    int status = elem_window_sdl::run_event_loop(initialization);
+    main_task->wait_for_status(kTaskComplete);
+    return status;
 }
 }

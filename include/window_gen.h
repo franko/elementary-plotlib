@@ -51,6 +51,14 @@ public:
         return 0;
     }
 
+    static void send_quit_event() {
+        Window::send_quit_event();
+    }
+
+    static bool initialization_success() {
+        return Window::initialization_success();
+    }
+
     void start(unsigned width, unsigned height, unsigned flags) override {
         if (!graphics::global_fonts_initialized) {
             debug_log(1, "fonts not initialized, performing initialization");
