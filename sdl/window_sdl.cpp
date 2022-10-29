@@ -24,11 +24,12 @@ std::mutex window_sdl::g_register_mutex;
 agg::pod_bvector<window_entry> window_sdl::g_window_entries;
 
 window_sdl::window_sdl(graphics::window_surface& window_surface):
-    m_window(nullptr), m_pixel_format(agg::pix_format_undefined),
+    m_window(nullptr), m_renderer(nullptr), m_texture(nullptr),
     m_window_surface(window_surface)
 {
 }
 
+/*
 static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
     switch (surface->format->format) {
         case SDL_PIXELFORMAT_ABGR8888: // equal to SDL_PIXELFORMAT_RGBA32
@@ -46,20 +47,23 @@ static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
     }
     return agg::pix_format_undefined;
 }
+*/
 
 void window_sdl::process_window_event(SDL_Event *event) {
     switch (event->window.event) {
     case SDL_WINDOWEVENT_SHOWN: {
-        SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-        m_pixel_format = find_pixel_format(window_surface);
-        m_window_surface.resize(window_surface->w, window_surface->h);
+        int w, h;
+        SDL_GL_GetDrawableSize(m_window, &w, &h);
+        m_window_surface.resize(w, h);
         m_window_surface.render();
         set_status(graphics::window_running);
         break;
     }
     case SDL_WINDOWEVENT_RESIZED: {
-        const int width = event->window.data1, height = event->window.data2;
-        m_window_surface.resize(width, height);
+        int w, h;
+        SDL_GL_GetDrawableSize(m_window, &w, &h);
+        resize_renderer(w, h);
+        m_window_surface.resize(w, h);
         m_window_surface.render();
         break;
     }
@@ -67,6 +71,8 @@ void window_sdl::process_window_event(SDL_Event *event) {
         m_window_surface.update_window_area();
         break;
     case SDL_WINDOWEVENT_CLOSE:
+        SDL_DestroyTexture(m_texture);
+        SDL_DestroyRenderer(m_renderer);
         SDL_DestroyWindow(m_window);
         unregister_window();
         set_status(graphics::window_closed);
@@ -74,6 +80,17 @@ void window_sdl::process_window_event(SDL_Event *event) {
     default:
         break;
     }
+}
+
+void window_sdl::resize_renderer(int w, int h) {
+    if (m_renderer) {
+        SDL_DestroyTexture(m_texture);
+        SDL_DestroyRenderer(m_renderer);
+    }
+    m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+    // FIXME: the pixel format used below must agree with the one used by the
+    // window_surface and agree the one declared in render_config.h.
+    m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
 void window_sdl::process_update_event() {
@@ -161,6 +178,19 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     }
 }
 
+void window_sdl::set_sdl_window(SDL_Window *window) {
+    m_window = window;
+    // FIXME: split the following into its own method.
+    int w, h;
+    SDL_GL_GetDrawableSize(m_window, &w, &h);
+    m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+    // FIXME: the pixel format used below must agree with the one used by the
+    // window_surface and agree the one declared in render_config.h.
+    m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, w, h);
+    // FIXME: check that m_renderer is not NULL: It can happens, for example if SDL
+    // was compiled without renderer support.
+}
+
 void window_sdl::register_window(SDL_Window *window, window_close_callback *close_callback) {
     g_register_mutex.lock();
     g_window_entries.add(window_entry{this, SDL_GetWindowID(window), close_callback});
@@ -222,29 +252,22 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
 }
 
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
-    // We may consider using the function SDL_CreateRGBSurfaceWithFormatFrom to wrap
-    // the pixel data from the image and use SDL_BlitSurface to blit the pixels.
-    // Unfortunately the convention for the y sign is opposite and I know no way
-    // to make it work with SDL blit function.
+    SDL_Rect rect;
+    rect.x = r.x1;
+    rect.y = src_img.height() - r.y2;
+    rect.w = r.x2 - r.x1;
+    rect.h = r.y2 - r.y1;
     rendering_buffer_ro src_view;
     rendering_buffer_get_const_view(src_view, src_img, r, graphics::image::pixel_size);
 
-    SDL_Surface *window_surface = SDL_GetWindowSurface(m_window);
-    Uint8 *pixels = (Uint8 *) window_surface->pixels;
-
-    const int window_bpp = window_surface->format->BytesPerPixel;
-    rendering_buffer dst(pixels, window_surface->w, window_surface->h, -window_surface->w * window_bpp);
-    rendering_buffer dst_view;
-    rendering_buffer_get_view(dst_view, dst, r, window_bpp);
-
-    rendering_buffer_copy(dst_view, m_pixel_format, src_view, (agg::pix_format_e) graphics::pixel_format);
-
-    SDL_Rect rect;
-    rect.x = r.x1;
-    rect.y = window_surface->h - r.y2;
-    rect.w = r.x2 - r.x1;
-    rect.h = r.y2 - r.y1;
-    SDL_UpdateWindowSurfaceRects(m_window, &rect, 1);
+    Uint8 *pixels;
+    int pitch;
+    SDL_LockTexture(m_texture, &rect, (void **) &pixels, &pitch);
+    rendering_buffer dst(pixels, r.x2 - r.x1, r.y2 - r.y1, -pitch);
+    dst.copy_from(src_view);
+    SDL_UnlockTexture(m_texture);
+    SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
+    SDL_RenderPresent(m_renderer);
 }
 
 /* When querying about the status of the window in the method below and

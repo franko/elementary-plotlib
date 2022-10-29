@@ -45,13 +45,15 @@ private:
     void process_window_event(SDL_Event *event);
     void process_update_event();
 
-    void set_sdl_window(SDL_Window *window) { m_window = window; }
+    void set_sdl_window(SDL_Window *window);
+    void resize_renderer(int w, int h);
     static int initialize_sdl();
     static window_sdl *select_on_window_id(Uint32 window_id);
     static void compact_window_register();
 
     SDL_Window *m_window;
-    agg::pix_format_e m_pixel_format;
+    SDL_Renderer *m_renderer;
+    SDL_Texture *m_texture;
     update_region_notify m_update_notify;
     graphics::window_surface& m_window_surface;
 
