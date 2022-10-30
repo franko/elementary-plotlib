@@ -38,15 +38,15 @@ private:
 
     bool send_update_region_event();
     bool send_close_window_event();
-    void sdl_thread_create_window(const char *caption, unsigned w, unsigned h, unsigned flags, window_close_callback *callback);
+    bool sdl_thread_create_window(const char *caption, unsigned w, unsigned h, unsigned flags, window_close_callback *callback);
 
     void register_window(SDL_Window *window, window_close_callback *close_callback);
     void unregister_window();
     void process_window_event(SDL_Event *event);
     void process_update_event();
 
-    void set_sdl_window(SDL_Window *window);
-    void resize_renderer(int w, int h);
+    void setup_sdl_window(SDL_Window *window);
+    void setup_renderer(int w, int h);
     static int initialize_sdl();
     static window_sdl *select_on_window_id(Uint32 window_id);
     static void compact_window_register();

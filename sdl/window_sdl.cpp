@@ -3,15 +3,19 @@
 #endif
 #include <stdint.h>
 
+#include "render_config.h"
 #include "sdl/window_sdl.h"
 
 #include "complete_notify.h"
 
 struct window_create_message {
+    enum { success = 0, window_error };
+
     const char *caption;
     unsigned width;
     unsigned height;
     unsigned flags;
+    int return_code;
 
     window_sdl *this_window;
     window_close_callback *callback;
@@ -29,25 +33,21 @@ window_sdl::window_sdl(graphics::window_surface& window_surface):
 {
 }
 
-/*
-static agg::pix_format_e find_pixel_format(SDL_Surface *surface) {
-    switch (surface->format->format) {
-        case SDL_PIXELFORMAT_ABGR8888: // equal to SDL_PIXELFORMAT_RGBA32
-        case SDL_PIXELFORMAT_BGR888:
-            return agg::pix_format_rgba32;
-        case SDL_PIXELFORMAT_ARGB8888: // equal to SDL_PIXELFORMAT_BGRA32
-        case SDL_PIXELFORMAT_RGB888:
-            return agg::pix_format_bgra32;
-        case SDL_PIXELFORMAT_BGR24:
-            return agg::pix_format_bgr24;
-        case SDL_PIXELFORMAT_RGB24:
-            return agg::pix_format_rgb24;
+static Uint32 config_sdl_pixel_format() {
+    switch (graphics::pixel_format) {
+        case agg::pix_format_bgr24:
+            return SDL_PIXELFORMAT_BGR24;
+        case agg::pix_format_rgb24:
+            return SDL_PIXELFORMAT_RGB24;
+        case agg::pix_format_bgra32:
+            return SDL_PIXELFORMAT_BGRA32;
+        case agg::pix_format_rgba32:
+            return SDL_PIXELFORMAT_RGBA32;
         default:
-            break;
+            /* */;
     }
-    return agg::pix_format_undefined;
+    return SDL_PIXELFORMAT_UNKNOWN;
 }
-*/
 
 void window_sdl::process_window_event(SDL_Event *event) {
     switch (event->window.event) {
@@ -62,7 +62,7 @@ void window_sdl::process_window_event(SDL_Event *event) {
     case SDL_WINDOWEVENT_RESIZED: {
         int w, h;
         SDL_GL_GetDrawableSize(m_window, &w, &h);
-        resize_renderer(w, h);
+        setup_renderer(w, h);
         m_window_surface.resize(w, h);
         m_window_surface.render();
         break;
@@ -82,15 +82,18 @@ void window_sdl::process_window_event(SDL_Event *event) {
     }
 }
 
-void window_sdl::resize_renderer(int w, int h) {
+void window_sdl::setup_renderer(int w, int h) {
+    // We assume the renderer and texture are always either both initialized
+    // or null.
     if (m_renderer) {
         SDL_DestroyTexture(m_texture);
         SDL_DestroyRenderer(m_renderer);
     }
     m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-    // FIXME: the pixel format used below must agree with the one used by the
-    // window_surface and agree the one declared in render_config.h.
-    m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, w, h);
+    // We use for the texture the same pixel format of the render_config.h
+    // file to match the pixel format used in the window_surface.
+    m_texture = SDL_CreateTexture(m_renderer, config_sdl_pixel_format(), SDL_TEXTUREACCESS_STREAMING, w, h);
+    assert(m_renderer != nullptr && m_texture != nullptr);
 }
 
 void window_sdl::process_update_event() {
@@ -166,11 +169,17 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     }
                 } else if (event.user.code == kCreateWindow) {
                     complete_notify<window_create_message> *create = (complete_notify<window_create_message> *) event.user.data1;
-                    const window_create_message& message = create->message();
+                    window_create_message& message = create->message();
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
-                    message.this_window->set_sdl_window(window);
+                    if (!window) {
+                        message.return_code = window_create_message::window_error;
+                        create->notify();
+                        break;
+                    }
+                    message.this_window->setup_sdl_window(window);
                     message.this_window->register_window(window, message.callback);
+                    message.return_code = window_create_message::success;
                     create->notify();
                 }
             }
@@ -178,17 +187,11 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     }
 }
 
-void window_sdl::set_sdl_window(SDL_Window *window) {
+void window_sdl::setup_sdl_window(SDL_Window *window) {
     m_window = window;
-    // FIXME: split the following into its own method.
     int w, h;
     SDL_GL_GetDrawableSize(m_window, &w, &h);
-    m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-    // FIXME: the pixel format used below must agree with the one used by the
-    // window_surface and agree the one declared in render_config.h.
-    m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, w, h);
-    // FIXME: check that m_renderer is not NULL: It can happens, for example if SDL
-    // was compiled without renderer support.
+    setup_renderer(w, h);
 }
 
 void window_sdl::register_window(SDL_Window *window, window_close_callback *close_callback) {
@@ -247,8 +250,9 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
         }
     }
     set_status(graphics::window_starting);
-    sdl_thread_create_window("Graphics Window", width, height, flags, callback);
-    wait_for_status(graphics::window_running);
+    if (sdl_thread_create_window("Graphics Window", width, height, flags, callback)) {
+        wait_for_status(graphics::window_running);
+    }
 }
 
 void window_sdl::update_region(const graphics::image& src_img, const agg::rect_i& r) {
@@ -289,7 +293,7 @@ bool window_sdl::send_update_region_event() {
     return false;
 }
 
-void window_sdl::sdl_thread_create_window(const char *caption,
+bool window_sdl::sdl_thread_create_window(const char *caption,
     unsigned width, unsigned height, unsigned flags, window_close_callback *callback)
 {
     // This function post an event to the main SDL thread requesting
@@ -297,7 +301,7 @@ void window_sdl::sdl_thread_create_window(const char *caption,
     // with the instance address (this), the "create" object to notify about
     // the window's creation and the "close callback".
     complete_notify<window_create_message> create;
-    create.start(window_create_message{caption, width, height, flags, this, callback});
+    create.start(window_create_message{caption, width, height, flags, window_create_message::success, this, callback});
 
     SDL_Event event;
     SDL_zero(event);
@@ -308,6 +312,11 @@ void window_sdl::sdl_thread_create_window(const char *caption,
     if (SDL_PushEvent(&event) >= 0) {
         create.wait();
     }
+    if (create.message().return_code == window_create_message::window_error) {
+        fprintf(stderr, "fatal error: cannot create SDL window\n");
+        return false;
+    }
+    return true;
 }
 
 bool window_sdl::send_close_window_event() {
