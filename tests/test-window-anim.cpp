@@ -25,7 +25,7 @@ void AddTriangle(Plot& plot, double x, double y, double size, double angle, Colo
     plot.Add(line, color::Black, 1.0, fill_color, property::Fill | property::Stroke);
 }
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot plot(Plot::ShowUnits);
@@ -56,3 +56,5 @@ int main() {
     window.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()
