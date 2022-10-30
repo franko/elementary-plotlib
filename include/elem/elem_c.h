@@ -163,6 +163,7 @@ void elem_window_wait(elem_window *win);
 
 // TODO: document initialize fonts function
 void elem_initialize_fonts();
+int elem_initialize_and_run(int (*user_main)());
 
 // TODO: document all the cast functions below
 static inline elem_object *path_as_object(elem_path *p) {

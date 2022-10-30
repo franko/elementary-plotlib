@@ -44,9 +44,15 @@
 
 #ifdef ELEM_UI_MAIN_THREAD
 #define ELEM_USER_MAIN() static int elem_user_main_()
+#ifdef __cplusplus
 #define ELEM_GUI_LOOP() int main() { \
     return elem::InitializeAndRun(elem_user_main_); \
 }
+#else
+#define ELEM_GUI_LOOP() int main() { \
+    return elem_initialize_and_run(elem_user_main_); \
+}
+#endif
 #else
 #define ELEM_USER_MAIN() int main()
 #define ELEM_GUI_LOOP()

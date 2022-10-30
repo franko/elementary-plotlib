@@ -7,6 +7,8 @@
 #include "plot_agent.h"
 #include "elem_window.h"
 #include "elem/elem_c_forward.h"
+#include "status_notifier.h"
+#include "window_platform_sdl.h"
 
 void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags) {
     plot->show(width, height, flags);
@@ -50,4 +52,25 @@ void elem_window_wait(elem_window *win) {
 
 void elem_window_free(elem_window *win) {
     win->release();
+}
+
+static void run_user_main(int (*user_main)(), status_notifier<task_status> *initialization, status_notifier<task_status> *main_task) {
+    initialization->wait_for_status(kTaskComplete);
+    // FIXME: verify if the initialization was successful.
+    delete initialization;
+    if (elem_window_sdl::initialization_success()) {
+        user_main();
+        elem_window_sdl::send_quit_event();
+    }
+    main_task->set(kTaskComplete);
+}
+
+int elem_initialize_and_run(int (*user_main)()) {
+    auto initialization = new status_notifier<task_status>();
+    auto main_task = new status_notifier<task_status>();
+    std::thread events_thread(run_user_main, user_main, initialization, main_task);
+    events_thread.detach();
+    int status = elem_window_sdl::run_event_loop(initialization);
+    main_task->wait_for_status(kTaskComplete);
+    return status;
 }

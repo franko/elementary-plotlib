@@ -1,7 +1,7 @@
 // #include "elem/elem_utils.h"
 #include "elem/elem.h"
 
-int main() {
+ELEM_USER_MAIN() {
     elem_initialize_fonts();
 
     elem_plot *plot = elem_plot_new(elem_plot_show_units);
@@ -34,3 +34,5 @@ int main() {
     elem_plot_free(plot);
     return 0;
 }
+
+ELEM_GUI_LOOP()
