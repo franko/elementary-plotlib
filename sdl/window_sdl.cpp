@@ -171,6 +171,11 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     complete_notify<window_create_message> *create = (complete_notify<window_create_message> *) event.user.data1;
                     window_create_message& message = create->message();
                     Uint32 window_flags = SDL_WINDOW_ALLOW_HIGHDPI | (message.flags & graphics::window_resize ? SDL_WINDOW_RESIZABLE : 0);
+#if __APPLE__
+                    window_flags |= SDL_WINDOW_METAL;
+#else
+                    window_flags |= SDL_WINDOW_OPENGL;
+#endif
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
                     if (!window) {
                         message.return_code = window_create_message::window_error;
