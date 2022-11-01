@@ -20,9 +20,8 @@ public:
         m_mutex.lock();
         m_status = new_status;
         if (m_request_pending && m_request_status == new_status) {
-            m_request_pending = false;
-            m_mutex.unlock();
             m_condition.notify_one();
+            m_mutex.unlock(); // Valgrid seems to suggest it should go after the notify.
         } else {
             m_mutex.unlock();
         }
@@ -32,11 +31,10 @@ public:
         std::unique_lock<std::mutex> lk(m_mutex);
         assert(!m_request_pending);
         m_request_status = request;
-        m_request_pending = true;
         if (m_status < request) {
+            m_request_pending = true;
             m_condition.wait(lk, [this] { return this->m_status >= this->m_request_status; });
-        } else {
-            lk.unlock();
+            m_request_pending = false;
         }
     }
 

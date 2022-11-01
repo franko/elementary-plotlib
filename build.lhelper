@@ -1,3 +1,3 @@
 BUILD_TYPE=Release
 
-packages=("sdl2 -render -opengl" "luajit 2.1.0-beta3.1" "libagg" "freetype2" "sol2")
+packages=("sdl2 -render -opengl -threads" "luajit 2.1.0-beta3.1" "libagg" "freetype2" "sol2")
