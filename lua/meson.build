@@ -17,3 +17,9 @@ pkg.generate(libelem_lua,
     description : 'The Elementary Plot library, Lua bindings',
     url : 'github.com/franko/elementary-plotlib',
 )
+
+libelemlua_dep = declare_dependency(
+    dependencies : libelemwin_dep,
+    include_directories : libelem_include,
+    link_with : libelem_lua
+)

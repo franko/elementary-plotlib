@@ -10,3 +10,9 @@ libelem_win = static_library('elemwin', libelem_sdl_src + libelem_win_api_src,
     dependencies: [libelem_dep, sdl_dep, dl_library],
     install: true
 )
+
+libelemwin_dep = declare_dependency(
+    dependencies : libelem_dep,
+    include_directories : libelem_include,
+    link_with : libelem_win
+)
