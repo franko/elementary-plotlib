@@ -18,6 +18,10 @@ public:
         graphics::plot{std::move(other)},
         m_plot_agent{std::move(other.m_plot_agent)} {
     }
+    elem_plot(const graphics::plot& other):
+        graphics::plot{other},
+        m_plot_agent{} {
+    }
 
     ~elem_plot();
 

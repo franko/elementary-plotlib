@@ -15,6 +15,7 @@ window_tests = [
     {'name': 'test-custom-render-pipeline', 'sources': 'test-custom-render-pipeline.cpp'},
     {'name': 'test-window-outline', 'sources': 'test-window-outline.cpp'},
     {'name': 'test-plot-legend', 'sources': 'test-plot-legend.cpp'},
+    {'name': 'test-plot-legend-2', 'sources': 'test-plot-legend-2.cpp'},
     {'name': 'test-plot-copy', 'sources': 'test-plot-copy.cpp'},
     {'name': 'test-plot-dash-lines', 'sources': 'test-plot-dash-lines.cpp'},
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},

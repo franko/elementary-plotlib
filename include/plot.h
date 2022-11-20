@@ -279,8 +279,12 @@ public:
     }
 
     void add_legend(plot* p, placement_e where) {
+        if (m_legend[where]) {
+            delete m_legend[where];
+        }
         m_legend[where] = p;
     }
+
     plot* get_legend(placement_e where) {
         return m_legend[where];
     }

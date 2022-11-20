@@ -87,9 +87,13 @@ Plot
 
     Discard the current layer with all its content. The previous layer will become the current one. If the plot has only one layer the operation has no effect.
 
-  .. cpp:function:: void AddLegend(Plot legend, Placement location)
+  .. cpp:function:: void SetLegend(Plot legend, Placement location)
 
-    Add a new plot as a legend in the given location.
+    Set the given plot as a legend in the given location.
+
+  .. cpp:function:: void GetLegend(Placement location)
+
+    Returns a copy of the plot's legend in the given location.
 
   .. cpp:function:: void Show(unsigned width, unsigned height, unsigned flags)
 

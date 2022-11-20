@@ -187,8 +187,13 @@ public:
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1, ClipRegion = 1 << 2 };
     enum Placement { Right = 0, Left = 1, Bottom = 2, Top = 3 };
 
-    Plot() : Plot(ShowUnits | AutoLimits) { }
-    Plot(unsigned flags);
+    struct Options {
+        Options() : value(ShowUnits | AutoLimits) { }
+        Options(unsigned flags) : value(flags) { }
+        unsigned value;
+    };
+
+    Plot(Options flags = Options{});
     Plot(const Plot& other);
     Plot(Plot&& other);
     ~Plot();
@@ -210,10 +215,12 @@ public:
     bool PopLayer();
     void Show(unsigned width, unsigned height, unsigned flags);
     void ClearLayer();
-    void AddLegend(Plot legend, Placement location);
+    void SetLegend(Plot legend, Placement location);
+    Plot GetLegend(Placement legend_location);
     bool WriteSvg(const char *filename, double width, double height);
     void Wait();
 private:
+    Plot(elem_plot *impl);
     void UpdateWindowsAndCommitChanges();
 
     elem_plot *plot_impl_;

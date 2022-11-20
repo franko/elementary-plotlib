@@ -59,7 +59,7 @@ void LuaOpenLibrary(lua_State *L) {
         "PushLayer", &Plot::PushLayer,
         "PopLayer", &Plot::PopLayer,
         "ClearLayer", &Plot::ClearLayer,
-        "AddLegend", &Plot::AddLegend,
+        "SetLegend", &Plot::SetLegend,
         "Show", &Plot::Show,
         "Wait", &Plot::Wait,
         "WriteSvg", &Plot::WriteSvg

@@ -137,13 +137,16 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
-Plot::Plot(unsigned flags) : plot_impl_{new elem_plot{flags}} {
+Plot::Plot(Plot::Options options) : plot_impl_{new elem_plot{options.value}} {
 }
 
 Plot::Plot(const Plot& other) : plot_impl_{new elem_plot{*other.plot_impl_}} {
 }
 
 Plot::Plot(Plot&& other) : plot_impl_{new elem_plot{std::move(*other.plot_impl_)}} {
+}
+
+Plot::Plot(elem_plot *impl) : plot_impl_{impl} {
 }
 
 Plot::~Plot() {
@@ -219,9 +222,17 @@ void Plot::AddStroke(Object object, Color color, float line_width, unsigned flag
     Add(std::move(object), color, line_width, Color(0), flags);
 }
 
-void Plot::AddLegend(Plot legend, Plot::Placement legend_location) {
+void Plot::SetLegend(Plot legend, Plot::Placement legend_location) {
     auto legend_plot = new graphics::plot{std::move(*legend.plot_impl_)};
     plot_impl_->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
+}
+
+Plot Plot::GetLegend(Plot::Placement legend_location) {
+    auto legend_plot = plot_impl_->get_legend((graphics::plot::placement_e) legend_location);
+    if (!legend_plot) {
+        return Plot{};
+    }
+    return Plot{new elem_plot{*legend_plot}};
 }
 
 bool Plot::PushLayer() {
