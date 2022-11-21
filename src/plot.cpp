@@ -88,7 +88,7 @@ void plot::clip_plot_area(canvas_type& canvas, const agg::trans_affine& area_mtx
     if (this->clip_is_active())
     {
         agg::rect_base<int> clip = rect_of_slot_matrix<int>(area_mtx);
-        canvas.clip_box(clip);
+        canvas.clip_logical_area(clip);
     }
 }
 
@@ -274,7 +274,7 @@ void plot::draw_axis(canvas_type& canvas, plot_layout& layout, const agg::rect_i
     const double scale = compute_scale(layout.plot_area);
 
     if (clip)
-        canvas.clip_box(*clip);
+        canvas.clip_logical_area(*clip);
 
     const agg::trans_affine& m = layout.plot_active_area;
 

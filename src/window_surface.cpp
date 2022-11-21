@@ -31,17 +31,17 @@ void window_surface::split(const char* split_str)
         m_plots.add(empty);
 }
 
-bool window_surface::resize(unsigned ww, unsigned hh)
+bool window_surface::resize(unsigned ww, unsigned hh, int w_pixels, int h_pixels)
 {
     m_save_img.clear();
 
     for (unsigned k = 0; k < plot_number(); k++)
         m_plots[k].have_save_img = false;
 
-    if (likely(m_img.resize(ww, hh)))
+    if (likely(m_img.resize(w_pixels, h_pixels)))
     {
         delete m_canvas;
-        m_canvas = new(std::nothrow) canvas(m_img, ww, hh, colors::white());
+        m_canvas = new(std::nothrow) canvas(m_img, w_pixels / ww, h_pixels / hh, colors::white());
         return (m_canvas != NULL);
     }
     return false;
@@ -49,7 +49,7 @@ bool window_surface::resize(unsigned ww, unsigned hh)
 
 void window_surface::render_by_ref(plot::drawing_context& dc, plot_ref& ref, const agg::rect_i& r)
 {
-    m_canvas->clear_box(r);
+    m_canvas->clear_logical_area(r);
     if (ref.plot_ptr) {
         ref.plot_ptr->draw(dc, *m_canvas, r, &ref.inf);
     }
@@ -57,7 +57,8 @@ void window_surface::render_by_ref(plot::drawing_context& dc, plot_ref& ref, con
 
 void window_surface::render_plot_by_index(plot::drawing_context& dc, unsigned index)
 {
-    int canvas_width = get_width(), canvas_height = get_height();
+    int canvas_width, canvas_height;
+    get_canvas_logical_size(canvas_width, canvas_height);
     plot_ref& ref = m_plots[index];
     agg::rect_i area = m_part.rect(index, canvas_width, canvas_height);
     render_by_ref(dc, ref, area);
@@ -81,7 +82,8 @@ window_surface::render_drawing_queue(plot::drawing_context& dc, plot_ref& ref, c
 opt_rect<int>
 window_surface::render_drawing_queue(plot::drawing_context& dc, unsigned index)
 {
-    int canvas_width = get_width(), canvas_height = get_height();
+    int canvas_width, canvas_height;
+    get_canvas_logical_size(canvas_width, canvas_height);
     plot_ref& ref = m_plots[index];
 
     if (unlikely(!ref.plot_ptr))
@@ -101,7 +103,8 @@ int window_surface::attach(elem_plot* p, const char* slot_str)
 
 bool window_surface::save_plot_image(unsigned index)
 {
-    int ww = get_width(), hh = get_height();
+    int ww, hh;
+    get_image_pixels_size(ww, hh);
     if (unlikely(!m_save_img.ensure_size(ww, hh))) return false;
 
     agg::rect_i r = m_part.rect(index, ww, hh);
@@ -115,16 +118,18 @@ bool window_surface::restore_plot_image(unsigned index)
     if (unlikely(!m_plots[index].have_save_img))
         fatal_exception("window_surface::restore_slot_image invalid restore image");
 
-    int ww = get_width(), hh = get_height();
+    int ww, hh;
+    get_image_pixels_size(ww, hh);
     agg::rect_i r = m_part.rect(index, ww, hh);
     image::copy_region(m_img, m_save_img, r);
     return true;
 }
 
-agg::rect_i window_surface::get_plot_area(unsigned index) const
+agg::rect_i window_surface::get_plot_pixels_area(unsigned index) const
 {
-    int canvas_width = get_width(), canvas_height = get_height();
-    return m_part.rect(index, canvas_width, canvas_height);
+    int w_pixels, h_pixels;
+    get_image_pixels_size(w_pixels, h_pixels);
+    return m_part.rect(index, w_pixels, h_pixels);
 }
 
 void window_surface::slot_refresh_request(unsigned index) {
@@ -136,7 +141,9 @@ void window_surface::slot_refresh_request(unsigned index) {
 }
 
 void window_surface::update_window_area() {
-    const agg::rect_i r(0, 0, get_width(), get_height());
+    int w_pixels, h_pixels;
+    get_image_pixels_size(w_pixels, h_pixels);
+    const agg::rect_i r(0, 0, w_pixels, h_pixels);
     m_window->update_region(m_img, r);
 }
 
@@ -151,17 +158,17 @@ void window_surface::slot_refresh(unsigned index)
     if (redraw) {
         render_plot_by_index(dc, index);
         render_drawing_queue(dc, index);
-        agg::rect_i area = get_plot_area(index);
+        agg::rect_i area = get_plot_pixels_area(index);
         m_window->update_region(m_img, area);
     } else {
         opt_rect<int> r = render_drawing_queue(dc, index);
-        agg::rect_i area = get_plot_area(index);
+        agg::rect_i area = get_plot_pixels_area(index);
         if (r.is_defined()) {
             const int pad = 4;
             const agg::rect_i& ri = r.rect();
             agg::rect_i r_pad(ri.x1 - pad, ri.y1 - pad, ri.x2 + pad, ri.y2 + pad);
             r_pad.clip(area);
-            m_window->update_region(m_img, r_pad);
+            m_window->update_region(m_img, m_canvas->hidpi_scaled_rect(r_pad));
         }
     }
 }

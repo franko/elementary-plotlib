@@ -55,8 +55,8 @@ public:
         m_canvas->draw_noaa(vs, c);
     }
 
-    virtual void clip_box(const agg::rect_base<int>& clip) {
-        m_canvas->clip_box(clip);
+    virtual void clip_logical_area(const agg::rect_base<int>& clip) {
+        m_canvas->clip_logical_area(clip);
     }
 
     virtual void reset_clipping() {

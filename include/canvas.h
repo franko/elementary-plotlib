@@ -166,14 +166,33 @@ class canvas_gen : public Renderer {
     agg::scanline_u8 sl;
 
 public:
-    canvas_gen(agg::rendering_buffer& ren_buf, double width, double height,
-               agg::rgba8 bgcol):
-        Renderer(ren_buf, bgcol), ras(), sl()
+    canvas_gen(agg::rendering_buffer& ren_buf, agg::rgba8 bgcol):
+        Renderer(ren_buf, bgcol), ras(), sl(), m_hidpi_scale_x(1), m_hidpi_scale_y(1)
     { }
+
+    canvas_gen(agg::rendering_buffer& ren_buf, int hidpi_x, int hidpi_y, agg::rgba8 bgcol):
+        Renderer(ren_buf, bgcol), ras(), sl(), m_hidpi_scale_x(hidpi_x), m_hidpi_scale_y(hidpi_y)
+    { }
+
+    template <typename Rect>
+    Rect hidpi_scaled_rect(const Rect& r) {
+        return {r.x1 * m_hidpi_scale_x, r.y1 * m_hidpi_scale_y, r.x2 * m_hidpi_scale_x, r.y2 * m_hidpi_scale_y};
+    }
+
+    void clear_logical_area(const agg::rect_i& r)
+    {
+        this->clear_box(this->hidpi_scaled_rect(r));
+    }
 
     void draw(elem_object& vs, agg::rgba8 c)
     {
-        this->add_path(this->ras, vs);
+        if (has_hidpi_scaling()) {
+            agg::trans_affine_scaling hidpi_scale_m(m_hidpi_scale_x, m_hidpi_scale_y);
+            agg::conv_transform<elem_object> scaled_vs(vs, hidpi_scale_m);
+            this->add_path(this->ras, scaled_vs);
+        } else {
+            this->add_path(this->ras, vs);
+        }
         this->color(c);
         this->render_scanlines(this->ras, this->sl);
     }
@@ -184,7 +203,13 @@ public:
         agg::renderer_scanline_bin_solid<agg::renderer_base<PixelNoSub>> ren_bin(rb);
         agg::scanline_bin sl_bin;
         ren_bin.color(c);
-        this->ras.add_path(vs);
+        if (has_hidpi_scaling()) {
+            agg::trans_affine_scaling hidpi_scale_m(m_hidpi_scale_x, m_hidpi_scale_y);
+            agg::conv_transform<elem_object> scaled_vs(vs, hidpi_scale_m);
+            this->ras.add_path(scaled_vs);
+        } else {
+            this->ras.add_path(vs);
+        }
         agg::render_scanlines(this->ras, sl_bin, ren_bin);
     }
 
@@ -194,15 +219,37 @@ public:
         renderer_prim ren_prim(Renderer::renderer_base);
         agg::rasterizer_outline<renderer_prim> ras_outline(ren_prim);
         ren_prim.line_color(c);
-        ras_outline.add_path(vs);
+        if (has_hidpi_scaling()) {
+            agg::trans_affine_scaling hidpi_scale_m(m_hidpi_scale_x, m_hidpi_scale_y);
+            agg::conv_transform<elem_object> scaled_vs(vs, hidpi_scale_m);
+            ras_outline.add_path(scaled_vs);
+        } else {
+            ras_outline.add_path(vs);
+        }
     }
+
+    bool has_hidpi_scaling() const {
+        return (m_hidpi_scale_x != 1) || (m_hidpi_scale_y != 1);
+    }
+
+    void get_logical_size(int& width, int& height) const {
+        width = this->width() / m_hidpi_scale_x;
+        height = this->height() / m_hidpi_scale_y;
+    }
+
+    void clip_logical_area(const agg::rect_i& r) {
+        this->clip_box(this->hidpi_scaled_rect(r));
+    }
+
+private:
+    const short int m_hidpi_scale_x, m_hidpi_scale_y;
 };
 
 struct virtual_canvas {
     virtual void draw(elem_object& vs, agg::rgba8 c) = 0;
     virtual void draw_outline_noaa(elem_object& vs, agg::rgba8 c) = 0;
     virtual void draw_noaa(elem_object& vs, agg::rgba8 c) = 0;
-    virtual void clip_box(const agg::rect_base<int>& clip) = 0;
+    virtual void clip_logical_area(const agg::rect_base<int>& clip) = 0;
     virtual void reset_clipping() = 0;
     virtual ~virtual_canvas() { }
 };

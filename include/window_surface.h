@@ -77,7 +77,7 @@ public:
 
     /* The following method can be called only from the window's thread
        and will lock the plot. */
-    bool resize(unsigned ww, unsigned hh);
+    bool resize(unsigned ww, unsigned hh, int w_pixels, int h_pixels);
     void render();
     void slot_refresh(unsigned index);
     void update_window_area();
@@ -101,7 +101,7 @@ private:
 
     elem_plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
-    agg::rect_i get_plot_area(unsigned index) const;
+    agg::rect_i get_plot_pixels_area(unsigned index) const;
     unsigned plot_number() const { return m_plots.size(); }
 
     bool save_plot_image(unsigned index);
@@ -109,8 +109,19 @@ private:
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
 
-    int get_width()  const { return m_img.width(); }
-    int get_height() const { return m_img.height(); }
+    void get_canvas_logical_size(int& w, int& h) const {
+        if (m_canvas) {
+            m_canvas->get_logical_size(w, h);
+        } else {
+            w = 0;
+            h = 0;
+        }
+    }
+
+    void get_image_pixels_size(int& w, int& h) const {
+        w = m_img.width();
+        h = m_img.height();
+    }
 
     image m_img;
     image m_save_img;
