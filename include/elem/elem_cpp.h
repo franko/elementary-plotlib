@@ -215,8 +215,8 @@ public:
     bool PopLayer();
     void Show(unsigned width, unsigned height, unsigned flags);
     void ClearLayer();
-    void SetLegend(Plot legend, Placement location);
-    Plot GetLegend(Placement legend_location);
+    void SetLegendPlot(Plot legend, Placement location);
+    Plot GetLegendPlot(Placement legend_location);
     bool WriteSvg(const char *filename, double width, double height);
     void Wait();
 private:

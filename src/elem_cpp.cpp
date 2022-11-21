@@ -222,12 +222,12 @@ void Plot::AddStroke(Object object, Color color, float line_width, unsigned flag
     Add(std::move(object), color, line_width, Color(0), flags);
 }
 
-void Plot::SetLegend(Plot legend, Plot::Placement legend_location) {
+void Plot::SetLegendPlot(Plot legend, Plot::Placement legend_location) {
     auto legend_plot = new graphics::plot{std::move(*legend.plot_impl_)};
     plot_impl_->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
 }
 
-Plot Plot::GetLegend(Plot::Placement legend_location) {
+Plot Plot::GetLegendPlot(Plot::Placement legend_location) {
     auto legend_plot = plot_impl_->get_legend((graphics::plot::placement_e) legend_location);
     if (!legend_plot) {
         return Plot{};

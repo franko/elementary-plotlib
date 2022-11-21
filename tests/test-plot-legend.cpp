@@ -43,7 +43,7 @@ ELEM_USER_MAIN() {
     p.SetTitle("Function plot example");
     p.SetXAxisTitle("x variable");
 
-    p.SetLegend(CreatePlotLegend(), Plot::Right);
+    p.SetLegendPlot(CreatePlotLegend(), Plot::Right);
 
     Window win;
     win.Attach(p, "");
