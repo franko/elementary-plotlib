@@ -77,7 +77,7 @@ public:
 
     /* The following method can be called only from the window's thread
        and will lock the plot. */
-    bool resize(unsigned ww, unsigned hh);
+    bool resize(unsigned ww, unsigned hh, int w_pixels, int h_pixels);
     void render();
     void slot_refresh(unsigned index);
     void update_window_area();

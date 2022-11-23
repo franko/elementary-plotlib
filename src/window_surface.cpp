@@ -31,17 +31,17 @@ void window_surface::split(const char* split_str)
         m_plots.add(empty);
 }
 
-bool window_surface::resize(unsigned ww, unsigned hh)
+bool window_surface::resize(unsigned ww, unsigned hh, int w_pixels, int h_pixels)
 {
     m_save_img.clear();
 
     for (unsigned k = 0; k < plot_number(); k++)
         m_plots[k].have_save_img = false;
 
-    if (likely(m_img.resize(ww, hh)))
+    if (likely(m_img.resize(w_pixels, h_pixels)))
     {
         delete m_canvas;
-        m_canvas = new(std::nothrow) canvas(m_img, ww, hh, colors::white());
+        m_canvas = new(std::nothrow) canvas(m_img, ww, hh, w_pixels / ww, h_pixels / hh, colors::white());
         return (m_canvas != NULL);
     }
     return false;

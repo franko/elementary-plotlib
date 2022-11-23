@@ -52,18 +52,20 @@ static Uint32 config_sdl_pixel_format() {
 void window_sdl::process_window_event(SDL_Event *event) {
     switch (event->window.event) {
     case SDL_WINDOWEVENT_SHOWN: {
-        int w, h;
-        SDL_GL_GetDrawableSize(m_window, &w, &h);
-        m_window_surface.resize(w, h);
+        int w, h, w_pixels, h_pixels;
+        SDL_GL_GetDrawableSize(m_window, &w_pixels, &h_pixels);
+        SDL_GetWindowSize(m_window, &w, &h);
+        m_window_surface.resize(w, h, w_pixels, h_pixels);
         m_window_surface.render();
         set_status(graphics::window_running);
         break;
     }
     case SDL_WINDOWEVENT_RESIZED: {
-        int w, h;
-        SDL_GL_GetDrawableSize(m_window, &w, &h);
-        setup_renderer(w, h);
-        m_window_surface.resize(w, h);
+        int w = event->window.data1, h = event->window.data2;
+        int w_pixels, h_pixels;
+        SDL_GL_GetDrawableSize(m_window, &w_pixels, &h_pixels);
+        setup_renderer(w_pixels, h_pixels);
+        m_window_surface.resize(w, h, w_pixels, h_pixels);
         m_window_surface.render();
         break;
     }
@@ -176,6 +178,9 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
 #else
                     window_flags |= SDL_WINDOW_OPENGL;
 #endif
+                    // Note hor HiDPI on macOS we are requesting here for a window of a given size,
+                    // in points. Later when we will treat the window's shown and resize event
+                    // we will retrieve a larger buffer by a HiDPI multiple.
                     SDL_Window *window = SDL_CreateWindow(message.caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, message.width, message.height, window_flags);
                     if (!window) {
                         message.return_code = window_create_message::window_error;

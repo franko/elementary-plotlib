@@ -193,7 +193,13 @@ public:
         agg::renderer_scanline_bin_solid<agg::renderer_base<PixelNoSub>> ren_bin(rb);
         agg::scanline_bin sl_bin;
         ren_bin.color(c);
-        this->ras.add_path(vs);
+        if (has_hidpi_scaling()) {
+            agg::trans_affine_scaling hidpi_scale_m(m_hidpi_scale_x, m_hidpi_scale_y);
+            agg::conv_transform<elem_object> scaled_vs(vs, hidpi_scale_m);
+            this->ras.add_path(scaled_vs);
+        } else {
+            this->ras.add_path(vs);
+        }
         agg::render_scanlines(this->ras, sl_bin, ren_bin);
     }
 
@@ -203,7 +209,13 @@ public:
         renderer_prim ren_prim(Renderer::renderer_base);
         agg::rasterizer_outline<renderer_prim> ras_outline(ren_prim);
         ren_prim.line_color(c);
-        ras_outline.add_path(vs);
+        if (has_hidpi_scaling()) {
+            agg::trans_affine_scaling hidpi_scale_m(m_hidpi_scale_x, m_hidpi_scale_y);
+            agg::conv_transform<elem_object> scaled_vs(vs, hidpi_scale_m);
+            ras_outline.add_path(scaled_vs);
+        } else {
+            ras_outline.add_path(vs);
+        }
     }
 
     bool has_hidpi_scaling() const {
