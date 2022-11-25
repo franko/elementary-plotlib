@@ -109,8 +109,19 @@ private:
     void save_slot_image(unsigned index);
     void restore_slot_image(unsigned index);
 
-    int get_width()  const { return m_img.width(); }
-    int get_height() const { return m_img.height(); }
+    void get_canvas_logical_size(int& w, int& h) const {
+        if (m_canvas) {
+            m_canvas->get_logical_size(w, h);
+        } else {
+            w = 0;
+            h = 0;
+        }
+    }
+
+    void get_image_pixels_size(int& w, int& h) const {
+        w = m_img.width();
+        h = m_img.height();
+    }
 
     image m_img;
     image m_save_img;

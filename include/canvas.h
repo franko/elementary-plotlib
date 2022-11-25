@@ -222,8 +222,13 @@ public:
         return (m_hidpi_scale_x != 1) || (m_hidpi_scale_y != 1);
     }
 
+    void get_logical_size(int& width, int& height) const {
+        width = this->width() / m_hidpi_scale_x;
+        height = this->height() / m_hidpi_scale_y;
+    }
+
 private:
-    short int m_hidpi_scale_x, m_hidpi_scale_y;
+    const short int m_hidpi_scale_x, m_hidpi_scale_y;
 };
 
 struct virtual_canvas {
