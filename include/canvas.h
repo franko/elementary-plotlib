@@ -166,13 +166,23 @@ class canvas_gen : public Renderer {
     agg::scanline_u8 sl;
 
 public:
-    canvas_gen(agg::rendering_buffer& ren_buf, double width, double height, agg::rgba8 bgcol):
+    canvas_gen(agg::rendering_buffer& ren_buf, agg::rgba8 bgcol):
         Renderer(ren_buf, bgcol), ras(), sl(), m_hidpi_scale_x(1), m_hidpi_scale_y(1)
     { }
 
-    canvas_gen(agg::rendering_buffer& ren_buf, double width, double height, int hidpi_x, int hidpi_y, agg::rgba8 bgcol):
+    canvas_gen(agg::rendering_buffer& ren_buf, int hidpi_x, int hidpi_y, agg::rgba8 bgcol):
         Renderer(ren_buf, bgcol), ras(), sl(), m_hidpi_scale_x(hidpi_x), m_hidpi_scale_y(hidpi_y)
     { }
+
+    template <typename Rect>
+    Rect hidpi_scaled_rect(const Rect& r) {
+        return {r.x1 * m_hidpi_scale_x, r.y1 * m_hidpi_scale_y, r.x2 * m_hidpi_scale_x, r.y2 * m_hidpi_scale_y};
+    }
+
+    void clear_logical_area(const agg::rect_i& r)
+    {
+        this->clear_box(this->hidpi_scaled_rect(r));
+    }
 
     void draw(elem_object& vs, agg::rgba8 c)
     {
@@ -227,6 +237,10 @@ public:
         height = this->height() / m_hidpi_scale_y;
     }
 
+    void clip_logical_area(const agg::rect_i& r) {
+        this->clip_box(this->hidpi_scaled_rect(r));
+    }
+
 private:
     const short int m_hidpi_scale_x, m_hidpi_scale_y;
 };
@@ -235,7 +249,7 @@ struct virtual_canvas {
     virtual void draw(elem_object& vs, agg::rgba8 c) = 0;
     virtual void draw_outline_noaa(elem_object& vs, agg::rgba8 c) = 0;
     virtual void draw_noaa(elem_object& vs, agg::rgba8 c) = 0;
-    virtual void clip_box(const agg::rect_base<int>& clip) = 0;
+    virtual void clip_logical_area(const agg::rect_base<int>& clip) = 0;
     virtual void reset_clipping() = 0;
     virtual ~virtual_canvas() { }
 };

@@ -101,7 +101,7 @@ private:
 
     elem_plot* get_plot(unsigned index) const { return m_plots[index].plot_ptr; }
 
-    agg::rect_i get_plot_area(unsigned index) const;
+    agg::rect_i get_plot_pixels_area(unsigned index) const;
     unsigned plot_number() const { return m_plots.size(); }
 
     bool save_plot_image(unsigned index);

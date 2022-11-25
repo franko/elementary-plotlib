@@ -26,7 +26,7 @@ public:
     canvas_svg(FILE *f, double height):
         m_output(f), m_height(height), m_current_id(0)  { }
 
-    void clip_box(const agg::rect_base<int>& clip) { }
+    void clip_logical_area(const agg::rect_base<int>& clip) { }
 
     void reset_clipping() { }
 
