@@ -105,6 +105,14 @@ struct plot_render_info {
 
 namespace graphics {
 
+class plot;
+
+struct plot_manager {
+    virtual plot *copy(const plot *p) = 0;
+    virtual void dispose(plot *p) = 0;
+    virtual ~plot_manager() { }
+};
+
 class plot {
 
     static const unsigned max_layers = 8;
@@ -176,20 +184,19 @@ public:
         plot& m_plot;
     };
 
-    plot(unsigned flags) :
+    plot(unsigned flags, plot_manager *legends_manage) :
         m_drawing_queue(0), m_clip_flag(flags & clip_region), m_need_redraw(true),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
         m_auto_limits(flags & auto_limits),
-        m_bbox_updated(true), m_enlarged_layer(false)
+        m_bbox_updated(true), m_enlarged_layer(false), m_legends_manage(legends_manage)
     {
         m_layers.add(&m_root_layer);
         compute_user_trans();
         for (unsigned k = 0; k < 4; k++)
-            m_legend[k] = 0;
+            m_legend[k] = nullptr;
     };
 
-
-    plot(const plot& source) :
+    plot(const plot& source, plot_manager *legends_manage) :
             m_trans(source.m_trans), m_drawing_queue(nullptr), m_clip_flag(source.m_clip_flag),
             m_need_redraw(source.m_need_redraw), m_rect(source.m_rect),
             m_changes_accu(source.m_changes_accu), m_changes_pending(source.m_changes_pending),
@@ -197,7 +204,7 @@ public:
             m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
             m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
             m_enlarged_layer(source.m_enlarged_layer),
-            m_drawing_mutex() {
+            m_drawing_mutex(), m_legends_manage(legends_manage) {
         m_layers.add(&m_root_layer);
         // Start from 1 below because zero is the pointer to the root layer, added above.
         for (unsigned k = 1; k < source.m_layers.size(); k++) {
@@ -211,7 +218,7 @@ public:
         for (unsigned k = 0; k < 4; k++) {
             const plot *source_legend = source.m_legend[k];
             if (source_legend) {
-                m_legend[k] = new plot(*source_legend);
+                m_legend[k] = m_legends_manage->copy(source_legend);
             } else {
                 m_legend[k] = nullptr;
             }
@@ -226,7 +233,7 @@ public:
             m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
             m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
             m_enlarged_layer(source.m_enlarged_layer),
-            m_drawing_mutex() {
+            m_drawing_mutex(), m_legends_manage(source.m_legends_manage) {
         m_layers.add(&m_root_layer);
         // Start from 1 below because zero is the pointer to the root layer, added above.
         for (unsigned k = 1; k < source.m_layers.size(); k++) {
@@ -251,7 +258,7 @@ public:
                 delete layer;
         }
         for (unsigned k = 0; k < 4; k++) {
-            delete m_legend[k];
+            m_legends_manage->dispose(m_legend[k]);
         }
     };
 
@@ -280,7 +287,7 @@ public:
 
     void add_legend(plot* p, placement_e where) {
         if (m_legend[where]) {
-            delete m_legend[where];
+            m_legends_manage->dispose(m_legend[where]);
         }
         m_legend[where] = p;
     }
@@ -517,6 +524,7 @@ private:
     bool m_bbox_updated;
     bool m_enlarged_layer;
     std::mutex m_drawing_mutex;
+    plot_manager *m_legends_manage;
 };
 
 template <class Canvas>

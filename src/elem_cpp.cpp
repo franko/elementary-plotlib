@@ -223,8 +223,8 @@ void Plot::AddStroke(Object object, Color color, float line_width, unsigned flag
 }
 
 void Plot::SetLegendPlot(Plot legend, Plot::Placement legend_location) {
-    auto legend_plot = new graphics::plot{std::move(*legend.plot_impl_)};
-    plot_impl_->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
+    legend.plot_impl_->retain();
+    plot_impl_->add_legend((graphics::plot *) legend.plot_impl_, (graphics::plot::placement_e) legend_location);
 }
 
 Plot Plot::GetLegendPlot(Plot::Placement legend_location) {
@@ -232,7 +232,9 @@ Plot Plot::GetLegendPlot(Plot::Placement legend_location) {
     if (!legend_plot) {
         return Plot{};
     }
-    return Plot{new elem_plot{*legend_plot}};
+    auto legend_elem_plot = elem_plot::assert_cast(legend_plot);
+    legend_elem_plot->retain();
+    return Plot{legend_elem_plot};
 }
 
 bool Plot::PushLayer() {
