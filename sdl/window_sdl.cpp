@@ -144,8 +144,8 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     }
     initialization->set(kTaskComplete);
     SDL_Event event;
-    bool quit = false;
-    while (!quit) {
+    bool quit = false, user_thread_done = false;
+    while (!quit || !user_thread_done) {
         int event_status = SDL_WaitEvent(&event);
         if (event_status == 0) {
             break;
@@ -191,6 +191,8 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     message.this_window->register_window(window, message.callback);
                     message.return_code = window_create_message::success;
                     create->notify();
+                } else if (event.user.code == kQuitEventLoop) {
+                    user_thread_done = true;
                 }
             }
         }
@@ -345,7 +347,8 @@ bool window_sdl::send_close_window_event() {
 void window_sdl::send_quit_event() {
     SDL_Event event;
     SDL_zero(event);
-    event.type = SDL_QUIT;
+    event.type = window_sdl::g_user_event_type;
+    event.user.code = kQuitEventLoop;
     SDL_PushEvent(&event);
 }
 

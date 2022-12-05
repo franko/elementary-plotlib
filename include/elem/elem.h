@@ -37,12 +37,9 @@
 #endif
 
 // On macOS the UI event loops needs to run on the main thread
-// so we set the variable above to configure accordingly.
-#if __APPLE__
-#define ELEM_UI_MAIN_THREAD
-#endif
+// so we the main function is reserved for the UI thread and we
+// need to use the macro beloy.
 
-#ifdef ELEM_UI_MAIN_THREAD
 #define ELEM_USER_MAIN() static int elem_user_main_()
 #ifdef __cplusplus
 #define ELEM_GUI_LOOP() int main() { \
@@ -52,10 +49,6 @@
 #define ELEM_GUI_LOOP() int main() { \
     return elem_initialize_and_run(elem_user_main_); \
 }
-#endif
-#else
-#define ELEM_USER_MAIN() int main()
-#define ELEM_GUI_LOOP()
 #endif
 
 #endif

@@ -20,7 +20,6 @@ ELEM_USER_MAIN() {
     window.Start(640, 480, WindowResize);
 
     plot.AddStroke(FxLine(0.8, x1, [](double x) { return std::cos(x) / x; }), color::Red, 1.5);
-    window.Wait();
     return 0;
 }
 

@@ -54,7 +54,7 @@ void elem_window_free(elem_window *win) {
     win->release();
 }
 
-static void run_user_main(int (*user_main)(), status_notifier<task_status> *initialization, status_notifier<task_status> *main_task) {
+static void run_user_main(int (*user_main)(), status_notifier<task_status> *initialization) {
     initialization->wait_for_status(kTaskComplete);
     // FIXME: verify if the initialization was successful.
     delete initialization;
@@ -62,15 +62,12 @@ static void run_user_main(int (*user_main)(), status_notifier<task_status> *init
         user_main();
         elem_window_sdl::send_quit_event();
     }
-    main_task->set(kTaskComplete);
 }
 
 int elem_initialize_and_run(int (*user_main)()) {
     auto initialization = new status_notifier<task_status>();
-    auto main_task = new status_notifier<task_status>();
-    std::thread events_thread(run_user_main, user_main, initialization, main_task);
-    events_thread.detach();
+    std::thread user_thread(run_user_main, user_main, initialization);
     int status = elem_window_sdl::run_event_loop(initialization);
-    main_task->wait_for_status(kTaskComplete);
+    user_thread.join();
     return status;
 }

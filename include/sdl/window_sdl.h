@@ -20,7 +20,7 @@ struct window_entry {
 };
 
 class window_sdl : public graphics::display_window_status {
-    enum { kUpdateRegion, kCreateWindow };
+    enum { kUpdateRegion, kCreateWindow, kQuitEventLoop };
 public:
     window_sdl(graphics::window_surface& window_surface);
 
