@@ -193,6 +193,9 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
                     message.this_window->setup_sdl_window(window);
                     message.this_window->register_window(window, message.callback);
                     message.return_code = window_create_message::success;
+                    // On macOS the plotting window will not be raised if we don't
+                    // explicitly call the SDL_RaiseWindow function.
+                    SDL_RaiseWindow(window);
                     create->notify();
                 } else if (event.user.code == kQuitEventLoop) {
                     user_thread_done = true;
