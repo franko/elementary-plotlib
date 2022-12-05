@@ -76,8 +76,11 @@ void window_sdl::process_window_event(SDL_Event *event) {
         SDL_DestroyTexture(m_texture);
         SDL_DestroyRenderer(m_renderer);
         SDL_DestroyWindow(m_window);
-        unregister_window();
         set_status(graphics::window_closed);
+        // The unregister function below does delete the window but
+        // we are in a window's method so the function must be called
+        // only before returning.
+        unregister_window();
         break;
     default:
         break;
