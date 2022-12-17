@@ -31,7 +31,7 @@ const char *ttf_names[] = {"Geneva.ttf", "NewYork.ttf", 0};
 #define TTF_SYSTEM_DIR "/System/Library/Fonts/"
 #define CONSOLE_FONT_NAME "Monaco"
 #else
-const char *ttf_names[] = {"ubuntu-font-family/Ubuntu-R.ttf", "freefont/FreeSans.ttf", "ttf-dejavu/DejaVuSans.ttf", 0};
+const char *ttf_names[] = {"ubuntu-font-family/Ubuntu-R.ttf", "freefont/FreeSans.ttf", "ttf-dejavu/DejaVuSans.ttf", "dejavu/DejaVuSans.ttf", 0};
 #define TTF_SYSTEM_DIR "/usr/share/fonts/truetype/"
 #define CONSOLE_FONT_NAME "monospace"
 #endif
