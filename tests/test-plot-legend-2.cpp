@@ -41,7 +41,6 @@ ELEM_USER_MAIN() {
     p.SetXAxisTitle("x variable");
 
     p.SetLegend(CreatePlotLegend(), Plot::Right);
-    fprintf(stderr, "SetLegend 1 ok\n"); fflush(stderr);
 
     Window win;
     win.Attach(p, "");
@@ -50,12 +49,10 @@ ELEM_USER_MAIN() {
     AddFunction(p, 0.8, x1, [](double x) { return std::cos(x) / x; }, color::Red);
 
     Plot legend = p.GetLegend(Plot::Right);
-    fprintf(stderr, "GetLegend ok\n"); fflush(stderr);
     Text cos_label{"cos(x) / x", 14.0, 0.0, 0.3};
     cos_label.SetPosition(4.0, +3.0);
     legend.Add(cos_label, color::Black, 1.0, color::Black, property::Fill);
     p.SetLegend(legend, Plot::Right);
-    fprintf(stderr, "SetLegend 2 ok\n"); fflush(stderr);
 
     win.Wait();
     return 0;
