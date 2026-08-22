@@ -72,7 +72,7 @@ Here an example::
 
     using namespace elem;
 
-    int main() {
+    ELEM_USER_MAIN() {
         InitializeFonts();
 
         Plot plot;
@@ -92,6 +92,8 @@ Here an example::
         return 0;
     }
 
+    ELEM_GUI_LOOP()
+
 In the code above we:
 
 - initialize the library
@@ -103,6 +105,13 @@ In the code above we:
 - show the window
 - add a second line to the plot using the red color. The window will be automatically updated.
 - wait until the window is closed
+
+Note that the program's entry point is declared with the ELEM_USER_MAIN() macro
+instead of the usual main() function and that the ELEM_GUI_LOOP() macro is added
+at the end of the file. This is required because some systems, macOS notably,
+can run the graphical event loop only on the process's main thread. The
+ELEM_GUI_LOOP() macro provides a main() function that runs the event loop and
+starts the code declared with ELEM_USER_MAIN() on a separate thread.
 
 Here how the plot looks like:
 
@@ -118,7 +127,7 @@ The same program can be made even more simple like in the code below::
 
     using namespace elem;
 
-    int main() {
+    ELEM_USER_MAIN() {
         Plot plot;
         const double x0 = 0.0001, x1 = 8 * math::Tau();
         plot.AddStroke(FxLine(x0, x1, [](double x) { return std::sin(x) / x; }), color::Blue, 1.5);
@@ -130,6 +139,8 @@ The same program can be made even more simple like in the code below::
         plot.Wait();
         return 0;
     }
+
+    ELEM_GUI_LOOP()
 
 In the simplified version above we have:
 
