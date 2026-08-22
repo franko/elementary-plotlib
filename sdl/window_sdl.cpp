@@ -150,15 +150,19 @@ void window_sdl::event_loop(status_notifier<task_status> *initialization) {
     }
     initialization->set(kTaskComplete);
     SDL_Event event;
-    bool quit = false, user_thread_done = false;
-    while (!quit || !user_thread_done) {
+    // The event loop terminates when the user's function is done, just like a
+    // plain main() function returning ends a program. A quit request is not a
+    // termination condition by itself, it is treated below by closing the
+    // windows so that the user's function can reach its end.
+    bool user_thread_done = false;
+    while (!user_thread_done) {
         int event_status = SDL_WaitEvent(&event);
         if (event_status == 0) {
             break;
         }
         switch (event.type) {
         case SDL_QUIT:
-            quit = true;
+            close_all_windows();
             break;
         case SDL_WINDOWEVENT:
             {
@@ -254,6 +258,24 @@ void window_sdl::unregister_window() {
     }
     if (empty_windows_number >= 8) {
         compact_window_register();
+    }
+    g_register_mutex.unlock();
+}
+
+/* Request the closing of every window currently registered. Used to treat a
+   quit request: closing the windows releases the user's thread if it is waiting
+   on one of them so that the user's function can run to its end.
+   Must be called from the event loop's thread. Windows are destroyed only in
+   that same thread so an entry with a non-null window always has a live SDL
+   window, and holding the register's mutex here is safe because
+   send_close_window_event only looks at the window's own status. */
+void window_sdl::close_all_windows() {
+    g_register_mutex.lock();
+    for (unsigned i = 0; i < g_window_entries.size(); i++) {
+        window_entry& we = g_window_entries[i];
+        if (we.window) {
+            we.window->send_close_window_event();
+        }
     }
     g_register_mutex.unlock();
 }

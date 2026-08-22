@@ -50,6 +50,7 @@ private:
     static int initialize_sdl();
     static window_sdl *select_on_window_id(Uint32 window_id);
     static void compact_window_register();
+    static void close_all_windows();
 
     SDL_Window *m_window;
     SDL_Renderer *m_renderer;
