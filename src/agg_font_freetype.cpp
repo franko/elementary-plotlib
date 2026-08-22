@@ -162,7 +162,7 @@ bool decompose_ft_outline(const FT_Outline& outline,
 
     FT_Vector*  point;
     FT_Vector*  limit;
-    char*       tags;
+    FT_Byte*    tags;
 
     int   n;         // index of contour in outline
     int   first;     // index of first point in contour
@@ -1172,5 +1172,3 @@ bool font_engine_freetype_base::add_kerning(unsigned first, unsigned second,
 
 
 }
-
-
