@@ -16,7 +16,7 @@ Plot CreateFunctionPlot(const char *title, unsigned flags) {
     return p;
 }
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot plot1 = CreateFunctionPlot("Plot example (antialias)", property::Stroke);
@@ -32,3 +32,5 @@ int main() {
     win.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

@@ -30,9 +30,11 @@ static void CreatePlotWindow() {
     window2.Start(640, 480, WindowResize);
 }
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
     CreatePlotWindow();
     utils::Sleep(8);
     return 0;
 }
+
+ELEM_GUI_LOOP()

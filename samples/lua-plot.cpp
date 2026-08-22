@@ -35,7 +35,7 @@ plot:AddStroke(fxline(0.8, x1, function(x) return math.cos(x) / x end), 0xB40000
 window:Wait()
 )raw";
 
-int main() {
+ELEM_USER_MAIN() {
     // We create a standard Lua state.
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
@@ -61,3 +61,5 @@ int main() {
     }
     return 0;
 }
+
+ELEM_GUI_LOOP()

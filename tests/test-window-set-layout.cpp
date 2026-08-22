@@ -4,7 +4,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     const double x0 = 0.0001, x1 = 8 * math::Tau();
@@ -28,3 +28,5 @@ int main() {
     window.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

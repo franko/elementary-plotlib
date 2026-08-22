@@ -4,7 +4,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     // The function FxLine generate a Path object based on a
     // mathematical function (x) -> f(x).
     Path sin_line = FxLine(0.0001, 8 * math::Tau(), [](double x) { return std::sin(x) / x; });
@@ -33,3 +33,5 @@ int main() {
     plot.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

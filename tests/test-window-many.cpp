@@ -8,7 +8,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot plot;
@@ -55,3 +55,4 @@ int main() {
     return 0;
 }
 
+ELEM_GUI_LOOP()

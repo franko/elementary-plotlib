@@ -1,6 +1,10 @@
 #include <cmath>
 #include <random>
 
+// Included for the ELEM_USER_MAIN and ELEM_GUI_LOOP macros, the test itself
+// uses the library's internal interfaces below.
+#include "elem/elem.h"
+
 #include "elem_plot.h"
 #include "elem_window.h"
 #include "global_elem_window_factory.h"
@@ -56,7 +60,7 @@ private:
     sg_path m_path;
 };
 
-int main()
+ELEM_USER_MAIN()
 {
     graphics::initialize_fonts();
 
@@ -89,3 +93,5 @@ int main()
 
     return 0;
 }
+
+ELEM_GUI_LOOP()

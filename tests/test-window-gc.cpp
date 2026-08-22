@@ -21,9 +21,11 @@ static void CreatePlotWindow() {
     plot.Add(line2, color::Blue, 2.5, color::None);
 }
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
     CreatePlotWindow();
     utils::Sleep(8);
     return 0;
 }
+
+ELEM_GUI_LOOP()

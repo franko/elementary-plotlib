@@ -10,7 +10,7 @@ static double xfcos(double x) {
     return cos(x) / x;
 }
 
-int main() {
+ELEM_USER_MAIN() {
     elem_initialize_fonts();
 
     elem_plot *plot = elem_plot_new(elem_plot_show_units | elem_plot_auto_limits);
@@ -49,3 +49,5 @@ int main() {
     elem_plot_free(plot);
     return 0;
 }
+
+ELEM_GUI_LOOP()

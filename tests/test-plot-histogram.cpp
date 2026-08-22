@@ -17,7 +17,7 @@ void GenHistogram(Plot& plot, RandomEngine &e, ParentDistDensity parent_df, doub
     }
 }
 
-int main() {
+ELEM_USER_MAIN() {
     InitializeFonts();
 
     Plot plot;
@@ -41,3 +41,5 @@ int main() {
     window.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()

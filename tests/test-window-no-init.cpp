@@ -3,7 +3,7 @@
 
 using namespace elem;
 
-int main() {
+ELEM_USER_MAIN() {
     Plot plot(Plot::ShowUnits);
     plot.SetLimits(-1.0, 0.0, 1.0, 10.0);
     plot.SetAxisLabelsAngle(xAxis, 3.141592 / 4);
@@ -24,3 +24,5 @@ int main() {
     window.Wait();
     return 0;
 }
+
+ELEM_GUI_LOOP()
