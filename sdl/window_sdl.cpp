@@ -7,6 +7,7 @@
 #include "sdl/window_sdl.h"
 
 #include "complete_notify.h"
+#include "fatal.h"
 
 struct window_create_message {
     enum { success = 0, window_error };
@@ -24,6 +25,7 @@ struct window_create_message {
 bool window_sdl::g_sdl_initialized = false;
 Uint32 window_sdl::g_user_event_type = -1;
 int window_sdl::g_sdl_init_status = -1;
+bool window_sdl::g_event_loop_entered = false;
 std::mutex window_sdl::g_register_mutex;
 agg::pod_bvector<window_entry> window_sdl::g_window_entries;
 
@@ -141,6 +143,7 @@ int window_sdl::initialize_sdl() {
 }
 
 void window_sdl::event_loop(status_notifier<task_status> *initialization) {
+    g_event_loop_entered = true;
     if (initialize_sdl()) {
         initialization->set(kTaskComplete);
         return;
@@ -257,6 +260,25 @@ void window_sdl::unregister_window() {
 
 void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_close_callback *callback) {
     if (!g_sdl_initialized) {
+#if __APPLE__
+        // On macOS the Cocoa event loop belongs to the process's main thread.
+        // SDL_Init(SDL_INIT_VIDEO) sets up the NSApplication instance and AppKit
+        // raises an exception when that happens on any other thread. It follows
+        // that the event loop can only have been started from main() by
+        // InitializeAndRun and, if it wasn't, we cannot start it here: the main
+        // thread is already busy running the user's code. Report the mistake
+        // instead of crashing later inside Cocoa with an obscure message.
+        if (!g_event_loop_entered) {
+            fatal_exception(
+                "error: the graphical event loop is not running.\n"
+                "On macOS the main function is reserved for the GUI event loop: declare the\n"
+                "program's entry point with ELEM_USER_MAIN() instead of main() and add the\n"
+                "ELEM_GUI_LOOP() macro at the end of the file.");
+        }
+        fprintf(stderr, "error: unable to open window, cannot initialize SDL2.\n");
+        fflush(stderr);
+        return;
+#else
         status_notifier<task_status> initialization;
         std::thread events_thread(window_sdl::event_loop, &initialization);
         events_thread.detach();
@@ -266,6 +288,7 @@ void window_sdl::start(unsigned width, unsigned height, unsigned flags, window_c
             fflush(stderr);
             return;
         }
+#endif
     }
     set_status(graphics::window_starting);
     if (sdl_thread_create_window("Graphics Window", width, height, flags, callback)) {

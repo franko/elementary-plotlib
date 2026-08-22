@@ -65,4 +65,9 @@ private:
     static Uint32 g_user_event_type;
     static bool g_sdl_initialized;
     static int g_sdl_init_status;
+
+    // Tells if the event loop was ever entered. Used to tell apart a failed
+    // SDL initialization from a program that never started the event loop
+    // at all.
+    static bool g_event_loop_entered;
 };
