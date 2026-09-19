@@ -28,6 +28,7 @@
 #ifndef ELEM_PLOT_C_H_
 #define ELEM_PLOT_C_H_
 
+#include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -75,12 +76,23 @@ struct elem_rectangle {
     float x1, y1, x2, y2;
 };
 
+typedef struct elem_point {
+    double x, y;
+} elem_point;
+
+/* An affine transform, with x' = a*x + c*y + tx and y' = b*x + d*y + ty.
+   Rotation angles are in radians. */
+typedef struct elem_affine {
+    double a, b, c, d, tx, ty;
+} elem_affine;
+
 #ifdef __cplusplus
 class elem_object;
 class elem_path;
 class elem_curve;
 class elem_dashed;
 class elem_markers;
+class elem_group;
 class elem_plot;
 class elem_window;
 #else
@@ -89,6 +101,7 @@ struct elem_path;
 struct elem_curve;
 struct elem_dashed;
 struct elem_markers;
+struct elem_group;
 struct elem_plot;
 struct elem_window;
 typedef struct elem_object elem_object;
@@ -96,6 +109,7 @@ typedef struct elem_path elem_path;
 typedef struct elem_curve elem_curve;
 typedef struct elem_dashed elem_dashed;
 typedef struct elem_markers elem_markers;
+typedef struct elem_group elem_group;
 typedef struct elem_plot elem_plot;
 typedef struct elem_window elem_window;
 #endif
@@ -132,6 +146,22 @@ elem_markers *elem_markers_new(double size, elem_object *marker_symbol);
 elem_markers *elem_markers_copy(const elem_markers *markers);
 void elem_markers_free(elem_markers *markers);
 
+/* A group is a reusable collection of independently styled drawing operations
+   in its own local coordinate system. It is placed into a plot with an affine
+   transform, either as data geometry or as a screen-sized annotation anchored
+   at a data coordinate. Children are snapshots: editing a group after its
+   insertion does not change what the plot draws. */
+elem_group *elem_group_new(void);
+elem_group *elem_group_copy(const elem_group *group);
+void elem_group_free(elem_group *group);
+
+/* The group takes ownership of the object, on failure as well as on success. */
+void elem_group_add(elem_group *group, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
+
+/* The parent group takes ownership of the child, on failure as well as on
+   success. The placement applies once, to the inserted child root. */
+void elem_group_add_group(elem_group *group, elem_group *child, elem_affine placement);
+
 elem_plot *elem_plot_new(unsigned int flags);
 // TODO: implement functions to copy a plot
 void elem_plot_free(elem_plot *plot);
@@ -147,6 +177,12 @@ bool elem_plot_push_layer(elem_plot *plot);
 bool elem_plot_pop_layer(elem_plot *plot);
 void elem_plot_clear_layer(elem_plot *plot);
 void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags);
+/* Both take ownership of the group, on failure as well as on success.
+   elem_plot_add_group places local geometry as data geometry and contributes
+   to automatic limits; elem_plot_add_annotation keeps the local layout in
+   logical screen units and never changes the limits. */
+void elem_plot_add_group(elem_plot *plot, elem_group *group, elem_affine placement);
+void elem_plot_add_annotation(elem_plot *plot, elem_group *group, elem_point anchor, elem_affine placement);
 void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags);
 void elem_plot_wait(elem_plot *plot);
 // TODO: add function to add a legend
@@ -164,6 +200,44 @@ void elem_window_wait(elem_window *win);
 // TODO: document initialize fonts function
 void elem_initialize_fonts();
 int elem_initialize_and_run(int (*user_main)());
+
+static inline elem_affine elem_affine_identity(void) {
+    elem_affine m = {1, 0, 0, 1, 0, 0};
+    return m;
+}
+
+static inline elem_affine elem_affine_translation(double tx, double ty) {
+    elem_affine m = {1, 0, 0, 1, tx, ty};
+    return m;
+}
+
+static inline elem_affine elem_affine_scaling(double sx, double sy) {
+    elem_affine m = {sx, 0, 0, sy, 0, 0};
+    return m;
+}
+
+static inline elem_affine elem_affine_rotation(double angle) {
+    elem_affine m;
+    m.a = cos(angle);
+    m.b = sin(angle);
+    m.c = -m.b;
+    m.d = m.a;
+    m.tx = 0;
+    m.ty = 0;
+    return m;
+}
+
+/* Apply self before next. */
+static inline elem_affine elem_affine_then(elem_affine self, elem_affine next) {
+    elem_affine m;
+    m.a  = next.a * self.a  + next.c * self.b;
+    m.b  = next.b * self.a  + next.d * self.b;
+    m.c  = next.a * self.c  + next.c * self.d;
+    m.d  = next.b * self.c  + next.d * self.d;
+    m.tx = next.a * self.tx + next.c * self.ty + next.tx;
+    m.ty = next.b * self.tx + next.d * self.ty + next.ty;
+    return m;
+}
 
 // TODO: document all the cast functions below
 static inline elem_object *path_as_object(elem_path *p) {

@@ -28,6 +28,7 @@
 #ifndef ELEM_PLOT_CPP_H_
 #define ELEM_PLOT_CPP_H_
 
+#include <cmath>
 #include <initializer_list>
 #include <utility>
 #include <cstdint>
@@ -78,8 +79,53 @@ enum {
 };
 }
 
+class Group;
 class Plot;
 class Window;
+
+struct Point {
+    double x, y;
+};
+
+// An affine transform, with x' = a*x + c*y + tx and y' = b*x + d*y + ty.
+// Rotation angles are in radians.
+class Affine {
+public:
+    Affine() : a(1), b(0), c(0), d(1), tx(0), ty(0) { }
+    Affine(double a, double b, double c, double d, double tx, double ty) :
+        a(a), b(b), c(c), d(d), tx(tx), ty(ty) { }
+
+    static Affine Identity() { return Affine{}; }
+
+    static Affine Translation(double tx, double ty) {
+        return Affine{1, 0, 0, 1, tx, ty};
+    }
+
+    static Affine Rotation(double angle) {
+        const double cos_a = std::cos(angle), sin_a = std::sin(angle);
+        return Affine{cos_a, sin_a, -sin_a, cos_a, 0, 0};
+    }
+
+    static Affine Scale(double sx, double sy) {
+        return Affine{sx, 0, 0, sy, 0, 0};
+    }
+
+    static Affine Scale(double s) { return Scale(s, s); }
+
+    // Apply this transform before next.
+    Affine Then(const Affine& next) const {
+        return Affine{
+            next.a * a  + next.c * b,
+            next.b * a  + next.d * b,
+            next.a * c  + next.c * d,
+            next.b * c  + next.d * d,
+            next.a * tx + next.c * ty + next.tx,
+            next.b * tx + next.d * ty + next.ty,
+        };
+    }
+
+    double a, b, c, d, tx, ty;
+};
 
 class Object {
 public:
@@ -94,9 +140,10 @@ protected:
     Object(elem_object *object_impl);
     elem_object *object_impl_;
 
-    // Friend declaration needed because Plot::Add method needs to
-    // have access to inner elem_object pointer, the object_impl_ field.
+    // Friend declaration needed because the Plot::Add and Group::Add methods
+    // need to have access to inner elem_object pointer, the object_impl_ field.
     friend class Plot;
+    friend class Group;
     friend class Markers;
 
     // Needs to create an object using protected constructor.
@@ -182,6 +229,36 @@ public:
     void SetPosition(double x, double y);
 };
 
+// A reusable collection of independently styled drawing operations, positioned
+// in the group's own local coordinate system. Placing a group into a plot
+// transforms child positions and path geometry, while stroke widths, dash
+// lengths, glyph sizes, and marker symbols stay screen-sized.
+//
+// Insertion takes a snapshot: passing an lvalue copies and passing a moved
+// value transfers ownership, so editing a builder afterwards does not change
+// what the plot draws.
+class Group {
+public:
+    Group();
+    Group(const Group& group);
+    Group(Group&& group);
+    ~Group();
+
+    Group& operator=(const Group& that);
+    Group& operator=(Group&& that);
+
+    void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
+    void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
+    // The placement applies once, to the inserted subgroup root.
+    void AddGroup(Group group, Affine placement = Affine{});
+
+private:
+    elem_group *group_impl_;
+
+    // Plot::AddGroup and Plot::AddAnnotation need the inner elem_group pointer.
+    friend class Plot;
+};
+
 class Plot {
 public:
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1, ClipRegion = 1 << 2 };
@@ -211,6 +288,12 @@ public:
     void CommitPendingDraw();
     void Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags = property::Fill|property::Stroke);
     void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
+    // Local geometry becomes data geometry: it follows the plot's coordinate
+    // scaling and contributes to automatic limits.
+    void AddGroup(Group group, Affine placement = Affine{});
+    // The anchor is in data coordinates; the local layout and the placement
+    // offset are in logical screen units. Annotations never change the limits.
+    void AddAnnotation(Group group, Point anchor, Affine placement = Affine{});
     bool PushLayer();
     bool PopLayer();
     void Show(unsigned width, unsigned height, unsigned flags);

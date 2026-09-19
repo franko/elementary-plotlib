@@ -2,6 +2,7 @@
 #include "elem/elem_c.h"
 
 // the following are private headers.
+#include "elem_group.h"
 #include "elem_plot.h"
 #include "elem/elem_c_forward.h"
 #include "canvas_svg.h"
@@ -17,6 +18,13 @@
 
 static agg::rgba8 ColorToRgba8(const elem_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
+}
+
+static agg::trans_affine AffineToTransform(const elem_affine& m) {
+    // AGG stores sx, shy, shx, sy, tx, ty in that order, matching a, b, c, d.
+    agg::trans_affine transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
+    check_finite_affine(transform);
+    return transform;
 }
 
 static void plot_update_windows_and_commit(elem_plot *plot) {
@@ -131,6 +139,28 @@ void elem_markers_free(elem_markers *markers) {
     delete markers;
 }
 
+elem_group *elem_group_new() {
+    return new elem_group{};
+}
+
+elem_group *elem_group_copy(const elem_group *group) {
+    return new elem_group{*group};
+}
+
+void elem_group_free(elem_group *group) {
+    delete group;
+}
+
+void elem_group_add(elem_group *group, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags) {
+    // sg_element owns the geometry from here on, including if the insertion throws.
+    group->add(sg_element{obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), unsigned(flags)});
+}
+
+void elem_group_add_group(elem_group *group, elem_group *child, elem_affine placement) {
+    std::unique_ptr<elem_group> owned_child{child};
+    group->add_group(std::move(*owned_child), AffineToTransform(placement));
+}
+
 elem_plot *elem_plot_new(unsigned int flags) {
     return new elem_plot{flags};
 }
@@ -235,6 +265,31 @@ void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, f
     {
         graphics::plot::drawing_context dc(*plot);
         plot->add(std::move(element));
+    }
+    plot_update_windows_and_commit(plot);
+}
+
+// The plot takes implicitly the ownership of the group.
+void elem_plot_add_group(elem_plot *plot, elem_group *group, elem_affine placement) {
+    std::unique_ptr<elem_group> owned_group{group};
+    owned_group->place(AffineToTransform(placement));
+    // One drawable root, inserted under one lock and one window update.
+    auto root = std::make_unique<sg_group>(std::move(*owned_group));
+    {
+        graphics::plot::drawing_context dc(*plot);
+        plot->add(std::move(root));
+    }
+    plot_update_windows_and_commit(plot);
+}
+
+// The plot takes implicitly the ownership of the group.
+void elem_plot_add_annotation(elem_plot *plot, elem_group *group, elem_point anchor, elem_affine placement) {
+    std::unique_ptr<elem_group> owned_group{group};
+    owned_group->place(AffineToTransform(placement));
+    auto root = std::make_unique<sg_annotation>(std::move(*owned_group), anchor.x, anchor.y);
+    {
+        graphics::plot::drawing_context dc(*plot);
+        plot->add(std::move(root));
     }
     plot_update_windows_and_commit(plot);
 }

@@ -56,8 +56,9 @@ copy or moved value and releases it before the owning insertion call, including
 when insertion throws. There is no change to installed headers or public class layouts.
 Private-header users must rebuild for the new internal representation.
 
-A future group can implement `sg_drawable` without becoming an `elem_object` or
-changing layer storage. Coordinate-space policies and group APIs remain deferred.
+`sg_group` implements `sg_drawable` without becoming an `elem_object` or changing
+layer storage. See [transformable groups](groups.md) for its coordinate-space
+policies and public API.
 
 ## Regression Tests
 

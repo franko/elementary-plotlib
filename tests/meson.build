@@ -1,15 +1,17 @@
 
-foreach name : ['drawable', 'geometry-copy', 'plot-storage']
+foreach name : ['drawable', 'geometry-copy', 'plot-storage', 'group']
     regression = executable('test-' + name, 'test-' + name + '.cpp',
         dependencies: libelem_dep,
         cpp_args: libelem_cflags)
     test(name, regression, suite: 'core')
 endforeach
 
-public_ownership = executable('test-public-ownership', 'test-public-ownership.cpp',
-    dependencies: libelemwin_dep,
-    cpp_args: libelem_cflags)
-test('public-ownership', public_ownership, suite: 'core')
+foreach name : ['public-ownership', 'public-group']
+    public_api = executable('test-' + name, 'test-' + name + '.cpp',
+        dependencies: libelemwin_dep,
+        cpp_args: libelem_cflags)
+    test(name, public_api, suite: 'core')
+endforeach
 
 window_tests = [
     {'name': 'test-window', 'sources': 'test-window.cpp'},
@@ -33,6 +35,7 @@ window_tests = [
     {'name': 'test-bezier', 'sources': 'test-bezier.cpp'},
     {'name': 'test-write-svg', 'sources': 'test-write-svg.cpp'},
     {'name': 'test-plot-histogram', 'sources': 'test-plot-histogram.cpp'},
+    {'name': 'test-plot-group', 'sources': 'test-plot-group.cpp'},
     {'name': 'test-plot-show', 'sources': 'test-plot-show.cpp'},
     {'name': 'test-plot-show-2', 'sources': 'test-plot-show-2.cpp'},
     {'name': 'test-plot-function-c', 'sources': 'test-plot-function-c.c'},

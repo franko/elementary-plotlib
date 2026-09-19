@@ -60,21 +60,7 @@ public:
     opt_rect<double> data_bounds() const override {
         agg::rect_d r;
         object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
-        opt_rect<double> result;
-        if (!r.is_valid()) {
-            return result;
-        }
-        const double xs[] = {r.x1, r.x2, r.x2, r.x1};
-        const double ys[] = {r.y1, r.y1, r.y2, r.y2};
-        for (unsigned i = 0; i < 4; ++i) {
-            double x = xs[i], y = ys[i];
-            local_to_parent.transform(&x, &y);
-            if (!std::isfinite(x) || !std::isfinite(y)) {
-                return opt_rect<double>();
-            }
-            result.add<rect_union>(agg::rect_d(x, y, x, y));
-        }
-        return result;
+        return transform_bounds(r, local_to_parent);
     }
 
     void draw(virtual_canvas& canvas, const agg::trans_affine& parent_to_screen,
@@ -83,7 +69,7 @@ public:
         // AGG multiplication applies the left transform first.
         agg::trans_affine m = local_to_parent;
         m.multiply(parent_to_screen);
-        object->apply_transform(m, 1.0);
+        object->apply_transform(m, approximation_scale_of(m));
         if (painted_bounds) {
             painted_bounds->clear();
         }

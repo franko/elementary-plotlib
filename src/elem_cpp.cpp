@@ -4,6 +4,7 @@
 #include "agg_trans_affine.h"
 
 // the following are private headers.
+#include "elem_group.h"
 #include "elem_plot.h"
 #include "elem/elem_c.h"
 #include "elem/elem_c_forward.h"
@@ -140,6 +141,67 @@ void Text::SetPosition(double x, double y) {
     text_object->set_point(x, y);
 }
 
+static elem_affine ToAffineC(const Affine& m) {
+    elem_affine result = {m.a, m.b, m.c, m.d, m.tx, m.ty};
+    return result;
+}
+
+Group::Group() : group_impl_{elem_group_new()} {
+}
+
+Group::Group(const Group& group) :
+        group_impl_{group.group_impl_ ? elem_group_copy(group.group_impl_) : nullptr} {
+    if (group.group_impl_ && !group_impl_) {
+        throw std::logic_error("group copy returned null");
+    }
+}
+
+Group::Group(Group&& group) : group_impl_{group.group_impl_} {
+    group.group_impl_ = nullptr;
+}
+
+Group::~Group() {
+    elem_group_free(group_impl_);
+}
+
+Group& Group::operator=(const Group& other) {
+    if (this != &other) {
+        Group replacement(other);
+        std::swap(group_impl_, replacement.group_impl_);
+    }
+    return *this;
+}
+
+Group& Group::operator=(Group&& other) {
+    if (this != &other) {
+        elem_group_free(group_impl_);
+        group_impl_ = other.group_impl_;
+        other.group_impl_ = nullptr;
+    }
+    return *this;
+}
+
+void Group::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
+    // A moved-from Group is inert: the object is released with the argument.
+    if (object.object_impl_ != nullptr && group_impl_ != nullptr) {
+        // Transfer before insertion: the callee owns the geometry even on failure.
+        auto geometry = std::exchange(object.object_impl_, nullptr);
+        elem_group_add(group_impl_, geometry, stroke_color, stroke_width, fill_color, flags);
+    }
+}
+
+void Group::AddStroke(Object object, Color color, float line_width, unsigned flags) {
+    Add(std::move(object), color, line_width, Color(0), flags);
+}
+
+void Group::AddGroup(Group group, Affine placement) {
+    if (group.group_impl_ != nullptr && group_impl_ != nullptr) {
+        // Transfer before insertion: the callee owns the subgroup even on failure.
+        auto child = std::exchange(group.group_impl_, nullptr);
+        elem_group_add_group(group_impl_, child, ToAffineC(placement));
+    }
+}
+
 Plot::Plot(Plot::Options options) : plot_impl_{new elem_plot{options.value}} {
 }
 
@@ -224,6 +286,22 @@ void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill
 
 void Plot::AddStroke(Object object, Color color, float line_width, unsigned flags) {
     Add(std::move(object), color, line_width, Color(0), flags);
+}
+
+void Plot::AddGroup(Group group, Affine placement) {
+    if (group.group_impl_ != nullptr) {
+        // Transfer before insertion: the callee owns the group even on failure.
+        auto root = std::exchange(group.group_impl_, nullptr);
+        elem_plot_add_group(plot_impl_, root, ToAffineC(placement));
+    }
+}
+
+void Plot::AddAnnotation(Group group, Point anchor, Affine placement) {
+    if (group.group_impl_ != nullptr) {
+        auto root = std::exchange(group.group_impl_, nullptr);
+        elem_point anchor_c = {anchor.x, anchor.y};
+        elem_plot_add_annotation(plot_impl_, root, anchor_c, ToAffineC(placement));
+    }
 }
 
 void Plot::SetLegendPlot(Plot legend, Plot::Placement legend_location) {
