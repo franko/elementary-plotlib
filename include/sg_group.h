@@ -79,6 +79,19 @@ public:
         return result;
     }
 
+    /* Return the painted bounds in logical screen coordinates after applying
+       the nominal parent-to-screen transform. The group transform is applied
+       first, matching draw(). This pass resolves geometry and bounds without
+       rasterizing it; the drawable's existing rendering semantics determine
+       stroke, marker, dash, and glyph extents. */
+    opt_rect<double> screen_bounds(const agg::trans_affine& parent_to_screen = {}) const {
+        check_finite_affine(parent_to_screen);
+        sg_measure_canvas canvas;
+        opt_rect<double> result;
+        const_cast<sg_group*>(this)->draw(canvas, parent_to_screen, &result);
+        return result;
+    }
+
     void draw(virtual_canvas& canvas, const agg::trans_affine& parent_to_screen,
               opt_rect<double>* painted_bounds = nullptr) override
     {

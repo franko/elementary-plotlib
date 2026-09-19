@@ -263,6 +263,32 @@ plot.AddAnnotation(
     Affine::Scale(24, 24).Then(Affine::Translation(8, 8)));
 ```
 
+### Screen Bounds
+
+`Group::GetScreenBounds` measures the painted layout of a group without
+rendering to a raster surface:
+
+```cpp
+Bounds bounds;
+if (symbol.GetScreenBounds(bounds, Affine::Identity())) {
+    double width = bounds.Width();
+    double height = bounds.Height();
+}
+```
+
+The optional affine is a nominal parent-to-screen transform. The group's own
+local transform is composed before it, using the same order as `draw()`. The
+result is an unclipped logical-screen rectangle and includes the effective
+fill, stroke, dash, marker, and glyph extents. Screen-sized styles remain
+screen-sized, so scaling the nominal transform moves text and marker anchors
+but does not scale their visual sizes. Empty or completely non-painted groups
+return `false`.
+
+The C API provides the equivalent `elem_group_get_screen_bounds` function and
+the `elem_bounds` result type. The measurement pass uses the existing drawable
+geometry bounds with a no-op canvas; it does not allocate an image or perform
+rasterization.
+
 Default placement is identity. A group does not require an overall fill/stroke:
 every leaf carries its own complete style. A public `Style` convenience type
 remains optional.

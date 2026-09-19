@@ -161,6 +161,24 @@ void elem_group_add_group(elem_group *group, elem_group *child, elem_affine plac
     group->add_group(std::move(*owned_child), AffineToTransform(placement));
 }
 
+bool elem_group_get_screen_bounds(const elem_group *group, elem_affine nominal, elem_bounds *bounds) {
+    if (!group || !bounds) {
+        return false;
+    }
+
+    const opt_rect<double> measured = group->screen_bounds(AffineToTransform(nominal));
+    if (!measured.is_defined()) {
+        return false;
+    }
+
+    const agg::rect_d& rect = measured.rect();
+    bounds->x1 = rect.x1;
+    bounds->y1 = rect.y1;
+    bounds->x2 = rect.x2;
+    bounds->y2 = rect.y2;
+    return true;
+}
+
 elem_plot *elem_plot_new(unsigned int flags) {
     return new elem_plot{flags};
 }

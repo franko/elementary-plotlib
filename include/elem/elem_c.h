@@ -80,6 +80,10 @@ typedef struct elem_point {
     double x, y;
 } elem_point;
 
+typedef struct elem_bounds {
+    double x1, y1, x2, y2;
+} elem_bounds;
+
 /* An affine transform, with x' = a*x + c*y + tx and y' = b*x + d*y + ty.
    Rotation angles are in radians. */
 typedef struct elem_affine {
@@ -161,6 +165,11 @@ void elem_group_add(elem_group *group, elem_object *obj, elem_color stroke_color
 /* The parent group takes ownership of the child, on failure as well as on
    success. The placement applies once, to the inserted child root. */
 void elem_group_add_group(elem_group *group, elem_group *child, elem_affine placement);
+
+/* Return painted bounds in logical screen coordinates after nominal is applied
+   to the group. The group transform is composed before nominal. Returns false
+   for an empty or completely non-painted group. */
+bool elem_group_get_screen_bounds(const elem_group *group, elem_affine nominal, elem_bounds *bounds);
 
 elem_plot *elem_plot_new(unsigned int flags);
 // TODO: implement functions to copy a plot

@@ -278,6 +278,37 @@ void bounds() {
               "screen-sized decoration enlarged the group data bounds");
 }
 
+void screen_bounds() {
+    sg_group group(agg::trans_affine_translation(3, 4));
+
+    auto line = std::make_unique<elem_path>();
+    line->move_to(-1, 2);
+    line->line_to(5, 2);
+    group.add(sg_element(line.release(), colors::black(), 4, colors::zero(), stroke));
+
+    const agg::trans_affine nominal(2, 0.5, -0.25, 3, 11, 13);
+    const auto measured = group.screen_bounds(nominal);
+    const auto rendered = render(group, nominal);
+    require(measured.is_defined(), "painted group bounds are undefined");
+    same_rect(measured.rect(), rendered.damage.rect(),
+              "screen bounds differ from rendered painted bounds");
+
+    const auto repeated = group.screen_bounds(nominal);
+    same_rect(repeated.rect(), measured.rect(), "screen bounds accumulated a transform");
+
+    sg_group empty;
+    require(!empty.screen_bounds().is_defined(), "empty group has screen bounds");
+
+    bool rejected = false;
+    try {
+        group.screen_bounds(agg::trans_affine(1, 0, 0, 1,
+                                              std::numeric_limits<double>::infinity(), 0));
+    } catch (const std::invalid_argument&) {
+        rejected = true;
+    }
+    require(rejected, "non-finite nominal transform was accepted");
+}
+
 void screen_sized_styles() {
     const agg::trans_affine wide(40, 0, 0, 1, 0, 0);
 
@@ -552,8 +583,10 @@ void raster_and_svg() {
 
 int main() {
     try {
+        graphics::initialize_fonts();
         composition();
         bounds();
+        screen_bounds();
         screen_sized_styles();
         annotations();
         plot_integration();

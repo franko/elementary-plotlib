@@ -87,6 +87,13 @@ struct Point {
     double x, y;
 };
 
+struct Bounds {
+    double x1, y1, x2, y2;
+
+    double Width() const { return x2 - x1; }
+    double Height() const { return y2 - y1; }
+};
+
 // An affine transform, with x' = a*x + c*y + tx and y' = b*x + d*y + ty.
 // Rotation angles are in radians.
 class Affine {
@@ -251,6 +258,12 @@ public:
     void AddStroke(Object object, Color color, float line_width, unsigned flags = property::Stroke);
     // The placement applies once, to the inserted subgroup root.
     void AddGroup(Group group, Affine placement = Affine{});
+
+    // Return the painted bounds in logical screen coordinates. The nominal
+    // transform maps group-parent coordinates to screen coordinates and is
+    // composed after the group's own transform. Returns false for an empty or
+    // completely non-painted group.
+    bool GetScreenBounds(Bounds& bounds, Affine nominal = Affine{}) const;
 
 private:
     elem_group *group_impl_;

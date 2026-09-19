@@ -229,6 +229,61 @@ void annotation_placement() {
             "a data-space group did not change the automatic limits");
 }
 
+void screen_bounds() {
+    Group line;
+    line.AddStroke(Path{{0, 0}, {10, 0}}, color::Black, 4);
+
+    Bounds bounds;
+    require(line.GetScreenBounds(bounds), "line group has no screen bounds");
+    require(bounds.Width() > 10 && bounds.Height() > 3,
+            "screen bounds omitted the stroke extent");
+
+    Bounds translated;
+    require(line.GetScreenBounds(translated, Affine::Translation(7, 9)),
+            "translated line group has no screen bounds");
+    require(std::abs(translated.Width() - bounds.Width()) < 1e-9 &&
+            std::abs(translated.Height() - bounds.Height()) < 1e-9 &&
+            std::abs(translated.x1 - bounds.x1 - 7) < 1e-9 &&
+            std::abs(translated.y1 - bounds.y1 - 9) < 1e-9,
+            "nominal translation changed the wrong screen bounds");
+
+    Group text_group;
+    Text label{"measure me", 14};
+    label.SetPosition(10, 20);
+    text_group.Add(label, color::Black, 0, color::Black, property::Fill);
+
+    Bounds text_bounds;
+    require(text_group.GetScreenBounds(text_bounds), "text group has no screen bounds");
+    require(text_bounds.Width() > 0 && text_bounds.Height() > 0,
+            "text screen bounds are empty");
+
+    Bounds text_scaled;
+    require(text_group.GetScreenBounds(text_scaled, Affine::Scale(3, 4)),
+            "scaled text group has no screen bounds");
+    require(std::abs(text_scaled.Width() - text_bounds.Width()) < 1e-9 &&
+            std::abs(text_scaled.Height() - text_bounds.Height()) < 1e-9,
+            "nominal transform scaled text glyphs");
+
+    Group empty;
+    require(!empty.GetScreenBounds(bounds), "empty group has screen bounds");
+
+    elem_group* c_group = elem_group_new();
+    elem_path* c_line = elem_path_new();
+    elem_path_move_to(c_line, 0, 0);
+    elem_path_line_to(c_line, 10, 0);
+    elem_group_add(c_group, path_as_object(c_line), elem_color_black, 4,
+                   elem_color_none, elem_stroke);
+    elem_bounds c_bounds;
+    require(elem_group_get_screen_bounds(c_group, elem_affine_identity(), &c_bounds),
+            "C group has no screen bounds");
+    require(std::abs(double(c_bounds.x1) - bounds.x1) < 1e-9 &&
+            std::abs(double(c_bounds.y1) - bounds.y1) < 1e-9 &&
+            std::abs(double(c_bounds.x2) - bounds.x2) < 1e-9 &&
+            std::abs(double(c_bounds.y2) - bounds.y2) < 1e-9,
+            "C and C++ screen bounds disagree");
+    elem_group_free(c_group);
+}
+
 void ownership() {
     counts geometry;
     {
@@ -316,6 +371,7 @@ int main() {
         affine_algebra();
         placement_matches_flat_geometry();
         annotation_placement();
+        screen_bounds();
         ownership();
     } catch (const std::exception& error) {
         std::fprintf(stderr, "public group regression: %s\n", error.what());

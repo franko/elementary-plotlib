@@ -76,6 +76,18 @@ public:
                       opt_rect<double>* painted_bounds = nullptr) = 0;
 };
 
+// A measurement pass needs the drawable to resolve its geometry and painted
+// bounds, but it does not need a raster backend. Keeping this canvas empty
+// avoids allocating or rendering an intermediate image.
+class sg_measure_canvas : public virtual_canvas {
+public:
+    void draw(elem_object&, agg::rgba8) override { }
+    void draw_outline_noaa(elem_object&, agg::rgba8) override { }
+    void draw_noaa(elem_object&, agg::rgba8) override { }
+    void clip_logical_area(const agg::rect_base<int>&) override { }
+    void reset_clipping() override { }
+};
+
 // Deep-copy values, transfer ownership on insertion, and preserve painter order.
 class sg_drawable_list {
 public:

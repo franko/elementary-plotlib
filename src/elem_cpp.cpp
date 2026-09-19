@@ -202,6 +202,20 @@ void Group::AddGroup(Group group, Affine placement) {
     }
 }
 
+bool Group::GetScreenBounds(Bounds& bounds, Affine nominal) const {
+    if (group_impl_ == nullptr) {
+        return false;
+    }
+
+    elem_bounds measured;
+    if (!elem_group_get_screen_bounds(group_impl_, ToAffineC(nominal), &measured)) {
+        return false;
+    }
+
+    bounds = Bounds{measured.x1, measured.y1, measured.x2, measured.y2};
+    return true;
+}
+
 Plot::Plot(Plot::Options options) : plot_impl_{new elem_plot{options.value}} {
 }
 
