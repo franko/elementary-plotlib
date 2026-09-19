@@ -1,4 +1,5 @@
 #include <cmath>
+#include <utility>
 
 #include "elem/elem.h"
 using namespace elem;
@@ -14,18 +15,26 @@ void AddFunction(Plot& p, double x0, double x1, Function f, Color color, int n =
     p.Add(line, color, 1.5, color::None, property::Stroke);
 }
 
-Plot CreatePlotLegend() {
-    Plot p{Plot::Options{0}};
-    p.SetLimits(0.0, -5.0, 16.0, 5.0);
-    p.SetClipMode(false);
-    p.Add(Path{{0.0, -3.0}, {3.0, -3.0}}, color::Blue, 1.5, color::None, property::Stroke);
-    p.Add(Path{{0.0, +3.0}, {3.0, +3.0}}, color::Red,  1.5, color::None, property::Stroke);
+Legend CreateLegend(bool include_cos) {
+    Legend legend;
 
-    Text label1{"sin(x) / x", 14.0, 0.0, 0.3};
-    label1.SetPosition(4.0, -3.0);
-    p.Add(label1, color::Black, 1.0, color::Black, property::Fill);
+    Group sin_entry;
+    sin_entry.AddStroke(Path{{0.0, 0.0}, {24.0, 0.0}}, color::Blue, 1.5);
+    Text sin_label{"sin(x) / x", 14.0};
+    sin_label.SetPosition(32.0, 0.0);
+    sin_entry.Add(sin_label, color::Black, 0.0, color::Black, property::Fill);
+    legend.Add(std::move(sin_entry));
 
-    return p;
+    if (include_cos) {
+        Group cos_entry;
+        cos_entry.AddStroke(Path{{0.0, 0.0}, {24.0, 0.0}}, color::Red, 1.5);
+        Text cos_label{"cos(x) / x", 14.0};
+        cos_label.SetPosition(32.0, 0.0);
+        cos_entry.Add(cos_label, color::Black, 0.0, color::Black, property::Fill);
+        legend.Add(std::move(cos_entry));
+    }
+
+    return legend;
 }
 
 ELEM_USER_MAIN() {
@@ -40,7 +49,7 @@ ELEM_USER_MAIN() {
     p.SetTitle("Function plot example");
     p.SetXAxisTitle("x variable");
 
-    p.SetLegendPlot(CreatePlotLegend(), Plot::Right);
+    p.SetLegend(CreateLegend(false), LegendLocation::Right);
 
     Window win;
     win.Attach(p, "");
@@ -48,11 +57,7 @@ ELEM_USER_MAIN() {
 
     AddFunction(p, 0.8, x1, [](double x) { return std::cos(x) / x; }, color::Red);
 
-    Plot legend = p.GetLegendPlot(Plot::Right);
-    Text cos_label{"cos(x) / x", 14.0, 0.0, 0.3};
-    cos_label.SetPosition(4.0, +3.0);
-    legend.Add(cos_label, color::Black, 1.0, color::Black, property::Fill);
-    p.SetLegendPlot(legend, Plot::Right);
+    p.SetLegend(CreateLegend(true), LegendLocation::Right);
 
     win.Wait();
     return 0;

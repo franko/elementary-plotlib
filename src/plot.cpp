@@ -3,6 +3,9 @@
 #include "sg_path.h"
 #include "plot_style.h"
 
+#include <algorithm>
+#include <cmath>
+
 namespace graphics {
 
 static double compute_scale(const agg::trans_affine& m)
@@ -10,10 +13,16 @@ static double compute_scale(const agg::trans_affine& m)
     return m.scale() / 480.0;
 }
 
+namespace {
+
+constexpr double legend_padding = 8.0;
+
+} // namespace
+
 void plot::commit_pending_draw()
 {
     push_drawing_queue();
-    m_need_redraw = false;
+    m_need_redraw = m_layout_dirty;
     m_changes_pending.clear();
 }
 
@@ -50,21 +59,16 @@ static bool area_is_valid(const agg::trans_affine& b)
 void plot::draw_virtual_canvas(canvas_type& canvas, plot_layout& layout, const agg::rect_i* clip)
 {
     before_draw();
-    draw_legends(canvas, layout);
+    draw_title(canvas, layout);
+    draw_outside_legends(canvas, layout);
 
     if (area_is_valid(layout.plot_area))
     {
         draw_axis(canvas, layout, clip);
         draw_elements(canvas, layout);
     }
-};
-
-void plot::draw_simple(canvas_type& canvas, plot_layout& layout, const agg::rect_i* clip)
-{
-    before_draw();
-    draw_axis(canvas, layout, clip);
-    draw_elements(canvas, layout);
-};
+    draw_inside_legends(canvas, layout);
+}
 
 agg::trans_affine plot::get_model_matrix(const plot_layout& layout)
 {
@@ -144,8 +148,6 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
     const double sx = canvas_mtx.sx, sy = canvas_mtx.sy;
     const double ppad = double(canvas_margin_prop_space) / 1000.0;
     const double fpad = double(canvas_margin_fixed_space);
-    const double size_frac_x = 0.125, size_frac_y = 0.05;
-
     double dxl, dxr, dyb, dyt;
 
     dxl = dxr = fpad + ppad * sx;
@@ -168,60 +170,61 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
         dyt += 2 * ptpad + th;
     }
 
-    for (int k = 0; k < 4 && do_legends; k++)
-    {
-        plot* mp = m_legend[k].get();
-
-        if (mp)
-        {
-            agg::rect_base<double> bb;
-            mp->get_bounding_rect(bb);
-
-            double bb_dx = bb.x2 - bb.x1, bb_dy = bb.y2 - bb.y1;
-            double dx, dy;
-            double px, py;
-            switch (k)
-            {
-            case right:
-                dx = max(sx * size_frac_x, bb_dx);
-                dy = dx * bb_dy / bb_dx;
-                px = sx - dx - ppad * sx - dxr;
-                py = (sy - dy) / 2;
-                dxr += dx + 2 * ppad * sx;
-                break;
-            case left:
-                dx = max(sx * size_frac_x, bb_dx);
-                dy = dx * bb_dy / bb_dx;
-                px = ppad * sx + dxr;
-                py = (sy - dy) / 2;
-                dxl += dx + 2 * ppad * sx;
-                break;
-            case bottom:
-                dy = sy * size_frac_y;
-                dx = dy * bb_dx / bb_dy;
-                py = ppad * sy + dyb;
-                px = (sx - dx) / 2;
-                dyb += dy + 2 * ppad * sy;
-                break;
-            case top:
-            default:
-                dy = sy * size_frac_y;
-                dx = dy * bb_dx / bb_dy;
-                py = sy - dy - ppad * sy - dyt;
-                px = (sx - dx) / 2;
-                dyt += dy + 2 * ppad * sy;
+    if (do_legends) {
+        auto place_side_legend = [&](int location, bool left) {
+            legend* value = m_legend[location].get();
+            if (!value || value->empty()) {
+                return;
             }
 
-            if (px >= 0 && py >= 0 && px + dx < sx && py + dy < sy)
-            {
-                const double x0 = canvas_mtx.tx + px, y0 = canvas_mtx.ty + py;
-                layout.legend_area[k] = agg::trans_affine(dx, 0.0, 0.0, dy, x0, y0);
+            const legend_size size = value->measure(legend_direction::vertical);
+            const double width = size.width + 2.0 * legend_padding;
+            const double height = size.height + 2.0 * legend_padding;
+            double x;
+            if (left) {
+                dxl += width;
+                x = canvas_mtx.tx + dxl - width;
+            } else {
+                dxr += width;
+                x = canvas_mtx.tx + sx - dxr;
             }
-            else
-            {
-                plot_layout::set_area_undefined(layout.legend_area[k]);
+            const double y = canvas_mtx.ty + (sy - height) / 2.0;
+            layout.legend_area[location] = agg::trans_affine(width, 0.0, 0.0,
+                                                              height, x, y);
+        };
+
+        place_side_legend(plot_legend_right, false);
+        place_side_legend(plot_legend_left, true);
+
+        const double max_row_width = std::max(
+            0.0, sx - dxl - dxr - 2.0 * legend_padding);
+        auto place_row_legend = [&](int location, bool top) {
+            legend* value = m_legend[location].get();
+            if (!value || value->empty()) {
+                return;
             }
-        }
+
+            const legend_size size = value->measure(legend_direction::horizontal,
+                                                     max_row_width);
+            const double width = size.width + 2.0 * legend_padding;
+            const double height = size.height + 2.0 * legend_padding;
+            const double available_width = sx - dxl - dxr;
+            const double x = canvas_mtx.tx + dxl +
+                             (available_width - width) / 2.0;
+            double y;
+            if (top) {
+                dyt += height;
+                y = canvas_mtx.ty + sy - dyt;
+            } else {
+                y = canvas_mtx.ty + dyb;
+                dyb += height;
+            }
+            layout.legend_area[location] = agg::trans_affine(width, 0.0, 0.0,
+                                                              height, x, y);
+        };
+
+        place_row_legend(plot_legend_bottom, false);
+        place_row_legend(plot_legend_top, true);
     }
 
     double x0 = canvas_mtx.tx + dxl, y0 = canvas_mtx.ty + dyb;
@@ -231,7 +234,7 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
     return layout;
 }
 
-void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
+void plot::draw_title(canvas_type& canvas, const plot_layout& layout)
 {
     if (!str_is_null(&m_title))
     {
@@ -241,18 +244,84 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
         title.apply_transform(identity_matrix, 1.0);
         canvas.draw(title, colors::black());
     }
+}
 
-    for (int k = 0; k < 4; k++)
-    {
-        plot* mp = m_legend[k].get();
-        const agg::trans_affine& mtx = layout.legend_area[k];
-
-        if (mp && plot_layout::is_area_defined(mtx))
-        {
-            agg::rect_i clip = rect_of_slot_matrix<int>(mtx);
-            plot_layout mp_layout = mp->compute_plot_layout(mtx, false);
-            mp->draw_simple(canvas, mp_layout, &clip);
+void plot::draw_outside_legends(canvas_type& canvas, const plot_layout& layout)
+{
+    for (int k = plot_legend_right; k <= plot_legend_top; ++k) {
+        legend* value = m_legend[k].get();
+        const agg::trans_affine& area = layout.legend_area[k];
+        if (!value || !plot_layout::is_area_defined(area)) {
+            continue;
         }
+
+        const agg::rect_i clip = rect_of_slot_matrix<int>(area);
+        canvas.clip_logical_area(clip);
+        const legend_direction direction =
+            (k == plot_legend_bottom || k == plot_legend_top)
+                ? legend_direction::horizontal
+                : legend_direction::vertical;
+        value->draw_outside(canvas, area, direction);
+        canvas.reset_clipping();
+    }
+}
+
+void plot::draw_inside_legends(canvas_type& canvas, const plot_layout& layout,
+                               opt_rect<double>* painted_bounds)
+{
+    if (!plot_layout::is_area_defined(layout.plot_active_area)) {
+        return;
+    }
+
+    if (clip_is_active()) {
+        clip_plot_area(canvas, layout.plot_active_area);
+    }
+
+    for (int k = plot_legend_inside_top_left;
+         k <= plot_legend_inside_right; ++k) {
+        legend* value = m_legend[k].get();
+        if (!value) {
+            continue;
+        }
+
+        switch (k) {
+        case plot_legend_inside_top_left:
+            value->draw_inside(canvas, layout.plot_active_area,
+                               legend_corner::top_left, painted_bounds);
+            break;
+        case plot_legend_inside_top_right:
+            value->draw_inside(canvas, layout.plot_active_area,
+                               legend_corner::top_right, painted_bounds);
+            break;
+        case plot_legend_inside_bottom_left:
+            value->draw_inside(canvas, layout.plot_active_area,
+                               legend_corner::bottom_left, painted_bounds);
+            break;
+        case plot_legend_inside_bottom_right:
+            value->draw_inside(canvas, layout.plot_active_area,
+                               legend_corner::bottom_right, painted_bounds);
+            break;
+        case plot_legend_inside_top:
+            value->draw_inside_edge(canvas, layout.plot_active_area,
+                                    legend_edge::top, painted_bounds);
+            break;
+        case plot_legend_inside_bottom:
+            value->draw_inside_edge(canvas, layout.plot_active_area,
+                                    legend_edge::bottom, painted_bounds);
+            break;
+        case plot_legend_inside_left:
+            value->draw_inside_edge(canvas, layout.plot_active_area,
+                                    legend_edge::left, painted_bounds);
+            break;
+        case plot_legend_inside_right:
+            value->draw_inside_edge(canvas, layout.plot_active_area,
+                                    legend_edge::right, painted_bounds);
+            break;
+        }
+    }
+
+    if (clip_is_active()) {
+        canvas.reset_clipping();
     }
 }
 

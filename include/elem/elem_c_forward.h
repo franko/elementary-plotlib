@@ -5,5 +5,6 @@ class elem_path;
 class elem_curve;
 class elem_dashed;
 class elem_group;
+class elem_legend;
 class elem_window;
 class elem_plot;

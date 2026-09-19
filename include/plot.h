@@ -29,6 +29,7 @@
 #include "units.h"
 #include "rect.h"
 #include "sg_element.h"
+#include "legend.h"
 #include "text.h"
 #include "plot_axis.h"
 
@@ -66,7 +67,31 @@ private:
     Canvas* m_canvas;
 };
 
+enum plot_legend_location_e {
+    plot_legend_right = 0,
+    plot_legend_left = 1,
+    plot_legend_bottom = 2,
+    plot_legend_top = 3,
+    plot_legend_inside_top_left = 4,
+    plot_legend_inside_top_right = 5,
+    plot_legend_inside_bottom_left = 6,
+    plot_legend_inside_bottom_right = 7,
+    plot_legend_inside_top = 8,
+    plot_legend_inside_bottom = 9,
+    plot_legend_inside_left = 10,
+    plot_legend_inside_right = 11,
+    plot_legend_location_count = 12,
+};
+
 struct plot_layout {
+    plot_layout() {
+        for (int k = 0; k < plot_legend_location_count; ++k) {
+            set_area_undefined(legend_area[k]);
+        }
+        set_area_undefined(plot_area);
+        set_area_undefined(plot_active_area);
+    }
+
     struct point {
         point(double _x, double _y): x(_x), y(_y) {}
         point() {}
@@ -93,13 +118,14 @@ struct plot_layout {
     point title_pos;
     double title_font_size;
 
-    agg::trans_affine legend_area[4];
+    agg::trans_affine legend_area[plot_legend_location_count];
     agg::trans_affine plot_area;
     agg::trans_affine plot_active_area;
 };
 
 struct plot_render_info {
     agg::trans_affine active_area;
+    unsigned layout_generation = 0;
 };
 
 namespace graphics {
@@ -143,8 +169,6 @@ protected:
 public:
     typedef virtual_canvas canvas_type;
 
-    enum placement_e { right = 0, left = 1, bottom = 2, top = 3 };
-
     enum { show_units = 1 << 0, auto_limits = 1 << 1, clip_region = 1 << 2 };
 
     class drawing_context {
@@ -163,7 +187,7 @@ public:
         m_clip_flag(flags & clip_region), m_need_redraw(true), m_layers(1),
         m_x_axis(x_axis, flags & show_units), m_y_axis(y_axis, flags & show_units),
         m_auto_limits(flags & auto_limits),
-        m_bbox_updated(true), m_enlarged_layer(false)
+        m_bbox_updated(true), m_enlarged_layer(false), m_layout_dirty(false)
     {
         compute_user_trans();
     };
@@ -176,12 +200,13 @@ public:
             m_layers(source.m_layers),
             m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
             m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
-            m_enlarged_layer(source.m_enlarged_layer),
+            m_enlarged_layer(source.m_enlarged_layer), m_layout_dirty(source.m_layout_dirty),
+            m_layout_generation(source.m_layout_generation),
             m_drawing_mutex() {
-        for (unsigned k = 0; k < 4; k++) {
-            const plot *source_legend = source.m_legend[k].get();
+        for (unsigned k = 0; k < plot_legend_location_count; k++) {
+            const legend *source_legend = source.m_legend[k].get();
             if (source_legend) {
-                m_legend[k] = std::make_unique<plot>(*source_legend);
+                m_legend[k] = std::make_unique<legend>(*source_legend);
             }
         }
     }
@@ -193,11 +218,12 @@ public:
             m_layers(1),
             m_title(source.m_title), m_x_axis(source.m_x_axis), m_y_axis(source.m_y_axis),
             m_auto_limits(source.m_auto_limits), m_bbox_updated(source.m_bbox_updated),
-            m_enlarged_layer(source.m_enlarged_layer),
+            m_enlarged_layer(source.m_enlarged_layer), m_layout_dirty(source.m_layout_dirty),
+            m_layout_generation(source.m_layout_generation),
             m_drawing_mutex() {
         m_drawing_queue = std::move(source.m_drawing_queue);
         m_layers.swap(source.m_layers);
-        for (unsigned k = 0; k < 4; k++) {
+        for (unsigned k = 0; k < plot_legend_location_count; k++) {
             m_legend[k] = std::move(source.m_legend[k]);
         }
     }
@@ -227,12 +253,24 @@ public:
         return m_y_axis.title;
     }
 
-    void add_legend(plot* p, placement_e where) {
-        m_legend[where].reset(p);
+    void set_legend(std::unique_ptr<legend> value, int where) {
+        if (where < 0 || where >= plot_legend_location_count) {
+            throw std::invalid_argument("invalid legend location");
+        }
+        m_legend[where] = std::move(value);
+        m_layout_dirty = true;
+        m_need_redraw = true;
+        ++m_layout_generation;
     }
 
-    plot* get_legend(placement_e where) {
-        return m_legend[where].get();
+    void clear_legend(int where) {
+        if (where < 0 || where >= plot_legend_location_count) {
+            throw std::invalid_argument("invalid legend location");
+        }
+        m_legend[where].reset();
+        m_layout_dirty = true;
+        m_need_redraw = true;
+        ++m_layout_generation;
     }
 
     axis& get_axis(axis_e axis_dir)
@@ -308,6 +346,10 @@ public:
     bool need_redraw() const {
         return m_need_redraw;
     };
+
+    unsigned layout_generation() const {
+        return m_layout_generation;
+    }
     void commit_pending_draw();
 
     void pad_mode(bool req)
@@ -367,8 +409,13 @@ public:
         agg::rect_i clip = rect_of_slot_matrix<int>(m);
         plot_layout layout = compute_plot_layout(m);
         draw_virtual_canvas(vc, layout, &clip);
+        m_need_redraw = false;
+        m_layout_dirty = false;
         if (inf)
+        {
             inf->active_area = layout.plot_active_area;
+            inf->layout_generation = m_layout_generation;
+        }
     }
 
     template <class Canvas>
@@ -378,13 +425,17 @@ public:
         agg::trans_affine mtx = affine_matrix(r);
         plot_layout layout = compute_plot_layout(mtx);
         draw_virtual_canvas(vc, layout, &r);
+        m_need_redraw = false;
+        m_layout_dirty = false;
         if (inf)
+        {
             inf->active_area = layout.plot_active_area;
+            inf->layout_generation = m_layout_generation;
+        }
     }
 
 private:
     void draw_virtual_canvas(canvas_type& canvas, plot_layout& layout, const agg::rect_i* r);
-    void draw_simple(canvas_type& canvas, plot_layout& layout, const agg::rect_i* r);
 
     void draw_grid(const axis_e dir, const units& u,
                    const agg::trans_affine& user_mtx,
@@ -394,7 +445,10 @@ private:
 
     void draw_axis(canvas_type& can, plot_layout& layout, const agg::rect_i* clip = 0);
 
-    void draw_legends(canvas_type& canvas, const plot_layout& layout);
+    void draw_title(canvas_type& canvas, const plot_layout& layout);
+    void draw_outside_legends(canvas_type& canvas, const plot_layout& layout);
+    void draw_inside_legends(canvas_type& canvas, const plot_layout& layout,
+                             opt_rect<double>* painted_bounds = nullptr);
 
     plot_layout compute_plot_layout(const agg::trans_affine& canvas_mtx, bool do_legends = true);
 
@@ -454,11 +508,13 @@ private:
     str m_title;
 
     axis m_x_axis, m_y_axis;
-    std::unique_ptr<plot> m_legend[4];
+    std::unique_ptr<legend> m_legend[plot_legend_location_count];
 
     bool m_auto_limits;
     bool m_bbox_updated;
     bool m_enlarged_layer;
+    bool m_layout_dirty;
+    unsigned m_layout_generation = 0;
     std::mutex m_drawing_mutex;
 };
 
@@ -473,6 +529,8 @@ void plot::draw_queue(plot::drawing_context& dc, Canvas& _canvas, const agg::tra
 
     clip_plot_area(canvas, layout.plot_active_area);
 
+    const bool repaint_inside_legends =
+        m_drawing_queue.size() != 0 || m_changes_pending.is_defined();
     const agg::trans_affine m = get_model_matrix(layout);
     for (auto& d : m_drawing_queue)
     {
@@ -480,12 +538,17 @@ void plot::draw_queue(plot::drawing_context& dc, Canvas& _canvas, const agg::tra
         d->draw(canvas, m, &painted_bounds);
         bb.add<rect_union>(painted_bounds);
     }
-    m_changes_accu.add<rect_union>(bb);
-
     if (m_changes_pending.is_defined()) {
         bb.add<rect_union>(m_changes_pending);
     }
     canvas.reset_clipping();
+
+    if (repaint_inside_legends) {
+        opt_rect<double> inside_bounds;
+        draw_inside_legends(canvas, layout, &inside_bounds);
+        bb.add<rect_union>(inside_bounds);
+    }
+    m_changes_accu.add<rect_union>(bb);
 }
 
 } /* namespace graphics */

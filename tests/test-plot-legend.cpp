@@ -1,4 +1,5 @@
 #include <cmath>
+#include <utility>
 
 #include "elem/elem.h"
 using namespace elem;
@@ -14,21 +15,24 @@ void AddFunction(Plot& p, double x0, double x1, Function f, Color color, int n =
     p.Add(line, color, 1.5, color::None, property::Stroke);
 }
 
-Plot CreatePlotLegend() {
-    Plot p{Plot::Options{0}};
-    p.SetLimits(0.0, -5.0, 16.0, 5.0);
-    p.SetClipMode(false);
-    p.Add(Path{{0.0, -3.0}, {3.0, -3.0}}, color::Blue, 1.5, color::None, property::Stroke);
-    p.Add(Path{{0.0, +3.0}, {3.0, +3.0}}, color::Red,  1.5, color::None, property::Stroke);
+Legend CreateLegend() {
+    Legend legend;
 
-    Text label1{"sin(x) / x", 14.0, 0.0, 0.3};
-    label1.SetPosition(4.0, -3.0);
-    p.Add(label1, color::Black, 1.0, color::Black, property::Fill);
+    Group sin_entry;
+    sin_entry.AddStroke(Path{{0.0, 0.0}, {24.0, 0.0}}, color::Blue, 1.5);
+    Text sin_label{"sin(x) / x", 14.0, 0.0, 0.5};
+    sin_label.SetPosition(32.0, 0.0);
+    sin_entry.Add(sin_label, color::Black, 0.0, color::Black, property::Fill);
+    legend.Add(std::move(sin_entry));
 
-    Text label2{"cos(x) / x", 14.0, 0.0, 0.3};
-    label2.SetPosition(4.0, +3.0);
-    p.Add(label2, color::Black, 1.0, color::Black, property::Fill);
-    return p;
+    Group cos_entry;
+    cos_entry.AddStroke(Path{{0.0, 0.0}, {24.0, 0.0}}, color::Red, 1.5);
+    Text cos_label{"cos(x) / x", 14.0, 0.0, 0.5};
+    cos_label.SetPosition(32.0, 0.0);
+    cos_entry.Add(cos_label, color::Black, 0.0, color::Black, property::Fill);
+    legend.Add(std::move(cos_entry));
+
+    return legend;
 }
 
 ELEM_USER_MAIN() {
@@ -43,7 +47,7 @@ ELEM_USER_MAIN() {
     p.SetTitle("Function plot example");
     p.SetXAxisTitle("x variable");
 
-    p.SetLegendPlot(CreatePlotLegend(), Plot::Right);
+    p.SetLegend(CreateLegend(), LegendLocation::InsideBottom);
 
     Window win;
     win.Attach(p, "");

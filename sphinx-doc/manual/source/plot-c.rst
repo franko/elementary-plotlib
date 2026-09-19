@@ -8,13 +8,21 @@ Plot options
   .. c:macro:: elem_plot_auto_limits
   .. c:macro:: elem_plot_clip_region
 
-Legend Placement
-----------------
+Legend Locations
+-----------------
 
   .. c:macro:: elem_plot_left
   .. c:macro:: elem_plot_right
   .. c:macro:: elem_plot_bottom
   .. c:macro:: elem_plot_top
+  .. c:macro:: elem_plot_inside_top_left
+  .. c:macro:: elem_plot_inside_top_right
+  .. c:macro:: elem_plot_inside_bottom_left
+  .. c:macro:: elem_plot_inside_bottom_right
+  .. c:macro:: elem_plot_inside_top
+  .. c:macro:: elem_plot_inside_bottom
+  .. c:macro:: elem_plot_inside_left
+  .. c:macro:: elem_plot_inside_right
 
 .. c:type:: elem_plot
 
@@ -86,9 +94,41 @@ Legend Placement
 
     Discard the current layer with all its content. The previous layer will become the current one. If the plot has only one layer the operation has no effect.
 
-  .. c:function:: void elem_plot_add_legend(canavs_plot *plot, canavs_plot *legend, int legend_location)
+  .. c:function:: elem_legend *elem_legend_new(void)
 
-    Add a new plot as a legend in the given location.
+     Create an empty grouped legend.
+
+  .. c:function:: void elem_legend_add_group(elem_legend *legend, elem_group *entry)
+
+     Add a complete group as one legend entry. The legend consumes ``entry``.
+
+     A text label can be built with :c:func:`elem_text_new`, positioned with
+     :c:func:`elem_text_set_position`, and inserted into the entry group like
+     any other ``elem_object``.
+
+  .. c:function:: void elem_legend_free(elem_legend *legend)
+
+     Free a legend that has not been placed on a plot.
+
+  .. c:function:: elem_object *elem_text_new(const char *text, double size, double hjustif, double vjustif)
+
+     Create a text object for insertion into a group or plot.
+
+  .. c:function:: void elem_text_set_position(elem_object *text, double x, double y)
+
+     Set the text anchor in the containing group's coordinates.
+
+  .. c:function:: void elem_text_set_angle(elem_object *text, double angle)
+
+     Set the text angle in radians.
+
+  .. c:function:: void elem_plot_set_legend(elem_plot *plot, elem_legend *legend, int legend_location)
+
+     Place a grouped legend. The plot consumes the legend handle.
+
+  .. c:function:: void elem_plot_clear_legend(elem_plot *plot, int legend_location)
+
+     Remove the legend at the given location.
 
   .. c:function:: void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags)
 

@@ -1,5 +1,5 @@
 
-foreach name : ['drawable', 'geometry-copy', 'plot-storage', 'group']
+foreach name : ['drawable', 'geometry-copy', 'plot-storage', 'group', 'legend']
     regression = executable('test-' + name, 'test-' + name + '.cpp',
         dependencies: libelem_dep,
         cpp_args: libelem_cflags)

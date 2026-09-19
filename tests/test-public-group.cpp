@@ -284,6 +284,57 @@ void screen_bounds() {
     elem_group_free(c_group);
 }
 
+Legend make_legend() {
+    Legend legend;
+    Group entry;
+    entry.AddStroke(Path{{0, 0}, {16, 0}}, color::Blue, 1.5);
+    Text label{"legend entry", 12};
+    label.SetPosition(24, 0);
+    entry.Add(label, color::None, 0, color::Black, property::Fill);
+    legend.Add(entry);
+    return legend;
+}
+
+void legend_api() {
+    Plot plot = flat_plot();
+    Legend source = make_legend();
+    plot.SetLegend(source, LegendLocation::InsideTopLeft);
+    const std::string before = to_svg(plot);
+
+    // Both legend and plot insertion are snapshots.
+    Group extra;
+    extra.AddStroke(Path{{0, 0}, {8, 0}}, color::Red, 1);
+    source.Add(std::move(extra));
+    require(to_svg(plot) == before, "editing a legend source changed the plot");
+    Plot copied = plot;
+    require(to_svg(copied) == before, "plot copy lost its grouped legend");
+    plot.ClearLegend(LegendLocation::InsideTopLeft);
+    require(to_svg(plot) != before, "clearing a legend did not redraw the plot");
+
+    elem_plot* c_plot = elem_plot_new(0);
+    elem_plot_set_limits(c_plot, 0, 0, 10, 10);
+    elem_group* c_entry = elem_group_new();
+    elem_path* c_path = elem_path_new();
+    elem_path_move_to(c_path, 0, 0);
+    elem_path_line_to(c_path, 16, 0);
+    elem_group_add(c_entry, path_as_object(c_path), elem_color_blue, 1.5,
+                   elem_color_none, elem_stroke);
+    elem_object* c_text = elem_text_new("legend entry", 12, 0, 0);
+    elem_text_set_position(c_text, 24, 0);
+    elem_group_add(c_entry, c_text, elem_color_none, 0, elem_color_black,
+                   elem_fill);
+    elem_legend* c_legend = elem_legend_new();
+    elem_legend_add_group(c_legend, c_entry);
+    elem_plot_set_legend(c_plot, c_legend, elem_plot_inside_top_left);
+    const std::string c_output = to_svg(c_plot);
+    require(c_output.find("legend entry") != std::string::npos,
+            "C grouped legend did not render its text");
+    elem_plot_clear_legend(c_plot, elem_plot_inside_top_left);
+    require(to_svg(c_plot).find("legend entry") == std::string::npos,
+            "C legend clearing did not remove the entry");
+    elem_plot_free(c_plot);
+}
+
 void ownership() {
     counts geometry;
     {
@@ -372,6 +423,7 @@ int main() {
         placement_matches_flat_geometry();
         annotation_placement();
         screen_bounds();
+        legend_api();
         ownership();
     } catch (const std::exception& error) {
         std::fprintf(stderr, "public group regression: %s\n", error.what());

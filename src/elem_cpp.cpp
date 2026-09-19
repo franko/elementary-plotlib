@@ -5,6 +5,7 @@
 
 // the following are private headers.
 #include "elem_group.h"
+#include "elem_legend.h"
 #include "elem_plot.h"
 #include "elem/elem_c.h"
 #include "elem/elem_c_forward.h"
@@ -216,6 +217,45 @@ bool Group::GetScreenBounds(Bounds& bounds, Affine nominal) const {
     return true;
 }
 
+Legend::Legend() : legend_impl_{elem_legend_new()} {
+}
+
+Legend::Legend(const Legend& legend) :
+        legend_impl_{legend.legend_impl_ ? new elem_legend{*legend.legend_impl_} : nullptr} {
+}
+
+Legend::Legend(Legend&& legend) : legend_impl_{legend.legend_impl_} {
+    legend.legend_impl_ = nullptr;
+}
+
+Legend::~Legend() {
+    elem_legend_free(legend_impl_);
+}
+
+Legend& Legend::operator=(const Legend& other) {
+    if (this != &other) {
+        Legend replacement(other);
+        std::swap(legend_impl_, replacement.legend_impl_);
+    }
+    return *this;
+}
+
+Legend& Legend::operator=(Legend&& other) {
+    if (this != &other) {
+        elem_legend_free(legend_impl_);
+        legend_impl_ = other.legend_impl_;
+        other.legend_impl_ = nullptr;
+    }
+    return *this;
+}
+
+void Legend::Add(Group entry) {
+    if (legend_impl_ != nullptr && entry.group_impl_ != nullptr) {
+        auto group = std::exchange(entry.group_impl_, nullptr);
+        elem_legend_add_group(legend_impl_, group);
+    }
+}
+
 Plot::Plot(Plot::Options options) : plot_impl_{new elem_plot{options.value}} {
 }
 
@@ -318,17 +358,15 @@ void Plot::AddAnnotation(Group group, Point anchor, Affine placement) {
     }
 }
 
-void Plot::SetLegendPlot(Plot legend, Plot::Placement legend_location) {
-    auto legend_plot = new graphics::plot{std::move(*legend.plot_impl_)};
-    plot_impl_->add_legend(legend_plot, (graphics::plot::placement_e) legend_location);
+void Plot::SetLegend(Legend legend, LegendLocation location) {
+    if (legend.legend_impl_ != nullptr) {
+        auto implementation = std::exchange(legend.legend_impl_, nullptr);
+        elem_plot_set_legend(plot_impl_, implementation, static_cast<int>(location));
+    }
 }
 
-Plot Plot::GetLegendPlot(Plot::Placement legend_location) {
-    auto legend_plot = plot_impl_->get_legend((graphics::plot::placement_e) legend_location);
-    if (!legend_plot) {
-        return Plot{};
-    }
-    return Plot{new elem_plot{*legend_plot}};
+void Plot::ClearLegend(LegendLocation location) {
+    elem_plot_clear_legend(plot_impl_, static_cast<int>(location));
 }
 
 bool Plot::PushLayer() {

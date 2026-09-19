@@ -80,8 +80,24 @@ enum {
 }
 
 class Group;
+class Legend;
 class Plot;
 class Window;
+
+enum class LegendLocation {
+    Right,
+    Left,
+    Bottom,
+    Top,
+    InsideTopLeft,
+    InsideTopRight,
+    InsideBottomLeft,
+    InsideBottomRight,
+    InsideTop,
+    InsideBottom,
+    InsideLeft,
+    InsideRight,
+};
 
 struct Point {
     double x, y;
@@ -270,12 +286,31 @@ private:
 
     // Plot::AddGroup and Plot::AddAnnotation need the inner elem_group pointer.
     friend class Plot;
+    friend class Legend;
+};
+
+class Legend {
+public:
+    Legend();
+    Legend(const Legend& legend);
+    Legend(Legend&& legend);
+    ~Legend();
+
+    Legend& operator=(const Legend& legend);
+    Legend& operator=(Legend&& legend);
+
+    // Passing an lvalue copies the entry; passing a moved value transfers it.
+    void Add(Group entry);
+
+private:
+    elem_legend *legend_impl_;
+
+    friend class Plot;
 };
 
 class Plot {
 public:
     enum { ShowUnits = 1 << 0, AutoLimits = 1 << 1, ClipRegion = 1 << 2 };
-    enum Placement { Right = 0, Left = 1, Bottom = 2, Top = 3 };
 
     struct Options {
         Options() : value(ShowUnits | AutoLimits) { }
@@ -307,12 +342,12 @@ public:
     // The anchor is in data coordinates; the local layout and the placement
     // offset are in logical screen units. Annotations never change the limits.
     void AddAnnotation(Group group, Point anchor, Affine placement = Affine{});
+    void SetLegend(Legend legend, LegendLocation location);
+    void ClearLegend(LegendLocation location);
     bool PushLayer();
     bool PopLayer();
     void Show(unsigned width, unsigned height, unsigned flags);
     void ClearLayer();
-    void SetLegendPlot(Plot legend, Placement location);
-    Plot GetLegendPlot(Placement legend_location);
     bool WriteSvg(const char *filename, double width, double height);
     void Wait();
 private:

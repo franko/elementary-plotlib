@@ -26,12 +26,31 @@ Plot
   .. cpp:enumerator:: AutoLimits
   .. cpp:enumerator:: ClipRegion
 
-  **Legend Placement**
+  **LegendLocation values**
 
-  .. cpp:enumerator:: Left
-  .. cpp:enumerator:: Right
-  .. cpp:enumerator:: Bottom
-  .. cpp:enumerator:: Top
+  .. cpp:enumerator:: LegendLocation::Left
+  .. cpp:enumerator:: LegendLocation::Right
+  .. cpp:enumerator:: LegendLocation::Bottom
+  .. cpp:enumerator:: LegendLocation::Top
+  .. cpp:enumerator:: LegendLocation::InsideTopLeft
+  .. cpp:enumerator:: LegendLocation::InsideTopRight
+  .. cpp:enumerator:: LegendLocation::InsideBottomLeft
+  .. cpp:enumerator:: LegendLocation::InsideBottomRight
+  .. cpp:enumerator:: LegendLocation::InsideTop
+  .. cpp:enumerator:: LegendLocation::InsideBottom
+  .. cpp:enumerator:: LegendLocation::InsideLeft
+  .. cpp:enumerator:: LegendLocation::InsideRight
+
+  Legends contain independently built :cpp:class:`Group` entries. Each entry
+  is measured in logical screen coordinates and is placed without scaling its
+  text, markers, or strokes.
+
+  .. cpp:class:: Legend
+
+    .. cpp:function:: void Add(Group entry)
+
+      Add one complete group as a legend entry. An lvalue is copied and a
+      moved value transfers ownership.
 
   .. cpp:function:: Plot(unsigned flags = 0)
 
@@ -87,13 +106,14 @@ Plot
 
     Discard the current layer with all its content. The previous layer will become the current one. If the plot has only one layer the operation has no effect.
 
-  .. cpp:function:: void SetLegendPlot(Plot legend, Placement location)
+  .. cpp:function:: void SetLegend(Legend legend, LegendLocation location)
 
-    Set the given plot as a legend in the given location.
+    Replace the legend at the given location. Outside legends reserve measured
+    space; inside legends are positioned relative to the active plot area.
 
-  .. cpp:function:: void GetLegendPlot(Placement location)
+  .. cpp:function:: void ClearLegend(LegendLocation location)
 
-    Returns a copy of the plot's legend in the given location.
+    Remove the legend at the given location.
 
   .. cpp:function:: void Show(unsigned width, unsigned height, unsigned flags)
 

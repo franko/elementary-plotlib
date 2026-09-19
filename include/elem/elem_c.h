@@ -62,7 +62,15 @@ enum {
     elem_plot_right  = 0,
     elem_plot_left   = 1, 
     elem_plot_bottom = 2,
-    elem_plot_top    = 3
+    elem_plot_top    = 3,
+    elem_plot_inside_top_left = 4,
+    elem_plot_inside_top_right = 5,
+    elem_plot_inside_bottom_left = 6,
+    elem_plot_inside_bottom_right = 7,
+    elem_plot_inside_top = 8,
+    elem_plot_inside_bottom = 9,
+    elem_plot_inside_left = 10,
+    elem_plot_inside_right = 11,
 };
 
 enum {
@@ -97,6 +105,7 @@ class elem_curve;
 class elem_dashed;
 class elem_markers;
 class elem_group;
+class elem_legend;
 class elem_plot;
 class elem_window;
 #else
@@ -106,6 +115,7 @@ struct elem_curve;
 struct elem_dashed;
 struct elem_markers;
 struct elem_group;
+struct elem_legend;
 struct elem_plot;
 struct elem_window;
 typedef struct elem_object elem_object;
@@ -114,6 +124,7 @@ typedef struct elem_curve elem_curve;
 typedef struct elem_dashed elem_dashed;
 typedef struct elem_markers elem_markers;
 typedef struct elem_group elem_group;
+typedef struct elem_legend elem_legend;
 typedef struct elem_plot elem_plot;
 typedef struct elem_window elem_window;
 #endif
@@ -149,6 +160,11 @@ elem_object *elem_marker_symbol_by_name(const char *name);
 elem_markers *elem_markers_new(double size, elem_object *marker_symbol);
 elem_markers *elem_markers_copy(const elem_markers *markers);
 void elem_markers_free(elem_markers *markers);
+
+/* Text is an elem_object so it can be inserted into a group or plot. */
+elem_object *elem_text_new(const char *text, double size, double hjustif, double vjustif);
+void elem_text_set_position(elem_object *text, double x, double y);
+void elem_text_set_angle(elem_object *text, double angle);
 
 /* A group is a reusable collection of independently styled drawing operations
    in its own local coordinate system. It is placed into a plot with an affine
@@ -192,9 +208,15 @@ void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, f
    logical screen units and never changes the limits. */
 void elem_plot_add_group(elem_plot *plot, elem_group *group, elem_affine placement);
 void elem_plot_add_annotation(elem_plot *plot, elem_group *group, elem_point anchor, elem_affine placement);
+elem_legend *elem_legend_new(void);
+void elem_legend_free(elem_legend *legend);
+/* The legend consumes the entry group on success and on failure. */
+void elem_legend_add_group(elem_legend *legend, elem_group *entry);
+/* The plot consumes the legend handle on success and on failure. */
+void elem_plot_set_legend(elem_plot *plot, elem_legend *legend, int location);
+void elem_plot_clear_legend(elem_plot *plot, int location);
 void elem_plot_show(elem_plot *plot, unsigned width, unsigned height, unsigned flags);
 void elem_plot_wait(elem_plot *plot);
-// TODO: add function to add a legend
 int elem_plot_write_svg(elem_plot *plot, const char *filename, double width, double height);
 
 elem_window *elem_window_new();

@@ -153,8 +153,10 @@ void window_surface::slot_refresh(unsigned index)
 {
     if (m_canvas == nullptr) return;
     elem_plot *plot_selected = get_plot(index);
+    plot_ref& ref = m_plots[index];
     plot::drawing_context dc(*plot_selected);
-    bool redraw = get_plot(index)->need_redraw();
+    bool redraw = get_plot(index)->need_redraw() ||
+                  ref.inf.layout_generation != get_plot(index)->layout_generation();
     if (redraw) {
         render_plot_by_index(dc, index);
         render_drawing_queue(dc, index);

@@ -3,6 +3,7 @@
 
 // the following are private headers.
 #include "elem_group.h"
+#include "elem_legend.h"
 #include "elem_plot.h"
 #include "elem/elem_c_forward.h"
 #include "canvas_svg.h"
@@ -15,6 +16,7 @@
 #include "plot_agent.h"
 #include "elem_window.h"
 #include "markers.h"
+#include "text.h"
 
 static agg::rgba8 ColorToRgba8(const elem_color& c) {
     return agg::rgba8((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff);
@@ -137,6 +139,18 @@ elem_markers *elem_markers_copy(const elem_markers *markers) {
 
 void elem_markers_free(elem_markers *markers) {
     delete markers;
+}
+
+elem_object *elem_text_new(const char *text, double size, double hjustif, double vjustif) {
+    return new graphics::text(text, size, hjustif, vjustif);
+}
+
+void elem_text_set_position(elem_object *object, double x, double y) {
+    static_cast<graphics::text *>(object)->set_point(x, y);
+}
+
+void elem_text_set_angle(elem_object *object, double angle) {
+    static_cast<graphics::text *>(object)->angle(angle);
 }
 
 elem_group *elem_group_new() {
@@ -308,6 +322,48 @@ void elem_plot_add_annotation(elem_plot *plot, elem_group *group, elem_point anc
     {
         graphics::plot::drawing_context dc(*plot);
         plot->add(std::move(root));
+    }
+    plot_update_windows_and_commit(plot);
+}
+
+elem_legend *elem_legend_new() {
+    return new elem_legend{};
+}
+
+void elem_legend_free(elem_legend *legend) {
+    delete legend;
+}
+
+void elem_legend_add_group(elem_legend *legend, elem_group *entry) {
+    std::unique_ptr<elem_group> owned_entry{entry};
+    if (!legend || !owned_entry) {
+        return;
+    }
+    legend->add(std::move(*owned_entry));
+}
+
+void elem_plot_set_legend(elem_plot *plot, elem_legend *value, int location) {
+    std::unique_ptr<elem_legend> owned_value{value};
+    if (!plot || !owned_value) {
+        return;
+    }
+
+    auto grouped = std::make_unique<graphics::legend>(
+        std::move(owned_value->value()));
+    {
+        graphics::plot::drawing_context dc(*plot);
+        plot->set_legend(std::move(grouped), location);
+    }
+    plot_update_windows_and_commit(plot);
+}
+
+void elem_plot_clear_legend(elem_plot *plot, int location) {
+    if (!plot) {
+        return;
+    }
+    {
+        graphics::plot::drawing_context dc(*plot);
+        plot->clear_legend(location);
     }
     plot_update_windows_and_commit(plot);
 }
