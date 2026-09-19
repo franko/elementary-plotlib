@@ -33,19 +33,20 @@ public:
     }
 
     elem_object *copy() const override {
-        elem_dashed *new_object = new elem_dashed{};
+        auto new_object = std::make_unique<elem_dashed>();
         vertex_source_copy(new_object->m_path, m_path);
+        new_object->m_scaling_matrix = m_scaling_matrix;
         new_object->m_dash_lengths = m_dash_lengths;
         new_object->m_svg_dash_array = m_svg_dash_array;
         for (unsigned k = 0; k < m_dash_lengths.size(); k += 2) {
-            float a = m_dash_lengths[k], b = m_dash_lengths[k + 1];
+            double a = m_dash_lengths[k], b = m_dash_lengths[k + 1];
             new_object->m_path_dash.add_dash(a, b);
         }
-        return new_object;
+        return new_object.release();
     }
 
 protected:
     agg::conv_dash<agg::conv_transform<agg::path_storage>> m_path_dash;
-    agg::pod_bvector<float> m_dash_lengths;
+    agg::pod_bvector<double> m_dash_lengths;
     str m_svg_dash_array;
 };

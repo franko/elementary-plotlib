@@ -5,6 +5,7 @@
 
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
+#include "agg_conv_curve.h"
 #include "agg_conv_transform.h"
 
 #include "canvas_path.h"
@@ -27,9 +28,14 @@ public:
     }
 
     virtual elem_object *copy() const {
-        elem_curve *new_object = new elem_curve{};
+        auto new_object = std::make_unique<elem_curve>();
         vertex_source_copy(new_object->m_path, m_path);
-        return new_object;
+        new_object->m_scaling_matrix = m_scaling_matrix;
+        new_object->m_path_curve.approximation_method(m_path_curve.approximation_method());
+        new_object->m_path_curve.approximation_scale(m_path_curve.approximation_scale());
+        new_object->m_path_curve.angle_tolerance(m_path_curve.angle_tolerance());
+        new_object->m_path_curve.cusp_limit(m_path_curve.cusp_limit());
+        return new_object.release();
     }
 
 private:

@@ -231,9 +231,10 @@ void elem_plot_commit_pending_draw(elem_plot *plot) {
 
 // The plot takes implicitly the ownership of the object.
 void elem_plot_add(elem_plot *plot, elem_object *obj, elem_color stroke_color, float stroke_width, elem_color fill_color, int flags) {
+    sg_element element(obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
     {
         graphics::plot::drawing_context dc(*plot);
-        plot->add(obj, ColorToRgba8(stroke_color), stroke_width, ColorToRgba8(fill_color), flags);
+        plot->add(std::move(element));
     }
     plot_update_windows_and_commit(plot);
 }

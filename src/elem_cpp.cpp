@@ -24,7 +24,10 @@ Object::Object(elem_object *object_impl): object_impl_(object_impl) {
 }
 
 Object::Object(const Object& obj) {
-    object_impl_ = obj.object_impl_->copy();
+    object_impl_ = obj.object_impl_ ? obj.object_impl_->copy() : nullptr;
+    if (obj.object_impl_ && !object_impl_) {
+        throw std::logic_error("geometry copy returned null");
+    }
 }
 
 Object::Object(Object&& obj) {
@@ -38,8 +41,8 @@ Object::~Object() {
 
 Object& Object::operator=(const Object& other) {
     if (this != &other) {
-        delete object_impl_;
-        object_impl_ = other.object_impl_->copy();
+        Object replacement(other);
+        std::swap(object_impl_, replacement.object_impl_);
     }
     return *this;
 }
@@ -168,10 +171,11 @@ Plot& Plot::operator=(Plot&& other) {
 
 Plot& Plot::operator=(const Plot& other) {
     if (this != &other) {
+        auto replacement = new elem_plot{*other.plot_impl_};
         if (plot_impl_) {
             plot_impl_->release();
         }
-        plot_impl_ = new elem_plot{*other.plot_impl_};
+        plot_impl_ = replacement;
         plot_impl_->clear_windows_links();
     }
     return *this;
@@ -212,9 +216,9 @@ void Plot::CommitPendingDraw() {
 
 void Plot::Add(Object object, Color stroke_color, float stroke_width, Color fill_color, unsigned flags) {
     if (object.object_impl_ != nullptr) {
-        elem_plot_add(plot_impl_, (elem_object *) object.object_impl_, stroke_color, stroke_width, fill_color, flags);
-        // Since the plot take the ownership null the pointer inside the object.
-        object.object_impl_ = nullptr;
+        // Transfer before insertion: the callee owns the geometry even on failure.
+        auto geometry = std::exchange(object.object_impl_, nullptr);
+        elem_plot_add(plot_impl_, geometry, stroke_color, stroke_width, fill_color, flags);
     }
 }
 

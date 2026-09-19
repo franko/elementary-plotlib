@@ -93,8 +93,9 @@ public:
     }
 
     elem_object *copy() const override {
-        elem_path *new_object = new elem_path();
+        auto new_object = std::make_unique<elem_path>();
         vertex_source_copy(new_object->m_path, m_path);
-        return new_object;
+        new_object->m_scaling_matrix = m_scaling_matrix;
+        return new_object.release();
     }
 };

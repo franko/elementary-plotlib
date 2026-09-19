@@ -21,6 +21,8 @@
 #pragma once
 
 #include <cstring>
+#include <memory>
+#include <stdexcept>
 
 #include "agg_trans_affine.h"
 #include "agg_bounding_rect.h"
@@ -87,6 +89,7 @@ public:
         return 0;
     }
 
+    // Return an independently owned object, or throw if cloning is unsupported.
     virtual elem_object *copy() const = 0;
     virtual ~elem_object() { }
 };
@@ -135,9 +138,9 @@ public:
     }
 
     elem_object *copy() const override {
-        elem_object_gen *new_object = new elem_object_gen();
+        auto new_object = std::make_unique<elem_object_gen>();
         copy_content(*new_object);
-        return new_object;
+        return new_object.release();
     }
 
     const VertexSource& self() const {
@@ -188,8 +191,7 @@ public:
     };
 
     elem_object *copy() const override {
-        // TODO: should be removed as not used.
-        return nullptr;
+        throw std::logic_error("copy is not supported by this graphics adapter");
     }
 
     ConvType& self()       {
@@ -235,9 +237,15 @@ public:
     }
 
     elem_object *copy() const override {
-        elem_object *new_source = m_source->copy();
-        elem_object_scaling *new_object = new elem_object_scaling(new_source);
+        std::unique_ptr<elem_object> new_source(m_source->copy());
+        auto new_object = std::make_unique<elem_object_scaling>(new_source.get());
+        new_source.release();
         new_object->m_mtx = m_mtx;
-        return new_object;
+        return new_object.release();
     }
 };
+
+template <>
+inline elem_object* elem_object_scaling<manage_not_owner>::copy() const {
+    throw std::logic_error("copy is not supported by borrowed scaling adapters");
+}

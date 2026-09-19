@@ -1,4 +1,16 @@
 
+foreach name : ['drawable', 'geometry-copy', 'plot-storage']
+    regression = executable('test-' + name, 'test-' + name + '.cpp',
+        dependencies: libelem_dep,
+        cpp_args: libelem_cflags)
+    test(name, regression, suite: 'core')
+endforeach
+
+public_ownership = executable('test-public-ownership', 'test-public-ownership.cpp',
+    dependencies: libelemwin_dep,
+    cpp_args: libelem_cflags)
+test('public-ownership', public_ownership, suite: 'core')
+
 window_tests = [
     {'name': 'test-window', 'sources': 'test-window.cpp'},
     {'name': 'test-window-gc', 'sources': 'test-window-gc.cpp'},

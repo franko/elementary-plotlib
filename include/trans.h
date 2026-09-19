@@ -41,12 +41,30 @@ namespace graphics { namespace transform {
             return s;
         }
 
-    private:
+    protected:
         double m_width;
     };
 
     struct stroke : stroke_a {
         stroke(elem_object* src) : stroke_a(src) {}
+
+        elem_object* copy() const override {
+            std::unique_ptr<elem_object> new_source(m_source->copy());
+            auto new_object = std::make_unique<stroke>(new_source.get());
+            new_source.release();
+            // Rebuild the converter against the cloned source, not the original.
+            new_object->m_width = m_width;
+            new_object->m_output.width(m_output.width());
+            new_object->m_output.line_cap(m_output.line_cap());
+            new_object->m_output.line_join(m_output.line_join());
+            new_object->m_output.inner_join(m_output.inner_join());
+            new_object->m_output.miter_limit(m_output.miter_limit());
+            new_object->m_output.inner_miter_limit(m_output.inner_miter_limit());
+            new_object->m_output.approximation_scale(m_output.approximation_scale());
+            new_object->m_output.shorten(m_output.shorten());
+            return new_object.release();
+        }
+
         virtual ~stroke() {
             delete m_source;
         }
@@ -154,7 +172,8 @@ namespace graphics { namespace transform {
 
     public:
         marker_a(elem_object* src, double size, elem_object* sym):
-            base_type(src, *sym), m_size(size), m_scale(m_size), m_symbol(sym)
+            base_type(src, sym ? *sym : throw std::invalid_argument("marker symbol must not be empty")),
+            m_size(size), m_scale(m_size), m_symbol(sym)
         {
             // we need to apply the scale transform here to ensure that
             // any call to bounding_box have the correct informations about

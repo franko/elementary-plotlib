@@ -1,10 +1,13 @@
+#pragma once
+
 #include "canvas_path.h"
 #include "my_conv_simple_marker.h"
 
 class elem_markers : public elem_path {
 public:
     elem_markers(double size, elem_object* sym) : elem_path(),
-        m_marker_conv(m_path_scaling, *sym), m_size(size), m_scale(m_size), m_symbol(sym) {
+        m_marker_conv(m_path_scaling, sym ? *sym : throw std::invalid_argument("marker symbol must not be empty")),
+        m_size(size), m_scale(m_size), m_symbol(sym) {
         // we need to apply the scale transform here to ensure that
         // any call to bounding_box have the correct informations about
         // the symbol size, even if it is called before apply_transform
@@ -29,10 +32,11 @@ public:
     }
 
     elem_object *copy() const override {
-        elem_object *new_symbol = m_symbol->copy();
-        elem_markers *new_object = new elem_markers(m_size, new_symbol);
+        std::unique_ptr<elem_object> new_symbol(m_symbol->copy());
+        std::unique_ptr<elem_markers> new_object(new elem_markers(*this, new_symbol.get()));
+        new_symbol.release();
         vertex_source_copy(new_object->m_path, m_path);
-        return new_object;
+        return new_object.release();
     }
 
     str write_svg(int id, agg::rgba8 c, double h) override {
@@ -58,6 +62,13 @@ public:
     }
 
 private:
+    // The cloned symbol already has its transform and approximation settings.
+    elem_markers(const elem_markers& source, elem_object* sym) : elem_path(),
+        m_marker_conv(m_path_scaling, sym ? *sym : throw std::invalid_argument("marker symbol must not be empty")),
+        m_size(source.m_size), m_scale(source.m_scale), m_symbol(sym) {
+        m_scaling_matrix = source.m_scaling_matrix;
+    }
+
     str gen_svg_marker_def(int id, agg::rgba8 c, str& marker_id) {
         const double pad = 2.0;
         double tx_save = m_scale.tx, ty_save = m_scale.ty;

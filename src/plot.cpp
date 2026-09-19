@@ -17,38 +17,28 @@ void plot::commit_pending_draw()
     m_changes_pending.clear();
 }
 
-void plot::add(sg_element elem)
+void plot::add(std::unique_ptr<sg_drawable> elem)
 {
-    if (m_auto_limits && !fit_inside(elem)) {
+    if (!elem) {
+        throw std::invalid_argument("drawable must not be null");
+    }
+    const bool enlarge = m_auto_limits && !fit_inside(*elem);
+    m_drawing_queue.add(std::move(elem));
+    if (enlarge) {
         m_bbox_updated = false;
         m_need_redraw = true;
         m_enlarged_layer = true;
     }
-
-    auto new_node = new list<sg_element>(elem);
-    m_drawing_queue = list<sg_element>::push_back(m_drawing_queue, new_node);
 }
 
 void plot::push_drawing_queue()
 {
-    auto layer = current_layer();
-    for (auto c = m_drawing_queue; c != 0; c = c->next())
-    {
-        layer->add(c->content());
-    }
-
-    while (m_drawing_queue) {
-        m_drawing_queue = list<sg_element>::pop(m_drawing_queue);
-    }
+    current_layer()->append(std::move(m_drawing_queue));
 }
 
 void plot::clear_drawing_queue()
 {
-    while (m_drawing_queue) {
-        sg_element& d = m_drawing_queue->content();
-        delete d.object;
-        m_drawing_queue = list<sg_element>::pop(m_drawing_queue);
-    }
+    m_drawing_queue.clear();
 }
 
 static bool area_is_valid(const agg::trans_affine& b)
@@ -98,11 +88,10 @@ void plot::draw_elements(canvas_type& canvas, const plot_layout& layout)
 
     clip_plot_area(canvas, layout.plot_active_area);
 
-    for (unsigned k = 0; k < m_layers.size(); k++)
+    for (auto& layer : m_layers)
     {
-        item_list& layer = *(m_layers[k]);
-        for (unsigned j = 0; j < layer.size(); j++) {
-            draw_element(layer[j], canvas, m);
+        for (auto& element : layer) {
+            element->draw(canvas, m);
         }
     }
 
@@ -181,7 +170,7 @@ plot_layout plot::compute_plot_layout(const agg::trans_affine& canvas_mtx, bool 
 
     for (int k = 0; k < 4 && do_legends; k++)
     {
-        plot* mp = m_legend[k];
+        plot* mp = m_legend[k].get();
 
         if (mp)
         {
@@ -255,7 +244,7 @@ void plot::draw_legends(canvas_type& canvas, const plot_layout& layout)
 
     for (int k = 0; k < 4; k++)
     {
-        plot* mp = m_legend[k];
+        plot* mp = m_legend[k].get();
         const agg::trans_affine& mtx = layout.legend_area[k];
 
         if (mp && plot_layout::is_area_defined(mtx))
@@ -407,24 +396,18 @@ void plot::unset_limits()
     m_need_redraw = true;
 }
 
-void plot::layer_dispose_elements(plot::item_list* layer)
-{
-    unsigned n = layer->size();
-    for (unsigned k = 0; k < n; k++) {
-        delete layer->at(k).object;
-    }
-}
-
 bool plot::push_layer()
 {
     if (m_layers.size() >= max_layers)
         return false;
 
-    item_list *new_layer = new(std::nothrow) item_list();
-    if (new_layer) {
+    try {
+        m_layers.reserve(m_layers.size() + 1);
         before_draw();
         push_drawing_queue();
-        m_layers.add(new_layer);
+        m_layers.emplace_back();
+    } catch (const std::bad_alloc&) {
+        return false;
     }
 
     if (m_auto_limits) {
@@ -435,7 +418,7 @@ bool plot::push_layer()
         m_enlarged_layer = false;
     }
 
-    return (new_layer != nullptr);
+    return true;
 }
 
 bool plot::pop_layer()
@@ -443,11 +426,7 @@ bool plot::pop_layer()
     if (m_layers.size() <= 1)
         return false;
 
-    unsigned n = m_layers.size();
-    item_list* layer = m_layers[n-1];
-    m_layers.inc_size(-1);
-    layer_dispose_elements(layer);
-    delete layer;
+    m_layers.pop_back();
 
     clear_drawing_queue();
     m_need_redraw = true;
@@ -473,7 +452,6 @@ void plot::clear_current_layer()
 {
     item_list* current = current_layer();
     clear_drawing_queue();
-    layer_dispose_elements(current);
     current->clear();
     m_changes_pending = m_changes_accu;
     m_changes_accu.clear();
@@ -497,14 +475,17 @@ int plot::current_layer_index()
     return m_layers.size();
 }
 
-bool plot::fit_inside(const sg_element& elem) const
+bool plot::fit_inside(const sg_drawable& elem) const
 {
+    const opt_rect<double> bounds = elem.data_bounds();
+    if (!bounds.is_defined()) {
+        return true;
+    }
     if (!m_bbox_updated || !m_rect.is_defined()) {
         return false;
     }
 
-    agg::rect_base<double> r;
-    elem.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
+    const agg::rect_d& r = bounds.rect();
     const agg::rect_d& bb = m_rect.rect();
     return bb.hit_test(r.x1, r.y1) && bb.hit_test(r.x2, r.y2);
 }
@@ -512,11 +493,8 @@ bool plot::fit_inside(const sg_element& elem) const
 
 void plot::calc_layer_bounding_box(plot::item_list* layer, opt_rect<double>& rect)
 {
-    for (unsigned j = 0; j < layer->size(); j++) {
-        sg_element& d = (*layer)[j];
-        agg::rect_base<double> r;
-        d.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
-        rect.add<rect_union>(r);
+    for (const auto& d : *layer) {
+        rect.add<rect_union>(d->data_bounds());
     }
 }
 
@@ -529,12 +507,9 @@ void plot::calc_bounding_box()
     }
 
     calc_layer_bounding_box(get_layer(n-1), box);
-    for (auto t = m_drawing_queue; t; t = t->next())
+    for (const auto& d : m_drawing_queue)
     {
-        const sg_element& d = t->content();
-        agg::rect_d r;
-        d.object->bounding_box(&r.x1, &r.y1, &r.x2, &r.y2);
-        box.add<rect_union>(r);
+        box.add<rect_union>(d->data_bounds());
     }
 
     m_rect = box;
